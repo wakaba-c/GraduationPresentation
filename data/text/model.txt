@@ -1,0 +1,42 @@
+#==============================================================================
+#
+# シーンデータスクリプト
+# Author : masayasu wakita
+#
+#==============================================================================
+SCRIPT
+
+#==============================================================================
+モデルの情報
+#==============================================================================
+MODELSET
+	MODEL_FILENAME = data/model/DirectionalLight.x
+	POS = -3000.00 5000.00 0.00
+	ROT = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/house/MedievalHouse_2.x
+	POS = 659.10 0.00 -576.96
+	ROT = 0.00 1.57 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/Sphere.x
+	POS = -47.19 0.00 -80.52
+	ROT = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/Sphere.x
+	POS = -215.38 0.00 414.85
+	ROT = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/Sphere.x
+	POS = 533.02 0.00 382.36
+	ROT = 0.00 0.00 0.00
+END_MODELSET
+
+END_SCRIPT

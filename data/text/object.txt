@@ -1,0 +1,31 @@
+#==============================================================================
+#
+# モデルのファイル名管理 [model.txt]
+# Author : masayasu wakita
+#
+#==============================================================================
+SCRIPT			# この行は絶対消さないこと！
+
+#------------------------------------------------------------------------------
+# モデルファイル名
+#------------------------------------------------------------------------------
+MODEL_FILENAME = data/model/akazukin/body.x					# [0]体
+MODEL_FILENAME = data/model/akazukin/Head.x					# [1]頭
+MODEL_FILENAME = data/model/akazukin/Second_arm_Right.x		# [2]二の腕(右)
+MODEL_FILENAME = data/model/akazukin/forearm_Right.x		# [3]前膊(右)
+MODEL_FILENAME = data/model/akazukin/Hand_Right.x			# [4]右手
+MODEL_FILENAME = data/model/akazukin/Second_arm_Left.x		# [5]二の腕(左)
+MODEL_FILENAME = data/model/akazukin/forearm_Left.x			# [6]前膊(左)
+MODEL_FILENAME = data/model/akazukin/Hand_Left.x			# [7]左手
+MODEL_FILENAME = data/model/akazukin/thigh_Right.x			# [8]太股(右)
+MODEL_FILENAME = data/model/akazukin/leg_Right.x			# [9]右足
+MODEL_FILENAME = data/model/akazukin/foot_Right.x			# [10]足(右)
+MODEL_FILENAME = data/model/akazukin/thigh_Left.x			# [11]太股(左)
+MODEL_FILENAME = data/model/akazukin/leg_Left.x				# [12]左足
+MODEL_FILENAME = data/model/akazukin/foot_Left.x			# [13]足(左)
+MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x		# [14]カッターナイフ
+MODEL_FILENAME = data/model/house/MedievalHouse_2.x			# [15]家
+MODEL_FILENAME = data/model/DirectionalLight.x				# [16]ディレクショナルライト
+MODEL_FILENAME = data/model/Sphere.x						# [17]球体
+
+END_SCRIPT		# この行は絶対消さないこと！

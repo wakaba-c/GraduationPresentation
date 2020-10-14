@@ -1,0 +1,516 @@
+#==============================================================================
+#
+# シーンデータスクリプト
+# Author : masayasu wakita
+#
+#==============================================================================
+SCRIPT
+
+#==============================================================================
+モデルの情報
+#==============================================================================
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = 225.70 0.00 -234.96
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = -562.70 0.00 -360.12
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = 46.04 0.00 359.55
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = 678.12 0.00 -367.97
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = 7.91 0.00 -455.12
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = 12.66 0.00 -646.99
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = 26.90 0.00 -91.96
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = 125.06 0.00 -919.21
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = -216.10 0.00 -205.66
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = 5.89 0.00 -466.63
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = 151.52 0.00 -767.65
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = 245.46 0.00 -413.87
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = 573.90 0.00 -308.43
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = 955.44 0.00 -423.28
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = 1052.33 0.00 -691.69
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = 1083.43 0.00 -845.62
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = 1228.61 0.00 -727.33
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = 1028.23 0.00 -641.55
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = 588.14 0.00 -663.09
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = 776.15 0.00 -607.24
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = 1450.92 0.00 -581.89
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = 1446.21 0.00 -746.43
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = 860.76 0.00 -26.00
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = 660.02 0.00 -714.40
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = 768.43 0.00 344.47
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = 376.93 0.00 723.93
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = 726.78 0.00 61.85
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = 953.67 0.00 -27.38
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = 346.07 0.00 488.36
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = 328.95 0.00 549.34
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = 450.80 0.00 -558.98
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = 1181.55 0.00 -28.81
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = 593.66 0.00 374.37
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = 207.20 0.00 163.60
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = 1084.33 0.00 216.94
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Hand_Right.x
+	POS = 62.56 0.00 -249.96
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 345.26 0.00 -630.91
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = -21.88 0.00 -557.27
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 475.40 0.00 -64.22
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 504.44 0.00 -605.33
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 152.24 0.00 -742.99
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 41.52 0.00 -636.83
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = -79.32 0.00 -796.12
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = -458.76 0.00 -655.78
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 478.44 0.00 -114.88
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 9.06 0.00 215.10
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = -108.87 0.00 -194.01
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 259.95 0.00 -485.42
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = -210.58 0.00 382.17
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 402.23 0.00 -250.59
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 276.99 0.00 618.51
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 120.48 0.00 -161.33
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = -305.54 0.00 314.97
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 298.47 0.00 917.65
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 249.83 0.00 534.02
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 386.18 0.00 353.72
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 305.41 0.00 -237.76
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 106.01 0.00 990.49
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 800.02 0.00 92.12
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 280.62 0.00 835.27
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 920.88 0.00 392.01
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 1587.14 0.00 -246.05
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 823.86 0.00 -239.22
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 1546.04 0.00 -320.31
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 1031.20 0.00 -187.09
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 939.33 0.00 -434.95
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 355.98 0.00 -447.17
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 1602.92 0.00 -345.89
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 894.77 0.00 384.08
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 816.01 0.00 -331.78
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 771.93 0.00 -153.27
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 910.77 0.00 -352.09
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 1732.32 0.00 -182.84
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 1530.56 0.00 450.18
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 1143.64 0.00 206.91
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 1923.17 0.00 300.17
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 1760.62 0.00 111.26
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 1107.03 0.00 559.26
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 1699.03 0.00 630.98
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 1514.90 0.00 5.14
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 1965.96 0.00 -84.19
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 1036.80 0.00 123.19
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 1638.77 0.00 227.65
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x
+	POS = 1260.12 0.00 490.67
+	POS = 0.00 0.00 0.00
+END_MODELSET
+
+END_SCRIPT
