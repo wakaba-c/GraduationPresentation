@@ -19,6 +19,15 @@
     <Filter Include="ImGui">
       <UniqueIdentifier>{caa83a96-9641-492a-a935-e60f28cfd5ba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="mode">
+      <UniqueIdentifier>{0f45341b-e5f9-4108-911e-2243e426396e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scene">
+      <UniqueIdentifier>{3305ffcf-258e-4b09-8c33-9617d6dd52ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mesh">
+      <UniqueIdentifier>{6edacad0-97d9-4c6b-8807-c612f2aaee61}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bg.cpp">
@@ -57,9 +66,6 @@
     <ClCompile Include="fade.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="game.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="gauge2D.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -87,21 +93,6 @@
     <ClCompile Include="manager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="meshCapsule.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="meshCube.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="meshField.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="meshOrbit.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="meshSphere.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="messageWindow.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -117,25 +108,7 @@
     <ClCompile Include="player.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="ranking.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="renderer.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="result.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="scene.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="scene2D.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="scene3D.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="sceneX.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="score.cpp">
@@ -151,9 +124,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="time.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="title.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="titleLogo.cpp">
@@ -188,6 +158,45 @@
     </ClCompile>
     <ClCompile Include="character.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="game.cpp">
+      <Filter>mode</Filter>
+    </ClCompile>
+    <ClCompile Include="title.cpp">
+      <Filter>mode</Filter>
+    </ClCompile>
+    <ClCompile Include="ranking.cpp">
+      <Filter>mode</Filter>
+    </ClCompile>
+    <ClCompile Include="result.cpp">
+      <Filter>mode</Filter>
+    </ClCompile>
+    <ClCompile Include="scene.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="scene2D.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="scene3D.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="sceneX.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="meshCapsule.cpp">
+      <Filter>mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="meshCube.cpp">
+      <Filter>mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="meshField.cpp">
+      <Filter>mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="meshOrbit.cpp">
+      <Filter>mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="meshSphere.cpp">
+      <Filter>mesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -227,9 +236,6 @@
     <ClInclude Include="fade.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="game.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="gauge2D.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -263,21 +269,6 @@
     <ClInclude Include="manager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="meshCapsule.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="meshCube.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="meshField.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="meshOrbit.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="meshSphere.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="messageWindow.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -302,28 +293,10 @@
     <ClInclude Include="purpose.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="ranking.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="renderer.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="result.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="scene.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="scene2D.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="scene3D.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="sceneX.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="score.h">
@@ -339,9 +312,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="time.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="title.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="titleLogo.h">
@@ -382,6 +352,45 @@
     </ClInclude>
     <ClInclude Include="character.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="game.h">
+      <Filter>mode</Filter>
+    </ClInclude>
+    <ClInclude Include="ranking.h">
+      <Filter>mode</Filter>
+    </ClInclude>
+    <ClInclude Include="title.h">
+      <Filter>mode</Filter>
+    </ClInclude>
+    <ClInclude Include="result.h">
+      <Filter>mode</Filter>
+    </ClInclude>
+    <ClInclude Include="scene.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="scene2D.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="scene3D.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="sceneX.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="meshCapsule.h">
+      <Filter>mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="meshCube.h">
+      <Filter>mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="meshField.h">
+      <Filter>mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="meshOrbit.h">
+      <Filter>mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="meshSphere.h">
+      <Filter>mesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
