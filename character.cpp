@@ -85,6 +85,17 @@ void CCharacter::Uninit(void)
 		m_apCurrentRot = NULL;
 	}
 
+	if (m_pModel != NULL)
+	{
+		for (int nCount = 0; nCount < m_nNumParts; nCount++)
+		{
+			m_pModel[nCount].Uninit();
+		}
+
+		delete[] m_pModel;
+		m_pModel = NULL;
+	}
+
 	if (m_pAnimation != NULL)
 	{
 		for (int nCount = 0; nCount < m_nMaxAnimationType; nCount++)
