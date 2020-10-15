@@ -284,7 +284,7 @@ void CManager::Update(void)
 	case CManager::MODE_STAGE_SELECT:
 
 		break;
-	case CManager::MODE_PUZZLU_CUSTOM:
+	case CManager::MODE_PUZZLE_CUSTOM:
 
 		break;
 	case CManager::MODE_GAME:
@@ -354,7 +354,7 @@ void CManager::SetMode(MODE mode)
 	case MODE_STAGE_SELECT:
 
 		break;
-	case MODE_PUZZLU_CUSTOM:
+	case MODE_PUZZLE_CUSTOM:
 
 		break;
 
@@ -396,7 +396,7 @@ void CManager::SetMode(MODE mode)
 	case MODE_STAGE_SELECT:
 
 		break;
-	case MODE_PUZZLU_CUSTOM:
+	case MODE_PUZZLE_CUSTOM:
 
 		break;
 
