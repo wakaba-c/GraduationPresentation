@@ -201,8 +201,8 @@
     <ClCompile Include="box.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="puzzlu.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="puzzle.cpp">
+      <Filter>mode</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -401,8 +401,8 @@
     <ClInclude Include="box.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="puzzlu.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="puzzle.h">
+      <Filter>mode</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
