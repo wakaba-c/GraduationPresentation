@@ -28,7 +28,7 @@
 #include "messageWindow.h"
 #include "result.h"
 #include "fade.h"
-
+#include "takaseiLibrary.h"
 #include "sceneX.h"
 
 //=============================================================================
@@ -1019,9 +1019,9 @@ void CPlayer::Input(void)
 		}
 
 		//¶‰E‘€ì
-		if (pKeyboard->GetPressKeyboard(DIK_LEFTARROW))
+		if (pKeyboard->GetPressKeyboard(MOVE_LEFT))
 		{
-			if (pKeyboard->GetPressKeyboard(DIK_UPARROW))
+			if (pKeyboard->GetPressKeyboard(MOVE_ACCEL))
 			{
 				m_move.x += sinf(D3DX_PI * 0.75f + rot.y) * m_fSpeed;
 				m_move.z += cosf(D3DX_PI * 0.75f + rot.y) * m_fSpeed;
@@ -1029,7 +1029,7 @@ void CPlayer::Input(void)
 				D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
 				m_dest.y = -D3DX_PI * 0.25f + rot.y;
 			}
-			else if (pKeyboard->GetPressKeyboard(DIK_DOWNARROW))
+			else if (pKeyboard->GetPressKeyboard(MOVE_BRAKE))
 			{
 				m_move.x += sinf(D3DX_PI * 0.25f + rot.y) * m_fSpeed;
 				m_move.z += cosf(D3DX_PI * 0.25f + rot.y) * m_fSpeed;
@@ -1047,10 +1047,10 @@ void CPlayer::Input(void)
 			}
 		}
 
-		else if (pKeyboard->GetPressKeyboard(DIK_RIGHTARROW))
+		else if (pKeyboard->GetPressKeyboard(MOVE_RIGHT))
 		{
 			//ã‰º‘€ì
-			if (pKeyboard->GetPressKeyboard(DIK_UPARROW))
+			if (pKeyboard->GetPressKeyboard(MOVE_ACCEL))
 			{
 				m_move.x += sinf(-D3DX_PI * 0.75f + rot.y) * m_fSpeed;
 				m_move.z += cosf(-D3DX_PI * 0.75f + rot.y) * m_fSpeed;
@@ -1058,7 +1058,7 @@ void CPlayer::Input(void)
 				D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
 				m_dest.y = D3DX_PI * 0.25f + rot.y;
 			}
-			else if (pKeyboard->GetPressKeyboard(DIK_DOWNARROW))
+			else if (pKeyboard->GetPressKeyboard(MOVE_BRAKE))
 			{
 				m_move.x += sinf(-D3DX_PI * 0.25f + rot.y) * m_fSpeed;
 				m_move.z += cosf(-D3DX_PI * 0.25f + rot.y) * m_fSpeed;
@@ -1077,7 +1077,7 @@ void CPlayer::Input(void)
 		}
 
 		//ã‰º‘€ì
-		else if (pKeyboard->GetPressKeyboard(DIK_UPARROW))
+		else if (pKeyboard->GetPressKeyboard(MOVE_ACCEL))
 		{
 			m_move.x += sinf(D3DX_PI * 1.0f + rot.y) * m_fSpeed;
 			m_move.z += cosf(D3DX_PI * 1.0f + rot.y) * m_fSpeed;
@@ -1085,7 +1085,7 @@ void CPlayer::Input(void)
 			D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
 			m_dest.y = D3DX_PI * 0.0f + rot.y;
 		}
-		else if (pKeyboard->GetPressKeyboard(DIK_DOWNARROW))
+		else if (pKeyboard->GetPressKeyboard(MOVE_BRAKE))
 		{
 			D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
 
