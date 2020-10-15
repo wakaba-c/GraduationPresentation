@@ -16,6 +16,11 @@
 #include "inputController.h"
 
 //=============================================================================
+// マクロ定義
+//=============================================================================
+#define PLAYER_CAMERA_Y 100.0f		// プレイヤーカメラの高さ
+
+//=============================================================================
 // コンストラクタ
 //=============================================================================
 CCamera::CCamera()
@@ -121,7 +126,7 @@ void CCamera::Update(void)
 
 	//カメラの位置計算
 	m_posVDest.x = m_originPos.x + sinf(D3DX_PI + m_rot.y) * cosf(D3DX_PI + m_rot.x) * m_fDistance;
-	m_posVDest.y = m_originPos.y + sinf(D3DX_PI + m_rot.x) * m_fDistance;
+	m_posVDest.y = m_originPos.y + sinf(D3DX_PI + m_rot.x) * m_fDistance + PLAYER_CAMERA_Y;
 	m_posVDest.z = m_originPos.z + cosf(D3DX_PI + m_rot.y) * cosf(D3DX_PI + m_rot.x) * m_fDistance;
 
 	m_posRDest.x = m_originPos.x + cosf(D3DX_PI + m_rot.y) * cosf(D3DX_PI + m_rot.x);
