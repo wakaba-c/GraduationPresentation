@@ -18,6 +18,11 @@
 #define SPLIT 0.12f;								//1フレームあたりの代入数
 
 //=============================================================================
+// 前方宣言
+//=============================================================================
+class CPlayer;
+
+//=============================================================================
 // クラス定義
 //=============================================================================
 class CCamera
@@ -52,6 +57,7 @@ private:
 	LPD3DXFONT			m_pCameraFont = NULL;										// フォントへのポインタ
 	void Debug(void);				// デバッグ処理
 #endif
+	static CPlayer *m_pPlayer;			// プレイヤー情報
 
 	D3DXVECTOR3 CalcScreenToXZ(float fSx, float fSy, int nScreen_w, int nScreen_h, D3DXMATRIX* mView, D3DXMATRIX* mPrj);	// スクリーンの交点
 	D3DXVECTOR3* CalcScreenToWorld(D3DXVECTOR3* pout, float fSx, float fSy, float fZ, int nScreen_w, int nScreen_h, D3DXMATRIX* mView, D3DXMATRIX* mPrj);		// ワールド座標変換
@@ -85,5 +91,7 @@ private:
 	D3DXVECTOR3	m_originPos;		// カメラ の位置
 
 	D3DXVECTOR2 m_mousePosOld;		// 前回の マウス座標
+
+	int m_nCntRot;		// カメラの回転開始カウンタ
 };
 #endif

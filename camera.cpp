@@ -14,11 +14,22 @@
 #include "game.h"
 #include "player.h"
 #include "inputController.h"
+#include "takaseiLibrary.h"
+
+//=============================================================================
+// 静的メンバ変数の初期化
+//=============================================================================
+CPlayer *CCamera::m_pPlayer = NULL;		// プレイヤー情報
 
 //=============================================================================
 // マクロ定義
 //=============================================================================
-#define PLAYER_CAMERA_Y 100.0f		// プレイヤーカメラの高さ
+#define PLAYER_CAMERA_Y -50.0f		// プレイヤーカメラの高さ
+#define ROT_SHRINK 0.1f				// 回転の縮める速度
+#define posV_Height 70.0f			// 視点の高さ
+#define SHRINK_SPEED_Y 0.2f			// posVのYの縮める速度
+#define posR_Length 10.0f			// モデルと注視点の位置
+#define ROT_COUNT 5					// 回転を始めるカウント
 
 //=============================================================================
 // コンストラクタ
@@ -63,6 +74,7 @@ HRESULT CCamera::Init(void)
 	m_originPos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// カメラの位置
 	originPos = m_posR - m_posV;								// カメラ位置 の代入
 	m_fDistance = sqrtf(originPos.y * originPos.y + originPos.z * originPos.z + 50);	// 距離 の算出
+	m_nCntRot = 0;
 
 	// 描画領域 の設定
 	SetViewport(D3DXVECTOR2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2),
@@ -120,6 +132,7 @@ void CCamera::Update(void)
 				D3DXVECTOR3 pos = pPlayer->GetPosition();		// プレイヤーの位置を取得
 				pos.y += 120.0f;								// プレイヤーの位置にオフセットを加算
 				m_originPos = pos;								// カメラの位置 に代入
+				m_originPos.y = 200;								// カメラの位置 に代入
 			}
 		}
 	}
@@ -487,123 +500,206 @@ void CCamera::CameraMove(void)
 {
 	if (CManager::GetMode() == CManager::MODE_GAME)
 	{// モードがゲームだったとき
-		CInputKeyboard *pKeyboard = CManager::GetInputKeyboard();		// キーボードの取得
-		CInputMouse *pMouse = CManager::GetInputMouse();				// マウスの取得
-		CInputController *pGamepad = CManager::GetInputController();	// ゲームパッドの取得
+		//CInputKeyboard *pKeyboard = CManager::GetInputKeyboard();		// キーボードの取得
+		//CInputMouse *pMouse = CManager::GetInputMouse();				// マウスの取得
+		//CInputController *pGamepad = CManager::GetInputController();	// ゲームパッドの取得
 
-		D3DXVECTOR2 mousePos;									// マウス座標
+		//D3DXVECTOR2 mousePos;									// マウス座標
 
-		float nValueH = 0;									//コントローラー
-		float nValueV = 0;									//コントローラー
+		//float nValueH = 0;									//コントローラー
+		//float nValueV = 0;									//コントローラー
 
-		if (pGamepad != NULL)
-		{// ゲームパッドが存在していたとき
-			if (pGamepad->GetJoypadUse(0))
-			{// 使用可能だったとき
-			 // 右スティックの角度を取得
-				pGamepad->GetJoypadStickRight(0, &nValueH, &nValueV);
+		//if (pGamepad != NULL)
+		//{// ゲームパッドが存在していたとき
+		//	if (pGamepad->GetJoypadUse(0))
+		//	{// 使用可能だったとき
+		//	 // 右スティックの角度を取得
+		//		pGamepad->GetJoypadStickRight(0, &nValueH, &nValueV);
 
-				// カメラが指定の範囲外だったとき
-				if (m_rot.x < -0.7f)
-				{
-					// 最大値まで戻す
-					m_rot.x = -0.7f;
-				}
-				else if (m_rot.x > 0.1f)
-				{
-					// 最小値まで戻す
-					m_rot.x = 0.1f;
-				}
+		//		// カメラが指定の範囲外だったとき
+		//		if (m_rot.x < -0.7f)
+		//		{
+		//			// 最大値まで戻す
+		//			m_rot.x = -0.7f;
+		//		}
+		//		else if (m_rot.x > 0.1f)
+		//		{
+		//			// 最小値まで戻す
+		//			m_rot.x = 0.1f;
+		//		}
 
-				// カメラの回転
-				// カメラの縦に旋回をする
-				m_rot.x += nValueV * 0.05f;
+		//		// カメラの回転
+		//		// カメラの縦に旋回をする
+		//		m_rot.x += nValueV * 0.05f;
 
-				// カメラを横に旋回する
-				m_rot.y -= nValueH * 0.05f;
-			}
+		//		// カメラを横に旋回する
+		//		m_rot.y -= nValueH * 0.05f;
+		//	}
+		//}
+
+		//// スクリーン座標とXZ平面のワールド座標交点算出
+		//m_worldPos = CalcScreenToXZ((float)pMouse->GetMouseX(), (float)pMouse->GetMouseY(), SCREEN_WIDTH, SCREEN_HEIGHT, &m_mtxView, &m_mtxProjection);
+
+		//// 左Altキーが押さているとき
+		//if (pKeyboard->GetPressKeyboard(DIK_LALT))
+		//{
+		//	// 左ボタンが押されたとき
+		//	if (pMouse->GetTriggerMouse(MOUSE_LEFT))
+		//	{
+		//		//現在のマウス座標を取得
+		//		m_mousePosOld.x = (float)pMouse->GetMouseX();
+		//		m_mousePosOld.y = (float)pMouse->GetMouseY();
+		//	}
+		//	else if (pMouse->GetTriggerMouse(MOUSE_RIGHT))
+		//	{// 右ボタンが押されたとき
+
+		//	 // 現在のマウス座標を取得
+		//		m_mousePosOld.y = (float)pMouse->GetMouseY();
+		//	}
+		//	else if (pMouse->GetTriggerMouse(MOUSE_CENTER))
+		//	{// 中ボタンが押されたとき
+		//	 // 現在のマウス座標を取得
+		//		m_mousePosOld.x = (float)pMouse->GetMouseX();
+		//		m_mousePosOld.y = (float)pMouse->GetMouseY();
+		//	}
+		//	else if (pMouse->GetPressMouse(MOUSE_LEFT))
+		//	{// 左ボタンが押されている間
+		//	 // マウス座標の取得
+		//		mousePos.x = (float)pMouse->GetMouseX();
+		//		mousePos.y = (float)pMouse->GetMouseY();
+
+		//		// 前回の位置との差分を求める
+		//		D3DXVECTOR2 mouseMove = mousePos - m_mousePosOld;
+
+		//		// 差分回転させる
+		//		m_rot.x -= mouseMove.y * 0.01f;
+		//		m_rot.y += mouseMove.x * 0.01f;
+
+		//		// 古い情報を更新する
+		//		m_mousePosOld = mousePos;
+		//	}
+		//	else if (pMouse->GetPressMouse(MOUSE_RIGHT))
+		//	{// 右ボタンが押されている間
+		//	 // マウス座標の取得
+		//		mousePos.y = (float)pMouse->GetMouseY();
+
+		//		// 前回の位置との差分を求める
+		//		D3DXVECTOR2 mouseMove = mousePos - m_mousePosOld;
+
+		//		// 差分だけ更新する
+		//		m_fDistance += mouseMove.y;
+
+		//		// 古い情報を更新する
+		//		m_mousePosOld = mousePos;
+		//	}
+		//	else if (pMouse->GetPressMouse(MOUSE_CENTER))
+		//	{// 中ボタンが押されている間
+		//	 // マウス座標の取得
+		//		mousePos.x = (float)pMouse->GetMouseX();
+		//		mousePos.y = (float)pMouse->GetMouseY();
+
+		//		// 前回の位置との差分を求める
+		//		D3DXVECTOR2 work = mousePos - m_mousePosOld;
+
+		//		//// カメラのY方向移動
+		//		//m_originPos.x -= sinf(D3DX_PI * 1.0f) * work.y;
+		//		//m_originPos.y -= cosf(D3DX_PI * 1.0f) * work.y;
+
+		//		//// カメラのX方向移動
+		//		//m_originPos.x += sinf(D3DX_PI * 0.5f + m_rot.y) * work.x * 0.5f;
+		//		//m_originPos.y += cosf(D3DX_PI * 0.5f + m_rot.y) * work.x * 0.5f;
+
+		//		m_originPos.x += work.x;
+		//		m_originPos.y = work.y;
+
+		//		SetPosCamera(m_originPos, m_rot);
+
+		//		// 古い情報を更新する
+		//		m_mousePosOld = mousePos;
+		//	}
+		//}
+
+		// キーボードの取得
+		CInputKeyboard *pKeyboard = CManager::GetInputKeyboard();
+
+		D3DXVECTOR3 fDiff;									// 計算用格納変数
+		D3DXVECTOR3 rot;									// プレイヤー用回転変数
+		D3DXVECTOR3 pos;									// プレイヤー用位置変数
+
+		// ゲームモードがゲームのとき
+		if (CManager::GetMode() == CManager::MODE_GAME)
+		{
+			m_pPlayer = CGame::GetPlayer();					// プレイヤー情報取得
 		}
 
-		// スクリーン座標とXZ平面のワールド座標交点算出
-		m_worldPos = CalcScreenToXZ((float)pMouse->GetMouseX(), (float)pMouse->GetMouseY(), SCREEN_WIDTH, SCREEN_HEIGHT, &m_mtxView, &m_mtxProjection);
-
-		// 左Altキーが押さているとき
-		if (pKeyboard->GetPressKeyboard(DIK_LALT))
+		// プレイヤーがいるとき
+		if (m_pPlayer != NULL)
 		{
-			// 左ボタンが押されたとき
-			if (pMouse->GetTriggerMouse(MOUSE_LEFT))
-			{
-				//現在のマウス座標を取得
-				m_mousePosOld.x = (float)pMouse->GetMouseX();
-				m_mousePosOld.y = (float)pMouse->GetMouseY();
-			}
-			else if (pMouse->GetTriggerMouse(MOUSE_RIGHT))
-			{// 右ボタンが押されたとき
+			rot = m_pPlayer->GetRotation();					// プレイヤーの回転情報取得
+			pos = m_pPlayer->GetPosition();					// プレイヤーの位置情報取得
+		}
 
-			 // 現在のマウス座標を取得
-				m_mousePosOld.y = (float)pMouse->GetMouseY();
-			}
-			else if (pMouse->GetTriggerMouse(MOUSE_CENTER))
-			{// 中ボタンが押されたとき
-			 // 現在のマウス座標を取得
-				m_mousePosOld.x = (float)pMouse->GetMouseX();
-				m_mousePosOld.y = (float)pMouse->GetMouseY();
-			}
-			else if (pMouse->GetPressMouse(MOUSE_LEFT))
-			{// 左ボタンが押されている間
-			 // マウス座標の取得
-				mousePos.x = (float)pMouse->GetMouseX();
-				mousePos.y = (float)pMouse->GetMouseY();
+		// 回転の最終目的地
+		m_rotDest.y = rot.y;
 
-				// 前回の位置との差分を求める
-				D3DXVECTOR2 mouseMove = mousePos - m_mousePosOld;
+		// 回転情報の差を格納
+		fDiff.y = m_rot.y - m_rotDest.y;
 
-				// 差分回転させる
-				m_rot.x -= mouseMove.y * 0.01f;
-				m_rot.y += mouseMove.x * 0.01f;
+		// 差がD3DX_PIより大きいとき
+		if (fDiff.y > D3DX_PI)
+		{
+			// 一周戻す
+			fDiff.y -= D3DX_PI * 2;
+		}
+		else if (fDiff.y < -D3DX_PI)
+		{// 差が-D3DX_PIより小さいとき
+		 // 一周増やす
+			fDiff.y += D3DX_PI * 2;
+		}
 
-				// 古い情報を更新する
-				m_mousePosOld = mousePos;
-			}
-			else if (pMouse->GetPressMouse(MOUSE_RIGHT))
-			{// 右ボタンが押されている間
-			 // マウス座標の取得
-				mousePos.y = (float)pMouse->GetMouseY();
+		// 絶対値が0.0fより小さいとき
+		if (fabsf(fDiff.y) < 0.0f)
+		{
+			// 差をなくす
+			fDiff.y = 0.0f;
+		}
 
-				// 前回の位置との差分を求める
-				D3DXVECTOR2 mouseMove = mousePos - m_mousePosOld;
+		// 視点の最終目的座標の計算
+		m_posVDest.x = pos.x + sinf(m_rot.y) * m_fDistance;
+		m_posVDest.y = pos.y + cosf(D3DX_PI + m_rot.x) * (-m_fDistance + posV_Height);
+		m_posVDest.z = pos.z + cosf(m_rot.y) * m_fDistance;
 
-				// 差分だけ更新する
-				m_fDistance += mouseMove.y;
+		// 注視点の最終目的座標の計算
+		m_posRDest.x = pos.x + sinf(m_rot.y);
+		m_posRDest.y = pos.y + sinf(D3DX_PI + m_rot.x);
+		m_posRDest.z = pos.z + cosf(D3DX_PI + m_rot.y) * posR_Length;
 
-				// 古い情報を更新する
-				m_mousePosOld = mousePos;
-			}
-			else if (pMouse->GetPressMouse(MOUSE_CENTER))
-			{// 中ボタンが押されている間
-			 // マウス座標の取得
-				mousePos.x = (float)pMouse->GetMouseX();
-				mousePos.y = (float)pMouse->GetMouseY();
+		// カメラの位置適応
+		m_posV.x += (m_posVDest.x - m_posV.x) * 1.0f;
+		m_posV.y += (m_posVDest.y - m_posV.y) * SHRINK_SPEED_Y;
+		m_posV.z += (m_posVDest.z - m_posV.z) * 1.0f;
+		m_posR += (m_posRDest - m_posR) * 1.0f;
 
-				// 前回の位置との差分を求める
-				D3DXVECTOR2 work = mousePos - m_mousePosOld;
+		// キーボードの[A]または[D]を押したとき
+		if (pKeyboard->GetPressKeyboard(DIK_A) || pKeyboard->GetPressKeyboard(DIK_D))
+		{
+			// 回転を始めるカウントを加算
+			m_nCntRot++;
+		}
+		else if (!pKeyboard->GetPressKeyboard(DIK_A) && !pKeyboard->GetPressKeyboard(DIK_D))
+		{// キーボードの[A]と[D]が押されていないとき
+		 // 回転を始めるカウンタ初期化
+			m_nCntRot = 0;
 
-				//// カメラのY方向移動
-				//m_originPos.x -= sinf(D3DX_PI * 1.0f) * work.y;
-				//m_originPos.y -= cosf(D3DX_PI * 1.0f) * work.y;
+			// 差を徐々に縮めていく
+			m_rot.y -= fDiff.y * ROT_SHRINK;
+		}
 
-				//// カメラのX方向移動
-				//m_originPos.x += sinf(D3DX_PI * 0.5f + m_rot.y) * work.x * 0.5f;
-				//m_originPos.y += cosf(D3DX_PI * 0.5f + m_rot.y) * work.x * 0.5f;
-
-				m_originPos.x += work.x;
-				m_originPos.y = work.y;
-
-				SetPosCamera(m_originPos, m_rot);
-
-				// 古い情報を更新する
-				m_mousePosOld = mousePos;
-			}
+		// 回転を始めるカウンタが規定値を超えたとき
+		if (m_nCntRot >= ROT_COUNT)
+		{
+			// 差を徐々に縮めていく
+			m_rot.y -= fDiff.y * ROT_SHRINK;
 		}
 	}
 }
