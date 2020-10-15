@@ -21,6 +21,7 @@
 #include "sound.h"
 #include "sceneX.h"
 #include "puzzle.h"
+#include "network.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -115,6 +116,20 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 			MessageBox(hWnd, "コントローラーの初期化に失敗", "警告", MB_ICONWARNING);
 			return E_FAIL;
 		}
+	}
+
+	// ネットワークの設定データ読み込み
+	CNetwork::LoadConfiguration();
+
+	m_pNetwork = new CNetwork;
+
+	// ネットワーク
+	if (!m_pNetwork->Init() == S_OK)
+	{
+		m_pNetwork->Uninit();
+		delete m_pNetwork;
+		m_pNetwork = NULL;
+		return E_FAIL;
 	}
 
 	CSceneX::InitShader();
@@ -256,6 +271,13 @@ void CManager::Uninit(void)
 		m_pRenderer->Uninit();																		// Rendererの終了処理
 		delete m_pRenderer;																			// Rendererのメモリ解放
 		m_pRenderer = NULL;																			// ポインタをNULLにする
+	}
+	// ネットワークの開放処理
+	if (m_pNetwork != NULL)
+	{
+		m_pNetwork->Uninit();
+		delete m_pNetwork;
+		m_pNetwork = NULL;
 	}
 }
 

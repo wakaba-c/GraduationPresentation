@@ -853,7 +853,7 @@ void CNetwork::StartUpdate(void)
 		// マルチスレッドにて更新開始
 		m_bUpdate = true;								// 更新フラグを立てる
 		std::thread th1 (&CNetwork::Update, this);	// スレッドの作成
-		m_th.detach();									// スレッドの管理を切り離す
+		th1.detach();									// スレッドの管理を切り離す
 	}
 }
 

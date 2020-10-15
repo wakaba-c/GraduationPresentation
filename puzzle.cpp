@@ -12,6 +12,7 @@
 #include "inputKeyboard.h"
 #include "inputController.h"
 #include "box.h"
+#include "network.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -65,7 +66,13 @@ void CPuzzle::Update(void)
 		{// キーボードが存在していたとき
 			if (pInputKeyboard->GetTriggerKeyboard(DIK_RETURN))
 			{// 指定のキーが押されたとき
-				CFade::SetFade(CManager::MODE_GAME);					//フェードを入れる
+				if (CManager::GetNetwork() != NULL)
+				{
+					if (CManager::GetNetwork()->Connect() == S_OK)
+					{
+						CFade::SetFade(CManager::MODE_GAME);					//フェードを入れる
+					}
+				}
 			}
 		}
 		if (pInputController->GetJoypadUse(0))

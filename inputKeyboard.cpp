@@ -97,6 +97,17 @@ void CInputKeyboard::Update(void)
 	else
 	{
 		m_pDevice->Acquire();				//キーボードへのアクセス権を取得
+
+		if (SUCCEEDED(m_pDevice->GetDeviceState(sizeof(aKeyState), aKeyState)))
+		{
+			for (nCntKey = 0; nCntKey < NUM_KEY_MAX; nCntKey++)
+			{
+				// トリガー・リリース情報の作成
+				m_akeyStateTrigger[nCntKey] = (m_aKeyState[nCntKey] & aKeyState[nCntKey]) ^ aKeyState[nCntKey];
+				m_akeyStateUp[nCntKey] = m_aKeyState[nCntKey] ^ (m_aKeyState[nCntKey] & aKeyState[nCntKey]);
+				m_aKeyState[nCntKey] = aKeyState[nCntKey];	//キープレス情報保存
+			}
+		}
 	}
 }
 
