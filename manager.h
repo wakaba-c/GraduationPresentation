@@ -41,6 +41,7 @@ class CInputMouse;
 class CInputController;
 class CGame;
 class CTitle;
+class CPuzzle;
 class CCamera;
 class CLight;
 class CResult;
@@ -121,6 +122,7 @@ private:
 
 	static CGame *m_pGame;								// ゲームのポインタ
 	static CTitle *m_pTitle;							// タイトルのポインタ
+	static CPuzzle *m_pPuzzle;							// パズルのポインタ
 	static CResult *m_pResult;							// リザルトのポインタ
 	static CRanking *m_pRanking;						// ランキングのポインタ
 

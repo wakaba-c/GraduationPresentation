@@ -20,6 +20,7 @@
 #include "light.h"
 #include "sound.h"
 #include "sceneX.h"
+#include "puzzle.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -35,6 +36,7 @@ CLight *CManager::m_pLight = NULL;													// ライト ポインタを初期化
 
 CGame *CManager::m_pGame = NULL;													// ゲーム ポインタを初期化
 CTitle *CManager::m_pTitle = NULL;													// タイトル ポインタを初期化
+CPuzzle *CManager::m_pPuzzle = NULL;												// パズル　ポインタを初期化
 CResult *CManager::m_pResult = NULL;												// リザルト ポインタを初期化
 CRanking *CManager::m_pRanking = NULL;												// ランキング ポインタを初期化
 
@@ -129,6 +131,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 	m_pSound->Init(hWnd);
 
 	CTitle::LoadAsset();
+	CPuzzle::LoadAsset();
 	CGame::LoadAsset();
 	CResult::LoadAsset();
 
@@ -137,7 +140,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 	Load("data/model/akazukin/skin.jpg");
 	Load("data/model/akazukin/skirt.png");
 
-	SetMode(MODE_GAME);																		//モードセレクト
+	SetMode(MODE_PUZZLE_CUSTOM);																		//モードセレクト
 
 	return S_OK;
 }
@@ -209,6 +212,14 @@ void CManager::Uninit(void)
 		m_pTitle->Uninit();																			// タイトルの終了処理
 		delete m_pTitle;																			// タイトルのメモリ解放
 		m_pTitle = NULL;																			// ポインタをNULLにする
+	}
+
+	// パズルの開放処理
+	if (m_pPuzzle != NULL)
+	{
+		m_pPuzzle->Uninit();																		// パズルの終了処理
+		delete m_pPuzzle;																			// パズルのメモリ解放
+		m_pPuzzle = NULL;																			// ポインタをNULLにする
 	}
 
 	// ゲームの開放処理
@@ -285,7 +296,10 @@ void CManager::Update(void)
 
 		break;
 	case CManager::MODE_PUZZLE_CUSTOM:
-
+		if (m_pPuzzle != NULL)
+		{
+			m_pPuzzle->Update();
+		}
 		break;
 	case CManager::MODE_GAME:
 		if (m_pGame != NULL)
@@ -355,7 +369,9 @@ void CManager::SetMode(MODE mode)
 
 		break;
 	case MODE_PUZZLE_CUSTOM:
-
+		m_pPuzzle->Uninit();
+		delete m_pPuzzle;
+		m_pPuzzle = NULL;
 		break;
 
 	case MODE_GAME:
@@ -397,7 +413,9 @@ void CManager::SetMode(MODE mode)
 
 		break;
 	case MODE_PUZZLE_CUSTOM:
-
+		m_pPuzzle = new CPuzzle;
+		m_pPuzzle->Init();
+		break;
 		break;
 
 	case MODE_GAME:

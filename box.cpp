@@ -387,7 +387,7 @@ HRESULT CBox::Load(void)
 
 																		// テクスチャの読み込み
 	D3DXCreateTextureFromFile(pDevice,									// デバイスへのポインタ
-		"data/TEXTURE/water.jpg",										// ファイルの名前
+		"data/tex/water.jpg",											// ファイルの名前
 		&m_pTexture);													// 読み込むメモリー
 
 	return S_OK;
