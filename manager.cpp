@@ -713,9 +713,9 @@ D3DXVECTOR3 CManager::GetCursorPosWithCenter(void)
 	pDevice = pRenderer->GetDevice();
 
 	pDevice->GetTransform(D3DTS_PROJECTION, &mProj);					// プロジェクションマトリックスの取得
-	pos.x = (((2.0 * m_pInputMouse->GetMouseX()) / (float)SCREEN_WIDTH) - 1) / mProj._11;
-	pos.y = -(((2.0 * m_pInputMouse->GetMouseY()) / (float)SCREEN_HEIGHT) - 1) / mProj._22;
-	pos.z = 1.0;
+	pos.x = (((2.0f * m_pInputMouse->GetMouseX()) / (float)SCREEN_WIDTH) - 1) / mProj._11;
+	pos.y = -(((2.0f * m_pInputMouse->GetMouseY()) / (float)SCREEN_HEIGHT) - 1) / mProj._22;
+	pos.z = 1.0f;
 
 	return pos;
 }

@@ -473,13 +473,12 @@ bool CNetwork::KeyData(void)
 		}
 
 		// ID, Wキー, Aキー, Sキー, Dキー, SPACEキー, スティックH, スティックV, 回転情報, 位置X, 位置Y, 位置Z, スコア
-		sprintf(data, "SAVE_KEY %d %d %d %d %d %d %d %d %f %f %f %f %d", m_nId, pKeyboard->GetPressKeyboard(DIK_W), pKeyboard->GetPressKeyboard(DIK_A),
+		sprintf(data, "SAVE_KEY %d %d %d %d %d %d %f %f %f %f %f %f", m_nId, pKeyboard->GetPressKeyboard(DIK_W), pKeyboard->GetPressKeyboard(DIK_A),
 			pKeyboard->GetPressKeyboard(DIK_S), pKeyboard->GetPressKeyboard(DIK_D), aKeyState[NUM_KEY_SPACE],		// キー入力情報
 			stick_H,					// スティックH
 			stick_V,					// スティックV
 			rot.y,						// 回転
-			pos.x, pos.y, pos.z,		// 位置
-			1000
+			pos.x, pos.y, pos.z			// 位置
 		);
 		pNetwork->SendUDP(data, sizeof("SAVE_KEY") + 1024);
 	}
