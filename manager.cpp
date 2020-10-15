@@ -275,6 +275,18 @@ void CManager::Update(void)
 			m_pTitle->Update();
 		}
 		break;
+	case CManager::MODE_DEMO_PLAY:
+		
+		break;
+	case CManager::MODE_CHARACTER_SELECT:
+
+		break;
+	case CManager::MODE_STAGE_SELECT:
+
+		break;
+	case CManager::MODE_PUZZLU_CUSTOM:
+
+		break;
 	case CManager::MODE_GAME:
 		if (m_pGame != NULL)
 		{
@@ -333,6 +345,19 @@ void CManager::SetMode(MODE mode)
 		m_pTitle = NULL;
 		break;
 
+	case MODE_DEMO_PLAY:
+
+		break;
+	case MODE_CHARACTER_SELECT:
+
+		break;
+	case MODE_STAGE_SELECT:
+
+		break;
+	case MODE_PUZZLU_CUSTOM:
+
+		break;
+
 	case MODE_GAME:
 		m_pGame->Uninit();
 		delete m_pGame;
@@ -360,6 +385,19 @@ void CManager::SetMode(MODE mode)
 	case MODE_TITLE:
 		m_pTitle = new CTitle;
 		m_pTitle->Init();
+		break;
+
+	case MODE_DEMO_PLAY:
+
+		break;
+	case MODE_CHARACTER_SELECT:
+
+		break;
+	case MODE_STAGE_SELECT:
+
+		break;
+	case MODE_PUZZLU_CUSTOM:
+
 		break;
 
 	case MODE_GAME:

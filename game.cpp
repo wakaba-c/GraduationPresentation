@@ -107,10 +107,6 @@ void CGame::Update(void)
 	//	}
 	//}
 
-	if (pKeyboard->GetTriggerKeyboard(DIK_Z))
-	{
-		CUi::Create("data/stage/ui.txt");
-	}
 	// ボスへのショートカット
 	if (pKeyboard->GetTriggerKeyboard(DIK_B))
 	{

@@ -57,10 +57,14 @@ public:
 	typedef enum
 	{
 		MODE_NONE = -1,
-		MODE_TITLE,
-		MODE_GAME,
-		MODE_RESULT,
-		MODE_RANKING,
+		MODE_TITLE,							// タイトル
+		MODE_DEMO_PLAY,						// デモプレイ
+		MODE_CHARACTER_SELECT,				// キャラクター選択
+		MODE_STAGE_SELECT,					// ステージ選択
+		MODE_PUZZLU_CUSTOM,					// パズルカスタム
+		MODE_GAME,							// ゲーム
+		MODE_RESULT,						// リザルト
+		MODE_RANKING,						// ランキング
 		MODE_MAX
 	} MODE;
 
