@@ -259,18 +259,47 @@ void CBox::Update(void)
 			m_pVtx[0].pos.y = WhileZ * nDepth;
 			m_pVtx[0].pos.z = 0.0f;
 */
-			// 頂点カラー
-			m_pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+			//m_pVtx[0].col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
 
 			// テクスチャ描写の位置
-			m_pVtx[0].tex = D3DXVECTOR2(1.0f * nWide, 1.0f * nDepth);
+			//m_pVtx[0].tex = D3DXVECTOR2(1.0f * nWide, 1.0f * nDepth);
 
 			m_pVtx++;
 		}
 	}
+	// 頂点データをアンロック
+	m_pVtxBuff->Unlock();
+
+
+	// 頂点データの範囲をロックし、頂点バッファへのポインタ取得
+	m_pVtxBuff->Lock(0, 0, (void**)&m_pVtx, 0);
+
+	//// 縦をカウント
+	//for (int nDepth = 0; nDepth < 2 + 1; nDepth++)
+	//{
+	//	// 横をカウント
+	//	for (int nWide = 0; nWide < 2 + 1; nWide++)
+	//	{
+
+	//		//m_pVtx[0].col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
+
+	//		m_pVtx++;
+	//	}
+	//}
+
+	//m_pVtx[0].col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
+	//m_pVtx[1].col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
+	//m_pVtx[2].col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
+	//m_pVtx[16].col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
+	//m_pVtx[17].col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
+	//m_pVtx[18].col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
+	//m_pVtx[32].col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
+	//m_pVtx[33].col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
+	//m_pVtx[34].col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
 
 	// 頂点データをアンロック
 	m_pVtxBuff->Unlock();
+
 
 	// 頂点データの範囲をロックし、頂点バッファへのポインタ取得
 	m_pVtxBuff->Lock(0, 0, (void**)&m_pVtx, 0);
@@ -387,7 +416,7 @@ HRESULT CBox::Load(void)
 
 																		// テクスチャの読み込み
 	D3DXCreateTextureFromFile(pDevice,									// デバイスへのポインタ
-		"data/tex/water.jpg",											// ファイルの名前
+		"data/tex/SignBoard3.png",											// ファイルの名前
 		&m_pTexture);													// 読み込むメモリー
 
 	return S_OK;
