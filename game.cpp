@@ -80,6 +80,14 @@ HRESULT CGame::Init(void)
 	//CObject::LoadModel("data/stage/object.csv");					// モデル情報の読込
 	//CEnemy::LoadEnemy("data/stage/enemy.csv");						// 敵情報の読込
 
+	CEnemy *pEnemy = CEnemy::Create();			// クリエイト処理
+
+	if (pEnemy != NULL)
+	{// 敵が存在していたとき
+		pEnemy->SetPosition(D3DXVECTOR3(0.0f, 0.0f, -100.0f));			// ポジションを決める
+		pEnemy->SetTarget(TARGETTYPE_PLAYER);				// 攻撃対象の設定
+	}
+
 	// メッセージウィンドウの作成
 	CMessageWindow::Create(CMessageWindow::MESSAGETYPE_START);
 

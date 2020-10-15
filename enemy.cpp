@@ -56,7 +56,6 @@ CEnemy::CEnemy(CScene::PRIORITY obj = CScene::PRIORITY_ENEMY) : CCharacter(obj)
 	m_move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// 移動量の初期化
 	m_dest = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// 移動先の初期化
 	m_difference = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 差の初期化
-	m_bAnimSwitch = true;								// アニメーションスイッチの初期化
 	m_bJump = false;									// ジャンプの初期化
 	m_nLife = MAX_LIFE;									// 体力の初期化
 	m_pSphere = NULL;									// 当たり判定(体)の初期化
@@ -522,6 +521,27 @@ void CEnemy::BehaviorForMaxFrame(void)
 //========================================================================================
 void CEnemy::BehaviorForMaxKey(void)
 {
+	// アニメーション情報の取得
+	ANIMATIONTYPE animType = (ANIMATIONTYPE)GetAnimType();
+	ANIMATION *pAnimation = GetAnimData();
+
+	// ループするかどうか
+	if (animType == ANIMATIONTYPE_DIE)
+	{
+		Release();
+	}
+	else if (pAnimation[animType].nLoop)
+	{
+		// キーのリセット
+		ResetKeyAndFrame();
+	}
+	else
+	{
+		// ニュートラルモーション
+		AnimationSwitch(ANIMATIONTYPE_NEUTRAL);
+		// キーのリセット
+		ResetKeyAndFrame();
+	}
 }
 
 //=============================================================================
