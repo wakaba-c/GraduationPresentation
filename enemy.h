@@ -98,7 +98,6 @@ private:
 	D3DXVECTOR3						m_difference;						// 差
 	int								m_nLife;							// 体力
 	int								m_nInterval;						// 休憩時間
-	bool							m_bAnimSwitch;						// アニメーションの有無
 	bool							m_bHit;								// 当たり判定
 	bool							m_bJump;							// ジャンプ
 	CLife							*m_pLife;							// 体力ゲージ
