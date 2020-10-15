@@ -37,6 +37,8 @@
 #define	SCRIPT_PLAYER "data/animation/girl.txt"		// 赤ずきんのモデル情報アドレス
 #define COUNTER_COMBO 30							// 派生攻撃受付カウンタ
 #define JUMP_MAX 10									// ジャンプの加速度
+#define ROT_AMOUNT 0.05f							// 回転の差を減らしていく量
+#define ROT_LIMIT 1.0f								// 回転制限
 
 //=============================================================================
 // コンストラクタ
@@ -899,6 +901,7 @@ void CPlayer::Input(void)
 
 	D3DXVECTOR3 rot = pCamera->GetRotation();
 	D3DXVECTOR3 nor;
+	D3DXVECTOR3 Diff;	// 計算用格納変数
 	float nValueH = 0;									//コントローラー
 	float nValueV = 0;									//コントローラー
 
@@ -1090,6 +1093,25 @@ void CPlayer::Input(void)
 			m_move.z += cosf(D3DX_PI * 0.0f + rot.y) * m_fSpeed;
 			m_dest.y = D3DX_PI * 1.0f + rot.y;
 		}
+
+		// プレイヤーの回転と目標地点の差を格納
+		Diff.y = m_rot.y - m_dest.y;
+
+		// D3DX_PIより大きいとき
+		if (Diff.y > D3DX_PI)
+		{
+			Diff.y -= D3DX_PI * 2;
+		}
+		else if (Diff.y < -D3DX_PI)
+		{// D3DX_PIより小さいとき
+			Diff.y += D3DX_PI * 2;
+		}
+
+		// プレイヤーを徐々に回転させていく
+		m_rot.y -= Diff.y * ROT_AMOUNT;
+
+		// 回転の設定
+		SetRotation(m_rot);
 	}
 
 #ifdef _DEBUG
@@ -1112,6 +1134,10 @@ void CPlayer::Input(void)
 			m_state = PLAYERSTATE_NORMAL;
 			m_fSpeed = NORMAL_SPEED;
 			break;
+//=============================================================================
+// アニメーションの切り替え
+//=============================================================================
+
 		}
 	}
 	if (pKeyboard->GetTriggerKeyboard(DIK_L))
