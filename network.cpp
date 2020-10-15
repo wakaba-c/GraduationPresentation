@@ -5,23 +5,13 @@
 //
 //=============================================================================
 #include "network.h"
-#include "debugproc.h"
 #include "renderer.h"
 #include "camera.h"
 #include "player.h"
 #include "game.h"
-#include "joypad.h"
 #include "score.h"
 #include "fade.h"
-#include "thunder.h"
-#include "balloon_group.h"
-#include "item.h"
-#include "scoreUP.h"
-#include "collision.h"
-#include "PointCircle.h"
-#include "select.h"
-#include "BalloonNum.h"
-#include "charRanking.h"
+#include "inputController.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -425,17 +415,15 @@ HRESULT CNetwork::Connect(void)
 //=============================================================================
 bool CNetwork::KeyData(void)
 {
-	CKeyboard *pKeyboard = CManager::GetKeyboard();
-	CJoypad *pJoypad = CManager::GetJoy();
+	CInputKeyboard *pKeyboard = CManager::GetInputKeyboard();
+	CInputController *pJoypad = CManager::GetInputController();
 	CRenderer *pRenderer = CManager::GetRenderer();
-	CCamera *pCamera = pRenderer->GetCamera();
-	CPlayer *pPlayer = CGame::GetPlayer(m_nId);
-	CGame *pGame = CManager::GetGame();
-	CScore *pScore = pGame->GetScore();
+	CCamera *pCamera = CManager::GetCamera();
+	CPlayer *pPlayer = CGame::GetPlayer();
 	PLAYERSTATE state;
 	memset(&state, 0, sizeof(PLAYERSTATE));
 	CNetwork *pNetwork = CManager::GetNetwork();
-	int stick_H, stick_V;
+	float stick_H, stick_V;
 
 	if (pPlayer == NULL)
 	{
@@ -452,59 +440,46 @@ bool CNetwork::KeyData(void)
 		return false;
 	}
 
-	if (pGame == NULL)
-	{
-		return false;
-	}
-
-	if (pScore == NULL)
-	{
-		return false;
-	}
-
 	if (pJoypad == NULL)
 	{
-		stick_H = 0;
-		stick_V = 0;
+		stick_H = 0.0f;
+		stick_V = 0.0f;
 	}
 
-	D3DXVECTOR3 pos = pPlayer->GetPos();
+	D3DXVECTOR3 pos = pPlayer->GetPosition();
 
 	if (pNetwork != NULL)
 	{
-		D3DXVECTOR3 rot = CGame::GetPlayer(m_nId)->GetRotDest();
+		D3DXVECTOR3 rot = CGame::GetPlayer()->GetRotDest();
 
 		char data[1024];
 		bool aKeyState[NUM_KEY_M] = {};
 
 		if (pJoypad != NULL)
 		{
-			pJoypad->GetStickLeft(0, stick_H, stick_V);
+			pJoypad->GetJoypadStickLeft(0, &stick_H, &stick_V);
 
-			if (pKeyboard->GetKeyboardPress(DIK_SPACE) || pJoypad->GetPress(0, CJoypad::KEY_A) || pJoypad->GetPress(0, CJoypad::KEY_X))
+			if (pKeyboard->GetPressKeyboard(DIK_SPACE) || pJoypad->GetControllerPress(0, JOYPADKEY_A) || pJoypad->GetControllerPress(0, JOYPADKEY_X))
 			{
 				aKeyState[NUM_KEY_SPACE] = true;
 			}
 		}
 		else
 		{
-			if (pKeyboard->GetKeyboardPress(DIK_SPACE))
+			if (pKeyboard->GetPressKeyboard(DIK_SPACE))
 			{
 				aKeyState[NUM_KEY_SPACE] = true;
 			}
 		}
 
-		int nScore;
-		nScore = pScore->GetNowScore();
-
 		// ID, Wキー, Aキー, Sキー, Dキー, SPACEキー, スティックH, スティックV, 回転情報, 位置X, 位置Y, 位置Z, スコア
-		sprintf(data, "SAVE_KEY %d %d %d %d %d %d %d %d %f %f %f %f %d", m_nId, pKeyboard->GetKeyboardPress(DIK_W), pKeyboard->GetKeyboardPress(DIK_A),
-			pKeyboard->GetKeyboardPress(DIK_S), pKeyboard->GetKeyboardPress(DIK_D), aKeyState[NUM_KEY_SPACE],		// キー入力情報
+		sprintf(data, "SAVE_KEY %d %d %d %d %d %d %d %d %f %f %f %f %d", m_nId, pKeyboard->GetPressKeyboard(DIK_W), pKeyboard->GetPressKeyboard(DIK_A),
+			pKeyboard->GetPressKeyboard(DIK_S), pKeyboard->GetPressKeyboard(DIK_D), aKeyState[NUM_KEY_SPACE],		// キー入力情報
 			stick_H,					// スティックH
 			stick_V,					// スティックV
 			rot.y,						// 回転
 			pos.x, pos.y, pos.z,		// 位置
-			nScore						// スコア
+			1000
 		);
 		pNetwork->SendUDP(data, sizeof("SAVE_KEY") + 1024);
 	}
@@ -553,44 +528,9 @@ void CNetwork::Create(void)
 {
 	if (m_thunderEvent.bCreate)
 	{// 雷サークル作成処理
-		CThunder::Create(m_thunderEvent.pos, D3DXVECTOR3(100.0f, 500.0f, 0.0f));
-		m_thunderEvent.bCreate = false;
 	}
 	if (m_pointcircleEvent.bCreate)
 	{// ポイントサークル作成処理
-		CPointCircle::Create(m_pointcircleEvent.pos, D3DXVECTOR3(100.0f, 500.0f, 0.0f));
-		m_pointcircleEvent.bCreate = false;
-	}
-
-	if (m_selectBalloon.bCreate)
-	{
-		if (m_selectState[m_selectBalloon.nId].pBalloonNum == NULL)
-		{// 選択中プレイヤー表示UIが存在していないとき
-		 // UIの作成
-			m_selectState[m_selectBalloon.nId].pBalloonNum = CBalloonNum::Create(m_selectBalloon.nId);
-
-			if (m_selectState[m_selectBalloon.nId].pBalloonNum != NULL)
-			{
-				m_selectState[m_selectBalloon.nId].pBalloonNum->SetPosition(m_samplePos[m_selectBalloon.nType]);
-				m_selectState[m_selectBalloon.nId].pBalloonNum->Init();
-			}
-		}
-		else
-		{// 選択中プレイヤー表示UIが存在していたとき
-			m_selectState[m_selectBalloon.nId].pBalloonNum->Release();		// 開放処理
-			m_selectState[m_selectBalloon.nId].pBalloonNum = NULL;
-
-			// UIの作成
-			m_selectState[m_selectBalloon.nId].pBalloonNum = CBalloonNum::Create(m_selectBalloon.nId);
-
-			if (m_selectState[m_selectBalloon.nId].pBalloonNum != NULL)
-			{
-				m_selectState[m_selectBalloon.nId].pBalloonNum->SetPosition(m_samplePos[m_selectBalloon.nType]);
-				m_selectState[m_selectBalloon.nId].pBalloonNum->Init();
-			}
-		}
-
-		m_selectBalloon.bCreate = false;
 	}
 }
 
@@ -599,15 +539,6 @@ void CNetwork::Create(void)
 //=============================================================================
 void CNetwork::ResetCoin(void)
 {
-	for (int nCount = 0; nCount < MAX_COIN; nCount++)
-	{
-		m_apItem[nCount] = CItem::Create(nCount, D3DXVECTOR3(0.0f, -1000.0f, 0.0f), D3DXVECTOR3(100.0f, 100.0f, 0.0f));
-
-		if (m_apItem[nCount] != NULL)
-		{
-			m_apItem[nCount]->SetDrawState(false);
-		}
-	}
 }
 
 //=============================================================================
@@ -615,44 +546,44 @@ void CNetwork::ResetCoin(void)
 //=============================================================================
 void CNetwork::UpdateCharacterState(void)
 {
-	CNetwork *pNetwork = CManager::GetNetwork();
-	char aData[256], aDie[64];
-	int nType[MAX_PLAYER];
-	memset(&aData, 0, sizeof(aData));
+	//CNetwork *pNetwork = CManager::GetNetwork();
+	//char aData[256], aDie[64];
+	//int nType[MAX_PLAYER];
+	//memset(&aData, 0, sizeof(aData));
 
-	if (pNetwork != NULL)
-	{
-		pNetwork->SendTCP("CHARACTERSELECT_STATE", sizeof("CHARACTERSELECT_STATE"));
-		if (!pNetwork->DataRecv(SOCKETTYPE_CLIENT, aData, sizeof(aData)))
-		{
-			return;
-		}
+	//if (pNetwork != NULL)
+	//{
+	//	pNetwork->SendTCP("CHARACTERSELECT_STATE", sizeof("CHARACTERSELECT_STATE"));
+	//	if (!pNetwork->DataRecv(SOCKETTYPE_CLIENT, aData, sizeof(aData)))
+	//	{
+	//		return;
+	//	}
 
-		sscanf(aData, "%s %d %d %d %d", &aDie , &nType[0], &nType[1], &nType[2], &nType[3]);
+	//	sscanf(aData, "%s %d %d %d %d", &aDie , &nType[0], &nType[1], &nType[2], &nType[3]);
 
-		for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
-		{
-			if (nType[nCount] == -1)
-			{
-				continue;
-			}
+	//	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
+	//	{
+	//		if (nType[nCount] == -1)
+	//		{
+	//			continue;
+	//		}
 
-			m_selectState[nCount].bReady = true;
-			m_selectState[nCount].nType = nType[nCount];
+	//		m_selectState[nCount].bReady = true;
+	//		m_selectState[nCount].nType = nType[nCount];
 
-			if (m_selectState[nCount].pBalloonNum == NULL)
-			{// 選択中プレイヤー表示UIが存在していないとき
-			 // UIの作成
-				m_selectState[nCount].pBalloonNum = CBalloonNum::Create(nCount);
+	//		if (m_selectState[nCount].pBalloonNum == NULL)
+	//		{// 選択中プレイヤー表示UIが存在していないとき
+	//		 // UIの作成
+	//			m_selectState[nCount].pBalloonNum = CBalloonNum::Create(nCount);
 
-				if (m_selectState[nCount].pBalloonNum != NULL)
-				{
-					m_selectState[nCount].pBalloonNum->SetPosition(m_samplePos[nType[nCount]]);
-					m_selectState[nCount].pBalloonNum->Init();
-				}
-			}
-		}
-	}
+	//			if (m_selectState[nCount].pBalloonNum != NULL)
+	//			{
+	//				m_selectState[nCount].pBalloonNum->SetPosition(m_samplePos[nType[nCount]]);
+	//				m_selectState[nCount].pBalloonNum->Init();
+	//			}
+	//		}
+	//	}
+	//}
 }
 
 //=============================================================================
@@ -761,19 +692,19 @@ bool CNetwork::UpdateUDP(void)
 		}
 	}
 
-	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
-	{
-		if (nCount != m_nId)
-		{
-			CPlayer *pPlayer = CGame::GetPlayer(nCount);		// プレイヤーの取得
+	//for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
+	//{
+	//	if (nCount != m_nId)
+	//	{
+	//		CPlayer *pPlayer = CGame::GetPlayer();		// プレイヤーの取得
 
-			if (pPlayer != NULL)
-			{
-				pPlayer->SetPos(m_playerPos[nCount]);				// 位置の取得
-				pPlayer->SetRotDest(D3DXVECTOR3(0.0f, m_fRot[nCount], 0.0f));
-			}
-		}
-	}
+	//		if (pPlayer != NULL)
+	//		{
+	//			pPlayer->SetPosition(m_playerPos[nCount]);				// 位置の取得
+	//			pPlayer->SetRotDest(D3DXVECTOR3(0.0f, m_fRot[nCount], 0.0f));
+	//		}
+	//	}
+	//}
 
 	return true;
 }
@@ -822,23 +753,23 @@ bool CNetwork::UpdateTCP(void)
 
 		if (!m_bDie[nDeath])
 		{
-			CPlayer *pPlayer = CGame::GetPlayer(nDeath);
+			//CPlayer *pPlayer = CGame::GetPlayer(nDeath);
 
-			if (pPlayer != NULL)
-			{
-				pPlayer->Die();
-			}
+			//if (pPlayer != NULL)
+			//{
+			//	pPlayer->Die();
+			//}
 
-			m_bDie[nDeath] = true;
+			//m_bDie[nDeath] = true;
 
-			if (m_nId == nKill)
-			{// 自分がキラーだったとき
-				pPlayer = CGame::GetPlayer(m_nId);
-				if (pPlayer != NULL)
-				{
-					pPlayer->MpUp(CCharacter::GetStatus(pPlayer->GetCharacter()).nMaxMpUp_KnockDown);
-				}
-			}
+			//if (m_nId == nKill)
+			//{// 自分がキラーだったとき
+			//	pPlayer = CGame::GetPlayer(m_nId);
+			//	if (pPlayer != NULL)
+			//	{
+			//		pPlayer->MpUp(CCharacter::GetStatus(pPlayer->GetCharacter()).nMaxMpUp_KnockDown);
+			//	}
+			//}
 		}
 	}
 	else if (strcmp(cHeadText, "GAME_END") == 0)
@@ -846,18 +777,17 @@ bool CNetwork::UpdateTCP(void)
 		char aDie[64];
 		int nRank[MAX_PLAYER] = {};
 
-		if (CManager::GetFade()->GetFade() == CFade::FADE_NONE)
+		if (CFade::GetFade() == CFade::FADE_NONE)
 		{// フェードしていないとき
 			sscanf(aFunc, "%s %d %d %d %d", &aDie, &nRank[0], &nRank[1], &nRank[2], &nRank[3]);
 
 			// チュートリアルへ
-			CCharRanking::SetRank(nRank);
-			CManager::GetFade()->SetFade(CManager::MODE_RESULT);
+			CFade::SetFade(CManager::MODE_RESULT);
 		}
 	}
 	else if (strcmp(cHeadText, "GAME_START") == 0)
 	{
-		if (CManager::GetFade()->GetFade() == CFade::FADE_NONE)
+		if (CFade::GetFade() == CFade::FADE_NONE)
 		{// フェードしていないとき
 			// 初期化
 			for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
@@ -867,194 +797,28 @@ bool CNetwork::UpdateTCP(void)
 			}
 
 			// チュートリアルへ
-			CManager::GetFade()->SetFade(CManager::MODE_GAME);
+			CFade::SetFade(CManager::MODE_GAME);
 		}
 	}
 	else if (strcmp(cHeadText, "CHARACTER_SELECT") == 0)
 	{
-		int nId;			// プレイヤーID
-		int nType;			// キャラクターの種類
-		char aDie[64];
 
-		// 情報整理
-		sscanf(aFunc, "%s %d %d", &aDie, &nId, &nType);
-
-		m_selectState[nId].bReady = true;
-		m_selectState[nId].nType = nType;
-
-		m_selectBalloon.nId = nId;
-		m_selectBalloon.nType = nType;
-		m_selectBalloon.bCreate = true;
-
-		if (m_nId == nId)
-		{
-			CSelect *pSelect = CManager::GetSelect();
-			pSelect->SetReady(true);
-		}
 	}
 	else if (strcmp(cHeadText, "CHARACTER_CANCEL") == 0)
 	{
-		int nId;
-		char aDie[64];
 
-		// 情報整理
-		sscanf(aFunc, "%s %d", &aDie, &nId);
-
-		m_selectState[nId].bReady = false;
-		m_selectState[nId].nType = -1;
-
-		if (m_selectState[nId].pBalloonNum != NULL)
-		{
-			m_selectState[nId].pBalloonNum->Release();
-			m_selectState[nId].pBalloonNum = NULL;
-		}
-
-		if (m_nId == nId)
-		{
-			CSelect *pSelect = CManager::GetSelect();
-			pSelect->SetReady(false);
-		}
 	}
 	else if (strcmp(cHeadText, "HIT") == 0)
 	{
-		int nId;
-		char aDie[64];
 
-		// 情報整理
-		sscanf(aFunc, "%s %d", &aDie, &nId);
-		OutputDebugString(aFunc);
-
-		// プレイヤー取得
-		CPlayer *pPlayer = CGame::GetPlayer(nId);
-		if (pPlayer != NULL)
-		{
-			// 風船破壊
-			pPlayer->GetBalloon()->CrackBalloon();
-		}
 	}
 	else if (strcmp(cHeadText, "SET_COIN") == 0)
 	{
-		int nId;
-		int nMaxCoin = 0;
-		D3DXVECTOR3 pos;
 
-		std::string Data = aFunc;
-		std::vector<std::string> vsvec_Contens;		// テキストデータ格納用
-		std::vector<std::string> vsvec_Data;		// テキストデータ格納用
-
-		vsvec_Contens = CCalculation::split(Data, ' ');
-
-		nMaxCoin = atoi(vsvec_Contens[1].c_str());
-
-		for (int nCount = 0; nCount < nMaxCoin; nCount++)
-		{
-			// 情報整理
-			vsvec_Data = CCalculation::split(vsvec_Contens[nCount + 2], ',');
-			nId = atoi(vsvec_Data[0].c_str());
-			pos.x = (float)atof(vsvec_Data[1].c_str());
-			pos.y = (float)atof(vsvec_Data[2].c_str());
-			pos.z = (float)atof(vsvec_Data[3].c_str());
-
-			if (m_apItem[nId] != NULL)
-			{
-				m_apItem[nId]->SetPos(pos);
-				m_apItem[nId]->SetDrawState(true);
-			}
-			else
-			{
-				m_apItem[nId] = CItem::Create(nId, pos, D3DXVECTOR3(100.0f, 100.0f, 0.0f));
-			}
-		}
 	}
 	else if (strcmp(cHeadText, "DELETE_COIN") == 0)
 	{
-		int nCoinId;
-		int nPlayerId;
-		char aDie[64];
 
-		// 情報整理
-		sscanf(aFunc, "%s %d %d", &aDie, &nCoinId, &nPlayerId);
-
-		if (m_nId == nPlayerId)
-		{
-			CPlayer *pPlayer = CGame::GetPlayer(m_nId);
-
-			// プレイヤーのスコア加算追加
-			if (pPlayer != NULL)
-			{
-				// キャラクターが一致したら
-				if (pPlayer->GetCharacter() != CCharacter::CHARACTER_BALLOON4)
-				{
-					CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
-				}
-				// キャラクターが一致したら
-				if (pPlayer->GetCharacter() == CCharacter::CHARACTER_BALLOON4)
-				{
-					// 状態
-					if (CScoreUP::GetScoreUP() == true)
-					{
-						CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint * 2);
-					}
-					else
-					{
-						CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
-					}
-				}
-
-				CManager::GetSound()->PlaySound(CSound::LABEL_SE_POINTGET1);
-			}
-		}
-
-		if (m_apItem[nCoinId] != NULL)
-		{
-			m_apItem[nCoinId]->SetPos(D3DXVECTOR3(0.0f, -1000.0f, 0.0f));
-			m_apItem[nCoinId]->SetDrawState(false);
-		}
-	}
-	else if (strcmp(cHeadText, "RECOVERY") == 0)
-	{
-		int nId;
-		char aDie[64];
-
-		// 情報整理
-		sscanf(aFunc, "%s %d", &aDie, &nId);
-		OutputDebugString(aFunc);
-
-		// プレイヤー取得
-		CPlayer *pPlayer = CGame::GetPlayer(nId);
-		if (pPlayer != NULL)
-		{
-			// 風船破壊
-			pPlayer->BalloonCreate();
-		}
-	}
-	else if (strcmp(cHeadText, "START_SP") == 0)
-	{
-		int nId;
-		char aDie[64];
-
-		// 情報整理
-		sscanf(aFunc, "%s %d", &aDie, &nId);
-		CPlayer *pPlayer = CGame::GetPlayer(nId);
-
-		if (pPlayer != NULL)
-		{// プレイヤーが存在していたとき
-			pPlayer->SetMPMax(true);				// 必殺技使用
-		}
-	}
-	else if (strcmp(cHeadText, "STOP_SP") == 0)
-	{
-		int nId;
-		char aDie[64];
-
-		// 情報整理
-		sscanf(aFunc, "%s %d", &aDie, &nId);
-		CPlayer *pPlayer = CGame::GetPlayer(nId);
-
-		if (pPlayer != NULL)
-		{// プレイヤーが存在していたとき
-			pPlayer->SetMPMax(false);				// 必殺技解除
-		}
 	}
 	else if (strcmp(cHeadText, "THUNDER") == 0)
 	{
@@ -1089,7 +853,7 @@ void CNetwork::StartUpdate(void)
 	{// 更新フラグが折れていたとき
 		// マルチスレッドにて更新開始
 		m_bUpdate = true;								// 更新フラグを立てる
-		m_th = std::thread(&CNetwork::Update, this);	// スレッドの作成
+		std::thread th1 (&CNetwork::Update, this);	// スレッドの作成
 		m_th.detach();									// スレッドの管理を切り離す
 	}
 }

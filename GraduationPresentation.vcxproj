@@ -187,6 +187,7 @@
     <ClCompile Include="meshSphere.cpp" />
     <ClCompile Include="messageWindow.cpp" />
     <ClCompile Include="model.cpp" />
+    <ClCompile Include="network.cpp" />
     <ClCompile Include="number.cpp" />
     <ClCompile Include="object.cpp" />
     <ClCompile Include="player.cpp" />
@@ -252,6 +253,7 @@
     <ClInclude Include="meshSphere.h" />
     <ClInclude Include="messageWindow.h" />
     <ClInclude Include="model.h" />
+    <ClInclude Include="network.h" />
     <ClInclude Include="number.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="phase.h" />

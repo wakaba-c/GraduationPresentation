@@ -8,11 +8,19 @@
 #define _MAIN_H_
 
 #define _CRT_SECURE_NO_WARNINGS
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
+
+//ライブラリのリンク
+#pragma comment(lib, "ws2_32.lib")				//winsock使用に必要
+
 #define STR(var) #var			//引数にした変数を変数名を示す文字列リテラルとして返すマクロ関数
 
 //=============================================================================
 // インクルードファイル
 //=============================================================================
+#include <WinSock2.h>							//winsock使用に必要
+#include <WS2tcpip.h>
+
 #include <windows.h>
 #include <stdio.h>
 #include <XInput.h>
@@ -26,6 +34,7 @@
 #include <stdarg.h>
 #include <string>
 #include <vector>
+#include <thread>
 
 #define DIRECTINPUT_VERSION (0x0800)	// 警告対処用
 #include "dinput.h"

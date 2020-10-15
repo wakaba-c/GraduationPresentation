@@ -33,6 +33,7 @@ CManager::MODE CManager::m_mode = CManager::MODE_NONE;								// モード 変数の初
 
 CCamera *CManager::m_pCamera = NULL;												// カメラ ポインタを初期化
 CLight *CManager::m_pLight = NULL;													// ライト ポインタを初期化
+CNetwork *CManager::m_pNetwork = NULL;												// ネットワーク ポインタを初期化
 
 CGame *CManager::m_pGame = NULL;													// ゲーム ポインタを初期化
 CTitle *CManager::m_pTitle = NULL;													// タイトル ポインタを初期化
@@ -287,7 +288,7 @@ void CManager::Update(void)
 		}
 		break;
 	case CManager::MODE_DEMO_PLAY:
-		
+
 		break;
 	case CManager::MODE_CHARACTER_SELECT:
 
