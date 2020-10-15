@@ -151,6 +151,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="bg.cpp" />
+    <ClCompile Include="box.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="character.cpp" />
     <ClCompile Include="circle.cpp" />
@@ -189,6 +190,7 @@
     <ClCompile Include="number.cpp" />
     <ClCompile Include="object.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="puzzlu.cpp" />
     <ClCompile Include="ranking.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="result.cpp" />
@@ -209,6 +211,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bg.h" />
+    <ClInclude Include="box.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="character.h" />
     <ClInclude Include="circle.h" />
@@ -254,6 +257,7 @@
     <ClInclude Include="player.h" />
     <ClInclude Include="playerUi.h" />
     <ClInclude Include="purpose.h" />
+    <ClInclude Include="puzzlu.h" />
     <ClInclude Include="ranking.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="resource.h" />

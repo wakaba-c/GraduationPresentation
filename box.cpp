@@ -32,7 +32,7 @@ CPlayer *CBox::m_pPlayer = NULL;					// プレイヤーの情報
 //==================================================================================================================
 // コンストラクタ
 //==================================================================================================================
-CBox::CBox(PRIORITY type = CScene::PRIORITY_FIELD) :CScene(type)
+CBox::CBox(PRIORITY type = CScene::PRIORITY_FLOOR) :CScene(type)
 {
 
 }
@@ -48,7 +48,7 @@ CBox::~CBox()
 //==================================================================================================================
 // 初期化処理
 //==================================================================================================================
-void CBox::Init(void)
+HRESULT CBox::Init(void)
 {
 	CRenderer *pRenderer = CManager::GetRenderer();						// レンダラー情報取得
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();					// デバイスの取得
@@ -197,6 +197,7 @@ void CBox::Init(void)
 	// インデックスバッファをアンロックする
 	m_pIdxBuff->Unlock();
 
+	return S_OK;
 }
 
 //==================================================================================================================
@@ -231,19 +232,8 @@ void CBox::Update(void)
 
 	// 再初期化
 	nNumber = 0;										// 配列の番号
-	StartBox = Box_Width + 1;								// 始まる箱
+	StartBox = Box_Width + 1;							// 始まる箱
 	EndBox = 0;											// 引かれる箱
-
-														// キーボードの[5]を押したとき
-	if (pInputKeyboard->GetKeyboardPress(DIK_5))
-	{
-		fDivide += 0.05f;
-	}
-	// キーボードの[6]を押したとき
-	if (pInputKeyboard->GetKeyboardPress(DIK_6))
-	{
-		fDivide -= 0.05f;
-	}
 
 	// 動かす
 	fDivide -= 0.05f;
@@ -375,7 +365,7 @@ void CBox::SetPos(D3DXVECTOR3 pos)
 CBox *CBox::Create(void)
 {
 	// シーン動的に確保
-	m_pBox = new CBox(CScene::PRIORITY_FIELD);
+	m_pBox = new CBox(CScene::PRIORITY_FLOOR);
 
 	if (m_pBox != NULL)
 	{
@@ -447,20 +437,6 @@ float CBox::GetHeight(D3DXVECTOR3 pos)
 {
 	float Height = 0.0f;
 	bool bRange = false;
-
-	// チュートリアルのとき
-	if (CManager::GetMode() == CManager::MODE_TUTORIAL)
-	{
-		// プレイヤーの情報取得
-		m_pPlayer = CTutorial::GetPlayer();
-	}
-
-	// ゲームのとき
-	if (CManager::GetMode() == CManager::MODE_GAME)
-	{
-		// プレイヤーの情報取得
-		m_pPlayer = CGame::GetPlayer();
-	}
 
 	// 再初期化
 	nNumber = 0;										// 配列の番号
@@ -576,9 +552,6 @@ float CBox::GetHeight(D3DXVECTOR3 pos)
 
 	// 頂点データをアンロック
 	m_pVtxBuff->Unlock();
-
-	// プレイヤーの範囲内状況設定
-	m_pPlayer->SetbRange(bRange);
 
 	return Height;
 }

@@ -35,7 +35,7 @@ public:
 
 	CBox(PRIORITY type);															// コンストラクタ
 	~CBox();																		// デストラクタ
-	void Init(void);																// 初期化処理
+	HRESULT Init(void);																// 初期化処理
 	void Uninit(void);																// 終了処理
 	void Update(void);																// 更新処理
 	void Draw(void);																// 描画処理
@@ -45,6 +45,9 @@ public:
 	D3DXVECTOR3 GetPos(void);														// 位置取得処理
 	D3DXVECTOR3 GetMove(void);														// 移動量取得処理
 	float GetHeight(D3DXVECTOR3 pos);												// 高さ算出処理
+
+	void OnTriggerEnter(CCollider *col) {};
+	void OnCollisionEnter(CCollider *col) {};
 
 	static CBox *Create(void);														// 生成処理
 	static HRESULT Load(void);														// テクスチャ情報ロード
