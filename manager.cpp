@@ -21,6 +21,7 @@
 #include "sound.h"
 #include "sceneX.h"
 #include "puzzle.h"
+#include "network.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -33,6 +34,7 @@ CManager::MODE CManager::m_mode = CManager::MODE_NONE;								// モード 変数の初
 
 CCamera *CManager::m_pCamera = NULL;												// カメラ ポインタを初期化
 CLight *CManager::m_pLight = NULL;													// ライト ポインタを初期化
+CNetwork *CManager::m_pNetwork = NULL;												// ネットワーク ポインタを初期化
 
 CGame *CManager::m_pGame = NULL;													// ゲーム ポインタを初期化
 CTitle *CManager::m_pTitle = NULL;													// タイトル ポインタを初期化
@@ -114,6 +116,20 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 			MessageBox(hWnd, "コントローラーの初期化に失敗", "警告", MB_ICONWARNING);
 			return E_FAIL;
 		}
+	}
+
+	// ネットワークの設定データ読み込み
+	CNetwork::LoadConfiguration();
+
+	m_pNetwork = new CNetwork;
+
+	// ネットワーク
+	if (!m_pNetwork->Init() == S_OK)
+	{
+		m_pNetwork->Uninit();
+		delete m_pNetwork;
+		m_pNetwork = NULL;
+		return E_FAIL;
 	}
 
 	CSceneX::InitShader();
@@ -256,6 +272,13 @@ void CManager::Uninit(void)
 		delete m_pRenderer;																			// Rendererのメモリ解放
 		m_pRenderer = NULL;																			// ポインタをNULLにする
 	}
+	// ネットワークの開放処理
+	if (m_pNetwork != NULL)
+	{
+		m_pNetwork->Uninit();
+		delete m_pNetwork;
+		m_pNetwork = NULL;
+	}
 }
 
 //=============================================================================
@@ -287,7 +310,7 @@ void CManager::Update(void)
 		}
 		break;
 	case CManager::MODE_DEMO_PLAY:
-		
+
 		break;
 	case CManager::MODE_CHARACTER_SELECT:
 
@@ -712,9 +735,9 @@ D3DXVECTOR3 CManager::GetCursorPosWithCenter(void)
 	pDevice = pRenderer->GetDevice();
 
 	pDevice->GetTransform(D3DTS_PROJECTION, &mProj);					// プロジェクションマトリックスの取得
-	pos.x = (((2.0 * m_pInputMouse->GetMouseX()) / (float)SCREEN_WIDTH) - 1) / mProj._11;
-	pos.y = -(((2.0 * m_pInputMouse->GetMouseY()) / (float)SCREEN_HEIGHT) - 1) / mProj._22;
-	pos.z = 1.0;
+	pos.x = (((2.0f * m_pInputMouse->GetMouseX()) / (float)SCREEN_WIDTH) - 1) / mProj._11;
+	pos.y = -(((2.0f * m_pInputMouse->GetMouseY()) / (float)SCREEN_HEIGHT) - 1) / mProj._22;
+	pos.z = 1.0f;
 
 	return pos;
 }

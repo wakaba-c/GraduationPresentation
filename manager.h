@@ -47,6 +47,7 @@ class CLight;
 class CResult;
 class CRanking;
 class CSound;
+class CNetwork;
 
 //=============================================================================
 // クラス定義
@@ -86,6 +87,9 @@ public:
 	static CSound *GetSound(void) { return m_pSound; }										// サウンドの取得
 	static CCamera *GetCamera(void) { return m_pCamera; }									// カメラの取得
 	static CLight *GetLight(void) { return m_pLight; }										// ライトの取得
+	static CNetwork *GetNetwork(void) { return m_pNetwork; }								// ネットワークの取得
+
+	static CGame *GetGame(void) { return m_pGame; }											// ゲームの取得
 
 	static void ConvertStringToFloat(char* text, char* delimiter, float* pResult);			// 文字列分割変換(float)処理
 	static std::vector<std::string> split(std::string& input, char delimiter);				// 文字列分割処理
@@ -119,6 +123,7 @@ private:
 
 	static CCamera *m_pCamera;							// カメラのポインタ
 	static CLight *m_pLight;							// ライトのポインタ
+	static CNetwork *m_pNetwork;						// ネットワークのポインタ
 
 	static CGame *m_pGame;								// ゲームのポインタ
 	static CTitle *m_pTitle;							// タイトルのポインタ

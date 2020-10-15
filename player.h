@@ -93,6 +93,7 @@ public:
 	D3DXVECTOR3 GetMove(void) { return m_move; }					// 移動量の取得
 	PLAYERSTATE GetState(void) { return m_state; }					// プレイヤーの状態を取得
 	D3DXMATRIX GetMtxWorld(void) { return m_mtxWorld; }				// ワールドマトリックスの取得
+	D3DXVECTOR3 GetRotDest(void) { return m_dest; }					// 回転最終到達地点
 
 private:
 #ifdef _DEBUG

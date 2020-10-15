@@ -252,5 +252,5 @@ int GetFPS(void)
 //=============================================================================
 D3DXVECTOR2 GetScreenSize(void)
 {
-	return D3DXVECTOR2(g_dWidth, g_dHeight);
+	return D3DXVECTOR2((float)g_dWidth, (float)g_dHeight);
 }
