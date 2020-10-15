@@ -79,10 +79,12 @@ public:
 	virtual void BehaviorForMaxKey(void) = 0;		// 最大キー数に到達したときの処理
 
 	D3DXVECTOR3 GetMove(void) { return m_move; }				// 移動量の取得
+	D3DXVECTOR3 GetRotation(void) { return m_rot; }				// 回転の取得
 	CModel *GetModel(void) { return m_pModel; }					// パーツの先頭アドレス取得
 	ANIMATION *GetAnimData(void) { return m_pAnimation; }		// 各アニメーションデータの取得
 	D3DXMATRIX GetMtxWorld(void) { return m_mtxWorld; }			// ワールドマトリックスの取得
 	void LoadScript(std::string add, const int nMaxAnim);		// スクリプト読み込み
+	void SetRotation(D3DXVECTOR3 rot) { m_rot = rot; }			// 回転の設定
 
 	/*================= アニメーション関連 =================*/
 	// 設定
