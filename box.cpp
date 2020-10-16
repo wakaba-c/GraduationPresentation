@@ -127,12 +127,13 @@ void CBox::Update(void)
 				m_bPuzzle[nDepth][nWide] = false;
 			}
 
-
 			// 状態確認
 			if (m_bPuzzle[nDepth][nWide] == true)
 			{
 				// テクスチャ変更
 				m_pBlock[nDepth][nWide]->BindTexture(CManager::GetResource("data/tex/grass.jpg"));
+
+				// 配置しているかどうか
 				if (m_bPlacement == false)
 				{
 					// 色の変更
@@ -152,7 +153,7 @@ void CBox::Update(void)
 				m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 			}
 
-			
+
 		}
 	}
 
@@ -187,7 +188,7 @@ void CBox::Update(void)
 		m_bPlacement = true;
 	}
 
-
+	// 移動制限
 	if (nCntMove_X <= 0)
 	{
 		nCntMove_X = 0;
@@ -196,7 +197,7 @@ void CBox::Update(void)
 	{
 		nCntMove_Y = 0;
 	}
-	if(nCntMove_X >= Box_Width - 2)
+	if (nCntMove_X >= Box_Width - 2)
 	{
 		nCntMove_X = Box_Width - 2;
 	}
