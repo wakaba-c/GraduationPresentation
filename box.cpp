@@ -11,6 +11,7 @@
 #include "player.h"
 #include "game.h"
 #include "scene2D.h"
+#include "takaseiLibrary.h"
 
 //==================================================================================================================
 // マクロ定義
@@ -22,7 +23,7 @@
 //==================================================================================================================
 // 静的メンバ変数の初期化
 //==================================================================================================================
-LPDIRECT3DTEXTURE9 CBox::m_pTexture[CBox::TEX_TYPE_MAX] = {};			// テクスチャ変数
+LPDIRECT3DTEXTURE9 CBox::m_pTexture = NULL;			// テクスチャ変数
 
 //==================================================================================================================
 // グローバル変数
@@ -49,10 +50,17 @@ CBox::~CBox()
 //==================================================================================================================
 HRESULT CBox::Init(void)
 {
+	// 初期化
+	nCntMove_X = 0;
+	nCntMove_Y = 0;
+	m_bPlacement = false;
+
 	for (int nCntDepth = 0; nCntDepth < Box_Depth; nCntDepth++)
 	{
 		for (int nCntWidth = 0; nCntWidth < Box_Width; nCntWidth++)
 		{
+			m_bPuzzle[nCntDepth][nCntWidth] = false;
+
 			m_pBlock[nCntDepth][nCntWidth] = CScene2D::Create(PRIORITY_UI);
 
 			if (m_pBlock[nCntDepth][nCntWidth] != NULL)
@@ -60,11 +68,18 @@ HRESULT CBox::Init(void)
 				m_pBlock[nCntDepth][nCntWidth]->SetPosition(D3DXVECTOR3(100.0f + nCntWidth * 55.0f,
 					100.0f + nCntDepth * 55.0f,
 					0.0f));
-				m_pBlock[nCntDepth][nCntWidth]->SetSize(D3DXVECTOR3(50.0f, 50.0f,0.0f));
+				m_pBlock[nCntDepth][nCntWidth]->SetSize(D3DXVECTOR3(50.0f, 50.0f, 0.0f));
+				m_pBlock[nCntDepth][nCntWidth]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 				m_pBlock[nCntDepth][nCntWidth]->SetTransform();
 			}
 		}
 	}
+
+	//m_bPuzzle[nCntMove_Y][nCntMove_X] = true;
+	//m_bPuzzle[nCntMove_Y][nCntMove_X + 1] = true;
+	//m_bPuzzle[nCntMove_Y + 1][nCntMove_X] = true;
+	//m_bPuzzle[nCntMove_Y + 1][nCntMove_X + 1] = true;
+
 	return S_OK;
 }
 
@@ -81,52 +96,113 @@ void CBox::Uninit(void)
 //==================================================================================================================
 void CBox::Update(void)
 {
-	VERTEX_2D *m_pVtx;
-
 	// キーボード取得
-	CInputKeyboard *pInputKeyboard = CManager::GetInputKeyboard();
+	CInputKeyboard *pKeyboard = CManager::GetInputKeyboard();
 
 	// 縦をカウント
-	for (int nDepth = 0; nDepth < Box_Depth + 1; nDepth++)
+	for (int nDepth = 0; nDepth < Box_Depth; nDepth++)
 	{
 		// 横をカウント
-		for (int nWide = 0; nWide < Box_Width + 1; nWide++)
+		for (int nWide = 0; nWide < Box_Width; nWide++)
 		{
+			// 初期配置
+			if (nDepth == nCntMove_Y && nWide == nCntMove_X)
+			{
+				m_bPuzzle[nDepth][nWide] = true;
+			}
+			else if (nDepth == nCntMove_Y && nWide == nCntMove_X + 1)
+			{
+				m_bPuzzle[nDepth][nWide] = true;
+			}
+			else if (nDepth == nCntMove_Y + 1 && nWide == nCntMove_X)
+			{
+				m_bPuzzle[nDepth][nWide] = true;
+			}
+			else if (nDepth == nCntMove_Y + 1 && nWide == nCntMove_X + 1)
+			{
+				m_bPuzzle[nDepth][nWide] = true;
+			}
+			else
+			{
+				m_bPuzzle[nDepth][nWide] = false;
+			}
 
-			if (nDepth == 0 && nWide == 0)
+
+			// 状態確認
+			if (m_bPuzzle[nDepth][nWide] == true)
 			{
-				m_bPuzzle[3][3] = true;
-				m_pBlock[3][3]->BindTexture(CManager::GetResource("data/tex/grass.jpg"));
+				// テクスチャ変更
+				m_pBlock[nDepth][nWide]->BindTexture(CManager::GetResource("data/tex/grass.jpg"));
+				if (m_bPlacement == false)
+				{
+					// 色の変更
+					m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
+				}
+				else
+				{
+					// 色の変更
+					m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+				}
 			}
-			else if (nDepth == 0 && nWide == 1)
+			else
 			{
-				m_bPuzzle[3][4] = true;
-				m_pBlock[3][4]->BindTexture(CManager::GetResource("data/tex/grass.jpg"));
-			}
-			else if (nDepth == 1 && nWide == 0)
-			{
-				m_bPuzzle[4][3] = true;
-				m_pBlock[4][3]->BindTexture(CManager::GetResource("data/tex/grass.jpg"));
-			}
-			else if (nDepth == 1 && nWide == 1)
-			{
-				m_bPuzzle[4][4] = true;
-				m_pBlock[4][4]->BindTexture(CManager::GetResource("data/tex/grass.jpg"));
+				// テクスチャ変更
+				m_pBlock[nDepth][nWide]->BindTexture(CManager::GetResource("data/tex/SignBoard3.png"));
+				// 色の変更
+				m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 			}
 
-
-			//if (m_bPuzzle[nDepth][nWide] == true)
-			//{
-			//	m_type[nDepth][nWide] = TEX_TYPE_MASU;
-			//	//m_pVtx[0].col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
-			//	//m_pVtx[0].tex = D3DXVECTOR2(1.0f * nWide, 1.0f * nDepth);
-			//}
-			//else
-			//{
-			//	m_type[nDepth][nWide] = TEX_TYPE_NORMAL;
-			//}
-			//m_pVtx[0].col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
+			
 		}
+	}
+
+	if (m_bPlacement == false)
+	{
+		// -----------------------------------------
+		// 移動処理
+		// -----------------------------------------
+		// 左右操作
+		if (pKeyboard->GetTriggerKeyboard(MOVE_LEFT))
+		{
+			nCntMove_X--;
+		}
+		else if (pKeyboard->GetTriggerKeyboard(MOVE_RIGHT))
+		{
+			nCntMove_X++;
+		}
+		// 上下操作
+		else if (pKeyboard->GetTriggerKeyboard(MOVE_ACCEL))
+		{
+			nCntMove_Y--;
+		}
+		else if (pKeyboard->GetTriggerKeyboard(MOVE_BRAKE))
+		{
+			nCntMove_Y++;
+		}
+	}
+
+	// 配置決定
+	if (pKeyboard->GetTriggerKeyboard(MOVE_JUMP))
+	{
+		m_bPlacement = true;
+	}
+
+
+	if (nCntMove_X <= 0)
+	{
+		nCntMove_X = 0;
+	}
+	if (nCntMove_Y <= 0)
+	{
+		nCntMove_Y = 0;
+	}
+	if(nCntMove_X >= Box_Width - 2)
+	{
+		nCntMove_X = Box_Width - 2;
+	}
+	if (nCntMove_Y >= Box_Depth - 2)
+	{
+		nCntMove_Y = Box_Depth - 2;
 	}
 }
 
@@ -161,12 +237,6 @@ CBox *CBox::Create(void)
 //==================================================================================================================
 HRESULT CBox::Load(void)
 {
-	CRenderer *pRenderer = CManager::GetRenderer();						// レンダラーの情報取得
-	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();					// デバイスを取得する
-
-	m_pTexture[TEX_TYPE_NORMAL] = CManager::GetResource("data/tex/SignBoard3.png");
-	m_pTexture[TEX_TYPE_MASU] = CManager::GetResource("data/tex/grass.jpg");
-
 	return S_OK;
 }
 
