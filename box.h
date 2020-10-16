@@ -43,6 +43,7 @@ public:
 
 	void OnTriggerEnter(CCollider *col) {};
 	void OnCollisionEnter(CCollider *col) {};
+	bool GetPlaacement(void){ return m_bPlacement; }								// 配置情報取得
 
 	static CBox *Create(void);														// 生成処理
 	static HRESULT Load(void);														// テクスチャ情報ロード
