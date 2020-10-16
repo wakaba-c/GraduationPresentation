@@ -38,7 +38,8 @@
 #define COUNTER_COMBO 30							// 派生攻撃受付カウンタ
 #define JUMP_MAX 10									// ジャンプの加速度
 #define ROT_AMOUNT 0.05f							// 回転の差を減らしていく量
-#define ROT_LIMIT 1.0f								// 回転制限
+#define ROT_LIMIT 0.8f								// 回転制限
+#define ROT_SPEED 0.2f								// 回転速度
 
 //=============================================================================
 // コンストラクタ
@@ -1021,59 +1022,19 @@ void CPlayer::Input(void)
 		//左右操作
 		if (pKeyboard->GetPressKeyboard(MOVE_LEFT))
 		{
-			if (pKeyboard->GetPressKeyboard(MOVE_ACCEL))
-			{
-				m_move.x += sinf(D3DX_PI * 0.75f + rot.y) * m_fSpeed;
-				m_move.z += cosf(D3DX_PI * 0.75f + rot.y) * m_fSpeed;
+			m_move.x += sinf(D3DX_PI * 0.5f + rot.y) * m_fSpeed;
+			m_move.z += cosf(D3DX_PI * 0.5f + rot.y) * m_fSpeed;
 
-				D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
-				m_dest.y = -D3DX_PI * 0.25f + rot.y;
-			}
-			else if (pKeyboard->GetPressKeyboard(MOVE_BRAKE))
-			{
-				m_move.x += sinf(D3DX_PI * 0.25f + rot.y) * m_fSpeed;
-				m_move.z += cosf(D3DX_PI * 0.25f + rot.y) * m_fSpeed;
-
-				D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
-				m_dest.y = -D3DX_PI * 0.75f + rot.y;
-			}
-			else
-			{
-				m_move.x += sinf(D3DX_PI * 0.5f + rot.y) * m_fSpeed;
-				m_move.z += cosf(D3DX_PI * 0.5f + rot.y) * m_fSpeed;
-
-				D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
-				m_dest.y = -D3DX_PI * 0.5f + rot.y;
-			}
+			D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
+			m_dest.y = m_rot.y - ROT_SPEED;
 		}
-
 		else if (pKeyboard->GetPressKeyboard(MOVE_RIGHT))
 		{
-			//上下操作
-			if (pKeyboard->GetPressKeyboard(MOVE_ACCEL))
-			{
-				m_move.x += sinf(-D3DX_PI * 0.75f + rot.y) * m_fSpeed;
-				m_move.z += cosf(-D3DX_PI * 0.75f + rot.y) * m_fSpeed;
+			m_move.x += sinf(-D3DX_PI * 0.5f + rot.y) * m_fSpeed;
+			m_move.z += cosf(-D3DX_PI * 0.5f + rot.y) * m_fSpeed;
 
-				D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
-				m_dest.y = D3DX_PI * 0.25f + rot.y;
-			}
-			else if (pKeyboard->GetPressKeyboard(MOVE_BRAKE))
-			{
-				m_move.x += sinf(-D3DX_PI * 0.25f + rot.y) * m_fSpeed;
-				m_move.z += cosf(-D3DX_PI * 0.25f + rot.y) * m_fSpeed;
-
-				D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
-				m_dest.y = D3DX_PI * 0.75f + rot.y;
-			}
-			else
-			{
-				m_move.x += sinf(-D3DX_PI * 0.5f + rot.y) * m_fSpeed;
-				m_move.z += cosf(-D3DX_PI * 0.5f + rot.y) * m_fSpeed;
-
-				D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
-				m_dest.y = D3DX_PI * 0.5f + rot.y;
-			}
+			D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
+			m_dest.y = m_rot.y + ROT_SPEED;
 		}
 
 		//上下操作
@@ -1083,29 +1044,20 @@ void CPlayer::Input(void)
 			m_move.z += cosf(D3DX_PI * 1.0f + rot.y) * m_fSpeed;
 
 			D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
-			m_dest.y = D3DX_PI * 0.0f + rot.y;
 		}
 		else if (pKeyboard->GetPressKeyboard(MOVE_BRAKE))
 		{
-			D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
-
 			m_move.x += sinf(D3DX_PI * 0.0f + rot.y) * m_fSpeed;
 			m_move.z += cosf(D3DX_PI * 0.0f + rot.y) * m_fSpeed;
-			m_dest.y = D3DX_PI * 1.0f + rot.y;
+
+			D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
 		}
 
 		// プレイヤーの回転と目標地点の差を格納
 		Diff.y = m_rot.y - m_dest.y;
 
-		// D3DX_PIより大きいとき
-		if (Diff.y > D3DX_PI)
-		{
-			Diff.y -= D3DX_PI * 2;
-		}
-		else if (Diff.y < -D3DX_PI)
-		{// D3DX_PIより小さいとき
-			Diff.y += D3DX_PI * 2;
-		}
+		// 回転の補正
+		CTakaseiLibrary::RotRevision(&Diff);
 
 		// プレイヤーを徐々に回転させていく
 		m_rot.y -= Diff.y * ROT_AMOUNT;
@@ -1134,9 +1086,9 @@ void CPlayer::Input(void)
 			m_state = PLAYERSTATE_NORMAL;
 			m_fSpeed = NORMAL_SPEED;
 			break;
-//=============================================================================
-// アニメーションの切り替え
-//=============================================================================
+			//=============================================================================
+			// アニメーションの切り替え
+			//=============================================================================
 
 		}
 	}

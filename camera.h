@@ -40,7 +40,6 @@ public:
 	void SetDistance(float fDistance);												// 視点と注視点との距離を設定
 	bool VFCulling(D3DXVECTOR3 pos, int nType, float fAngle, float fNearClip, float fFarClip);	// 視錐台カリング処理
 	void SetPosCamera(D3DXVECTOR3 pos, D3DXVECTOR3 rot);							// カメラの位置設定
-	void SetRotMotion(D3DXVECTOR3 target, D3DXVECTOR3 move);						// 回転運動の設定
 	HRESULT SetViewport(D3DXVECTOR2 pos, D3DXVECTOR2 size);							// 描画領域を設定
 
 	D3DXVECTOR3 GetPosition(void) { return m_originPos; }							// カメラの場所取得
@@ -71,16 +70,9 @@ private:
 	D3DXVECTOR3 m_rot;				// 回転
 	D3DXVECTOR3 m_rotDest;			// 回転 の目標
 
-	D3DXVECTOR3 m_target;			// 加算値の最大値
-	D3DXVECTOR3 m_currentRot;		// 現在の加算値
-	D3DXVECTOR3 m_rotMove;			// 1フレーム当たりの回転量
-
 	D3DXMATRIX	m_mtxProjection;	// プロジェクションマトリックス
 	D3DXMATRIX	m_mtxView;			// ビューマトリックス
 	float		m_fDistance;		// 距離
-	int			m_nCount;			// カウンタ
-	bool		m_bStorker;			// プレイヤー追従するか
-	bool		m_bSmooth;			// なめらかにカメラ移動させるか
 	bool		m_bRotMove;			// 回転運動の更新
 
 	D3DXVECTOR3 m_worldPos;			// マウス のワールド座標
