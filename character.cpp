@@ -120,6 +120,10 @@ void CCharacter::Update(void)
 	// アニメーション再生停止のフラグが立っていた時
 	if (m_bAnimation) Animation();
 
+	for (int nCount = 0; nCount < m_nNumParts; nCount++)
+	{
+		m_pModel[nCount].Update();
+	}
 #ifdef _DEBUG
 	Debug();
 #endif
@@ -289,7 +293,7 @@ void CCharacter::LoadScript(std::string add, const int nMaxAnim)
 					{//キャラクターの初期情報のとき
 						nCntPointer = 0;															//参照するポインタの値を初期化
 
-																									//エンドキャラクターセットが来るまでループ
+						// エンドキャラクターセットが来るまでループ
 						while (strcmp(cHeadText, "END_CHARACTERSET") != 0)
 						{
 							fgets(cReadText, sizeof(cReadText), pFile);

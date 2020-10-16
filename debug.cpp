@@ -286,7 +286,8 @@ void CDebugProc::SelectModel(void)
 			FLOAT fDist;
 			LPD3DXMESH mesh = pObj->GetMesh();
 			D3DXIntersect(mesh, &vStartPoint, &vRayDir, &bHit, NULL, NULL, NULL, &fDist, NULL, NULL);
-			if (bHit)//メッシュに当たったら、そのメッシュをワイヤーフレームモードに
+
+			if (bHit)
 			{
 				float fWork = CManager::GetDistance(vStartPoint, pObj->GetPosition());
 				if (fDistance > fWork)

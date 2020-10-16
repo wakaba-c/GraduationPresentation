@@ -13,6 +13,11 @@
 #include "main.h"
 
 //=============================================================================
+// 前方宣言
+//=============================================================================
+class CSceneX;
+
+//=============================================================================
 // クラス定義
 //=============================================================================
 class CModel
@@ -29,6 +34,7 @@ public:
 	HRESULT Load(char sAdd[64]);								// ロード処理
 
 	void SetParent(CModel *pModel);								// 親の設定
+
 	void SetIndex(int nValue);									// インデックスの設定
 	void SetPosition(D3DXVECTOR3 pos);							// 位置の設定
 	void SetPosPreset(D3DXVECTOR3 pos);							// 位置の設定
@@ -38,6 +44,7 @@ public:
 
 	bool GetActive(void) { return m_bUse; }						// 更新描画対象取得
 	int GetIndex(void) { return m_nIndex; }						// インデックスの取得
+	CSceneX *GetScene(void) { return m_pSceneX; }				// シーンの取得
 	D3DXVECTOR3 GetPosition(void) { return m_pos; }				// 位置を取得する
 	D3DXVECTOR3 GetPosPreset(void) { return m_originPos; }		// プリセット位置情報を取得する
 	D3DXVECTOR3 GetRotation(void) { return m_rot; }				// 回転量の取得
@@ -50,7 +57,8 @@ private:
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;							// 頂点バッファへのポインタ
 	LPD3DXMESH		m_pMesh;									// メッシュ情報へのポインタ
 	DWORD			m_nNumMat;									// マテリアル情報の数
-	LPD3DXBUFFER		m_pBuffMat;								// マテリアル情報へのポインタ
+	LPD3DXBUFFER	m_pBuffMat;									// マテリアル情報へのポインタ
+	CSceneX			*m_pSceneX;									// モデルシーンポインタ
 
 	int m_nIndex;												// 自分のID
 	CModel *m_pParent;											// 親のID

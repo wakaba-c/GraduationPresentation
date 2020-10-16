@@ -10,6 +10,8 @@
 #include "game.h"
 #include "player.h"
 #include "light.h"
+#include "sceneX.h"
+#include "camera.h"
 
 //=============================================================================
 // コンストラクタ
@@ -55,6 +57,8 @@ void CModel::Draw(D3DXMATRIX *mtxWorld)
 {
 	CRenderer *pRenderer = CManager::GetRenderer();
 	LPDIRECT3DDEVICE9 pDevice;
+	LPD3DXEFFECT ToonShader = CSceneX::GetShader();
+	CCamera* pCamera = CManager::GetCamera();
 
 	D3DXMATRIX		mtxRot, mtxTrans;				//計算用マトリックス
 	D3DXMATERIAL	*pMat;							//現在のマテリアル保存用
@@ -97,10 +101,57 @@ void CModel::Draw(D3DXMATRIX *mtxWorld)
 	// マテリアル情報に対するポインタを取得
 	pMat = (D3DXMATERIAL*)m_pBuffMat->GetBufferPointer();
 
+	D3DXMATRIX mtxView, mtxProj;
+
+	pDevice->GetTransform(D3DTS_VIEW, &mtxView);
+	pDevice->GetTransform(D3DTS_PROJECTION, &mtxProj);
+
+	// シェーダー処理
+	if (ToonShader != NULL)
+	{
+		ToonShader->SetTechnique("ToonShading");
+		D3DXMATRIX mAll = m_mtxWorld * mtxView * mtxProj;
+		ToonShader->SetMatrix("WVP", &mAll);
+
+		ToonShader->SetMatrix("mProj", &mtxProj);
+		ToonShader->SetMatrix("mView", &mtxView);
+		ToonShader->SetMatrix("mWorld", &m_mtxWorld);
+
+		ToonShader->SetTexture("ShadeTexture", CManager::GetResource("Shade.bmp"));
+		ToonShader->SetTexture("LineTexture", CManager::GetResource("Outline.bmp"));
+
+		CCamera *pCamera = CManager::GetCamera();
+		CLight *pLight = CManager::GetLight();
+
+		D3DXVECTOR4 lightPos = pLight->GetPos();
+
+		ToonShader->SetVector("LightPos", (D3DXVECTOR4*)&lightPos);
+		ToonShader->SetVector("EyePos", (D3DXVECTOR4*)&pCamera->GetPosV());
+
+		ToonShader->Begin(NULL, 0);
+	}
+
 	if (m_bUse)
 	{
 		for (int nCntMat = 0; nCntMat < (int)m_nNumMat; nCntMat++)
 		{
+			if (ToonShader != NULL)
+			{
+				ToonShader->BeginPass(0);
+				ToonShader->SetFloatArray("Diffuse", (FLOAT*)&pMat[nCntMat].MatD3D.Diffuse, 4);
+
+				if (pMat[nCntMat].pTextureFilename != NULL)
+				{
+					// テクスチャの設定
+					ToonShader->SetTexture("DecalTexture", CManager::GetResource(pMat[nCntMat].pTextureFilename));
+				}
+				else
+				{
+					// テクスチャの設定
+					ToonShader->SetTexture("DecalTexture", CManager::GetResource("data/tex/default.jpg"));
+				}
+			}
+
 			// マテリアルの設定
 			pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
 
@@ -112,7 +163,17 @@ void CModel::Draw(D3DXMATRIX *mtxWorld)
 
 			// 描画
 			m_pMesh->DrawSubset(nCntMat);
+
+			if (ToonShader != NULL)
+			{
+				ToonShader->EndPass();
+			}
 		}
+	}
+
+	if (ToonShader != NULL)
+	{
+		ToonShader->End();
 	}
 
 	// マテリアルをデフォルトに戻す
@@ -168,6 +229,9 @@ HRESULT CModel::Load(char sAdd[64])
 
 	// Xファイルの読み込み
 	D3DXLoadMeshFromX(sAdd, D3DXMESH_SYSTEMMEM, pDevice, NULL, &m_pBuffMat, NULL, &m_nNumMat, &m_pMesh);
+
+	std::string add = sAdd;
+	CManager::GetModelResource(add, m_pBuffMat, m_nNumMat, m_pMesh);
 
 	D3DXMATERIAL	*pMat;							//現在のマテリアル保存用
 

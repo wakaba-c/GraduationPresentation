@@ -35,6 +35,7 @@ public:
 
 	static void InitShader(void);													// シェーダーの初期化処理
 	static void UninitShader(void);													// シェーダーの開放処理
+	static LPD3DXEFFECT GetShader(void) { return m_pToonShader; }					// シェーダーの取得
 
 	D3DXCOLOR GetColor(void) { return m_col; }										// 色を返す
 	D3DXVECTOR3 GetSize(void) { return m_size; }									// 大きさを返す
@@ -49,18 +50,18 @@ private:
 #ifdef _DEBUG
 	void Debug(void);
 #endif
-	static LPD3DXEFFECT		m_pToonShader;												// トゥーンシェーダー
+	static LPD3DXEFFECT		m_pToonShader;											// トゥーンシェーダー
 
-	LPDIRECT3DTEXTURE9	*m_pTexture;												//テクスチャへのポインタ
-	D3DXVECTOR3 m_size;																//大きさ
-	D3DXVECTOR3 m_rot;																//回転量
-	D3DXCOLOR	m_col;																//色
-	D3DXMATRIX	m_mtxWorld;															//ワールドマトリックス
+	LPDIRECT3DTEXTURE9	*m_pTexture;												// テクスチャへのポインタ
+	D3DXVECTOR3 m_size;																// 大きさ
+	D3DXVECTOR3 m_rot;																// 回転量
+	D3DXCOLOR	m_col;																// 色
+	D3DXMATRIX	m_mtxWorld;															// ワールドマトリックス
 
-	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;												//頂点バッファへのポインタ
-	LPD3DXMESH		m_pMesh;														//メッシュ情報へのポインタ
-	DWORD			m_nNumMat;														//マテリアル情報の数
-	LPD3DXBUFFER	m_pBuffMat;														//マテリアル情報へのポインタ
+	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;												// 頂点バッファへのポインタ
+	LPD3DXMESH		m_pMesh;														// メッシュ情報へのポインタ
+	DWORD			m_nNumMat;														// マテリアル情報の数
+	LPD3DXBUFFER	m_pBuffMat;														// マテリアル情報へのポインタ
 
 	int m_nLife;																	//ライフ
 	int m_nLifeMax;
