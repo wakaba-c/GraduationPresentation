@@ -57,9 +57,29 @@ public:
 	CTakaseiLibrary() {};
 	~CTakaseiLibrary() {};
 
-	static void CalcMatrix(D3DXMATRIX *pMtx, const D3DXVECTOR3 & pos, const D3DXVECTOR3 & rot);			// マトリックス計算
+	// 処理：マトリックス計算
+	// [pMtx] マトリックス情報
+	// [pos]  位置
+	// [rot]  回転
+	static void CalcMatrix(D3DXMATRIX *pMtx, const D3DXVECTOR3 & pos, const D3DXVECTOR3 & rot);
 
-	static void Billboard(D3DXMATRIX *mtxWorld, const D3DXMATRIX mtxView);								// ビルボード化処理
+	// 処理：回転の補正
+	// [rot] 回転
+	static void RotRevision(D3DXVECTOR3 *rot);
+
+	// 処理：ビルボード化
+	// [mtxWorld] マトリックス情報
+	// [mtxView]  マトリックスビュー
+	static void Billboard(D3DXMATRIX *mtxWorld, const D3DXMATRIX mtxView);
+
+	// 処理：平方根計算
+	// [difpos] 位置
+	static float OutputSqrt(D3DXVECTOR3 difpos);
+
+	// 処理：二つの点からベクトル算出
+	// [start] 始点
+	// [ned]   終点
+	static D3DXVECTOR3 OutputVector(const D3DXVECTOR3 & start, const D3DXVECTOR3 & end);
 
 	static HRESULT Up(CInputKeyboard	*Key, CInputController *pGamepad);	// 上入力
 	static HRESULT Down(CInputKeyboard	*Key, CInputController *pGamepad);	// 下入力
@@ -68,10 +88,6 @@ public:
 	static HRESULT Decide(CInputKeyboard *Key, CInputController *pGamepad);	// 決定入力
 	static HRESULT Return(CInputKeyboard *Key, CInputController *pGamepad);	// 戻り入力
 	static HRESULT Pause(CInputKeyboard *Key, CInputController *pGamepad);	// ポーズ入力
-
-	static float OutputSqrt(D3DXVECTOR3 difpos);				// 平方根計算
-	static float OutputDistance(D3DXVECTOR3 difpos);			// 距離計算
-	static D3DXVECTOR3 OutputVector(const D3DXVECTOR3 & start, const D3DXVECTOR3 & end);	// ベクトル計算
 
 private:
 

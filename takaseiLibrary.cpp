@@ -35,20 +35,37 @@ void CTakaseiLibrary::CalcMatrix(D3DXMATRIX * pMtx, const D3DXVECTOR3 & pos, con
 }
 
 //=============================================================================
+// âÒì]ÇÃï‚ê≥
+//=============================================================================
+void CTakaseiLibrary::RotRevision(D3DXVECTOR3 * rot)
+{
+	// ç∑Ç™D3DX_PIÇÊÇËëÂÇ´Ç¢Ç∆Ç´
+	if (rot->y > D3DX_PI)
+	{
+		// àÍé¸ñﬂÇ∑
+		rot->y -= D3DX_PI * 2;
+	}
+	else if (rot->y < -D3DX_PI)
+	{// ç∑Ç™-D3DX_PIÇÊÇËè¨Ç≥Ç¢Ç∆Ç´
+		// àÍé¸ëùÇ‚Ç∑
+		rot->y += D3DX_PI * 2;
+	}
+
+	// ê‚ëŒílÇ™0.0fÇÊÇËè¨Ç≥Ç¢Ç∆Ç´
+	if (fabsf(rot->y) < 0.0f)
+	{
+		// ç∑ÇÇ»Ç≠Ç∑
+		rot->y = 0.0f;
+	}
+}
+
+//=============================================================================
 // ïΩï˚ç™åvéZ
 //=============================================================================
 float CTakaseiLibrary::OutputSqrt(D3DXVECTOR3 difpos)
 {
 	float fSqrt = sqrt(difpos.x * difpos.x + difpos.y * difpos.y + difpos.z * difpos.z);
 	return fSqrt;
-}
-
-//=============================================================================
-// ãóó£åvéZ
-//=============================================================================
-float CTakaseiLibrary::OutputDistance(D3DXVECTOR3 difpos)
-{
-	return difpos.x * difpos.x + difpos.y * difpos.y + difpos.z * difpos.z;
 }
 
 //=============================================================================

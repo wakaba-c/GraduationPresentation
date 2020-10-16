@@ -70,7 +70,6 @@
 #define SCREEN_WIDTH	(1280)	// ウインドウの幅
 #define SCREEN_HEIGHT	(720)	// ウインドウの高さ
 #define SAFE_RELEASE(p) { if(p) { (p)->Release(); (p) = NULL; } }
-#define D3DXVECTOR3_ZERO D3DXVECTOR3(0.0f, 0.0f, 0.0f)
 
 //=============================================================================
 // 前方宣言
