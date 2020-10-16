@@ -33,12 +33,6 @@ class CScene2D;
 class CBox : public CScene
 {
 public:
-	typedef enum
-	{
-		TEX_TYPE_NORMAL = 0,					// 通常
-		TEX_TYPE_MASU,							// マス
-		TEX_TYPE_MAX
-	} TEX_TYPE;
 
 	CBox(PRIORITY type);															// コンストラクタ
 	~CBox();																		// デストラクタ
@@ -57,10 +51,13 @@ public:
 protected:
 
 private:
-	static LPDIRECT3DTEXTURE9 m_pTexture[TEX_TYPE_MAX];									// テクスチャへのポインタ
+	static LPDIRECT3DTEXTURE9 m_pTexture;											// テクスチャへのポインタ
 	bool m_bPuzzle[Box_Depth][Box_Width];											// 使用しているかどうか
-	CScene2D *m_pBlock[Box_Depth][Box_Width];
+	CScene2D *m_pBlock[Box_Depth][Box_Width];										// シーン2Dのポインタ
 
-	TEX_TYPE m_type[Box_Depth][Box_Width];
+	int nCntMove_X;																	// 移動カウントX
+	int nCntMove_Y;																	// 移動カウントY
+
+	bool m_bPlacement;																// 配置しているかどうか
 };
 #endif
