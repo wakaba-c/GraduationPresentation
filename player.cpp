@@ -38,8 +38,7 @@
 #define COUNTER_COMBO 30							// 派生攻撃受付カウンタ
 #define JUMP_MAX 10									// ジャンプの加速度
 #define ROT_AMOUNT 0.05f							// 回転の差を減らしていく量
-#define ROT_LIMIT 0.8f								// 回転制限
-#define ROT_SPEED 0.2f								// 回転速度
+#define ROT_SPEED 0.3f								// 回転速度
 
 //=============================================================================
 // コンストラクタ
@@ -51,7 +50,7 @@ CPlayer::CPlayer(CScene::PRIORITY obj = CScene::PRIORITY_PLAYER) : CCharacter(ob
 
 	m_nLife = 100;										// 体力の初期化
 	m_fSpeed = NORMAL_SPEED;							// スピードの初期化
-	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// 回転の初期化
+	m_rot = D3DXVECTOR3(0.0f, D3DX_PI, 0.0f);			// 回転の初期化
 	m_move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// 移動量の初期化
 	m_dest = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// 移動先の初期化
 	m_difference = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 差の初期化
@@ -341,36 +340,12 @@ void CPlayer::Update(void)
 		m_pColPlayerSphere->SetPosition(pos);		// 現在位置 の更新
 	}
 
+	// 位置設定
 	SetPosition(pos);
 
 	if (m_pBox != NULL)
 	{
 		m_pBox->SetPosition(pos);
-	}
-
-	//キャラクターの振り向き
-	m_difference.y = m_rot.y - m_dest.y;
-
-	//ディファレンスの値が指定した値
-	if (m_difference.y > D3DX_PI)
-	{
-		m_difference.y -= D3DX_PI * 2;
-	}
-	else if (m_difference.y < -D3DX_PI)
-	{
-		m_difference.y += D3DX_PI * 2;
-	}
-
-	// 1フレームあたりの回転量を代入
-	m_rot.y -= m_difference.y * 0.1f;
-
-	if (m_rot.y < -D3DX_PI)
-	{
-		m_rot.y += D3DX_PI * 2;
-	}
-	else if (m_rot.y > D3DX_PI)
-	{
-		m_rot.y -= D3DX_PI * 2;
 	}
 
 	// 武器出現エフェクト処理
@@ -725,7 +700,7 @@ void CPlayer::MoveNearEnemy(void)
 	CScene *pSceneNext = NULL;														// 初期化
 	CScene *pSceneNow = CScene::GetScene(CScene::PRIORITY_ENEMY);					// 先頭アドレスの取得
 
-																					// 次がなくなるまで繰り返す
+	// 次がなくなるまで繰り返す
 	while (pSceneNow != NULL)
 	{
 		pSceneNext = CScene::GetSceneNext(pSceneNow, CScene::PRIORITY_ENEMY);		//次回アップデート対象を控える
@@ -1019,26 +994,8 @@ void CPlayer::Input(void)
 			}
 		}
 
-		//左右操作
-		if (pKeyboard->GetPressKeyboard(MOVE_LEFT))
-		{
-			m_move.x += sinf(D3DX_PI * 0.5f + rot.y) * m_fSpeed;
-			m_move.z += cosf(D3DX_PI * 0.5f + rot.y) * m_fSpeed;
-
-			D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
-			m_dest.y = m_rot.y - ROT_SPEED;
-		}
-		else if (pKeyboard->GetPressKeyboard(MOVE_RIGHT))
-		{
-			m_move.x += sinf(-D3DX_PI * 0.5f + rot.y) * m_fSpeed;
-			m_move.z += cosf(-D3DX_PI * 0.5f + rot.y) * m_fSpeed;
-
-			D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
-			m_dest.y = m_rot.y + ROT_SPEED;
-		}
-
 		//上下操作
-		else if (pKeyboard->GetPressKeyboard(MOVE_ACCEL))
+		if (pKeyboard->GetPressKeyboard(MOVE_ACCEL))
 		{
 			m_move.x += sinf(D3DX_PI * 1.0f + rot.y) * m_fSpeed;
 			m_move.z += cosf(D3DX_PI * 1.0f + rot.y) * m_fSpeed;
@@ -1053,17 +1010,39 @@ void CPlayer::Input(void)
 			D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
 		}
 
-		// プレイヤーの回転と目標地点の差を格納
-		Diff.y = m_rot.y - m_dest.y;
+		//左右操作
+		if (pKeyboard->GetPressKeyboard(MOVE_LEFT))
+		{
+			//m_move.x += sinf(D3DX_PI * 0.5f + rot.y) * m_fSpeed;
+			//m_move.z += cosf(D3DX_PI * 0.5f + rot.y) * m_fSpeed;
 
-		// 回転の補正
-		CTakaseiLibrary::RotRevision(&Diff);
+			D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
+			m_dest.y = m_rot.y - ROT_SPEED;
+		}
+		else if (pKeyboard->GetPressKeyboard(MOVE_RIGHT))
+		{
+			//m_move.x += sinf(-D3DX_PI * 0.5f + rot.y) * m_fSpeed;
+			//m_move.z += cosf(-D3DX_PI * 0.5f + rot.y) * m_fSpeed;
 
-		// プレイヤーを徐々に回転させていく
-		m_rot.y -= Diff.y * ROT_AMOUNT;
+			D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
+			m_dest.y = m_rot.y + ROT_SPEED;
+		}
 
-		// 回転の設定
-		SetRotation(m_rot);
+		// 左右ボタンを押しているとき
+		if (pKeyboard->GetPressKeyboard(MOVE_LEFT) || pKeyboard->GetPressKeyboard(MOVE_RIGHT))
+		{
+			// プレイヤーの回転と目標地点の差を格納
+			Diff.y = m_rot.y - m_dest.y;
+
+			// 回転の補正
+			CTakaseiLibrary::RotRevision(&Diff);
+
+			// プレイヤーを徐々に回転させていく
+			m_rot.y -= Diff.y * ROT_AMOUNT;
+
+			// 回転の設定
+			SetRotation(m_rot);
+		}
 	}
 
 #ifdef _DEBUG

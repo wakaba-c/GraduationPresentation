@@ -28,8 +28,8 @@ CPlayer *CCamera::m_pPlayer = NULL;		// プレイヤー情報
 #define posV_Height 200.0f			// 視点の高さ
 #define posR_Height 50.0f			// 注視点の高さ
 #define posR_Length 100.0f			// モデルと注視点の位置
-#define ROT_COUNT 5					// 回転を始めるカウント
-#define DISTANCE 300				// 視点と注視点の距離
+#define ROT_COUNT 6					// 回転を始めるカウント
+#define DISTANCE 500				// 視点と注視点の距離
 
 //=============================================================================
 // コンストラクタ
@@ -99,15 +99,6 @@ void CCamera::Uninit(void)
 //=============================================================================
 void CCamera::Update(void)
 {
-	////カメラの位置計算
-	//m_posVDest.x = m_originPos.x + sinf(D3DX_PI + m_rot.y) * cosf(D3DX_PI + m_rot.x) * m_fDistance;
-	//m_posVDest.y = m_originPos.y + sinf(D3DX_PI + m_rot.x) * m_fDistance;
-	//m_posVDest.z = m_originPos.z + cosf(D3DX_PI + m_rot.y) * cosf(D3DX_PI + m_rot.x) * m_fDistance;
-
-	//m_posRDest.x = m_originPos.x + cosf(D3DX_PI + m_rot.y) * cosf(D3DX_PI + m_rot.x);
-	//m_posRDest.y = m_originPos.y + sinf(D3DX_PI + m_rot.x);
-	//m_posRDest.z = m_originPos.z + sinf(D3DX_PI + m_rot.y) * cosf(D3DX_PI + m_rot.x);
-
 	if (CManager::GetMode() == CManager::MODE_GAME)
 	{// モードがゲームだったとき
 		//カメラ操作
@@ -422,16 +413,6 @@ void CCamera::CameraMove(void)
 	// 回転の補正
 	CTakaseiLibrary::RotRevision(&fDiff);
 
-	//// 視点の最終目的座標の計算
-	//m_posVDest.x = PlayerPos.x + sinf(m_rot.y) * m_fDistance;
-	//m_posVDest.y = PlayerPos.y + cosf(D3DX_PI + m_rot.x) * (-m_fDistance + posV_Height);
-	//m_posVDest.z = PlayerPos.z + cosf(m_rot.y) * m_fDistance;
-
-	//// 注視点の最終目的座標の計算
-	//m_posRDest.x = PlayerPos.x + sinf(m_rot.y);
-	//m_posRDest.y = PlayerPos.y + sinf(D3DX_PI + m_rot.x);
-	//m_posRDest.z = PlayerPos.z + cosf(D3DX_PI + m_rot.y) * posR_Length;
-
 	//カメラの位置計算
 	m_posVDest.x = PlayerPos.x + sinf(D3DX_PI + m_rot.y) * cosf(D3DX_PI + m_rot.x) * m_fDistance;
 	m_posVDest.y = PlayerPos.y + sinf(D3DX_PI + m_rot.x) + posV_Height;
@@ -447,30 +428,34 @@ void CCamera::CameraMove(void)
 	m_posV.z += (m_posVDest.z - m_posV.z) * 1.0f;
 	m_posR += (m_posRDest - m_posR) * 1.0f;
 
-	// キーボードの[A]または[D]を押したとき
-	if (pKeyboard->GetPressKeyboard(MOVE_LEFT) || pKeyboard->GetPressKeyboard(MOVE_RIGHT))
+	// アクセルボタンを押しているとき
+	if (pKeyboard->GetPressKeyboard(MOVE_ACCEL) || pKeyboard->GetPressKeyboard(MOVE_BRAKE))
 	{
-		// 回転を始めるカウントを加算
-		m_nCntRot++;
-	}
-	else if (!pKeyboard->GetPressKeyboard(MOVE_LEFT) && !pKeyboard->GetPressKeyboard(MOVE_RIGHT))
-	{// キーボードの[A]と[D]が押されていないとき
-	 // 回転を始めるカウンタ初期化
-		m_nCntRot = 0;
+		// キーボードの[A]または[D]を押したとき
+		if (pKeyboard->GetPressKeyboard(MOVE_LEFT) || pKeyboard->GetPressKeyboard(MOVE_RIGHT))
+		{
+			// 回転を始めるカウントを加算
+			m_nCntRot++;
+		}
+		else if (!pKeyboard->GetPressKeyboard(MOVE_LEFT) && !pKeyboard->GetPressKeyboard(MOVE_RIGHT))
+		{// キーボードの[A]と[D]が押されていないとき
+		 // 回転を始めるカウンタ初期化
+			m_nCntRot = 0;
 
-		// 差を徐々に縮めていく
-		m_rot.y -= fDiff.y * ROT_SHRINK;
-	}
+			// 差を徐々に縮めていく
+			m_rot.y -= fDiff.y * ROT_SHRINK;
+		}
 
-	// 回転を始めるカウンタが規定値を超えたとき
-	if (m_nCntRot >= ROT_COUNT)
-	{
-		// 差を徐々に縮めていく
-		m_rot.y -= fDiff.y * ROT_SHRINK;
-	}
+		// 回転を始めるカウンタが規定値を超えたとき
+		if (m_nCntRot >= ROT_COUNT)
+		{
+			// 差を徐々に縮めていく
+			m_rot.y -= fDiff.y * ROT_SHRINK;
+		}
 
-	// 回転の補正
-	CTakaseiLibrary::RotRevision(&m_rot);
+		// 回転の補正
+		CTakaseiLibrary::RotRevision(&m_rot);
+	}
 }
 
 #ifdef _DEBUG
