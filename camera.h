@@ -56,8 +56,6 @@ private:
 	LPD3DXFONT			m_pCameraFont = NULL;										// フォントへのポインタ
 	void Debug(void);				// デバッグ処理
 #endif
-	static CPlayer *m_pPlayer;			// プレイヤー情報
-
 	D3DXVECTOR3 CalcScreenToXZ(float fSx, float fSy, int nScreen_w, int nScreen_h, D3DXMATRIX* mView, D3DXMATRIX* mPrj);	// スクリーンの交点
 	D3DXVECTOR3* CalcScreenToWorld(D3DXVECTOR3* pout, float fSx, float fSy, float fZ, int nScreen_w, int nScreen_h, D3DXMATRIX* mView, D3DXMATRIX* mPrj);		// ワールド座標変換
 	void CameraMove(void);			// カメラ移動処理

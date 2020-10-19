@@ -399,16 +399,6 @@ void CEnemy::OnTriggerEnter(CCollider *col)
 
 					if (pPlayer != NULL)
 					{// プレイヤーが存在していたとき
-						if (pPlayer->GetState() == pPlayer->PLAYERSTATE_FLOWER)
-						{// プレイヤーが暴走中だったとき
-							CEffect::Slashing(GetPosition(), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-							m_nLife -= 2;				// 体力を減らす
-						}
-						else
-						{
-							m_nLife--;				// 体力を減らす
-						}
-
 						CPlayerUi *pPlayerUi = pPlayer->GetPlayerUi();				// プレイヤーUIの取得
 
 						if (pPlayerUi != NULL)
@@ -420,8 +410,7 @@ void CEnemy::OnTriggerEnter(CCollider *col)
 							}
 						}
 
-						if (pPlayer->GetAnimType() == CPlayer::ANIMATIONTYPE_ATTACK_1 ||
-							pPlayer->GetAnimType() == CPlayer::ANIMATIONTYPE_ATTACK_2)
+						if (pPlayer->GetAnimType() == CPlayer::ANIMATIONTYPE_ATTACK_1)
 						{// ノックバック処理
 							D3DXVECTOR3 vec;
 
@@ -430,32 +419,6 @@ void CEnemy::OnTriggerEnter(CCollider *col)
 
 							m_move.x = vec.x * 10;
 							m_move.z = vec.z * 10;
-						}
-
-						if (pPlayer->GetAnimType() == CPlayer::ANIMATIONTYPE_ATTACK_3)
-						{// ノックバック処理
-							D3DXVECTOR3 vec;
-
-							vec = GetPosition() - pPlayer->GetPosition();		//差分を求める(方向を求めるため)
-							D3DXVec3Normalize(&vec, &vec);			//正規化する
-
-							m_move.x = vec.x * 10;
-							m_move.z = vec.z * 10;
-							m_move.y = 10;
-							m_bJump = true;
-						}
-
-						if (pPlayer->GetAnimType() == CPlayer::ANIMATIONTYPE_ATTACK_5)
-						{// ノックバック処理
-							D3DXVECTOR3 vec;
-
-							vec = GetPosition() - pPlayer->GetPosition();		//差分を求める(方向を求めるため)
-							D3DXVec3Normalize(&vec, &vec);			//正規化する
-
-							m_move.x = vec.x * 100;
-							m_move.z = vec.z * 100;
-							m_move.y = 5;
-							m_bJump = true;
 						}
 					}
 
@@ -558,11 +521,17 @@ void CEnemy::Move(D3DXVECTOR3 &pPos)
 
 	if (m_target == TARGETTYPE_HOUSE)
 	{//	現在の対象が[家]だったとき
-		targetPos = pHouse->GetPosition();
+		if (pHouse != NULL)
+		{
+			targetPos = pHouse->GetPosition();
+		}
 	}
 	else if (m_target == TARGETTYPE_PLAYER)
 	{// 現在の攻撃対象が[プレイヤー]だったとき
-		targetPos = pPlayer->GetPosition();
+		if (pPlayer != NULL)
+		{
+			targetPos = pPlayer->GetPosition();
+		}
 	}
 
 	D3DXVECTOR3 pos = pPos;

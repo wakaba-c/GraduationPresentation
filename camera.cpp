@@ -19,7 +19,6 @@
 //=============================================================================
 // 静的メンバ変数の初期化
 //=============================================================================
-CPlayer *CCamera::m_pPlayer = NULL;		// プレイヤー情報
 
 //=============================================================================
 // マクロ定義
@@ -398,14 +397,20 @@ void CCamera::CameraMove(void)
 	// キーボードの取得
 	CInputKeyboard *pKeyboard = CManager::GetInputKeyboard();
 
-	m_pPlayer = CGame::GetPlayer();					// プレイヤー情報取得
-	D3DXVECTOR3 fDiff;								// 計算用格納変数
-	D3DXVECTOR3 PlayerRot = m_pPlayer->GetRotation();		// プレイヤー用回転変数
-	D3DXVECTOR3 PlayerPos = m_pPlayer->GetPosition();		// プレイヤー用位置変数
+	CPlayer *pPlayer = CGame::GetPlayer();					// プレイヤー情報取得
+	D3DXVECTOR3 fDiff;									// 計算用格納変数
+	D3DXVECTOR3 playerRot = D3DXVECTOR3_ZERO;
+	D3DXVECTOR3 playerPos = D3DXVECTOR3_ZERO;
+	if (pPlayer != NULL)
+	{
+		playerRot = pPlayer->GetRotation();		// プレイヤー用回転変数
+		playerPos = pPlayer->GetPosition();		// プレイヤー用位置変数
+	}
+
 	m_fDistance = DISTANCE;
 
 	// 回転の最終目的地
-	m_rotDest.y = PlayerRot.y;
+	m_rotDest.y = playerRot.y;
 
 	// 回転情報の差を格納
 	fDiff.y = m_rot.y - m_rotDest.y;
@@ -414,13 +419,13 @@ void CCamera::CameraMove(void)
 	CTakaseiLibrary::RotRevision(&fDiff);
 
 	//カメラの位置計算
-	m_posVDest.x = PlayerPos.x + sinf(D3DX_PI + m_rot.y) * cosf(D3DX_PI + m_rot.x) * m_fDistance;
-	m_posVDest.y = PlayerPos.y + sinf(D3DX_PI + m_rot.x) + posV_Height;
-	m_posVDest.z = PlayerPos.z + cosf(D3DX_PI + m_rot.y) * cosf(D3DX_PI + m_rot.x) * m_fDistance;
+	m_posVDest.x = playerPos.x + sinf(D3DX_PI + m_rot.y) * cosf(D3DX_PI + m_rot.x) * m_fDistance;
+	m_posVDest.y = playerPos.y + sinf(D3DX_PI + m_rot.x) + posV_Height;
+	m_posVDest.z = playerPos.z + cosf(D3DX_PI + m_rot.y) * cosf(D3DX_PI + m_rot.x) * m_fDistance;
 
-	m_posRDest.x = PlayerPos.x + cosf(D3DX_PI + m_rot.y) * cosf(D3DX_PI + m_rot.x);
-	m_posRDest.y = PlayerPos.y + sinf(D3DX_PI + m_rot.x) + posR_Height;
-	m_posRDest.z = PlayerPos.z + sinf(D3DX_PI + m_rot.y) * cosf(D3DX_PI + m_rot.x);
+	m_posRDest.x = playerPos.x + cosf(D3DX_PI + m_rot.y) * cosf(D3DX_PI + m_rot.x);
+	m_posRDest.y = playerPos.y + sinf(D3DX_PI + m_rot.x) + posR_Height;
+	m_posRDest.z = playerPos.z + sinf(D3DX_PI + m_rot.y) * cosf(D3DX_PI + m_rot.x);
 
 	// カメラの位置適応
 	m_posV.x += (m_posVDest.x - m_posV.x) * 1.0f;
