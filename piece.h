@@ -1,11 +1,11 @@
 //==================================================================================================================
 //
-// box[box.h]
+// ピース[piece.h]
 // Author:Ryouma Inoue
 //
 //==================================================================================================================
-#ifndef _BOX_H_
-#define _BOX_H_
+#ifndef _PIECE_H_
+#define _PIECE_H_
 
 //==================================================================================================================
 // インクルードファイル
@@ -16,27 +16,26 @@
 //==================================================================================================================
 // マクロ定義
 //==================================================================================================================
-#define Box_Depth 8																	// 縦のポリゴン数
-#define Box_Width 15																// 横のブロック数
+#define Piece_Depth 2																// 縦のポリゴン数
+#define Piece_Width 2																// 横のブロック数
 
 //==================================================================================================================
 // 前方宣言
 //==================================================================================================================
 class CPlayer;
 class CScene2D;
-class CPiece;
 
 //==================================================================================================================
 //
 // クラスの定義
 //
 //==================================================================================================================
-class CBox : public CScene
+class CPiece : public CScene
 {
 public:
 
-	CBox(PRIORITY type);															// コンストラクタ
-	~CBox();																		// デストラクタ
+	CPiece(PRIORITY type);															// コンストラクタ
+	~CPiece();																		// デストラクタ
 	HRESULT Init(void);																// 初期化処理
 	void Uninit(void);																// 終了処理
 	void Update(void);																// 更新処理
@@ -44,27 +43,27 @@ public:
 
 	void OnTriggerEnter(CCollider *col) {};
 	void OnCollisionEnter(CCollider *col) {};
+	bool GetPlaacement(void) { return m_bCreate; }							// 配置情報取得
 
-	static CBox *Create(void);														// 生成処理
+	void SetPlaacement(bool bCreate) { m_bCreate = bCreate; }
+	static CPiece *Create(void);													// 生成処理
 	static HRESULT Load(void);														// テクスチャ情報ロード
 	static void Unload(void);														// テクスチャ情報アンロード
-	bool GetPlaacement(void){ return m_bCreate; }									// 配置情報取得
 
 protected:
 
 private:
 	static LPDIRECT3DTEXTURE9 m_pTexture;											// テクスチャへのポインタ
-	bool m_bPuzzle[Box_Depth][Box_Width];											// 使用しているかどうか
-	CScene2D *m_pBlock[Box_Depth][Box_Width];										// シーン2Dのポインタ
-	CPiece *m_pPiece;																// ピース
+	bool m_bPuzzle[Piece_Depth][Piece_Width];										// 使用しているかどうか
+	CScene2D *m_pBlock[Piece_Depth][Piece_Width];									// シーン2Dのポインタ
+
+	D3DXVECTOR3 m_pos;																// 位置
 
 	int m_nCntMove_X;																// 移動カウントX
 	int m_nCntMove_Y;																// 移動カウントY
 
 	bool m_bPlacement;																// 配置しているかどうか
-	bool m_bCreate;															// 生成するかどうか
+	bool m_bCreate;																	// 生成するかどうか
 	bool m_bMove;																	// 動くかどうか
-	bool m_bPiece;
-
 };
 #endif
