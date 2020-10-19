@@ -25529,7 +25529,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "data\\tex\\cartex\\テクスチャ\\木目.jpg";
+    "data\\tex\\cartex\\木目.jpg";
    }
   }
   Material {
@@ -25538,7 +25538,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "data\\tex\\cartex\\テクスチャ\\木目.jpg";
+    "data\\tex\\cartex\\木目.jpg";
    }
   }
   Material {
