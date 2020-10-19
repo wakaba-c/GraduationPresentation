@@ -461,6 +461,97 @@ void CCamera::CameraMove(void)
 		// 回転の補正
 		CTakaseiLibrary::RotRevision(&m_rot);
 	}
+
+#ifdef _DEBUG
+	CInputMouse *pMouse = CManager::GetInputMouse();
+
+	if (pMouse != NULL)
+	{
+		D3DXVECTOR2 mousePos;									// マウス座標
+
+		// スクリーン座標とXZ平面のワールド座標交点算出
+		m_worldPos = CalcScreenToXZ((float)pMouse->GetMouseX(), (float)pMouse->GetMouseY(), SCREEN_WIDTH, SCREEN_HEIGHT, &m_mtxView, &m_mtxProjection);
+
+		// 左Altキーが押さているとき
+		if (pKeyboard->GetPressKeyboard(DIK_LALT))
+		{
+			// 左ボタンが押されたとき
+			if (pMouse->GetTriggerMouse(MOUSE_LEFT))
+			{
+				//現在のマウス座標を取得
+				m_mousePosOld.x = (float)pMouse->GetMouseX();
+				m_mousePosOld.y = (float)pMouse->GetMouseY();
+			}
+			else if (pMouse->GetTriggerMouse(MOUSE_RIGHT))
+			{// 右ボタンが押されたとき
+
+			 // 現在のマウス座標を取得
+				m_mousePosOld.y = (float)pMouse->GetMouseY();
+			}
+			else if (pMouse->GetTriggerMouse(MOUSE_CENTER))
+			{// 中ボタンが押されたとき
+			 // 現在のマウス座標を取得
+				m_mousePosOld.x = (float)pMouse->GetMouseX();
+				m_mousePosOld.y = (float)pMouse->GetMouseY();
+			}
+			else if (pMouse->GetPressMouse(MOUSE_LEFT))
+			{// 左ボタンが押されている間
+			 // マウス座標の取得
+				mousePos.x = (float)pMouse->GetMouseX();
+				mousePos.y = (float)pMouse->GetMouseY();
+
+				// 前回の位置との差分を求める
+				D3DXVECTOR2 mouseMove = mousePos - m_mousePosOld;
+
+				// 差分回転させる
+				m_rot.x -= mouseMove.y * 0.01f;
+				m_rot.y += mouseMove.x * 0.01f;
+
+				// 古い情報を更新する
+				m_mousePosOld = mousePos;
+			}
+			else if (pMouse->GetPressMouse(MOUSE_RIGHT))
+			{// 右ボタンが押されている間
+			 // マウス座標の取得
+				mousePos.y = (float)pMouse->GetMouseY();
+
+				// 前回の位置との差分を求める
+				D3DXVECTOR2 mouseMove = mousePos - m_mousePosOld;
+
+				// 差分だけ更新する
+				m_fDistance += mouseMove.y;
+
+				// 古い情報を更新する
+				m_mousePosOld = mousePos;
+			}
+			else if (pMouse->GetPressMouse(MOUSE_CENTER))
+			{// 中ボタンが押されている間
+			 // マウス座標の取得
+				mousePos.x = (float)pMouse->GetMouseX();
+				mousePos.y = (float)pMouse->GetMouseY();
+
+				// 前回の位置との差分を求める
+				D3DXVECTOR2 work = mousePos - m_mousePosOld;
+
+				//// カメラのY方向移動
+				//m_originPos.x -= sinf(D3DX_PI * 1.0f) * work.y;
+				//m_originPos.y -= cosf(D3DX_PI * 1.0f) * work.y;
+
+				//// カメラのX方向移動
+				//m_originPos.x += sinf(D3DX_PI * 0.5f + m_rot.y) * work.x * 0.5f;
+				//m_originPos.y += cosf(D3DX_PI * 0.5f + m_rot.y) * work.x * 0.5f;
+
+				m_originPos.x += work.x;
+				m_originPos.y = work.y;
+
+				SetPosCamera(m_originPos, m_rot);
+
+				// 古い情報を更新する
+				m_mousePosOld = mousePos;
+			}
+		}
+	}
+#endif
 }
 
 #ifdef _DEBUG
