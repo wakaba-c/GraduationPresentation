@@ -323,11 +323,6 @@ void CDebugProc::Debug(void)
 	static int listbox_item_current = 1;
 	ImGui::ListBox("listbox\n(single select)", &listbox_item_current, listbox_items, IM_ARRAYSIZE(listbox_items), 4);
 
-	if (pKeyboard->GetTriggerKeyboard(DIK_D))
-	{
-		m_bDebug = !m_bDebug;
-	}
-
 	if (ImGui::Checkbox("DebugMode", &m_bDebug))		// 地形編集モード切り替え
 	{
 		for (int nCount = 0; nCount < FLOOR_LIMIT * FLOOR_LIMIT; nCount++)
