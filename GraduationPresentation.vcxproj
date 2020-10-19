@@ -190,6 +190,7 @@
     <ClCompile Include="network.cpp" />
     <ClCompile Include="number.cpp" />
     <ClCompile Include="object.cpp" />
+    <ClCompile Include="piece.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="puzzle.cpp" />
     <ClCompile Include="ranking.cpp" />
@@ -256,7 +257,7 @@
     <ClInclude Include="network.h" />
     <ClInclude Include="number.h" />
     <ClInclude Include="object.h" />
-    <ClInclude Include="phase.h" />
+    <ClInclude Include="piece.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="playerUi.h" />
     <ClInclude Include="purpose.h" />

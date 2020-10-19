@@ -24,6 +24,7 @@
 //==================================================================================================================
 class CPlayer;
 class CScene2D;
+class CPiece;
 
 //==================================================================================================================
 //
@@ -43,11 +44,11 @@ public:
 
 	void OnTriggerEnter(CCollider *col) {};
 	void OnCollisionEnter(CCollider *col) {};
-	bool GetPlaacement(void){ return m_bCreate; }									// 配置情報取得
 
 	static CBox *Create(void);														// 生成処理
 	static HRESULT Load(void);														// テクスチャ情報ロード
 	static void Unload(void);														// テクスチャ情報アンロード
+	bool GetPlaacement(void){ return m_bCreate; }									// 配置情報取得
 
 protected:
 
@@ -55,12 +56,15 @@ private:
 	static LPDIRECT3DTEXTURE9 m_pTexture;											// テクスチャへのポインタ
 	bool m_bPuzzle[Box_Depth][Box_Width];											// 使用しているかどうか
 	CScene2D *m_pBlock[Box_Depth][Box_Width];										// シーン2Dのポインタ
+	CPiece *m_pPiece;																// ピース
 
 	int m_nCntMove_X;																// 移動カウントX
 	int m_nCntMove_Y;																// 移動カウントY
 
 	bool m_bPlacement;																// 配置しているかどうか
-	bool m_bCreate;																	// 生成するかどうか
+	bool m_bCreate;															// 生成するかどうか
 	bool m_bMove;																	// 動くかどうか
+	bool m_bPiece;
+
 };
 #endif
