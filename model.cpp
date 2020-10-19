@@ -152,6 +152,9 @@ void CModel::Draw(D3DXMATRIX *mtxWorld)
 				}
 			}
 
+			// 情報の変更
+			ToonShader->CommitChanges();
+
 			// マテリアルの設定
 			pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
 
@@ -167,6 +170,8 @@ void CModel::Draw(D3DXMATRIX *mtxWorld)
 			if (ToonShader != NULL)
 			{
 				ToonShader->EndPass();
+				// テクスチャの設定
+				ToonShader->SetTexture("DecalTexture", CManager::GetResource("data/tex/default.jpg"));
 			}
 		}
 	}
@@ -174,6 +179,8 @@ void CModel::Draw(D3DXMATRIX *mtxWorld)
 	if (ToonShader != NULL)
 	{
 		ToonShader->End();
+		// テクスチャの設定
+		ToonShader->SetTexture("DecalTexture", CManager::GetResource("data/tex/default.jpg"));
 	}
 
 	// マテリアルをデフォルトに戻す

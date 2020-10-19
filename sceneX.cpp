@@ -149,6 +149,9 @@ void CSceneX::Draw(void)
 			}
 		}
 
+		// 情報の変更
+		m_pToonShader->CommitChanges();
+
 		// マテリアルの設定
 		pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
 
@@ -170,6 +173,9 @@ void CSceneX::Draw(void)
 	if (m_pToonShader != NULL)
 	{
 		m_pToonShader->End();
+
+		// テクスチャの設定
+		m_pToonShader->SetTexture("DecalTexture", CManager::GetResource("data/tex/default.jpg"));
 	}
 
 	// マテリアルをデフォルトに戻す
