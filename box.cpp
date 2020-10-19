@@ -12,6 +12,7 @@
 #include "game.h"
 #include "scene2D.h"
 #include "takaseiLibrary.h"
+#include "piece.h"
 
 //==================================================================================================================
 // マクロ定義
@@ -77,30 +78,6 @@ HRESULT CBox::Init(void)
 		}
 	}
 
-	//m_bPuzzle[nCntMove_Y][nCntMove_X] = true;
-	//m_bPuzzle[nCntMove_Y][nCntMove_X + 1] = true;
-	//m_bPuzzle[nCntMove_Y + 1][nCntMove_X] = true;
-	//m_bPuzzle[nCntMove_Y + 1][nCntMove_X + 1] = true;
-
-	return S_OK;
-}
-
-//==================================================================================================================
-// 終了処理
-//==================================================================================================================
-void CBox::Uninit(void)
-{
-
-}
-
-//==================================================================================================================
-// 更新処理
-//==================================================================================================================
-void CBox::Update(void)
-{
-	// キーボード取得
-	CInputKeyboard *pKeyboard = CManager::GetInputKeyboard();
-
 	// 縦をカウント
 	for (int nDepth = 0; nDepth < Box_Depth; nDepth++)
 	{
@@ -132,82 +109,44 @@ void CBox::Update(void)
 			// 状態確認
 			if (m_bPuzzle[nDepth][nWide] == true)
 			{
-				// テクスチャ変更
-				m_pBlock[nDepth][nWide]->BindTexture(CManager::GetResource("data/tex/grass.jpg"));
-
-				// 配置しているかどうか
-				if (m_bPlacement == false)
-				{
-					// 色の変更
-					m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
-				}
-				else
-				{
-					// 色の変更
-					m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-					m_bCreate = true;
-				}
-			}
-			else
-			{
-				// テクスチャ変更
-				m_pBlock[nDepth][nWide]->BindTexture(CManager::GetResource("data/tex/SignBoard3.png"));
-				// 色の変更
-				m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+				m_pPiece = CPiece::Create();
 			}
 
-
 		}
 	}
 
-	if (m_bMove == false)
-	{
-		// -----------------------------------------
-		// 移動処理
-		// -----------------------------------------
-		// 左右操作
-		if (pKeyboard->GetTriggerKeyboard(MOVE_LEFT))
-		{
-			m_nCntMove_X--;
-		}
-		else if (pKeyboard->GetTriggerKeyboard(MOVE_RIGHT))
-		{
-			m_nCntMove_X++;
-		}
-		// 上下操作
-		else if (pKeyboard->GetTriggerKeyboard(MOVE_ACCEL))
-		{
-			m_nCntMove_Y--;
-		}
-		else if (pKeyboard->GetTriggerKeyboard(MOVE_BRAKE))
-		{
-			m_nCntMove_Y++;
-		}
-	}
 
-	// 配置決定
-	if (pKeyboard->GetTriggerKeyboard(MOVE_JUMP))
-	{
-		m_bPlacement = true;
-		m_bMove = true;
-	}
+	//m_bPuzzle[nCntMove_Y][nCntMove_X] = true;
+	//m_bPuzzle[nCntMove_Y][nCntMove_X + 1] = true;
+	//m_bPuzzle[nCntMove_Y + 1][nCntMove_X] = true;
+	//m_bPuzzle[nCntMove_Y + 1][nCntMove_X + 1] = true;
 
-	// 移動制限
-	if (m_nCntMove_X <= 0)
+	return S_OK;
+}
+
+//==================================================================================================================
+// 終了処理
+//==================================================================================================================
+void CBox::Uninit(void)
+{
+
+}
+
+//==================================================================================================================
+// 更新処理
+//==================================================================================================================
+void CBox::Update(void)
+{
+	// キーボード取得
+	CInputKeyboard *pKeyboard = CManager::GetInputKeyboard();
+
+	m_bPiece = m_pPiece->GetPlaacement();
+
+
+	if (m_bPiece == true)
 	{
-		m_nCntMove_X = 0;
-	}
-	if (m_nCntMove_Y <= 0)
-	{
-		m_nCntMove_Y = 0;
-	}
-	if (m_nCntMove_X >= Box_Width - 2)
-	{
-		m_nCntMove_X = Box_Width - 2;
-	}
-	if (m_nCntMove_Y >= Box_Depth - 2)
-	{
-		m_nCntMove_Y = Box_Depth - 2;
+		CPiece::Create();
+		m_pPiece->SetPlaacement(false);
 	}
 }
 
