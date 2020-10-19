@@ -51,7 +51,7 @@ CPlayer::CPlayer(CScene::PRIORITY obj = CScene::PRIORITY_PLAYER) : CCharacter(ob
 
 	m_nLife = 100;										// 体力の初期化
 	m_fSpeed = NORMAL_SPEED;							// スピードの初期化
-	m_rot = D3DXVECTOR3(0.0f, D3DX_PI, 0.0f);				// 回転の初期化
+	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// 回転の初期化
 	m_move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// 移動量の初期化
 	m_dest = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// 移動先の初期化
 	m_difference = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 差の初期化
