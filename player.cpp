@@ -139,9 +139,6 @@ HRESULT CPlayer::Init(void)
 	// ˆÊ’u‚Ìİ’è
 	SetPosition(pos);
 
-	// ‹OÕ‚Ì¶¬
-	m_pMeshOrbit = CMeshOrbit::Create();
-
 	return S_OK;
 }
 
