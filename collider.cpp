@@ -1249,3 +1249,84 @@ void CCollider::Delete(void)
 		m_nNumAll--;																			//生成数を一つ減らす
 	}
 }
+//======================================================================================================================
+// レイの判定
+//======================================================================================================================
+//bool CCollider::RayBlockCollision(CMap *pMap, D3DXMATRIX *pMat)
+//{
+//	// 地形判定 変数宣言
+//	BOOL				bHitFlag = false;	// 判定が出たかのフラグ
+//	bool				bLand = false;	// 判定が出たかのフラグ
+//	float				fLandDistance = 0;		// 距離
+//	DWORD				dwHitIndex = -1;		// インデックス
+//	float				fHitU = 0;		// U
+//	float				fHitV = 0;		// V
+//	D3DXMATRIX			invmat;							// 逆行列を格納する変数
+//	D3DXVECTOR3			m_posAfter;						// 逆行列で出した終点情報を格納する
+//	D3DXVECTOR3			m_posBefore;					// 終点情報を格納する
+//	D3DXVECTOR3			direction;						// 変換後の位置、方向を格納する変数：
+//	std::vector<float>	vDistance;						// 長さの配列保存
+//	float				fData = 0.0f;		// データ
+//
+//											// マップモデルの最大数分繰り返す
+//	for (int nCnt = 0; nCnt < pMap->GetMaxModel(); nCnt++)
+//	{
+//		//	逆行列の取得
+//		D3DXMatrixInverse(&invmat, NULL, pMap->GetModel(nCnt)->GetMatrix());
+//		//	逆行列を使用し、レイ始点情報を変換　位置と向きで変換する関数が異なるので要注意
+//		D3DXVec3TransformCoord(&m_posBefore, &D3DXVECTOR3(this->m_ppos->x, pMat->_42, this->m_ppos->z), &invmat);
+//		//	レイ終点情報を変換
+//		D3DXVec3TransformCoord(&m_posAfter, &D3DXVECTOR3(this->m_ppos->x, this->m_ppos->y - 1, this->m_ppos->z), &invmat);
+//		//	レイ方向情報を変換
+//		D3DXVec3Normalize(&direction, &(m_posAfter - m_posBefore));
+//		//Rayを飛ばす
+//		D3DXIntersect(pMap->GetMesh(nCnt), &m_posBefore, &direction, &bHitFlag, &dwHitIndex, &fHitU, &fHitV, &fLandDistance, NULL, NULL);
+//		if (bHitFlag == TRUE)
+//		{
+//			//長さの保存追加
+//			vDistance.emplace_back(fLandDistance);
+//		}
+//		else
+//		{
+//		}
+//	}
+//
+//	//Rayのヒットした物があったとき
+//	if (!vDistance.empty())
+//	{
+//		//最初の比較対象
+//		fData = vDistance[0];
+//		for (unsigned int nCnt = 0; vDistance.size() > nCnt; nCnt++)
+//		{
+//			if (vDistance[nCnt] < fData)
+//			{
+//				//比較対象が小さかったら代入
+//				fData = vDistance[nCnt];
+//			}
+//		}
+//		if (fData < m_fHeight)//Rayの長さの指定条件
+//		{
+//			this->m_ppos->y = this->m_ppos->y - fData + m_fHeight;
+//			bLand = true;
+//		}
+//		//Rayの判定圏内じゃなかったらジャンプできない
+//		else
+//		{
+//			bLand = false;
+//		}
+//
+//
+//	}
+//	//Rayに判定がなかったらジャンプできない
+//	else
+//	{
+//		bLand = false;
+//	}
+//
+//	//配列を空にしておく
+//	vDistance.clear();
+//
+//	// 判定フラグを返す
+//	return bLand;
+//}
+
