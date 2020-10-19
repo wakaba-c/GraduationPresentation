@@ -401,32 +401,6 @@ void CPlayer::OnTriggerEnter(CCollider *col)
 				CFade::SetFade(CManager::MODE_RESULT);					// リザルトに遷移
 			}
 		}
-
-		//if (sTag == "enemy")
-		//{
-		//	ANIMATIONTYPE animType = (ANIMATIONTYPE)GetAnimType();
-
-		//	if (animType != ANIMATIONTYPE_ATTACK_5)
-		//	{
-		//		D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 40.0f, -80.0f);
-		//		D3DXMATRIX	mtxRot, mtxTrans, mtxView, mtxMeshRot, mtxMeshTrans;				//計算用マトリックス
-		//		D3DXMATRIX mtx;			// 武器のマトリックス
-
-		//		// ワールドマトリックスの初期化
-		//		D3DXMatrixIdentity(&mtx);
-
-		//		// 位置を反映
-		//		D3DXMatrixTranslation(&mtxMeshTrans, pos.x, pos.y, pos.z);
-		//		D3DXMatrixMultiply(&mtx, &mtx, &mtxMeshTrans);
-
-		//		D3DXMatrixMultiply(&mtx, &mtx, &pModel[14].GetMtxWorld());
-
-		//		for (int nCount = 0; nCount < 20; nCount++)
-		//		{
-		//			CEffect::FallingPetals(true, D3DXVECTOR3(mtx._41, mtx._42, mtx._43), 150);
-		//		}
-		//	}
-		//}
 	}
 	if (sTag == "house")
 	{
@@ -640,36 +614,64 @@ void CPlayer::Input(void)
 		//上下操作
 		if (pKeyboard->GetPressKeyboard(MOVE_ACCEL))
 		{
-			m_move.x += sinf(D3DX_PI * 1.0f + rot.y) * m_fSpeed;
-			m_move.z += cosf(D3DX_PI * 1.0f + rot.y) * m_fSpeed;
+			//左右操作
+			if (pKeyboard->GetPressKeyboard(MOVE_LEFT))
+			{
+				D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
+				m_dest.y = m_rot.y - ROT_SPEED;
+			}
+			else if (pKeyboard->GetPressKeyboard(MOVE_RIGHT))
+			{
+				D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
+				m_dest.y = m_rot.y + ROT_SPEED;
+			}
+			else
+			{
+				m_move.x += sinf(D3DX_PI * 1.0f + rot.y) * m_fSpeed;
+				m_move.z += cosf(D3DX_PI * 1.0f + rot.y) * m_fSpeed;
 
-			D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
+				D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
+			}
 		}
 		else if (pKeyboard->GetPressKeyboard(MOVE_BRAKE))
 		{
-			m_move.x += sinf(D3DX_PI * 0.0f + rot.y) * m_fSpeed;
-			m_move.z += cosf(D3DX_PI * 0.0f + rot.y) * m_fSpeed;
+			//左右操作
+			if (pKeyboard->GetPressKeyboard(MOVE_LEFT))
+			{
+				D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
+				m_dest.y = m_rot.y + ROT_SPEED;
+			}
+			else if (pKeyboard->GetPressKeyboard(MOVE_RIGHT))
+			{
+				D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
+				m_dest.y = m_rot.y - ROT_SPEED;
+			}
+			else
+			{
+				m_move.x += sinf(D3DX_PI * 0.0f + rot.y) * m_fSpeed;
+				m_move.z += cosf(D3DX_PI * 0.0f + rot.y) * m_fSpeed;
 
-			D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
+				D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
+			}
 		}
 
-		//左右操作
-		if (pKeyboard->GetPressKeyboard(MOVE_LEFT))
-		{
-			//m_move.x += sinf(D3DX_PI * 0.5f + rot.y) * m_fSpeed;
-			//m_move.z += cosf(D3DX_PI * 0.5f + rot.y) * m_fSpeed;
+		////左右操作
+		//if (pKeyboard->GetPressKeyboard(MOVE_LEFT))
+		//{
+		//	//m_move.x += sinf(D3DX_PI * 0.5f + rot.y) * m_fSpeed;
+		//	//m_move.z += cosf(D3DX_PI * 0.5f + rot.y) * m_fSpeed;
 
-			D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
-			m_dest.y = m_rot.y - ROT_SPEED;
-		}
-		else if (pKeyboard->GetPressKeyboard(MOVE_RIGHT))
-		{
-			//m_move.x += sinf(-D3DX_PI * 0.5f + rot.y) * m_fSpeed;
-			//m_move.z += cosf(-D3DX_PI * 0.5f + rot.y) * m_fSpeed;
+		//	D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
+		//	m_dest.y = m_rot.y - ROT_SPEED;
+		//}
+		//else if (pKeyboard->GetPressKeyboard(MOVE_RIGHT))
+		//{
+		//	//m_move.x += sinf(-D3DX_PI * 0.5f + rot.y) * m_fSpeed;
+		//	//m_move.z += cosf(-D3DX_PI * 0.5f + rot.y) * m_fSpeed;
 
-			D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
-			m_dest.y = m_rot.y + ROT_SPEED;
-		}
+		//	D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
+		//	m_dest.y = m_rot.y + ROT_SPEED;
+		//}
 
 		// 左右ボタンを押しているとき
 		if (pKeyboard->GetPressKeyboard(MOVE_LEFT) || pKeyboard->GetPressKeyboard(MOVE_RIGHT))
