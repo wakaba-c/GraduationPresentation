@@ -51,9 +51,11 @@ CBox::~CBox()
 HRESULT CBox::Init(void)
 {
 	// 初期化
-	nCntMove_X = 0;
-	nCntMove_Y = 0;
+	m_nCntMove_X = 0;
+	m_nCntMove_Y = 0;
 	m_bPlacement = false;
+	m_bCreate = false;
+	m_bMove = false;
 
 	for (int nCntDepth = 0; nCntDepth < Box_Depth; nCntDepth++)
 	{
@@ -106,19 +108,19 @@ void CBox::Update(void)
 		for (int nWide = 0; nWide < Box_Width; nWide++)
 		{
 			// 初期配置
-			if (nDepth == nCntMove_Y && nWide == nCntMove_X)
+			if (nDepth == m_nCntMove_Y && nWide == m_nCntMove_X)
 			{
 				m_bPuzzle[nDepth][nWide] = true;
 			}
-			else if (nDepth == nCntMove_Y && nWide == nCntMove_X + 1)
+			else if (nDepth == m_nCntMove_Y && nWide == m_nCntMove_X + 1)
 			{
 				m_bPuzzle[nDepth][nWide] = true;
 			}
-			else if (nDepth == nCntMove_Y + 1 && nWide == nCntMove_X)
+			else if (nDepth == m_nCntMove_Y + 1 && nWide == m_nCntMove_X)
 			{
 				m_bPuzzle[nDepth][nWide] = true;
 			}
-			else if (nDepth == nCntMove_Y + 1 && nWide == nCntMove_X + 1)
+			else if (nDepth == m_nCntMove_Y + 1 && nWide == m_nCntMove_X + 1)
 			{
 				m_bPuzzle[nDepth][nWide] = true;
 			}
@@ -143,6 +145,7 @@ void CBox::Update(void)
 				{
 					// 色の変更
 					m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+					m_bCreate = true;
 				}
 			}
 			else
@@ -157,7 +160,7 @@ void CBox::Update(void)
 		}
 	}
 
-	if (m_bPlacement == false)
+	if (m_bMove == false)
 	{
 		// -----------------------------------------
 		// 移動処理
@@ -165,20 +168,20 @@ void CBox::Update(void)
 		// 左右操作
 		if (pKeyboard->GetTriggerKeyboard(MOVE_LEFT))
 		{
-			nCntMove_X--;
+			m_nCntMove_X--;
 		}
 		else if (pKeyboard->GetTriggerKeyboard(MOVE_RIGHT))
 		{
-			nCntMove_X++;
+			m_nCntMove_X++;
 		}
 		// 上下操作
 		else if (pKeyboard->GetTriggerKeyboard(MOVE_ACCEL))
 		{
-			nCntMove_Y--;
+			m_nCntMove_Y--;
 		}
 		else if (pKeyboard->GetTriggerKeyboard(MOVE_BRAKE))
 		{
-			nCntMove_Y++;
+			m_nCntMove_Y++;
 		}
 	}
 
@@ -186,24 +189,25 @@ void CBox::Update(void)
 	if (pKeyboard->GetTriggerKeyboard(MOVE_JUMP))
 	{
 		m_bPlacement = true;
+		m_bMove = true;
 	}
 
 	// 移動制限
-	if (nCntMove_X <= 0)
+	if (m_nCntMove_X <= 0)
 	{
-		nCntMove_X = 0;
+		m_nCntMove_X = 0;
 	}
-	if (nCntMove_Y <= 0)
+	if (m_nCntMove_Y <= 0)
 	{
-		nCntMove_Y = 0;
+		m_nCntMove_Y = 0;
 	}
-	if (nCntMove_X >= Box_Width - 2)
+	if (m_nCntMove_X >= Box_Width - 2)
 	{
-		nCntMove_X = Box_Width - 2;
+		m_nCntMove_X = Box_Width - 2;
 	}
-	if (nCntMove_Y >= Box_Depth - 2)
+	if (m_nCntMove_Y >= Box_Depth - 2)
 	{
-		nCntMove_Y = Box_Depth - 2;
+		m_nCntMove_Y = Box_Depth - 2;
 	}
 }
 

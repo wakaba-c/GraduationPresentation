@@ -43,7 +43,7 @@ public:
 
 	void OnTriggerEnter(CCollider *col) {};
 	void OnCollisionEnter(CCollider *col) {};
-	bool GetPlaacement(void){ return m_bPlacement; }								// 配置情報取得
+	bool GetPlaacement(void){ return m_bCreate; }									// 配置情報取得
 
 	static CBox *Create(void);														// 生成処理
 	static HRESULT Load(void);														// テクスチャ情報ロード
@@ -56,9 +56,11 @@ private:
 	bool m_bPuzzle[Box_Depth][Box_Width];											// 使用しているかどうか
 	CScene2D *m_pBlock[Box_Depth][Box_Width];										// シーン2Dのポインタ
 
-	int nCntMove_X;																	// 移動カウントX
-	int nCntMove_Y;																	// 移動カウントY
+	int m_nCntMove_X;																// 移動カウントX
+	int m_nCntMove_Y;																// 移動カウントY
 
 	bool m_bPlacement;																// 配置しているかどうか
+	bool m_bCreate;																	// 生成するかどうか
+	bool m_bMove;																	// 動くかどうか
 };
 #endif

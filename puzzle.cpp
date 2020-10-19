@@ -40,7 +40,7 @@ CPuzzle::~CPuzzle()
 HRESULT CPuzzle::Init(void)
 {
 	LoadAsset();
-	CBox::Create();
+	pBox = CBox::Create();
 
 	// 各種アセットの生成＆設置
 	//CMeshField::LoadRand("data/stage/rand.csv", false);				// 床情報の読込
@@ -56,6 +56,8 @@ HRESULT CPuzzle::Init(void)
 //=============================================================================
 void CPuzzle::Update(void)
 {
+
+
 #ifdef _DEBUG
 	CInputKeyboard *pInputKeyboard = CManager::GetInputKeyboard();
 	CInputController *pInputController = CManager::GetInputController();
