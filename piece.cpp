@@ -1,18 +1,17 @@
 //==================================================================================================================
 //
-// box[box.cpp]
+// ピース[piece.cpp]
 // Author:Ryouma Inoue
 //
 //==================================================================================================================
 #include "manager.h"
 #include "renderer.h"
-#include "Box.h"
+#include "piece.h"
 #include "inputKeyboard.h"
 #include "player.h"
 #include "game.h"
 #include "scene2D.h"
 #include "takaseiLibrary.h"
-#include "piece.h"
 
 //==================================================================================================================
 // マクロ定義
@@ -24,7 +23,7 @@
 //==================================================================================================================
 // 静的メンバ変数の初期化
 //==================================================================================================================
-LPDIRECT3DTEXTURE9 CBox::m_pTexture = NULL;			// テクスチャ変数
+LPDIRECT3DTEXTURE9 CPiece::m_pTexture = NULL;			// テクスチャ変数
 
 //==================================================================================================================
 // グローバル変数
@@ -33,7 +32,7 @@ LPDIRECT3DTEXTURE9 CBox::m_pTexture = NULL;			// テクスチャ変数
 //==================================================================================================================
 // コンストラクタ
 //==================================================================================================================
-CBox::CBox(PRIORITY type = CScene::PRIORITY_FLOOR) :CScene(type)
+CPiece::CPiece(PRIORITY type = CScene::PRIORITY_FLOOR) :CScene(type)
 {
 
 }
@@ -41,7 +40,7 @@ CBox::CBox(PRIORITY type = CScene::PRIORITY_FLOOR) :CScene(type)
 //==================================================================================================================
 // デストラクタ
 //==================================================================================================================
-CBox::~CBox()
+CPiece::~CPiece()
 {
 
 }
@@ -49,7 +48,7 @@ CBox::~CBox()
 //==================================================================================================================
 // 初期化処理
 //==================================================================================================================
-HRESULT CBox::Init(void)
+HRESULT CPiece::Init(void)
 {
 	// 初期化
 	m_nCntMove_X = 0;
@@ -58,11 +57,11 @@ HRESULT CBox::Init(void)
 	m_bCreate = false;
 	m_bMove = false;
 
-	for (int nCntDepth = 0; nCntDepth < Box_Depth; nCntDepth++)
+	for (int nCntDepth = 0; nCntDepth < Piece_Depth; nCntDepth++)
 	{
-		for (int nCntWidth = 0; nCntWidth < Box_Width; nCntWidth++)
+		for (int nCntWidth = 0; nCntWidth < Piece_Width; nCntWidth++)
 		{
-			m_bPuzzle[nCntDepth][nCntWidth] = false;
+			m_bPuzzle[nCntDepth][nCntWidth] = true;
 
 			m_pBlock[nCntDepth][nCntWidth] = CScene2D::Create(PRIORITY_UI);
 
@@ -74,47 +73,11 @@ HRESULT CBox::Init(void)
 				m_pBlock[nCntDepth][nCntWidth]->SetSize(D3DXVECTOR3(50.0f, 50.0f, 0.0f));
 				m_pBlock[nCntDepth][nCntWidth]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 				m_pBlock[nCntDepth][nCntWidth]->SetTransform();
+				// テクスチャ変更
+				m_pBlock[nCntDepth][nCntWidth]->BindTexture(CManager::GetResource("data/tex/grass.jpg"));
 			}
 		}
 	}
-
-	// 縦をカウント
-	for (int nDepth = 0; nDepth < Box_Depth; nDepth++)
-	{
-		// 横をカウント
-		for (int nWide = 0; nWide < Box_Width; nWide++)
-		{
-			// 初期配置
-			if (nDepth == m_nCntMove_Y && nWide == m_nCntMove_X)
-			{
-				m_bPuzzle[nDepth][nWide] = true;
-			}
-			else if (nDepth == m_nCntMove_Y && nWide == m_nCntMove_X + 1)
-			{
-				m_bPuzzle[nDepth][nWide] = true;
-			}
-			else if (nDepth == m_nCntMove_Y + 1 && nWide == m_nCntMove_X)
-			{
-				m_bPuzzle[nDepth][nWide] = true;
-			}
-			else if (nDepth == m_nCntMove_Y + 1 && nWide == m_nCntMove_X + 1)
-			{
-				m_bPuzzle[nDepth][nWide] = true;
-			}
-			else
-			{
-				m_bPuzzle[nDepth][nWide] = false;
-			}
-
-			// 状態確認
-			if (m_bPuzzle[nDepth][nWide] == true)
-			{
-				m_pPiece = CPiece::Create();
-			}
-
-		}
-	}
-
 
 	//m_bPuzzle[nCntMove_Y][nCntMove_X] = true;
 	//m_bPuzzle[nCntMove_Y][nCntMove_X + 1] = true;
@@ -127,7 +90,7 @@ HRESULT CBox::Init(void)
 //==================================================================================================================
 // 終了処理
 //==================================================================================================================
-void CBox::Uninit(void)
+void CPiece::Uninit(void)
 {
 
 }
@@ -135,25 +98,90 @@ void CBox::Uninit(void)
 //==================================================================================================================
 // 更新処理
 //==================================================================================================================
-void CBox::Update(void)
+void CPiece::Update(void)
 {
 	// キーボード取得
 	CInputKeyboard *pKeyboard = CManager::GetInputKeyboard();
 
-	m_bPiece = m_pPiece->GetPlaacement();
-
-
-	if (m_bPiece == true)
+	// 縦をカウント
+	for (int nDepth = 0; nDepth < Piece_Depth; nDepth++)
 	{
-		CPiece::Create();
-		m_pPiece->SetPlaacement(false);
+		// 横をカウント
+		for (int nWide = 0; nWide < Piece_Width; nWide++)
+		{
+			m_pos = m_pBlock[nDepth][nWide]->GetPosition();
+			// 状態確認
+			if (m_bPuzzle[nDepth][nWide] == true)
+			{
+				// テクスチャ変更
+				m_pBlock[nDepth][nWide]->BindTexture(CManager::GetResource("data/tex/grass.jpg"));
+
+				// 配置しているかどうか
+				if (m_bPlacement == false)
+				{
+					// 色の変更
+					m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
+				}
+				else
+				{
+					// 色の変更
+					m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+				}
+			}
+			if (m_bPlacement == false)
+			{
+				// -----------------------------------------
+				// 移動処理
+				// -----------------------------------------
+				// 左右操作
+				if (pKeyboard->GetTriggerKeyboard(MOVE_LEFT))
+				{
+					m_pBlock[nDepth][nWide]->SetPosition(D3DXVECTOR3(m_pos.x - 55.0f,m_pos.y,m_pos.z));
+					m_pBlock[nDepth][nWide]->SetTransform();
+
+				}
+				else if (pKeyboard->GetTriggerKeyboard(MOVE_RIGHT))
+				{
+					m_pBlock[nDepth][nWide]->SetPosition(D3DXVECTOR3(m_pos.x + 55.0f, m_pos.y, m_pos.z));
+					m_pBlock[nDepth][nWide]->SetTransform();
+				}
+				// 上下操作
+				else if (pKeyboard->GetTriggerKeyboard(MOVE_ACCEL))
+				{
+					m_pBlock[nDepth][nWide]->SetPosition(D3DXVECTOR3(m_pos.x, m_pos.y - 55.0f, m_pos.z));
+					m_pBlock[nDepth][nWide]->SetTransform();
+				}
+				else if (pKeyboard->GetTriggerKeyboard(MOVE_BRAKE))
+				{
+					m_pBlock[nDepth][nWide]->SetPosition(D3DXVECTOR3(m_pos.x, m_pos.y + 55.0f, m_pos.z));
+					m_pBlock[nDepth][nWide]->SetTransform();
+				}
+			}
+
+		}
+	}
+
+
+	// 配置決定
+	if (pKeyboard->GetTriggerKeyboard(MOVE_JUMP))
+	{
+		m_bPlacement = true;
+		m_bMove = true;
+	}
+	if (m_bMove == true)
+	{
+		if (pKeyboard->GetTriggerKeyboard(DIK_C))
+		{
+			m_bCreate = true;
+			m_bMove = false;
+		}
 	}
 }
 
 //==================================================================================================================
 // 描画処理
 //==================================================================================================================
-void CBox::Draw(void)
+void CPiece::Draw(void)
 {
 
 }
@@ -161,25 +189,25 @@ void CBox::Draw(void)
 //==================================================================================================================
 // ポリゴン生成
 //==================================================================================================================
-CBox *CBox::Create(void)
+CPiece *CPiece::Create(void)
 {
 	// シーン動的に確保
-	CBox *pBox = new CBox(CScene::PRIORITY_FLOOR);
+	CPiece *pPiece = new CPiece(CScene::PRIORITY_FLOOR);
 
-	if (pBox != NULL)
+	if (pPiece != NULL)
 	{
 		// シーン初期化
-		pBox->Init();
+		pPiece->Init();
 	}
 
 	// 値を返す
-	return pBox;
+	return pPiece;
 }
 
 //==================================================================================================================
 // テクスチャ情報ロード
 //==================================================================================================================
-HRESULT CBox::Load(void)
+HRESULT CPiece::Load(void)
 {
 	return S_OK;
 }
@@ -187,7 +215,7 @@ HRESULT CBox::Load(void)
 //==================================================================================================================
 // テクスチャ情報破棄
 //==================================================================================================================
-void CBox::Unload(void)
+void CPiece::Unload(void)
 {
 	// テクスチャの開放
 

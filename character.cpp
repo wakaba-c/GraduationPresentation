@@ -120,6 +120,10 @@ void CCharacter::Update(void)
 	// アニメーション再生停止のフラグが立っていた時
 	if (m_bAnimation) Animation();
 
+	for (int nCount = 0; nCount < m_nNumParts; nCount++)
+	{
+		m_pModel[nCount].Update();
+	}
 #ifdef _DEBUG
 	Debug();
 #endif
@@ -289,7 +293,7 @@ void CCharacter::LoadScript(std::string add, const int nMaxAnim)
 					{//キャラクターの初期情報のとき
 						nCntPointer = 0;															//参照するポインタの値を初期化
 
-																									//エンドキャラクターセットが来るまでループ
+						// エンドキャラクターセットが来るまでループ
 						while (strcmp(cHeadText, "END_CHARACTERSET") != 0)
 						{
 							fgets(cReadText, sizeof(cReadText), pFile);
@@ -466,69 +470,72 @@ void CCharacter::LoadScript(std::string add, const int nMaxAnim)
 //=============================================================================
 void CCharacter::Animation(void)
 {
-	//最初のフレームの時
-	if (m_nCurrentFrame == 0)
+	if (m_nAnimationType > -1)
 	{
-		for (int nCount = 0; nCount < m_nNumParts; nCount++)
+		//最初のフレームの時
+		if (m_nCurrentFrame == 0)
 		{
-			D3DXVECTOR3 pos = m_pModel[nCount].GetPosition();
-			D3DXVECTOR3 rot = m_pModel[nCount].GetRotation();
-
-			if (m_bAnimSwitch)
+			for (int nCount = 0; nCount < m_nNumParts; nCount++)
 			{
-				//posの計算((目標のkey + プリセットの配置) - 現在のキー)
-				m_apCurrentPos[nCount] = ((m_pAnimation[m_nAnimationType].apKeyInfo[nCount].aKey[m_nCurrentKey].pos + m_pModel[nCount].GetPosPreset()) - pos) / 0.1f * (float)m_pAnimation[m_nAnimationType].nSwitchFrame;
+				D3DXVECTOR3 pos = m_pModel[nCount].GetPosition();
+				D3DXVECTOR3 rot = m_pModel[nCount].GetRotation();
 
-				//rotの計算((目標のkey + プリセットの配置) - 現在のキー)
-				m_apCurrentRot[nCount] = ((m_pAnimation[m_nAnimationType].apKeyInfo[nCount].aKey[m_nCurrentKey].rot + m_pModel[nCount].GetRotPreset()) - rot) / 0.1f * (float)m_pAnimation[m_nAnimationType].nSwitchFrame;
+				if (m_bAnimSwitch)
+				{
+					//posの計算((目標のkey + プリセットの配置) - 現在のキー)
+					m_apCurrentPos[nCount] = ((m_pAnimation[m_nAnimationType].apKeyInfo[nCount].aKey[m_nCurrentKey].pos + m_pModel[nCount].GetPosPreset()) - pos) / 0.1f * (float)m_pAnimation[m_nAnimationType].nSwitchFrame;
+
+					//rotの計算((目標のkey + プリセットの配置) - 現在のキー)
+					m_apCurrentRot[nCount] = ((m_pAnimation[m_nAnimationType].apKeyInfo[nCount].aKey[m_nCurrentKey].rot + m_pModel[nCount].GetRotPreset()) - rot) / 0.1f * (float)m_pAnimation[m_nAnimationType].nSwitchFrame;
+				}
+				else
+				{
+					//posの計算((目標のkey + プリセットの配置) - 現在のキー)
+					m_apCurrentPos[nCount] = ((m_pAnimation[m_nAnimationType].apKeyInfo[nCount].aKey[m_nCurrentKey].pos + m_pModel[nCount].GetPosPreset()) - pos) / (float)m_pAnimation[m_nAnimationType].apKeyInfo[m_nCurrentKey].nFrame;
+
+					//rotの計算((目標のkey + プリセットの配置) - 現在のキー)
+					m_apCurrentRot[nCount] = ((m_pAnimation[m_nAnimationType].apKeyInfo[nCount].aKey[m_nCurrentKey].rot + m_pModel[nCount].GetRotPreset()) - rot) / (float)m_pAnimation[m_nAnimationType].apKeyInfo[m_nCurrentKey].nFrame;
+				}
 			}
-			else
+		}
+		else
+		{//それ以外のフレーム
+			for (int nCount = 0; nCount < m_nNumParts; nCount++)
 			{
-				//posの計算((目標のkey + プリセットの配置) - 現在のキー)
-				m_apCurrentPos[nCount] = ((m_pAnimation[m_nAnimationType].apKeyInfo[nCount].aKey[m_nCurrentKey].pos + m_pModel[nCount].GetPosPreset()) - pos) / (float)m_pAnimation[m_nAnimationType].apKeyInfo[m_nCurrentKey].nFrame;
+				D3DXVECTOR3 pos = m_pModel[nCount].GetPosition();
+				D3DXVECTOR3 rot = m_pModel[nCount].GetRotation();
 
-				//rotの計算((目標のkey + プリセットの配置) - 現在のキー)
-				m_apCurrentRot[nCount] = ((m_pAnimation[m_nAnimationType].apKeyInfo[nCount].aKey[m_nCurrentKey].rot + m_pModel[nCount].GetRotPreset()) - rot) / (float)m_pAnimation[m_nAnimationType].apKeyInfo[m_nCurrentKey].nFrame;
+				//rotの移動
+				m_pModel[nCount].SetRotation(rot + m_apCurrentRot[nCount]);
+
+				//posの移動
+				m_pModel[nCount].SetPosition(pos + m_apCurrentPos[nCount]);
 			}
 		}
-	}
-	else
-	{//それ以外のフレーム
-		for (int nCount = 0; nCount < m_nNumParts; nCount++)
-		{
-			D3DXVECTOR3 pos = m_pModel[nCount].GetPosition();
-			D3DXVECTOR3 rot = m_pModel[nCount].GetRotation();
 
-			//rotの移動
-			m_pModel[nCount].SetRotation(rot + m_apCurrentRot[nCount]);
+		if (m_pAnimation[m_nAnimationType].apKeyInfo != NULL)
+		{// キー情報がNULLではないとき
+			// フレームの最大数に満たない場合
+			if (m_nCurrentFrame < m_pAnimation[m_nAnimationType].apKeyInfo[m_nCurrentKey].nFrame)
+			{
+				m_nCurrentFrame++;
+			}
+			//フレーム数の最大値に達した場合
+			else if (m_nCurrentFrame >= m_pAnimation[m_nAnimationType].apKeyInfo[m_nCurrentKey].nFrame)
+			{
+				// 最大フレーム到達時の挙動
+				BehaviorForMaxFrame();
 
-			//posの移動
-			m_pModel[nCount].SetPosition(pos + m_apCurrentPos[nCount]);
+				m_nCurrentKey++;			// キーの値に1プラス
+				m_nCurrentFrame = 0;		// フレームのリセット
+			}
 		}
-	}
 
-	if (m_pAnimation[m_nAnimationType].apKeyInfo != NULL)
-	{// キー情報がNULLではないとき
-		// フレームの最大数に満たない場合
-		if (m_nCurrentFrame < m_pAnimation[m_nAnimationType].apKeyInfo[m_nCurrentKey].nFrame)
+		// キー数の最大値に達した場合
+		if (m_nCurrentKey >= m_pAnimation[m_nAnimationType].nMaxKey)
 		{
-			m_nCurrentFrame++;
+			BehaviorForMaxKey();
 		}
-		//フレーム数の最大値に達した場合
-		else if (m_nCurrentFrame >= m_pAnimation[m_nAnimationType].apKeyInfo[m_nCurrentKey].nFrame)
-		{
-			// 最大フレーム到達時の挙動
-			BehaviorForMaxFrame();
-
-			m_nCurrentKey++;			// キーの値に1プラス
-			m_nCurrentFrame = 0;		// フレームのリセット
-		}
-	}
-
-	// キー数の最大値に達した場合
-	if (m_nCurrentKey >= m_pAnimation[m_nAnimationType].nMaxKey)
-	{
-		BehaviorForMaxKey();
 	}
 }
 

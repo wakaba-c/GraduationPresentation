@@ -286,7 +286,8 @@ void CDebugProc::SelectModel(void)
 			FLOAT fDist;
 			LPD3DXMESH mesh = pObj->GetMesh();
 			D3DXIntersect(mesh, &vStartPoint, &vRayDir, &bHit, NULL, NULL, NULL, &fDist, NULL, NULL);
-			if (bHit)//メッシュに当たったら、そのメッシュをワイヤーフレームモードに
+
+			if (bHit)
 			{
 				float fWork = CManager::GetDistance(vStartPoint, pObj->GetPosition());
 				if (fDistance > fWork)
@@ -321,11 +322,6 @@ void CDebugProc::Debug(void)
 	const char* listbox_items[] = { "Apple", "Banana", "Cherry", "Kiwi", "Mango", "Orange", "Pineapple", "Strawberry", "Watermelon" };
 	static int listbox_item_current = 1;
 	ImGui::ListBox("listbox\n(single select)", &listbox_item_current, listbox_items, IM_ARRAYSIZE(listbox_items), 4);
-
-	if (pKeyboard->GetTriggerKeyboard(DIK_D))
-	{
-		m_bDebug = !m_bDebug;
-	}
 
 	if (ImGui::Checkbox("DebugMode", &m_bDebug))		// 地形編集モード切り替え
 	{

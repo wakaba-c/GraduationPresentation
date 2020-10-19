@@ -40,7 +40,7 @@ CPuzzle::~CPuzzle()
 HRESULT CPuzzle::Init(void)
 {
 	LoadAsset();
-	CBox::Create();
+	pBox = CBox::Create();
 
 	// 各種アセットの生成＆設置
 	//CMeshField::LoadRand("data/stage/rand.csv", false);				// 床情報の読込
@@ -56,6 +56,8 @@ HRESULT CPuzzle::Init(void)
 //=============================================================================
 void CPuzzle::Update(void)
 {
+
+
 #ifdef _DEBUG
 	CInputKeyboard *pInputKeyboard = CManager::GetInputKeyboard();
 	CInputController *pInputController = CManager::GetInputController();
@@ -68,7 +70,7 @@ void CPuzzle::Update(void)
 			{// 指定のキーが押されたとき
 				if (CManager::GetNetwork() != NULL)
 				{
-					//if (CManager::GetNetwork()->Connect() == S_OK)
+					if (CManager::GetNetwork()->Connect() == S_OK)
 					{
 						CFade::SetFade(CManager::MODE_GAME);					//フェードを入れる
 					}

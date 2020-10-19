@@ -34,12 +34,12 @@
 //=============================================================================
 // マクロ定義
 //=============================================================================
-#define	SCRIPT_PLAYER "data/animation/girl.txt"		// 赤ずきんのモデル情報アドレス
+//#define	SCRIPT_PLAYER "data/animation/girl.txt"		// 赤ずきんのモデル情報アドレス
+#define	SCRIPT_CAR01 "data/animation/car01.txt"		// 車01のモデル情報アドレス
 #define COUNTER_COMBO 30							// 派生攻撃受付カウンタ
 #define JUMP_MAX 10									// ジャンプの加速度
 #define ROT_AMOUNT 0.05f							// 回転の差を減らしていく量
-#define ROT_LIMIT 0.8f								// 回転制限
-#define ROT_SPEED 0.2f								// 回転速度
+#define ROT_SPEED 0.3f								// 回転速度
 
 //=============================================================================
 // コンストラクタ
@@ -61,7 +61,6 @@ CPlayer::CPlayer(CScene::PRIORITY obj = CScene::PRIORITY_PLAYER) : CCharacter(ob
 	m_pBox = NULL;
 	m_bJump = false;									// ジャンプフラグの初期化
 	m_nCntAttacCombo = COUNTER_COMBO;					// 攻撃派生カウンタの初期化
-	m_state = PLAYERSTATE_NORMAL;						// プレイヤーステータスの初期化
 	m_nActionCount = 0;									// アクションカウンタの初期化
 	m_nParticleCount = 0;								// パーティクルカウンタの初期化
 	m_fDeathblow = 0.0f;								// 必殺技ポイントの初期化
@@ -96,17 +95,17 @@ HRESULT CPlayer::Init(void)
 
 	if (pCamera != NULL)
 	{
-		pCamera->SetPosCamera(pos, D3DXVECTOR3(0.0f, D3DX_PI, 0.0f));
+		pCamera->SetPosCamera(pos, D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	}
 
 	// キャラクターの初期化処理
 	CCharacter::Init();
 
 	// アニメーションの設定
-	AnimationSwitch(ANIMATIONTYPE_NEUTRAL);
+	AnimationSwitch(ANIMATIONTYPE_NONE);
 
 	// プレイヤーモデル情報の読み込み
-	LoadScript(SCRIPT_PLAYER, ANIMATIONTYPE_MAX);
+	LoadScript(SCRIPT_CAR01, ANIMATIONTYPE_MAX);
 
 	// 武器の当たり判定を生成
 	m_pColWeaponSphere = CColliderSphere::Create(true, 30.0f);
@@ -204,7 +203,7 @@ void CPlayer::Update(void)
 
 		RANDTYPE Type = pFloor->GetRandType();
 
-		if (animType == ANIMATIONTYPE_WALK || animType == ANIMATIONTYPE_RUN)
+		if (animType == ANIMATIONTYPE_RUN)
 		{
 			if (currentKey == 5 || currentKey == 0)
 			{
@@ -223,15 +222,6 @@ void CPlayer::Update(void)
 		}
 	}
 
-	//角度
-	if (animType != ANIMATIONTYPE_ATTACK_4)
-	{
-		if (!m_bJump)
-		{
-			m_dest.y = atan2f(-m_move.x, -m_move.z);
-		}
-	}
-
 	// 当たり判定管理処理
 	Collision();
 
@@ -245,48 +235,36 @@ void CPlayer::Update(void)
 		m_move.z += (0 - m_move.z) * 0.12f;
 	}
 
-	//重力処理
-	if (m_bJump)
-	{// ジャンプしていたとき
-		if (animType != ANIMATIONTYPE_JUMP_1)
-		{
-			if (pos.y > fHeight)
-			{// 現在の高さが床より高かったとき
-				m_move.y += -0.7f;
-			}
-			else
-			{// 現在の高さが床より低かった時
-				pos.y = fHeight;											// 床の高さを求める
-				m_move.y = 0.0f;
-				if (m_bJump)
-				{
-					// 砂煙のエフェクト表現
-					CEffect::SandSmokeEffect(pos);
+	////重力処理
+	//if (m_bJump)
+	//{// ジャンプしていたとき
+	//	if (animType != ANIMATIONTYPE_JUMP_1)
+	//	{
+	//		if (pos.y > fHeight)
+	//		{// 現在の高さが床より高かったとき
+	//			m_move.y += -0.7f;
+	//		}
+	//		else
+	//		{// 現在の高さが床より低かった時
+	//			pos.y = fHeight;											// 床の高さを求める
+	//			m_move.y = 0.0f;
+	//			if (m_bJump)
+	//			{
+	//				// 砂煙のエフェクト表現
+	//				CEffect::SandSmokeEffect(pos);
 
-					m_bJump = false;										// ジャンプ判定を変える
-					SetAnimPlayState(true);									// アニメーションの再開
-					AnimationSwitch(ANIMATIONTYPE_JUMP_5);					// アニメーションの変更
-					pSound->PlaySoundA(SOUND_LABEL_SE_LANDING);				// 着地音の再生
-				}
-			}
-		}
-	}
-	else
-	{
-		pos.y = fHeight;											// 床の高さを求める
-	}
-
-	// エフェクトの生成
-	if (animType == ANIMATIONTYPE_ATTACK_5)
-	{
-		if (currentKey == 1)
-		{
-			if (currentFrame > 0)
-			{
-				CEffect::PetalCluster(D3DXVECTOR3(pModel[4].GetMtxWorld()._41, pModel[4].GetMtxWorld()._42, pModel[4].GetMtxWorld()._43), m_rot);
-			}
-		}
-	}
+	//				m_bJump = false;										// ジャンプ判定を変える
+	//				SetAnimPlayState(true);									// アニメーションの再開
+	//				AnimationSwitch(ANIMATIONTYPE_JUMP_5);					// アニメーションの変更
+	//				pSound->PlaySoundA(SOUND_LABEL_SE_LANDING);				// 着地音の再生
+	//			}
+	//		}
+	//	}
+	//}
+	//else
+	//{
+	//	pos.y = fHeight;											// 床の高さを求める
+	//}
 
 	//球体のポインタがNULLではないとき
 	if (m_pColWeaponSphere != NULL)
@@ -341,103 +319,12 @@ void CPlayer::Update(void)
 		m_pColPlayerSphere->SetPosition(pos);		// 現在位置 の更新
 	}
 
+	// 位置設定
 	SetPosition(pos);
 
 	if (m_pBox != NULL)
 	{
 		m_pBox->SetPosition(pos);
-	}
-
-	//キャラクターの振り向き
-	m_difference.y = m_rot.y - m_dest.y;
-
-	//ディファレンスの値が指定した値
-	if (m_difference.y > D3DX_PI)
-	{
-		m_difference.y -= D3DX_PI * 2;
-	}
-	else if (m_difference.y < -D3DX_PI)
-	{
-		m_difference.y += D3DX_PI * 2;
-	}
-
-	// 1フレームあたりの回転量を代入
-	m_rot.y -= m_difference.y * 0.1f;
-
-	if (m_rot.y < -D3DX_PI)
-	{
-		m_rot.y += D3DX_PI * 2;
-	}
-	else if (m_rot.y > D3DX_PI)
-	{
-		m_rot.y -= D3DX_PI * 2;
-	}
-
-	// 武器出現エフェクト処理
-	if (animType == ANIMATIONTYPE_SWITCHWEAPON)
-	{// 前のアニメーションが武器の切り替えだったとき
-		if (!bAnimPlayState)
-		{// 現在アニメーションをしていなかったとき
-			m_nActionCount++;				// カウンタに+1する
-
-			if (m_nActionCount > 50)
-			{// カウンタが50以上だったとき
-				pModel[14].SetActive(true);		// 武器の更新を許可する
-				SetAnimPlayState(true);				// アニメーションの再開
-				AnimationSwitch(ANIMATIONTYPE_NEUTRAL);	// 待機モーションに設定
-				m_nActionCount = 0;					// カウンタをリセット
-
-				int nNumVertices;					//頂点数
-				DWORD sizeFVF;						//頂点フォーマット
-				BYTE	*pVertexBuffer;				//頂点バッファへのポインタ
-				LPD3DXMESH pMesh = pModel[14].GetMesh();		// メッシュ情報の取得
-
-				//頂点数を取得
-				nNumVertices = pMesh->GetNumVertices();
-
-				//頂点フォーマットのサイズを取得
-				sizeFVF = D3DXGetFVFVertexSize(pMesh->GetFVF());
-
-				//頂点バッファをロック
-				pMesh->LockVertexBuffer(D3DLOCK_READONLY, (void**)&pVertexBuffer);
-
-				// パーティクル生成
-				for (int nCount = 0; nCount < nNumVertices; nCount++)
-				{
-					D3DXVECTOR3	vtx = *(D3DXVECTOR3*)pVertexBuffer;
-
-					if (nCount % 50 == 0)
-					{// 50回に1回生成する
-						D3DXVECTOR3 rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-						D3DXMATRIX	mtxRot, mtxTrans, mtxView, mtxMeshRot, mtxMeshTrans;				//計算用マトリックス
-						D3DXMATRIX mtx;			// 武器のマトリックス
-						D3DXVECTOR3 pos = GetPosition();
-
-						// ワールドマトリックスの初期化
-						D3DXMatrixIdentity(&mtx);
-
-						// 回転を反映
-						D3DXMatrixRotationYawPitchRoll(&mtxMeshRot, rot.y, rot.x, rot.z);
-						D3DXMatrixMultiply(&mtx, &mtx, &mtxMeshRot);
-
-						// 位置を反映
-						D3DXMatrixTranslation(&mtxMeshTrans, vtx.x, vtx.y, vtx.z);
-						D3DXMatrixMultiply(&mtx, &mtx, &mtxMeshTrans);
-
-						// マトリックス情報の合成
-						D3DXMatrixMultiply(&mtx, &mtx, &pModel[14].GetMtxWorld());
-
-						// エフェクトの生成
-						CEffect::FallingPetals(false, D3DXVECTOR3(mtx._41, mtx._42, mtx._43), 50);
-					}
-
-					pVertexBuffer += sizeFVF;			//サイズ分のポインタを進める
-				}
-
-				//頂点バッファをアンロック
-				pMesh->UnlockVertexBuffer();
-			}
-		}
 	}
 
 	// キャラクターの更新処理
@@ -514,32 +401,6 @@ void CPlayer::OnTriggerEnter(CCollider *col)
 				CFade::SetFade(CManager::MODE_RESULT);					// リザルトに遷移
 			}
 		}
-
-		if (sTag == "enemy")
-		{
-			ANIMATIONTYPE animType = (ANIMATIONTYPE)GetAnimType();
-
-			if (animType != ANIMATIONTYPE_ATTACK_5)
-			{
-				D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 40.0f, -80.0f);
-				D3DXMATRIX	mtxRot, mtxTrans, mtxView, mtxMeshRot, mtxMeshTrans;				//計算用マトリックス
-				D3DXMATRIX mtx;			// 武器のマトリックス
-
-				// ワールドマトリックスの初期化
-				D3DXMatrixIdentity(&mtx);
-
-				// 位置を反映
-				D3DXMatrixTranslation(&mtxMeshTrans, pos.x, pos.y, pos.z);
-				D3DXMatrixMultiply(&mtx, &mtx, &mtxMeshTrans);
-
-				D3DXMatrixMultiply(&mtx, &mtx, &pModel[14].GetMtxWorld());
-
-				for (int nCount = 0; nCount < 20; nCount++)
-				{
-					CEffect::FallingPetals(true, D3DXVECTOR3(mtx._41, mtx._42, mtx._43), 150);
-				}
-			}
-		}
 	}
 	if (sTag == "house")
 	{
@@ -572,145 +433,6 @@ void CPlayer::BehaviorForMaxKey(void)
 	ANIMATIONTYPE animType = (ANIMATIONTYPE)GetAnimType();
 	D3DXVECTOR3 rot = pModel[0].GetRotation();		// 回転量取得
 
-	switch (animType)
-	{
-	case ANIMATIONTYPE_ATTACK_3:
-		rot.y = 1.5f;										// Y軸の回転量変更
-		pModel[0].SetRotation(rot);						// 回転量の設定
-		break;
-	case ANIMATIONTYPE_ATTACK_4:
-		rot.x = 0.0f;										// X軸の回転量変更
-		pModel[0].SetRotation(rot);						// 回転量の設定
-		break;
-	case ANIMATIONTYPE_RUNATTACK:
-		rot.x = 0.72f;										// X軸の回転量変更
-		pModel[0].SetRotation(rot);						// 回転量の設定
-		break;
-	case ANIMATIONTYPE_JUMP_1:
-		AnimationSwitch(ANIMATIONTYPE_JUMP_2);
-		break;
-	case ANIMATIONTYPE_JUMP_2:
-		AnimationSwitch(ANIMATIONTYPE_JUMP_3);
-		break;
-	case ANIMATIONTYPE_JUMP_3:
-		AnimationSwitch(ANIMATIONTYPE_JUMP_4);
-		break;
-	case ANIMATIONTYPE_JUMP_4:
-		SetAnimPlayState(false);
-		break;
-	case ANIMATIONTYPE_SWITCHWEAPON:
-		int nNumVertices;			//頂点数
-		DWORD sizeFVF;				//頂点フォーマット
-		BYTE	*pVertexBuffer;		//頂点バッファへのポインタ
-		LPD3DXMESH pMesh = pModel[14].GetMesh();
-
-		//頂点数を取得
-		nNumVertices = pMesh->GetNumVertices();
-
-		//頂点フォーマットのサイズを取得
-		sizeFVF = D3DXGetFVFVertexSize(pMesh->GetFVF());
-
-		//頂点バッファをロック
-		pMesh->LockVertexBuffer(D3DLOCK_READONLY, (void**)&pVertexBuffer);
-
-		// パーティクル生成
-		for (int nCount = 0; nCount < nNumVertices; nCount++)
-		{
-			D3DXVECTOR3	vtx = *(D3DXVECTOR3*)pVertexBuffer;
-
-			if (nCount % 50 == 0)
-			{// 50回に1回生成する
-				D3DXVECTOR3 rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-				D3DXMATRIX	mtxRot, mtxTrans, mtxView, mtxMeshRot, mtxMeshTrans;				//計算用マトリックス
-				D3DXMATRIX mtx;			// 武器のマトリックス
-				D3DXVECTOR3 pos = GetPosition();
-
-				// ワールドマトリックスの初期化
-				D3DXMatrixIdentity(&mtx);
-
-				// 回転を反映
-				D3DXMatrixRotationYawPitchRoll(&mtxMeshRot, rot.y, rot.x, rot.z);
-				D3DXMatrixMultiply(&mtx, &mtx, &mtxMeshRot);
-
-				// 位置を反映
-				D3DXMatrixTranslation(&mtxMeshTrans, vtx.x, vtx.y, vtx.z);
-				D3DXMatrixMultiply(&mtx, &mtx, &mtxMeshTrans);
-
-				D3DXMatrixMultiply(&mtx, &mtx, &pModel[14].GetMtxWorld());
-
-				switch (m_state)
-				{
-				case PLAYERSTATE_NORMAL:
-					CEffect::FallingPetals(false, D3DXVECTOR3(mtx._41, mtx._42, mtx._43), 50);
-					break;
-				case PLAYERSTATE_FLOWER:
-					CEffect::PetalsGather(D3DXVECTOR3(mtx._41, mtx._42, mtx._43));
-					break;
-				}
-			}
-
-			pVertexBuffer += sizeFVF;			//サイズ分のポインタを進める
-		}
-
-		//頂点バッファをアンロック
-		pMesh->UnlockVertexBuffer();
-
-		CCamera *pCamera = CManager::GetCamera();
-
-		switch (m_state)
-		{
-		case PLAYERSTATE_NORMAL:
-			pCamera->SetDistance(350.0f);			// 視点と注視点の距離を変える
-			pModel[14].SetActive(false);			// 武器の描画を停止
-			m_state = PLAYERSTATE_FLOWER;			// ステータスを暴走に変更
-			m_fSpeed = SP_SPEED;					// スピードを変える
-			m_nActionCount = 0;						// カウンタの初期化
-			break;
-		case PLAYERSTATE_FLOWER:
-			m_state = PLAYERSTATE_NORMAL;			// ステータスを通常に戻す
-			m_fSpeed = NORMAL_SPEED;				// スピードを通常に戻す
-			SetAnimPlayState(false);				// アニメーションの停止処理
-			m_bEvent = false;						// イベントフラグを下す
-			return;
-			break;
-		}
-		break;
-	}
-
-	switch (m_state)
-	{
-	case PLAYERSTATE_NORMAL:
-		//攻撃の派生カウンタのリセット
-		if (animType == ANIMATIONTYPE_ATTACK_1 || animType == ANIMATIONTYPE_ATTACK_2 ||
-			animType == ANIMATIONTYPE_ATTACK_3)
-		{// モーションが攻撃モーションだったとき
-			m_nCntAttacCombo = 0;
-		}
-		break;
-	case PLAYERSTATE_FLOWER:
-		//攻撃の派生カウンタのリセット
-		if (animType == ANIMATIONTYPE_ATTACK_1)
-		{// モーションが攻撃モーションだったとき
-			m_nCntAttacCombo = 0;
-		}
-		break;
-	}
-
-	if (animType != ANIMATIONTYPE_JUMP_2 && animType != ANIMATIONTYPE_JUMP_3 && animType != ANIMATIONTYPE_JUMP_4)
-	{
-		ANIMATION *pAnimation = GetAnimData();
-		//ループするかどうか
-		if (pAnimation[animType].nLoop)
-		{
-			//キーのリセット
-			ResetKeyAndFrame();
-		}
-		else
-		{
-			//ニュートラルモーション
-			AnimationSwitch(ANIMATIONTYPE_NEUTRAL);
-		}
-	}
 }
 
 //=============================================================================
@@ -725,7 +447,7 @@ void CPlayer::MoveNearEnemy(void)
 	CScene *pSceneNext = NULL;														// 初期化
 	CScene *pSceneNow = CScene::GetScene(CScene::PRIORITY_ENEMY);					// 先頭アドレスの取得
 
-																					// 次がなくなるまで繰り返す
+	// 次がなくなるまで繰り返す
 	while (pSceneNow != NULL)
 	{
 		pSceneNext = CScene::GetSceneNext(pSceneNow, CScene::PRIORITY_ENEMY);		//次回アップデート対象を控える
@@ -759,46 +481,6 @@ void CPlayer::Collision(void)
 
 	switch (animType)
 	{
-	case ANIMATIONTYPE_NEUTRAL:					// 待機モーションのとき
-		if (m_pColWeaponSphere != NULL)
-		{// 武器の当たり判定が存在していたとき
-			if (m_pColWeaponSphere->GetUse())
-			{// 当たり判定の対象だったとき
-				m_pColWeaponSphere->SetUse(false);		// 対象から外す
-			}
-			if (m_pColHandSphere->GetUse())
-			{
-				m_pColHandSphere->SetUse(false);
-			}
-		}
-		if (m_pMeshOrbit != NULL)
-		{// 軌跡が存在していたとき
-			if (m_pMeshOrbit->GetOrbit())
-			{
-				m_pMeshOrbit->SetOrbit(false);
-			}
-		}
-		break;
-	case ANIMATIONTYPE_WALK:						// 歩くモーションのとき
-		if (m_pColWeaponSphere != NULL)
-		{// 武器の当たり判定が存在していたとき
-			if (m_pColWeaponSphere->GetUse())
-			{// 当たり判定の対象だったとき
-				m_pColWeaponSphere->SetUse(false);		// 対象から外す
-			}
-			if (m_pColHandSphere->GetUse())
-			{
-				m_pColHandSphere->SetUse(false);
-			}
-		}
-		if (m_pMeshOrbit != NULL)
-		{// 軌跡が存在していたとき
-			if (m_pMeshOrbit->GetOrbit())
-			{
-				m_pMeshOrbit->SetOrbit(false);
-			}
-		}
-		break;
 	case ANIMATIONTYPE_ATTACK_1:				// 攻撃モーションのとき
 		if (m_pColWeaponSphere != NULL)
 		{// 武器の当たり判定が存在していたとき
@@ -811,69 +493,6 @@ void CPlayer::Collision(void)
 		{// 軌跡が存在していたとき
 			if (!m_pMeshOrbit->GetOrbit())
 			{
-				m_pMeshOrbit->SetOrbit(true);
-			}
-		}
-		break;
-	case ANIMATIONTYPE_ATTACK_2:				// 攻撃モーションのとき
-		if (m_pColWeaponSphere != NULL)
-		{// 武器の当たり判定が存在していたとき
-			if (!m_pColWeaponSphere->GetUse())
-			{// 当たり判定の対象外だったとき
-				m_pColWeaponSphere->SetUse(true);		// 対象にする
-			}
-		}
-		if (m_pMeshOrbit != NULL)
-		{// 軌跡が存在していたとき
-			if (!m_pMeshOrbit->GetOrbit())
-			{// 軌跡の更新が停止していたとき
-				m_pMeshOrbit->SetOrbit(true);
-			}
-		}
-		break;
-	case ANIMATIONTYPE_ATTACK_3:				// 攻撃モーションのとき
-		if (m_pColWeaponSphere != NULL)
-		{// 武器の当たり判定が存在していたとき
-			if (!m_pColWeaponSphere->GetUse())
-			{// 当たり判定の対象外だったとき
-				m_pColWeaponSphere->SetUse(true);		// 対象にする
-			}
-		}
-		if (m_pMeshOrbit != NULL)
-		{// 軌跡が存在していたとき
-			if (!m_pMeshOrbit->GetOrbit())
-			{// 軌跡の更新が停止していたとき
-				m_pMeshOrbit->SetOrbit(true);
-			}
-		}
-	case ANIMATIONTYPE_ATTACK_4:				// 攻撃モーションのとき
-		if (m_pColWeaponSphere != NULL)
-		{// 武器の当たり判定が存在していたとき
-			if (!m_pColWeaponSphere->GetUse())
-			{// 当たり判定の対象外だったとき
-				m_pColWeaponSphere->SetUse(true);		// 対象にする
-			}
-		}
-		if (m_pMeshOrbit != NULL)
-		{// 軌跡が存在していたとき
-			if (!m_pMeshOrbit->GetOrbit())
-			{// 軌跡の更新が停止していたとき
-				m_pMeshOrbit->SetOrbit(true);
-			}
-		}
-		break;
-	case ANIMATIONTYPE_ATTACK_6:				// 攻撃モーションのとき
-		if (m_pColWeaponSphere != NULL)
-		{// 武器の当たり判定が存在していたとき
-			if (!m_pColWeaponSphere->GetUse())
-			{// 当たり判定の対象外だったとき
-				m_pColWeaponSphere->SetUse(true);		// 対象にする
-			}
-		}
-		if (m_pMeshOrbit != NULL)
-		{// 軌跡が存在していたとき
-			if (!m_pMeshOrbit->GetOrbit())
-			{// 軌跡の更新が停止していたとき
 				m_pMeshOrbit->SetOrbit(true);
 			}
 		}
@@ -983,87 +602,95 @@ void CPlayer::Input(void)
 			}
 		}
 
-		if (pKeyboard->GetTriggerKeyboard(DIK_H))
-		{// 本気の力開放
-			if (m_state != PLAYERSTATE_FLOWER)
-			{// 現在のステータスが暴走状態ではないとき
-				if (m_fDeathblow > 25.0f)
-				{
-					AnimationSwitch(ANIMATIONTYPE_SWITCHWEAPON);			// アニメーションの変更
-					m_nActionCount = 0;			// カウンタの初期化
-
-					D3DXVECTOR3 cameraRot = m_rot;				// 回転量を格納
-					cameraRot.y += D3DX_PI;						// 回転量に3.14を加算
-					pCamera->SetDistance(300.0f);				// 視点注視点の距離を設定
-					pCamera->SetPosCamera(GetPosition(), cameraRot);		// カメラの場所を設定
-					m_bEvent = true;
-				}
-			}
-		}
-
-		if (pKeyboard->GetTriggerKeyboard(DIK_LSHIFT))
-		{
-			D3DXVECTOR3 pos = GetPosition();
-			pos.y += 100.0f;
-			AnimationSwitch(ANIMATIONTYPE_RUNATTACK);
-			CEffect::Star(pos);
-			CEffect::Halo(pos, D3DXVECTOR3(30.0f, 30.0f, 0.0f));
-		}
-
-		if (pKeyboard->GetTriggerKeyboard(DIK_SPACE))
-		{// スペースキーが押されたとき
-			if (!m_bJump)
-			{
-				AnimationSwitch(ANIMATIONTYPE_JUMP_1);		// ジャンプモーションに切り替え
-				m_bJump = true;			// ジャンプしている
-			}
-		}
-
-		//左右操作
-		if (pKeyboard->GetPressKeyboard(MOVE_LEFT))
-		{
-			m_move.x += sinf(D3DX_PI * 0.5f + rot.y) * m_fSpeed;
-			m_move.z += cosf(D3DX_PI * 0.5f + rot.y) * m_fSpeed;
-
-			D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
-			m_dest.y = m_rot.y - ROT_SPEED;
-		}
-		else if (pKeyboard->GetPressKeyboard(MOVE_RIGHT))
-		{
-			m_move.x += sinf(-D3DX_PI * 0.5f + rot.y) * m_fSpeed;
-			m_move.z += cosf(-D3DX_PI * 0.5f + rot.y) * m_fSpeed;
-
-			D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
-			m_dest.y = m_rot.y + ROT_SPEED;
-		}
+		//if (pKeyboard->GetTriggerKeyboard(DIK_SPACE))
+		//{// スペースキーが押されたとき
+		//	if (!m_bJump)
+		//	{
+		//		AnimationSwitch(ANIMATIONTYPE_JUMP_1);		// ジャンプモーションに切り替え
+		//		m_bJump = true;			// ジャンプしている
+		//	}
+		//}
 
 		//上下操作
-		else if (pKeyboard->GetPressKeyboard(MOVE_ACCEL))
+		if (pKeyboard->GetPressKeyboard(MOVE_ACCEL))
 		{
-			m_move.x += sinf(D3DX_PI * 1.0f + rot.y) * m_fSpeed;
-			m_move.z += cosf(D3DX_PI * 1.0f + rot.y) * m_fSpeed;
+			//左右操作
+			if (pKeyboard->GetPressKeyboard(MOVE_LEFT))
+			{
+				D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
+				m_dest.y = m_rot.y - ROT_SPEED;
+			}
+			else if (pKeyboard->GetPressKeyboard(MOVE_RIGHT))
+			{
+				D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
+				m_dest.y = m_rot.y + ROT_SPEED;
+			}
+			else
+			{
+				m_move.x += sinf(D3DX_PI * 1.0f + rot.y) * m_fSpeed;
+				m_move.z += cosf(D3DX_PI * 1.0f + rot.y) * m_fSpeed;
 
-			D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
+				D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
+			}
 		}
 		else if (pKeyboard->GetPressKeyboard(MOVE_BRAKE))
 		{
-			m_move.x += sinf(D3DX_PI * 0.0f + rot.y) * m_fSpeed;
-			m_move.z += cosf(D3DX_PI * 0.0f + rot.y) * m_fSpeed;
+			//左右操作
+			if (pKeyboard->GetPressKeyboard(MOVE_LEFT))
+			{
+				D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
+				m_dest.y = m_rot.y + ROT_SPEED;
+			}
+			else if (pKeyboard->GetPressKeyboard(MOVE_RIGHT))
+			{
+				D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
+				m_dest.y = m_rot.y - ROT_SPEED;
+			}
+			else
+			{
+				m_move.x += sinf(D3DX_PI * 0.0f + rot.y) * m_fSpeed;
+				m_move.z += cosf(D3DX_PI * 0.0f + rot.y) * m_fSpeed;
 
-			D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
+				D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
+			}
 		}
 
-		// プレイヤーの回転と目標地点の差を格納
-		Diff.y = m_rot.y - m_dest.y;
+		////左右操作
+		//if (pKeyboard->GetPressKeyboard(MOVE_LEFT))
+		//{
+		//	//m_move.x += sinf(D3DX_PI * 0.5f + rot.y) * m_fSpeed;
+		//	//m_move.z += cosf(D3DX_PI * 0.5f + rot.y) * m_fSpeed;
 
-		// 回転の補正
-		CTakaseiLibrary::RotRevision(&Diff);
+		//	D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
+		//	m_dest.y = m_rot.y - ROT_SPEED;
+		//}
+		//else if (pKeyboard->GetPressKeyboard(MOVE_RIGHT))
+		//{
+		//	//m_move.x += sinf(-D3DX_PI * 0.5f + rot.y) * m_fSpeed;
+		//	//m_move.z += cosf(-D3DX_PI * 0.5f + rot.y) * m_fSpeed;
 
-		// プレイヤーを徐々に回転させていく
-		m_rot.y -= Diff.y * ROT_AMOUNT;
+		//	D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
+		//	m_dest.y = m_rot.y + ROT_SPEED;
+		//}
 
-		// 回転の設定
-		SetRotation(m_rot);
+		// 左右ボタンを押しているとき
+		if (pKeyboard->GetPressKeyboard(MOVE_LEFT) || pKeyboard->GetPressKeyboard(MOVE_RIGHT))
+		{
+			// プレイヤーの回転と目標地点の差を格納
+			Diff.y = m_rot.y - m_dest.y;
+
+			// 回転の補正
+			CTakaseiLibrary::RotRevision(&Diff);
+
+			// プレイヤーを徐々に回転させていく
+			m_rot.y -= Diff.y * ROT_AMOUNT;
+
+			// 回転の補正
+			CTakaseiLibrary::RotRevision(&m_rot);
+
+			// 回転の設定
+			SetRotation(m_rot);
+		}
 	}
 
 #ifdef _DEBUG
@@ -1073,28 +700,6 @@ void CPlayer::Input(void)
 	}
 	{// Kが押されたとき
 		m_fDeathblow = 50.0f;				// 必殺技ポイントを最大値まで上げる
-	}
-	if (pKeyboard->GetTriggerKeyboard(DIK_F8))
-	{// F8が押されたとき
-		switch (m_state)
-		{
-		case PLAYERSTATE_NORMAL:
-			m_state = PLAYERSTATE_FLOWER;
-			m_fSpeed = SP_SPEED;
-			break;
-		case PLAYERSTATE_FLOWER:
-			m_state = PLAYERSTATE_NORMAL;
-			m_fSpeed = NORMAL_SPEED;
-			break;
-			//=============================================================================
-			// アニメーションの切り替え
-			//=============================================================================
-
-		}
-	}
-	if (pKeyboard->GetTriggerKeyboard(DIK_L))
-	{
-		AnimationSwitch(ANIMATIONTYPE_SWITCHWEAPON);
 	}
 #endif
 }
@@ -1115,16 +720,6 @@ void CPlayer::Debug(void)
 		ImGui::Text("posOld = %.2f, %.2f, %.2f", posOld.x, posOld.y, posOld.z);								// プレイヤーの現在位置を表示
 		ImGui::Text("move = %.2f, %.2f, %.2f", m_move.x, m_move.y, m_move.z);								// プレイヤーの現在位置を表示
 		ImGui::Text("HP = %d", m_nLife);				// プレイヤーの体力を表示
-
-		switch (m_state)
-		{
-		case PLAYERSTATE_NORMAL:
-			ImGui::Text("normal");
-			break;
-		case PLAYERSTATE_FLOWER:
-			ImGui::Text("flower");
-			break;
-		}
 
 		if (ImGui::Button("BOSS"))
 		{
