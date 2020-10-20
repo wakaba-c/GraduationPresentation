@@ -33,6 +33,14 @@ class CScene2D;
 class CPiece : public CScene
 {
 public:
+	enum PieceStatus
+	{
+		PieceStatus_None = -1,
+		PieceStatus_Plaacement,
+		PieceStatus_Ok,
+		PieceStatus_Not,
+		PieceStatus_Max
+	};
 
 	CPiece(PRIORITY type);															// コンストラクタ
 	~CPiece();																		// デストラクタ
@@ -43,7 +51,7 @@ public:
 
 	void OnTriggerEnter(CCollider *col) {};
 	void OnCollisionEnter(CCollider *col) {};
-	bool GetPlaacement(void) { return m_bCreate; }							// 配置情報取得
+	bool GetPlaacement(void) { return m_bCreate; }									// 配置情報取得
 
 	void SetPlaacement(bool bCreate) { m_bCreate = bCreate; }
 	static CPiece *Create(void);													// 生成処理
@@ -61,7 +69,7 @@ private:
 
 	int m_nCntMove_X;																// 移動カウントX
 	int m_nCntMove_Y;																// 移動カウントY
-
+	PieceStatus m_Status;															// ピースの状態
 	bool m_bPlacement;																// 配置しているかどうか
 	bool m_bCreate;																	// 生成するかどうか
 	bool m_bMove;																	// 動くかどうか

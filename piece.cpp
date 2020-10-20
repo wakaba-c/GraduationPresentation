@@ -57,6 +57,7 @@ HRESULT CPiece::Init(void)
 	m_bPlacement = false;
 	m_bCreate = false;
 	m_bMove = false;
+	m_Status = PieceStatus_None;
 
 	for (int nCntDepth = 0; nCntDepth < Piece_Depth; nCntDepth++)
 	{
@@ -78,12 +79,6 @@ HRESULT CPiece::Init(void)
 			}
 		}
 	}
-
-	//m_bPuzzle[nCntMove_Y][nCntMove_X] = true;
-	//m_bPuzzle[nCntMove_Y][nCntMove_X + 1] = true;
-	//m_bPuzzle[nCntMove_Y + 1][nCntMove_X] = true;
-	//m_bPuzzle[nCntMove_Y + 1][nCntMove_X + 1] = true;
-
 	return S_OK;
 }
 
@@ -103,26 +98,14 @@ void CPiece::Update(void)
 	// キーボード取得
 	CInputKeyboard *pKeyboard = CManager::GetInputKeyboard();
 
-
-
 	// 縦をカウント
 	for (int nDepth = 0; nDepth < Piece_Depth; nDepth++)
 	{
 		// 横をカウント
 		for (int nWide = 0; nWide < Piece_Width; nWide++)
 		{
-
-		}
-	}
-
-	// 縦をカウント
-	for (int nDepth = 0; nDepth < Piece_Depth; nDepth++)
-	{
-		// 横をカウント
-		for (int nWide = 0; nWide < Piece_Width; nWide++)
-		{
+			// ポジション取得
 			m_pos = m_pBlock[nDepth][nWide]->GetPosition();
-
 
 			// 初期配置
 			if (nDepth == m_nCntMove_Y && nWide == m_nCntMove_X)
@@ -165,11 +148,13 @@ void CPiece::Update(void)
 			}
 			else
 			{
+				// 色設定
 				m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
 			}
 		}
 	}
 
+	// 配置していなかったら
 	if (m_bPlacement == false)
 	{
 		// -----------------------------------------
@@ -202,6 +187,7 @@ void CPiece::Update(void)
 	}
 	if (m_bMove == true)
 	{
+		// 生成
 		if (pKeyboard->GetTriggerKeyboard(DIK_C))
 		{
 			m_bCreate = true;
@@ -209,6 +195,7 @@ void CPiece::Update(void)
 		}
 	}
 
+	// 枠外に行かないようにする
 	if (m_nCntMove_X <= 0)
 	{
 		m_nCntMove_X = 0;
