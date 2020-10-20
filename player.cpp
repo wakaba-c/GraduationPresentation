@@ -622,13 +622,11 @@ void CPlayer::Input(void)
 				D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
 				m_dest.y = m_rot.y + ROT_SPEED;
 			}
-			else
-			{
-				m_move.x += sinf(D3DX_PI * 1.0f + rot.y) * m_fSpeed;
-				m_move.z += cosf(D3DX_PI * 1.0f + rot.y) * m_fSpeed;
 
-				D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
-			}
+			m_move.x += sinf(D3DX_PI * 1.0f + rot.y) * m_fSpeed;
+			m_move.z += cosf(D3DX_PI * 1.0f + rot.y) * m_fSpeed;
+
+			D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
 		}
 		else if (pKeyboard->GetPressKeyboard(MOVE_BRAKE))
 		{
@@ -643,13 +641,11 @@ void CPlayer::Input(void)
 				D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
 				m_dest.y = m_rot.y - ROT_SPEED;
 			}
-			else
-			{
-				m_move.x += sinf(D3DX_PI * 0.0f + rot.y) * m_fSpeed;
-				m_move.z += cosf(D3DX_PI * 0.0f + rot.y) * m_fSpeed;
 
-				D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
-			}
+			m_move.x += sinf(D3DX_PI * 0.0f + rot.y) * m_fSpeed;
+			m_move.z += cosf(D3DX_PI * 0.0f + rot.y) * m_fSpeed;
+
+			D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
 		}
 
 		// ç∂âEÉ{É^ÉìÇâüÇµÇƒÇ¢ÇÈÇ∆Ç´
