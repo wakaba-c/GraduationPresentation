@@ -77,43 +77,7 @@ HRESULT CBox::Init(void)
 			}
 		}
 	}
-
-	// 縦をカウント
-	for (int nDepth = 0; nDepth < Box_Depth; nDepth++)
-	{
-		// 横をカウント
-		for (int nWide = 0; nWide < Box_Width; nWide++)
-		{
-			// 初期配置
-			if (nDepth == m_nCntMove_Y && nWide == m_nCntMove_X)
-			{
-				m_bPuzzle[nDepth][nWide] = true;
-			}
-			else if (nDepth == m_nCntMove_Y && nWide == m_nCntMove_X + 1)
-			{
-				m_bPuzzle[nDepth][nWide] = true;
-			}
-			else if (nDepth == m_nCntMove_Y + 1 && nWide == m_nCntMove_X)
-			{
-				m_bPuzzle[nDepth][nWide] = true;
-			}
-			else if (nDepth == m_nCntMove_Y + 1 && nWide == m_nCntMove_X + 1)
-			{
-				m_bPuzzle[nDepth][nWide] = true;
-			}
-			else
-			{
-				m_bPuzzle[nDepth][nWide] = false;
-			}
-
-			// 状態確認
-			if (m_bPuzzle[nDepth][nWide] == true)
-			{
-				m_pPiece = CPiece::Create();
-			}
-
-		}
-	}
+	m_pPiece = CPiece::Create();
 
 
 	//m_bPuzzle[nCntMove_Y][nCntMove_X] = true;
