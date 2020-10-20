@@ -85,6 +85,7 @@ public:
 	D3DXMATRIX GetMtxWorld(void) { return m_mtxWorld; }			// ワールドマトリックスの取得
 	void LoadScript(std::string add, const int nMaxAnim);		// スクリプト読み込み
 	void SetRotation(D3DXVECTOR3 rot) { m_rot = rot; }			// 回転の設定
+	int GetnNumParts(void) { return m_nNumParts; }				// パーツの数取得
 
 	/*================= アニメーション関連 =================*/
 	// 設定

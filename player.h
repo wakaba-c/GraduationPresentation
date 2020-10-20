@@ -38,30 +38,6 @@ class CPlayerUi;
 class CPlayer : public CCharacter
 {
 public:
-	////モーションタイプ
-	//typedef enum
-	//{
-	//	ANIMATIONTYPE_NONE = -1,				// なし
-	//	ANIMATIONTYPE_NEUTRAL = 0,				// 待機
-	//	ANIMATIONTYPE_WALK,						// 歩く
-	//	ANIMATIONTYPE_RUN,						// 走る
-	//	ANIMATIONTYPE_ATTACK_1,					// 基本攻撃1
-	//	ANIMATIONTYPE_ATTACK_2,					// 基本攻撃2
-	//	ANIMATIONTYPE_ATTACK_3,					// 基本攻撃3
-	//	ANIMATIONTYPE_ATTACK_4,					// 基本攻撃4
-	//	ANIMATIONTYPE_ATTACK_5,					// ため攻撃
-	//	ANIMATIONTYPE_ATTACK_6,					// 派生攻撃1
-	//	ANIMATIONTYPE_RUNATTACK,				// 走り攻撃
-	//	ANIMATIONTYPE_DAMAGE,					// ダメージ
-	//	ANIMATIONTYPE_SWITCHWEAPON,				// 武器の切り替え
-	//	ANIMATIONTYPE_JUMP_1,					// ジャンプ1
-	//	ANIMATIONTYPE_JUMP_2,					// ジャンプ2
-	//	ANIMATIONTYPE_JUMP_3,					// ジャンプ3
-	//	ANIMATIONTYPE_JUMP_4,					// ジャンプ4
-	//	ANIMATIONTYPE_JUMP_5,					// ジャンプ5
-	//	ANIMATIONTYPE_MAX						// アニメーションの最大数
-	//} ANIMATIONTYPE;							// アニメーションタイプ
-
 	//モーションタイプ
 	typedef enum
 	{

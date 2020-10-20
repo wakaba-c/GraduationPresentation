@@ -40,6 +40,7 @@
 #define JUMP_MAX 10									// ジャンプの加速度
 #define ROT_AMOUNT 0.05f							// 回転の差を減らしていく量
 #define ROT_SPEED 0.3f								// 回転速度
+#define MODEL_FRONT 2								// モデル前輪
 
 //=============================================================================
 // コンストラクタ
@@ -516,6 +517,9 @@ void CPlayer::Input(void)
 	// サウンドの取得
 	CSound *pSound = CManager::GetSound();
 
+	// モデルの取得
+	CModel *pModel = GetModel();
+
 	D3DXVECTOR3 rot = pCamera->GetRotation();
 	D3DXVECTOR3 nor;
 	D3DXVECTOR3 Diff;	// 計算用格納変数
@@ -529,75 +533,80 @@ void CPlayer::Input(void)
 
 	// ====================== コントローラー ====================== //
 
-	// 攻撃
-	{
-		if (pGamepad != NULL)
-		{// ゲームパッドが存在したとき
-			if (pGamepad->GetJoypadUse(0))
-			{// 使用可能だったとき
-				pGamepad->GetJoypadStickLeft(0, &nValueH, &nValueV);
+	if (pGamepad != NULL)
+	{// ゲームパッドが存在したとき
+		if (pGamepad->GetJoypadUse(0))
+		{// 使用可能だったとき
+			pGamepad->GetJoypadStickLeft(0, &nValueH, &nValueV);
 
-				//移動
-				m_move += D3DXVECTOR3(sinf(D3DX_PI * 1.0f + rot.y) * (m_fSpeed * nValueV), 0, cosf(D3DX_PI * 1.0f + rot.y) * (m_fSpeed * nValueV));
-				m_move += D3DXVECTOR3(sinf(D3DX_PI * 0.5f + rot.y) * (m_fSpeed * nValueH), 0, cosf(D3DX_PI * 0.5f + rot.y) * (m_fSpeed * nValueH));
+			//移動
+			m_move += D3DXVECTOR3(sinf(D3DX_PI * 1.0f + rot.y) * (m_fSpeed * nValueV), 0, cosf(D3DX_PI * 1.0f + rot.y) * (m_fSpeed * nValueV));
+			m_move += D3DXVECTOR3(sinf(D3DX_PI * 0.5f + rot.y) * (m_fSpeed * nValueH), 0, cosf(D3DX_PI * 0.5f + rot.y) * (m_fSpeed * nValueH));
 
 #ifdef _DEBUG
-				CDebugProc::Log("移動量 : %.2f %.2f %.2f", m_move.x, m_move.y, m_move.z);
+			CDebugProc::Log("移動量 : %.2f %.2f %.2f", m_move.x, m_move.y, m_move.z);
 
-				if (pGamepad->GetControllerPress(0, JOYPADKEY_A))
-				{
-					CDebugProc::Log("コントローラー : 0番\n");
-				}
-				if (pGamepad->GetControllerPress(1, JOYPADKEY_A))
-				{
-					CDebugProc::Log("コントローラー : 1番\n");
-				}
-
-				CDebugProc::Log("コントローラーH : %f\n", nValueH);
-				CDebugProc::Log("コントローラーV : %f\n", nValueV);
-#endif
-			}
-		}
-
-		// ====================== キーボード ====================== //
-
-		if (pKeyboard->GetTriggerKeyboard(DIK_1))
-		{
-			for (int nCount = 0; nCount < 20; nCount++)
+			if (pGamepad->GetControllerPress(0, JOYPADKEY_A))
 			{
-				float fAngle = float(CManager::GetRand(314)) - float(CManager::GetRand(314));
-				float fAngle_x = float(CManager::GetRand(314)) - float(CManager::GetRand(314));
-
-				D3DXVECTOR3 particlePos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-
-				particlePos.x = cosf(D3DX_PI + fAngle) * cosf(D3DX_PI + fAngle_x);
-				particlePos.y = sinf(D3DX_PI + fAngle_x);
-				particlePos.z = sinf(D3DX_PI + fAngle) * cosf(D3DX_PI + fAngle_x);
-
-				fAngle = float(CManager::GetRand(314)) / 100.0f - float(CManager::GetRand(314)) / 100.0f;
-				D3DXVECTOR3 rot;
-				rot = D3DXVECTOR3(sinf(fAngle) * 10, cosf(fAngle) * 10, 0.0f);
-
-				CEffect::SetEffect(EFFECTTYPE_ROSE,										// パーティクルのタイプ
-					GetPosition(),											// 発生位置
-					D3DXVECTOR3(8.0f, 8.0f, 0.0f),							// サイズ
-					particlePos * 5.0f,										// 方向ベクトル
-					D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-					EASINGTYPE_NONE,
-					rot,													// テクスチャの回転
-					D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),						// カラー
-					200,													// パーティクルの生存カウント数
-					true,													// 重力
-					0,														// 抵抗
-					true,													// ビルボード
-					0,														// 表示する箇所(横)
-					0,														// 表示する箇所(縦)
-					D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-					0,
-					0,
-					0);
+				CDebugProc::Log("コントローラー : 0番\n");
 			}
+			if (pGamepad->GetControllerPress(1, JOYPADKEY_A))
+			{
+				CDebugProc::Log("コントローラー : 1番\n");
+			}
+
+			CDebugProc::Log("コントローラーH : %f\n", nValueH);
+			CDebugProc::Log("コントローラーV : %f\n", nValueV);
+#endif
 		}
+	}
+
+	// ====================== キーボード ====================== //
+
+	if (pKeyboard->GetTriggerKeyboard(DIK_1))
+	{
+		for (int nCount = 0; nCount < 20; nCount++)
+		{
+			float fAngle = float(CManager::GetRand(314)) - float(CManager::GetRand(314));
+			float fAngle_x = float(CManager::GetRand(314)) - float(CManager::GetRand(314));
+
+			D3DXVECTOR3 particlePos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
+			particlePos.x = cosf(D3DX_PI + fAngle) * cosf(D3DX_PI + fAngle_x);
+			particlePos.y = sinf(D3DX_PI + fAngle_x);
+			particlePos.z = sinf(D3DX_PI + fAngle) * cosf(D3DX_PI + fAngle_x);
+
+			fAngle = float(CManager::GetRand(314)) / 100.0f - float(CManager::GetRand(314)) / 100.0f;
+			D3DXVECTOR3 rot;
+			rot = D3DXVECTOR3(sinf(fAngle) * 10, cosf(fAngle) * 10, 0.0f);
+
+			CEffect::SetEffect(EFFECTTYPE_ROSE,										// パーティクルのタイプ
+				GetPosition(),											// 発生位置
+				D3DXVECTOR3(8.0f, 8.0f, 0.0f),							// サイズ
+				particlePos * 5.0f,										// 方向ベクトル
+				D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+				EASINGTYPE_NONE,
+				rot,													// テクスチャの回転
+				D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),						// カラー
+				200,													// パーティクルの生存カウント数
+				true,													// 重力
+				0,														// 抵抗
+				true,													// ビルボード
+				0,														// 表示する箇所(横)
+				0,														// 表示する箇所(縦)
+				D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+				0,
+				0,
+				0);
+		}
+	}
+
+	// モデルがあるとき
+	if (pModel != NULL)
+	{
+		D3DXVECTOR3 fModelFront = ZeroVector3;									// モデル前輪最終目的座標
+		D3DXVECTOR3 fModelFrontDiff = ZeroVector3;								// モデル前輪計算用マトリックス
+		D3DXVECTOR3 fModelRot = pModel[MODEL_FRONT].GetRotation();				// モデルの回転情報
 
 		//if (pKeyboard->GetTriggerKeyboard(DIK_SPACE))
 		//{// スペースキーが押されたとき
@@ -616,11 +625,17 @@ void CPlayer::Input(void)
 			{
 				D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
 				m_dest.y = m_rot.y - ROT_SPEED;
+
+				// 前輪モデルの最終目的座標
+				fModelFront.y = -ROT_SPEED;
 			}
 			else if (pKeyboard->GetPressKeyboard(MOVE_RIGHT))
 			{
 				D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
 				m_dest.y = m_rot.y + ROT_SPEED;
+
+				// 前輪モデルの最終目的座標
+				fModelFront.y = ROT_SPEED;
 			}
 
 			m_move.x += sinf(D3DX_PI * 1.0f + rot.y) * m_fSpeed;
@@ -635,11 +650,17 @@ void CPlayer::Input(void)
 			{
 				D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
 				m_dest.y = m_rot.y + ROT_SPEED;
+
+				// 前輪モデルの最終目的座標
+				fModelFront.y = -ROT_SPEED;
 			}
 			else if (pKeyboard->GetPressKeyboard(MOVE_RIGHT))
 			{
 				D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
 				m_dest.y = m_rot.y - ROT_SPEED;
+
+				// 前輪モデルの最終目的座標
+				fModelFront.y = ROT_SPEED;
 			}
 
 			m_move.x += sinf(D3DX_PI * 0.0f + rot.y) * m_fSpeed;
@@ -666,6 +687,26 @@ void CPlayer::Input(void)
 			// 回転の設定
 			SetRotation(m_rot);
 		}
+		else
+		{
+			// 前輪モデルの最終目的座標
+			fModelFront.y = 0;
+		}
+
+		// モデルの回転と目標地点の差を格納
+		fModelFrontDiff.y = fModelRot.y - fModelFront.y;
+
+		// 回転の補正
+		CTakaseiLibrary::RotRevision(&fModelFrontDiff);
+
+		// mモデルを徐々に回転させていく
+		fModelRot.y -= fModelFrontDiff.y * ROT_AMOUNT;
+
+		// 回転の補正
+		CTakaseiLibrary::RotRevision(&fModelRot);
+
+		// モデルの回転の設定
+		pModel[MODEL_FRONT].SetRotation(fModelRot);
 	}
 
 #ifdef _DEBUG
