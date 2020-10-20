@@ -12,6 +12,7 @@
 #include "game.h"
 #include "scene2D.h"
 #include "takaseiLibrary.h"
+#include "debug.h"
 
 //==================================================================================================================
 // マクロ定義
@@ -61,7 +62,7 @@ HRESULT CPiece::Init(void)
 	{
 		for (int nCntWidth = 0; nCntWidth < Piece_Width; nCntWidth++)
 		{
-			m_bPuzzle[nCntDepth][nCntWidth] = true;
+			m_bPuzzle[nCntDepth][nCntWidth] = false;
 
 			m_pBlock[nCntDepth][nCntWidth] = CScene2D::Create(PRIORITY_UI);
 
@@ -71,10 +72,9 @@ HRESULT CPiece::Init(void)
 					100.0f + nCntDepth * 55.0f,
 					0.0f));
 				m_pBlock[nCntDepth][nCntWidth]->SetSize(D3DXVECTOR3(50.0f, 50.0f, 0.0f));
-				m_pBlock[nCntDepth][nCntWidth]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+				m_pBlock[nCntDepth][nCntWidth]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
 				m_pBlock[nCntDepth][nCntWidth]->SetTransform();
-				// テクスチャ変更
-				m_pBlock[nCntDepth][nCntWidth]->BindTexture(CManager::GetResource("data/tex/grass.jpg"));
+				
 			}
 		}
 	}
@@ -103,6 +103,18 @@ void CPiece::Update(void)
 	// キーボード取得
 	CInputKeyboard *pKeyboard = CManager::GetInputKeyboard();
 
+
+
+	// 縦をカウント
+	for (int nDepth = 0; nDepth < Piece_Depth; nDepth++)
+	{
+		// 横をカウント
+		for (int nWide = 0; nWide < Piece_Width; nWide++)
+		{
+
+		}
+	}
+
 	// 縦をカウント
 	for (int nDepth = 0; nDepth < Piece_Depth; nDepth++)
 	{
@@ -110,12 +122,35 @@ void CPiece::Update(void)
 		for (int nWide = 0; nWide < Piece_Width; nWide++)
 		{
 			m_pos = m_pBlock[nDepth][nWide]->GetPosition();
+
+
+			// 初期配置
+			if (nDepth == m_nCntMove_Y && nWide == m_nCntMove_X)
+			{
+				m_bPuzzle[nDepth][nWide] = true;
+			}
+			else if (nDepth == m_nCntMove_Y && nWide == m_nCntMove_X + 1)
+			{
+				m_bPuzzle[nDepth][nWide] = true;
+			}
+			else if (nDepth == m_nCntMove_Y + 1 && nWide == m_nCntMove_X)
+			{
+				m_bPuzzle[nDepth][nWide] = true;
+			}
+			else if (nDepth == m_nCntMove_Y + 1 && nWide == m_nCntMove_X + 1)
+			{
+				m_bPuzzle[nDepth][nWide] = true;
+			}
+			else
+			{
+				m_bPuzzle[nDepth][nWide] = false;
+			}
+
 			// 状態確認
 			if (m_bPuzzle[nDepth][nWide] == true)
 			{
 				// テクスチャ変更
 				m_pBlock[nDepth][nWide]->BindTexture(CManager::GetResource("data/tex/grass.jpg"));
-
 				// 配置しているかどうか
 				if (m_bPlacement == false)
 				{
@@ -128,40 +163,37 @@ void CPiece::Update(void)
 					m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 				}
 			}
-			if (m_bPlacement == false)
+			else
 			{
-				// -----------------------------------------
-				// 移動処理
-				// -----------------------------------------
-				// 左右操作
-				if (pKeyboard->GetTriggerKeyboard(MOVE_LEFT))
-				{
-					m_pBlock[nDepth][nWide]->SetPosition(D3DXVECTOR3(m_pos.x - 55.0f,m_pos.y,m_pos.z));
-					m_pBlock[nDepth][nWide]->SetTransform();
-
-				}
-				else if (pKeyboard->GetTriggerKeyboard(MOVE_RIGHT))
-				{
-					m_pBlock[nDepth][nWide]->SetPosition(D3DXVECTOR3(m_pos.x + 55.0f, m_pos.y, m_pos.z));
-					m_pBlock[nDepth][nWide]->SetTransform();
-				}
-				// 上下操作
-				else if (pKeyboard->GetTriggerKeyboard(MOVE_ACCEL))
-				{
-					m_pBlock[nDepth][nWide]->SetPosition(D3DXVECTOR3(m_pos.x, m_pos.y - 55.0f, m_pos.z));
-					m_pBlock[nDepth][nWide]->SetTransform();
-				}
-				else if (pKeyboard->GetTriggerKeyboard(MOVE_BRAKE))
-				{
-					m_pBlock[nDepth][nWide]->SetPosition(D3DXVECTOR3(m_pos.x, m_pos.y + 55.0f, m_pos.z));
-					m_pBlock[nDepth][nWide]->SetTransform();
-				}
+				m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
 			}
-
 		}
 	}
 
-
+	if (m_bPlacement == false)
+	{
+		// -----------------------------------------
+		// 移動処理
+		// -----------------------------------------
+		// 左右操作
+		if (pKeyboard->GetTriggerKeyboard(MOVE_LEFT))
+		{
+			m_nCntMove_X--;
+		}
+		else if (pKeyboard->GetTriggerKeyboard(MOVE_RIGHT))
+		{
+			m_nCntMove_X++;
+		}
+		// 上下操作
+		else if (pKeyboard->GetTriggerKeyboard(MOVE_ACCEL))
+		{
+			m_nCntMove_Y--;
+		}
+		else if (pKeyboard->GetTriggerKeyboard(MOVE_BRAKE))
+		{
+			m_nCntMove_Y++;
+		}
+	}
 	// 配置決定
 	if (pKeyboard->GetTriggerKeyboard(MOVE_JUMP))
 	{
@@ -175,6 +207,24 @@ void CPiece::Update(void)
 			m_bCreate = true;
 			m_bMove = false;
 		}
+	}
+
+	if (m_nCntMove_X <= 0)
+	{
+		m_nCntMove_X = 0;
+	}
+	else if (m_nCntMove_X >= 13)
+	{
+		m_nCntMove_X = 13;
+	}
+
+	if (m_nCntMove_Y <= 0)
+	{
+		m_nCntMove_Y = 0;
+	}
+	else if (m_nCntMove_Y >= 6)
+	{
+		m_nCntMove_Y = 6;
 	}
 }
 
