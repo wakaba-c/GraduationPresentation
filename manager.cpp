@@ -44,8 +44,9 @@ CRanking *CManager::m_pRanking = NULL;												// ランキング ポインタを初期化
 
 CSound *CManager::m_pSound = NULL;													// サウンド ポインタを初期化
 
-std::map<std::string, LPDIRECT3DTEXTURE9> CManager::m_TexMap = {};
-std::map<std::string, MODEL_INFO> CManager::m_ModelMap = {};
+std::map<std::string, LPDIRECT3DTEXTURE9> CManager::m_TexMap = {};					// テクスチャマップの初期化
+std::map<std::string, MODEL_INFO> CManager::m_ModelMap = {};						// モデル情報マップの初期化
+std::map<std::string, LPD3DXEFFECT> CManager::m_ShaderMap = {};						// シェーダーマップの初期化
 
 //=============================================================================
 // コンストラクタ
@@ -132,7 +133,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 		return E_FAIL;
 	}
 
-	CSceneX::InitShader();
+	CSceneX::Load();
 
 	LPDIRECT3DDEVICE9 pDevice;
 	pDevice = m_pRenderer->GetDevice();
@@ -172,7 +173,8 @@ void CManager::Uninit(void)
 	// モデルデータの開放
 	ModelRelease();
 
-	CSceneX::UninitShader();
+	// シェーダーデータの開放
+	ShaderRelease();
 
 	// キーボードの開放処理
 	if (m_pInputKeyboard != NULL)
@@ -564,7 +566,7 @@ HRESULT CManager::Load(std::string Add)
 
 		if (FAILED(hr))
 		{// 生成できなかったときはNULLを返す
-			MessageBox(NULL, Add.c_str(), "LOAD ERROR", MB_OK);
+			MessageBox(NULL, Add.c_str(), "Load : LOAD ERROR", MB_OK);
 			return hr;			// 結果を返す
 		}
 
@@ -600,7 +602,7 @@ LPDIRECT3DTEXTURE9 CManager::GetResource(std::string Add)
 
 		if (FAILED(hr))
 		{// 生成できなかったときはNULLを返す
-			//MessageBox(NULL, Add.c_str(), "LOAD ERROR", MB_OK);
+			MessageBox(NULL, Add.c_str(), "GetResource : LOAD ERROR", MB_OK);
 			return NULL;
 		}
 
@@ -637,7 +639,7 @@ HRESULT CManager::LoadModel(std::string &Add)
 
 		if (FAILED(hr))
 		{// 生成できなかったときはNULLを返す
-			MessageBox(NULL, Add.c_str(), "LOAD ERROR", MB_OK);
+			MessageBox(NULL, Add.c_str(), "LoadModel : LOAD ERROR", MB_OK);
 			return hr;			// 結果を返す
 		}
 
@@ -646,7 +648,7 @@ HRESULT CManager::LoadModel(std::string &Add)
 		return hr;				// 結果を返す
 	}
 
-	return E_FAIL;
+	return S_OK;
 }
 
 //=============================================================================
@@ -710,6 +712,78 @@ bool CManager::GetModelResource(std::string &Add, LPD3DXBUFFER &pBuffMat, DWORD 
 		nNumMat = it->second.nNumMat;
 		pMesh = it->second.pMesh;
 		return true;
+	}
+}
+
+//=============================================================================
+// 指定したモデル情報を読み込む処理
+//=============================================================================
+HRESULT CManager::LoadShader(std::string & Add)
+{
+	std::map<std::string, LPD3DXEFFECT>::const_iterator it = m_ShaderMap.find(Add);
+
+	if (it == m_ShaderMap.end())
+	{// 見つからなかったとき
+	 // 検索した文字列をキーとして
+	 // 新しくマップにシェーダーを追加する
+		CRenderer *pRenderer = m_pRenderer;
+		LPDIRECT3DDEVICE9 pDevice;
+		HRESULT hr;
+		LPD3DXEFFECT shader = NULL;
+
+		//デバイスを取得する
+		pDevice = pRenderer->GetDevice();
+
+		hr = D3DXCreateEffectFromFile(pDevice, Add.c_str(), NULL, NULL, 0, NULL, &shader, NULL);
+
+		if (FAILED(hr))
+		{// 生成できなかったときはNULLを返す
+			MessageBox(NULL, Add.c_str(), "LoadShader : LOAD ERROR", MB_OK);
+			return hr;			// 結果を返す
+		}
+
+		// マップへ挿入する
+		m_ShaderMap.insert(std::map<std::string, LPD3DXEFFECT>::value_type(Add, shader));
+		return hr;				// 結果を返す
+	}
+
+	return S_OK;
+}
+
+//=============================================================================
+// 指定したモデル情報を取得する処理
+//=============================================================================
+LPD3DXEFFECT CManager::GetShaderResource(std::string & Add)
+{
+	std::map<std::string, LPD3DXEFFECT>::const_iterator it = m_ShaderMap.find(Add);
+
+	if (it == m_ShaderMap.end())
+	{// 見つからなかったとき
+	 // 検索した文字列をキーとして
+	 // 新しくマップにテクスチャを追加する
+		CRenderer *pRenderer = m_pRenderer;
+		LPDIRECT3DDEVICE9 pDevice;
+		HRESULT hr;
+		LPD3DXEFFECT shader = NULL;
+
+		//デバイスを取得する
+		pDevice = pRenderer->GetDevice();
+
+		hr = D3DXCreateEffectFromFile(pDevice, Add.c_str(), NULL, NULL, 0, NULL, &shader, NULL);
+
+		if (FAILED(hr))
+		{// 生成できなかったときはNULLを返す
+			MessageBox(NULL, Add.c_str(), "GetShaderResource : LOAD ERROR", MB_OK);
+			return NULL;
+		}
+
+		// マップへ挿入する
+		m_ShaderMap.insert(std::map<std::string, LPD3DXEFFECT>::value_type(Add, shader));
+		return shader;
+	}
+	else
+	{
+		return it->second;
 	}
 }
 
@@ -836,6 +910,24 @@ void CManager::ModelRelease(void)
 	}
 
 	m_ModelMap.clear();
+}
+
+//=============================================================================
+// シェーダーの開放
+//=============================================================================
+void CManager::ShaderRelease(void)
+{
+	for (auto itr = m_ShaderMap.begin(); itr != m_ShaderMap.end(); itr++)
+	{
+		// テクスチャの開放
+		if (itr->second != NULL)
+		{
+			itr->second->Release();
+			itr->second = NULL;
+		}
+	}
+
+	m_ShaderMap.clear();
 }
 
 //=============================================================================

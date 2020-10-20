@@ -93,6 +93,9 @@ HRESULT CGame::Init(void)
 
 	// 時間のクリエイト処理
 	CTime::Create();
+
+	// モデル情報の読み込み
+	CObject::LoadModelTest("data/text/model.txt");
 	return S_OK;
 }
 

@@ -57,7 +57,7 @@ void CModel::Draw(D3DXMATRIX *mtxWorld)
 {
 	CRenderer *pRenderer = CManager::GetRenderer();
 	LPDIRECT3DDEVICE9 pDevice;
-	LPD3DXEFFECT ToonShader = CSceneX::GetShader();
+	LPD3DXEFFECT ToonShader = CManager::GetShaderResource((std::string)SHADERADD_TOON);
 	CCamera* pCamera = CManager::GetCamera();
 
 	D3DXMATRIX		mtxRot, mtxTrans;				//計算用マトリックス
@@ -90,7 +90,7 @@ void CModel::Draw(D3DXMATRIX *mtxWorld)
 		D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &m_pParent->m_mtxWorld);
 	}
 
-	CScene::SetShadow(pDevice, m_mtxWorld, m_pBuffMat, m_nNumMat, m_pMesh, m_pos);
+	//CScene::SetShadow(pDevice, m_mtxWorld, m_pBuffMat, m_nNumMat, m_pMesh, m_pos);
 
 	// ワールドマトリックスの設定
 	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);					//すべてのデータ収録

@@ -14,6 +14,16 @@
 #include "scene.h"
 
 //=============================================================================
+// 列挙体定義
+//=============================================================================
+typedef enum
+{
+	SHADERTYPE_LAMBERT = 0,
+	SHADERTYPE_TOON,
+	SHADERTYPE_MAX
+} SHADERTYPE;
+
+//=============================================================================
 // クラス定義
 //=============================================================================
 class CSceneX : public CScene
@@ -29,18 +39,18 @@ public:
 	static CSceneX *Create(void);		// クリエイト処理
 	void BindModel(LPD3DXMESH pMesh, DWORD nNumMat, LPD3DXBUFFER pBuffMat);	// モデルの設定
 
-	void SetColor(D3DXCOLOR col);													// 色を設定する
-	void SetSize(D3DXVECTOR3 size);													// 大きさを設定する
-	void SetRotation(D3DXVECTOR3 rot);												// 回転値を設定
+	void SetColor(D3DXCOLOR col) { m_col = col; }					// 色を設定する
+	void SetSize(D3DXVECTOR3 size) { m_size = size; }				// 大きさを設定する
+	void SetRotation(D3DXVECTOR3 rot) { m_rot = rot; }				// 回転値を設定
+	void SetShader(SHADERTYPE type) { m_ShaderType = type; }		// シェーダータイプを設定
 
-	static void InitShader(void);													// シェーダーの初期化処理
-	static void UninitShader(void);													// シェーダーの開放処理
-	static LPD3DXEFFECT GetShader(void) { return m_pToonShader; }					// シェーダーの取得
+	static void Load(void);											// シェーダーの初期化処理
 
-	D3DXCOLOR GetColor(void) { return m_col; }										// 色を返す
-	D3DXVECTOR3 GetSize(void) { return m_size; }									// 大きさを返す
-	D3DXVECTOR3 GetRotation(void) { return m_rot; }									// 回転値を取得
-	D3DXMATRIX GetMtxWorld(void) { return m_mtxWorld; }								// ワールドマトリックス情報の取得
+	D3DXCOLOR GetColor(void) { return m_col; }						// 色の取得
+	D3DXVECTOR3 GetSize(void) { return m_size; }					// 大きさの取得
+	D3DXVECTOR3 GetRotation(void) { return m_rot; }					// 回転値の取得
+	SHADERTYPE GetShaderType(void) { return m_ShaderType; }			// シェーダータイプの取得
+	D3DXMATRIX GetMtxWorld(void) { return m_mtxWorld; }				// ワールドマトリックス情報の取得
 
 	void OnTriggerEnter(CCollider *col) {};
 	void OnCollisionEnter(CCollider *col) {};
@@ -50,22 +60,23 @@ private:
 #ifdef _DEBUG
 	void Debug(void);
 #endif
-	static LPD3DXEFFECT		m_pToonShader;											// トゥーンシェーダー
+	void SetShaderParameter(LPD3DXEFFECT &pShader);
 
-	LPDIRECT3DTEXTURE9	*m_pTexture;												// テクスチャへのポインタ
-	D3DXVECTOR3 m_size;																// 大きさ
-	D3DXVECTOR3 m_rot;																// 回転量
-	D3DXCOLOR	m_col;																// 色
-	D3DXMATRIX	m_mtxWorld;															// ワールドマトリックス
+	LPDIRECT3DTEXTURE9	*m_pTexture;								// テクスチャへのポインタ
+	D3DXVECTOR3 m_size;												// 大きさ
+	D3DXVECTOR3 m_rot;												// 回転量
+	D3DXCOLOR	m_col;												// 色
+	D3DXMATRIX	m_mtxWorld;											// ワールドマトリックス
 
-	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;												// 頂点バッファへのポインタ
-	LPD3DXMESH		m_pMesh;														// メッシュ情報へのポインタ
-	DWORD			m_nNumMat;														// マテリアル情報の数
-	LPD3DXBUFFER	m_pBuffMat;														// マテリアル情報へのポインタ
+	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;								// 頂点バッファへのポインタ
+	LPD3DXMESH		m_pMesh;										// メッシュ情報へのポインタ
+	DWORD			m_nNumMat;										// マテリアル情報の数
+	LPD3DXBUFFER	m_pBuffMat;										// マテリアル情報へのポインタ
+	SHADERTYPE		m_ShaderType;									// シェーダータイプ
 
-	int m_nLife;																	//ライフ
+	int m_nLife;													//ライフ
 	int m_nLifeMax;
-	float m_fAngle;																	//角度
-	float m_fLength;																//長さ
+	float m_fAngle;													//角度
+	float m_fLength;												//長さ
 };
 #endif

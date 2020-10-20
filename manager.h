@@ -16,6 +16,9 @@
 // マクロ定義
 //=============================================================================
 #define D3DXVECTOR3_ZERO D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+#define	SHADERADD_LAMBERT ("data/shader/LambertShader.fx")
+#define	SHADERADD_TOON ("data/shader/ToonShader.fx")
+#define TEXTUREADD_DEFAULT ("data/tex/default.jpg")
 
 //=============================================================================
 // 列挙体定義
@@ -108,8 +111,12 @@ public:
 	static HRESULT Load(std::string Add);													// テクスチャのロード
 	static LPDIRECT3DTEXTURE9 GetResource(std::string Add);									// テクスチャの取得
 
-	static HRESULT LoadModel(std::string &Add);
-	static bool GetModelResource(std::string &Add, LPD3DXBUFFER &pBuffMat, DWORD &nNumMat, LPD3DXMESH &pMesh);
+	static HRESULT LoadModel(std::string &Add);												// Xファイルのロード
+	static bool GetModelResource(std::string &Add, LPD3DXBUFFER &pBuffMat, DWORD &nNumMat, LPD3DXMESH &pMesh);	// Xファイルの取得
+
+	static HRESULT LoadShader(std::string &Add);											// Xファイルのロード
+	static LPD3DXEFFECT GetShaderResource(std::string &Add);								// Xファイルの取得
+
 	static D3DXVECTOR3 GetCursorPosWithCenter(void);
 
 	static std::map<std::string, MODEL_INFO> GetModelMap(void) { return m_ModelMap; }
@@ -119,6 +126,7 @@ private:
 	static void	LoadSystemFile(void);					// システムファイルのロード
 	static void TexRelease(void);						// テクスチャの開放
 	static void ModelRelease(void);						// モデルデータの開放
+	static void ShaderRelease(void);					// シェーダーデータの開放
 
 	static MODE m_mode;									// モード
 	static CRenderer *m_pRenderer;						// レンダラーのポインタ
@@ -140,5 +148,6 @@ private:
 
 	static std::map<std::string, LPDIRECT3DTEXTURE9> m_TexMap;			// テクスチャマップ
 	static std::map<std::string, MODEL_INFO> m_ModelMap;				// モデルマップ
+	static std::map<std::string, LPD3DXEFFECT> m_ShaderMap;				// シェーダーマップ
 };
 #endif
