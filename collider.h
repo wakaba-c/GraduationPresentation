@@ -77,9 +77,11 @@ public:
 	bool GetUse(void) { return m_bUse; }				// 当たり判定の使用状態取得
 	bool GetMoving(void) { return m_bMoving; }			// 位置修正の可否取得
 	D3DXVECTOR3 GetOffset(void) { return m_offset; }	// 位置を取得
+	//bool RayBlockCollision(CMap * pMap, D3DXMATRIX * pMat);//Rayの判定
 
 private:
 	void Delete(void);									// 削除処理
+
 
 	static CCollider *m_apCur[COLLISIONTYPE_MAX];		// 最後尾情報
 	static CCollider *m_apTop[COLLISIONTYPE_MAX];		// 先頭情報

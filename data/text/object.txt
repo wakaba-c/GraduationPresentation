@@ -27,5 +27,6 @@ MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x		# [14]カッターナイフ
 MODEL_FILENAME = data/model/house/MedievalHouse_2.x			# [15]家
 MODEL_FILENAME = data/model/DirectionalLight.x				# [16]ディレクショナルライト
 MODEL_FILENAME = data/model/Sphere.x						# [17]球体
+MODEL_FILENAME = data/model/CarBody03_R.x					# [18]車 red
 
 END_SCRIPT		# この行は絶対消さないこと！
