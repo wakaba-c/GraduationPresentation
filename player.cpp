@@ -264,59 +264,6 @@ void CPlayer::Update(void)
 	//	pos.y = fHeight;											// 床の高さを求める
 	//}
 
-	//球体のポインタがNULLではないとき
-	if (m_pColWeaponSphere != NULL)
-	{
-		D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 40.0f, -80.0f);
-		D3DXVECTOR3 rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		D3DXMATRIX	mtxRot, mtxTrans, mtxView, mtxMeshRot, mtxMeshTrans;				//計算用マトリックス
-		D3DXMATRIX mtx;			// 武器のマトリックス
-
-		// ワールドマトリックスの初期化
-		D3DXMatrixIdentity(&mtx);
-
-		// 回転を反映
-		D3DXMatrixRotationYawPitchRoll(&mtxMeshRot, rot.y, rot.x, rot.z);
-		D3DXMatrixMultiply(&mtx, &mtx, &mtxMeshRot);
-
-		// 位置を反映
-		D3DXMatrixTranslation(&mtxMeshTrans, pos.x, pos.y, pos.z);
-		D3DXMatrixMultiply(&mtx, &mtx, &mtxMeshTrans);
-
-		D3DXMatrixMultiply(&mtx, &mtx, &pModel[14].GetMtxWorld());
-
-		m_pColWeaponSphere->SetPosition(D3DXVECTOR3(mtx._41, mtx._42, mtx._43));
-	}
-
-	if (m_pColHandSphere != NULL)
-	{// 手の当たり判定が存在していたとき
-		D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, -50.0f, 0.0f);
-		D3DXVECTOR3 rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		D3DXMATRIX	mtxRot, mtxTrans, mtxView, mtxMeshRot, mtxMeshTrans;				//計算用マトリックス
-		D3DXMATRIX mtx;			// 武器のマトリックス
-
-		// ワールドマトリックスの初期化
-		D3DXMatrixIdentity(&mtx);
-
-		// 回転を反映
-		D3DXMatrixRotationYawPitchRoll(&mtxMeshRot, rot.y, rot.x, rot.z);
-		D3DXMatrixMultiply(&mtx, &mtx, &mtxMeshRot);
-
-		// 位置を反映
-		D3DXMatrixTranslation(&mtxMeshTrans, pos.x, pos.y, pos.z);
-		D3DXMatrixMultiply(&mtx, &mtx, &mtxMeshTrans);
-
-		D3DXMatrixMultiply(&mtx, &mtx, &pModel[4].GetMtxWorld());
-
-		m_pColHandSphere->SetPosition(D3DXVECTOR3(mtx._41, mtx._42, mtx._43));
-	}
-
-	//球体のポインタがNULLではないとき
-	if (m_pColPlayerSphere != NULL)
-	{
-		m_pColPlayerSphere->SetPosition(pos);		// 現在位置 の更新
-	}
-
 	// 位置設定
 	SetPosition(pos);
 
