@@ -12,6 +12,7 @@
 #include "score.h"
 #include "fade.h"
 #include "inputController.h"
+#include "enemy.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -65,6 +66,7 @@ HRESULT CNetwork::Init(void)
 	{
 		m_fRot[nCount] = 0.0f;
 		m_bDie[nCount] = false;
+		m_pEnemy[nCount] = NULL;
 		m_samplePos[nCount] = D3DXVECTOR3(250.0f * (nCount + 1), 600.0f, 0.0f);
 	}
 
@@ -450,7 +452,7 @@ bool CNetwork::KeyData(void)
 
 	if (pNetwork != NULL)
 	{
-		D3DXVECTOR3 rot = CGame::GetPlayer()->GetRotDest();
+		D3DXVECTOR3 rot = pCamera->GetRotation();
 
 		char data[1024];
 		bool aKeyState[NUM_KEY_M] = {};
@@ -586,6 +588,17 @@ void CNetwork::UpdateCharacterState(void)
 }
 
 //=============================================================================
+// ゲーム時初期化処理
+//=============================================================================
+void CNetwork::InitGame(void)
+{
+	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
+	{
+		m_pEnemy[nCount] = CEnemy::Create();
+	}
+}
+
+//=============================================================================
 // サーバーソケットを作成する
 //=============================================================================
 SOCKET CNetwork::createServerSocket(unsigned short port)
@@ -691,19 +704,17 @@ bool CNetwork::UpdateUDP(void)
 		}
 	}
 
-	//for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
-	//{
-	//	if (nCount != m_nId)
-	//	{
-	//		CPlayer *pPlayer = CGame::GetPlayer();		// プレイヤーの取得
-
-	//		if (pPlayer != NULL)
-	//		{
-	//			pPlayer->SetPosition(m_playerPos[nCount]);				// 位置の取得
-	//			pPlayer->SetRotDest(D3DXVECTOR3(0.0f, m_fRot[nCount], 0.0f));
-	//		}
-	//	}
-	//}
+	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
+	{
+		if (nCount != m_nId)
+		{
+			if (m_pEnemy[nCount] != NULL)
+			{
+				m_pEnemy[nCount]->SetPosition(m_playerPos[nCount]);				// 位置の取得
+				m_pEnemy[nCount]->SetRotation(D3DXVECTOR3(0.0f, m_fRot[nCount], 0.0f));
+			}
+		}
+	}
 
 	return true;
 }
