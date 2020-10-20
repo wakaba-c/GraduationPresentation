@@ -188,6 +188,8 @@ void CPlayer::Update(void)
 
 	pos = GetPosition();				// 位置の取得
 
+	CCollider::RayBlockCollision(pos, &pModel[0].GetMtxWorld());
+
 	//床の高さを取得する
 	CScene *pSceneNext = NULL;														// 初期化
 	CScene *pSceneNow = GetScene(PRIORITY_FLOOR);									// シーンの先頭アドレスを取得
