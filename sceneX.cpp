@@ -12,17 +12,13 @@
 #include "camera.h"
 
 //=============================================================================
-// 静的メンバ変数
-//=============================================================================
-LPD3DXEFFECT CSceneX::m_pToonShader = NULL;
-
-//=============================================================================
 // コンストラクタ
 //=============================================================================
 CSceneX::CSceneX(CScene::PRIORITY obj = CScene::PRIORITY_MODEL) : CScene(obj)
 {
 	SetObjType(CScene::PRIORITY_MODEL);
 
+	m_ShaderType = SHADERTYPE_LAMBERT;
 	m_pBuffMat = NULL;
 	m_pMesh = NULL;
 	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
@@ -105,77 +101,149 @@ void CSceneX::Draw(void)
 	pDevice->GetTransform(D3DTS_VIEW, &mtxView);
 	pDevice->GetTransform(D3DTS_PROJECTION, &mtxProj);
 
-	// シェーダー処理
-	if (m_pToonShader != NULL)
+	LPD3DXEFFECT pShader = NULL;
+
+	switch (m_ShaderType)
 	{
-		m_pToonShader->SetTechnique("ToonShading");
-		D3DXMATRIX mAll = m_mtxWorld * mtxView * mtxProj;
-		m_pToonShader->SetMatrix("WVP", &mAll);
+	case SHADERTYPE_LAMBERT:
+		pShader = CManager::GetShaderResource((std::string)SHADERADD_LAMBERT);
 
-		m_pToonShader->SetMatrix("mProj", &mtxProj);
-		m_pToonShader->SetMatrix("mView", &mtxView);
-		m_pToonShader->SetMatrix("mWorld", &m_mtxWorld);
+		// シェーダー処理
+		if (pShader != NULL)
+		{// シェーダーが存在していたとき
+			pShader->SetTechnique("tecLambert");
 
-		m_pToonShader->SetTexture("ShadeTexture", CManager::GetResource("Shade.bmp"));
-		m_pToonShader->SetTexture("LineTexture", CManager::GetResource("Outline.bmp"));
+			//ワールド・ビュー・プロジェクション行列を渡す
+			pShader->SetMatrix("WVP", (D3DXMATRIX*)&(m_mtxWorld * mtxView * mtxProj));
+			//ワールド行列の逆行列の転置行列を渡す
+			D3DXMATRIX mWIT;
+			pShader->SetMatrix("WIT", D3DXMatrixTranspose(&mWIT, D3DXMatrixInverse(&mWIT, NULL, &m_mtxWorld)));
 
-		CCamera *pCamera = CManager::GetCamera();
-		CLight *pLight = CManager::GetLight();
+			//ライトの方向ベクトルを渡す
+			pShader->SetVector("LightDir", &D3DXVECTOR4(0.22f, -0.87f, 0.44f, 0.0f));
 
-		D3DXVECTOR4 lightPos = pLight->GetPos();
+			//入射光（ライト）の強度を渡す　目一杯明るい白色光にしてみる
+			pShader->SetVector("LightIntensity", &D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
 
-		m_pToonShader->SetVector("LightPos", (D3DXVECTOR4*)&lightPos);
-		m_pToonShader->SetVector("EyePos", (D3DXVECTOR4*)&pCamera->GetPosV());
+			//拡散反射率を渡す
+			pShader->SetVector("Diffuse", &D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
 
-		m_pToonShader->Begin(NULL, 0);
+			// 環境光を渡す
+			pShader->SetVector("Ambient", &D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
+
+			pShader->Begin(NULL, 0);
+			pShader->BeginPass(0);
+		}
+		break;
+	case SHADERTYPE_TOON:
+		pShader = CManager::GetShaderResource((std::string)SHADERADD_TOON);
+
+		// シェーダー処理
+		if (pShader != NULL)
+		{
+			pShader->SetTechnique("ToonShading");
+			D3DXMATRIX mAll = m_mtxWorld * mtxView * mtxProj;
+			pShader->SetMatrix("WVP", &mAll);
+
+			pShader->SetMatrix("mProj", &mtxProj);
+			pShader->SetMatrix("mView", &mtxView);
+			pShader->SetMatrix("mWorld", &m_mtxWorld);
+
+			pShader->SetTexture("ShadeTexture", CManager::GetResource("Shade.bmp"));
+			pShader->SetTexture("LineTexture", CManager::GetResource("Outline.bmp"));
+
+			CCamera *pCamera = CManager::GetCamera();
+			CLight *pLight = CManager::GetLight();
+
+			D3DXVECTOR4 lightPos = pLight->GetPos();
+
+			pShader->SetVector("LightPos", (D3DXVECTOR4*)&lightPos);
+			pShader->SetVector("EyePos", (D3DXVECTOR4*)&pCamera->GetPosV());
+
+			pShader->Begin(NULL, 0);
+		}
+		break;
 	}
 
 	for (int nCntMat = 0; nCntMat < (int)m_nNumMat; nCntMat++)
 	{
-		if (m_pToonShader != NULL)
+		if (pShader != NULL)
 		{
-			m_pToonShader->BeginPass(0);
-			m_pToonShader->SetFloatArray("Diffuse", (FLOAT*)&pMat[nCntMat].MatD3D.Diffuse, 4);
+			switch (m_ShaderType)
+			{
+			case SHADERTYPE_LAMBERT:
+				if (pMat[nCntMat].pTextureFilename != NULL)
+				{
+					// テクスチャの設定
+					pDevice->SetTexture(0, CManager::GetResource(pMat[nCntMat].pTextureFilename));
 
-			if (pMat[nCntMat].pTextureFilename != NULL)
-			{
-				// テクスチャの設定
-				m_pToonShader->SetTexture("DecalTexture", CManager::GetResource(pMat[nCntMat].pTextureFilename));
-			}
-			else
-			{
-				// テクスチャの設定
-				m_pToonShader->SetTexture("DecalTexture", CManager::GetResource("data/tex/default.jpg"));
+					if (pShader != NULL)
+					{
+						//ワールド行列の逆行列の転置行列を渡す
+						D3DXMATRIX mWIT;
+						pShader->SetMatrix("WIT", D3DXMatrixTranspose(&mWIT, D3DXMatrixInverse(&mWIT, NULL, &m_mtxWorld)));
+
+						// テクスチャの設定
+						pShader->SetTexture("texDecal", CManager::GetResource(pMat[nCntMat].pTextureFilename));
+					}
+				}
+				else
+				{
+					// テクスチャの設定
+					pShader->SetTexture("texDecal", CManager::GetResource(TEXTUREADD_DEFAULT));
+				}
+
+				pShader->SetVector("Diffuse", (D3DXVECTOR4*)&pMat[nCntMat].MatD3D.Diffuse);
+				pShader->SetVector("Ambient", (D3DXVECTOR4*)&pMat[nCntMat].MatD3D.Ambient);
+				pShader->CommitChanges();
+				break;
+			case SHADERTYPE_TOON:
+				pShader->SetFloatArray("Diffuse", (FLOAT*)&pMat[nCntMat].MatD3D.Diffuse, 4);
+
+				if (pMat[nCntMat].pTextureFilename != NULL)
+				{
+					// テクスチャの設定
+					pShader->SetTexture("DecalTexture", CManager::GetResource(pMat[nCntMat].pTextureFilename));
+				}
+				else
+				{
+					// テクスチャの設定
+					pShader->SetTexture("DecalTexture", CManager::GetResource(TEXTUREADD_DEFAULT));
+				}
+				pShader->BeginPass(0);
+				break;
 			}
 		}
-
-		// 情報の変更
-		m_pToonShader->CommitChanges();
 
 		// マテリアルの設定
 		pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
 
-		if (pMat[nCntMat].pTextureFilename != NULL)
-		{
-			// テクスチャの設定
-			pDevice->SetTexture(0, CManager::GetResource(pMat[nCntMat].pTextureFilename));
-		}
-
 		// 描画
 		m_pMesh->DrawSubset(nCntMat);
 
-		if (m_pToonShader != NULL)
+		if (m_ShaderType == SHADERTYPE_TOON)
 		{
-			m_pToonShader->EndPass();
+			if (pShader != NULL)
+			{
+				pShader->EndPass();
+			}
 		}
 	}
 
-	if (m_pToonShader != NULL)
+	if (pShader != NULL)
 	{
-		m_pToonShader->End();
-
-		// テクスチャの設定
-		m_pToonShader->SetTexture("DecalTexture", CManager::GetResource("data/tex/default.jpg"));
+		switch (m_ShaderType)
+		{
+		case SHADERTYPE_LAMBERT:
+			pShader->EndPass();
+			pShader->End();
+			break;
+		case SHADERTYPE_TOON:
+			// テクスチャの設定
+			pShader->SetTexture("DecalTexture", CManager::GetResource("data/tex/default.jpg"));
+			pShader->End();
+			break;
+		}
 	}
 
 	// マテリアルをデフォルトに戻す
@@ -208,59 +276,13 @@ void CSceneX::BindModel(LPD3DXMESH pMesh, DWORD nNumMat, LPD3DXBUFFER pBuffMat)
 }
 
 //=============================================================================
-// カラーの設定
-//=============================================================================
-void CSceneX::SetColor(D3DXCOLOR col)
-{
-	m_col = col;
-}
-
-//=============================================================================
-// サイズの設定
-//=============================================================================
-void CSceneX::SetSize(D3DXVECTOR3 size)
-{
-	m_size = size;
-}
-
-//=============================================================================
-// 回転値の設定
-//=============================================================================
-void CSceneX::SetRotation(D3DXVECTOR3 rot)
-{
-	m_rot = rot;
-}
-
-//=============================================================================
 // シェーダーの初期化処理
 //=============================================================================
-void CSceneX::InitShader(void)
+void CSceneX::Load(void)
 {
-	LPDIRECT3DDEVICE9 pDevice;
-	CRenderer *pRenderer = CManager::GetRenderer();
-
-	// デバイスを取得する
-	pDevice = pRenderer->GetDevice();
-
 	//シェーダーを読み込む
-	if (FAILED(D3DXCreateEffectFromFile(pDevice, "ToonShader.fx", NULL, NULL,
-		0, NULL, &m_pToonShader, NULL)))
-	{
-		MessageBox(NULL, "シェーダーファイル読み込み失敗", "", MB_OK);
-	}
-}
-
-//=============================================================================
-// シェーダーの開放処理
-//=============================================================================
-void CSceneX::UninitShader(void)
-{
-	// シェーダーの開放
-	if (m_pToonShader != NULL)
-	{
-		m_pToonShader->Release();
-		m_pToonShader = NULL;
-	}
+	CManager::LoadShader((std::string)SHADERADD_LAMBERT);
+	CManager::LoadShader((std::string)SHADERADD_TOON);
 }
 
 //=============================================================================
@@ -279,6 +301,21 @@ void CSceneX::ShowInspector(void)
 	}
 
 	CScene::ShowInspector();
+}
+
+//=============================================================================
+// シェーダーのパラメータ設定
+//=============================================================================
+void CSceneX::SetShaderParameter(LPD3DXEFFECT & pShader)
+{
+	switch (m_ShaderType)
+	{
+	case SHADERTYPE_LAMBERT:
+
+		break;
+	case SHADERTYPE_TOON:
+		break;
+	}
 }
 
 #ifdef _DEBUG
