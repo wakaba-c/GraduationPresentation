@@ -98,6 +98,21 @@ void CTakaseiLibrary::Billboard(D3DXMATRIX *mtxWorld, const D3DXMATRIX mtxView)
 }
 
 //=============================================================================
+// 二点間の距離計算
+//=============================================================================
+float CTakaseiLibrary::OutputDistance(const D3DXVECTOR3 & onePoint, const D3DXVECTOR3 & twoPoint)
+{
+	// 差計算
+	D3DXVECTOR3 point = onePoint - twoPoint;
+
+	// 点と点の距離
+	float fDistance = sqrtf(point.x * point.x + point.y * point.y + point.z * point.z);
+
+	// 距離返す
+	return fDistance;
+}
+
+//=============================================================================
 // 上入力
 //=============================================================================
 HRESULT CTakaseiLibrary::Up(CInputKeyboard * Key, CInputController * pGamepad)

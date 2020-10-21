@@ -101,7 +101,7 @@ CNumber *CNumber::Create(void)
 HRESULT CNumber::Load(void)
 {
 	// テクスチャの取得
-	CManager::Load("data/tex/number001.png");
+	CManager::Load("data/tex/number.png");
 
 	return S_OK;
 }
