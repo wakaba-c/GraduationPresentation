@@ -25,6 +25,7 @@
 // 静的メンバ変数の初期化
 //==================================================================================================================
 LPDIRECT3DTEXTURE9 CBox::m_pTexture = NULL;			// テクスチャ変数
+bool CBox::m_bPuzzle[Box_Depth][Box_Width] = {};
 
 //==================================================================================================================
 // グローバル変数
@@ -54,6 +55,7 @@ HRESULT CBox::Init(void)
 	// 初期化
 	m_nCntMove_X = 0;
 	m_nCntMove_Y = 0;
+	m_nPieceNum = 0;
 	m_bPlacement = false;
 	m_bCreate = false;
 	m_bMove = false;
@@ -63,7 +65,7 @@ HRESULT CBox::Init(void)
 		for (int nCntWidth = 0; nCntWidth < Box_Width; nCntWidth++)
 		{
 			m_bPuzzle[nCntDepth][nCntWidth] = false;
-
+			m_bPuzzleStorage[nCntDepth][nCntWidth] = false;
 			m_pBlock[nCntDepth][nCntWidth] = CScene2D::Create(PRIORITY_UI);
 
 			if (m_pBlock[nCntDepth][nCntWidth] != NULL)
@@ -77,7 +79,7 @@ HRESULT CBox::Init(void)
 			}
 		}
 	}
-	m_pPiece = CPiece::Create();
+	m_pPiece[m_nPieceNum] = CPiece::Create();
 
 
 	//m_bPuzzle[nCntMove_Y][nCntMove_X] = true;
@@ -103,15 +105,40 @@ void CBox::Update(void)
 {
 	// キーボード取得
 	CInputKeyboard *pKeyboard = CManager::GetInputKeyboard();
-
-	m_bPiece = m_pPiece->GetPlaacement();
-
+	if (m_pPiece[m_nPieceNum] != NULL)
+	{
+		// 配置情報取得
+		m_bPiece = m_pPiece[m_nPieceNum]->GetCreate();
+	}
 
 	if (m_bPiece == true)
 	{
-		CPiece::Create();
-		m_pPiece->SetPlaacement(false);
+		m_nPieceNum++;
+		// ピース生成
+		m_pPiece[m_nPieceNum] = CPiece::Create();
+		//m_pPiece[m_nPieceNum]->SetPlaacement(false);
 	}
+
+	for (int nCntDepth = 0; nCntDepth < Box_Depth; nCntDepth++)
+	{
+		for (int nCntWidth = 0; nCntWidth < Box_Width; nCntWidth++)
+		{
+			if (m_pPiece[m_nPieceNum] != NULL)
+			{
+				m_bPlacement = m_pPiece[m_nPieceNum]->GetPlaacement();
+				if (m_bPlacement == true)
+				{
+					m_bPuzzleStorage[nCntDepth][nCntWidth] = m_pPiece[m_nPieceNum]->GetPuzzle(nCntDepth, nCntWidth);
+				}
+			}
+			if (m_bPuzzle[nCntDepth][nCntWidth] == false && m_bPuzzleStorage[nCntDepth][nCntWidth] == true)
+			{
+				m_bPuzzle[nCntDepth][nCntWidth] = true;
+			}
+		}
+	}
+
+
 }
 
 //==================================================================================================================
