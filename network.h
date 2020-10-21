@@ -65,6 +65,7 @@ typedef enum
 //=============================================================================
 class CItem;
 class CBalloonNum;
+class CEnemy;
 
 //=============================================================================
 // 構造体定義
@@ -142,6 +143,8 @@ public:
 	void ResetCoin(void);
 	void UpdateCharacterState(void);
 
+	void InitGame(void);
+
 private:
 	SOCKET createServerSocket(unsigned short port);
 	static void ConvertStringToFloat(char* text,const char* delimiter, float* pResult);
@@ -171,6 +174,7 @@ private:
 	bool m_bDie[MAX_PLAYER];				// 1つ前の死亡フラグ
 	int m_nRank[MAX_PLAYER];
 	CItem *m_apItem[MAX_COIN];				// コインのポインタ
+	CEnemy *m_pEnemy[MAX_PLAYER];			// 役者のポインタ
 
 	// マルチスレッド関連
 	std::thread m_th;					// スレッド

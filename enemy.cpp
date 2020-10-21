@@ -34,7 +34,7 @@
 //=============================================================================
 // マクロ定義
 //=============================================================================
-#define SCRIPT_ENEMY "data/animation/wolf.txt"		// 敵配置情報のアドレス
+#define SCRIPT_ENEMY "data/animation/car01.txt"		// 敵配置情報のアドレス
 #define INTERVAL 100								// インターバル
 #define MAX_LIFE 10									// 体力の最大値
 
@@ -86,32 +86,6 @@ HRESULT CEnemy::Init(void)
 	// 敵モデル情報の読み込み
 	LoadScript(SCRIPT_ENEMY, ANIMATIONTYPE_MAX);
 
-	//球体の生成
-	m_pSphere = CColliderSphere::Create(false, 70.0f);
-
-	//球体のポインタがNULLではないとき
-	if (m_pSphere != NULL)
-	{
-		m_pSphere->SetScene(this);
-		m_pSphere->SetTag("enemy");
-		m_pSphere->SetPosition(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-		m_pSphere->SetOffset(D3DXVECTOR3(0.0f, 80.0f, 0.0f));
-		m_pSphere->SetMoving(false);
-	}
-
-	m_pAttack = CColliderSphere::Create(true, 50.0f);
-
-	//球体のポインタがNULLではないとき
-	if (m_pAttack != NULL)
-	{
-		m_pAttack->SetScene(this);
-		m_pAttack->SetUse(false);
-		m_pAttack->SetTag("weapon");
-		m_pAttack->SetPosition(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-		m_pAttack->SetOffset(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-		m_pAttack->SetMoving(false);
-	}
-
 	// 位置の設定
 	SetPosition(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
@@ -123,16 +97,6 @@ HRESULT CEnemy::Init(void)
 //=============================================================================
 void CEnemy::Uninit(void)
 {
-	if (m_pSphere != NULL)
-	{// プレイヤーの当たり判定が存在していたとき
-		m_pSphere->Release();
-	}
-
-	if (m_pAttack != NULL)
-	{// 武器の当たり判定が存在していたとき
-		m_pAttack->Release();
-	}
-
 	// キャラクターの開放処理
 	CCharacter::Uninit();
 }
@@ -142,133 +106,7 @@ void CEnemy::Uninit(void)
 //=============================================================================
 void CEnemy::Update(void)
 {
-	float fHeight = 0.0f;
-	D3DXVECTOR3 pos = GetPosition();		// 位置の取得
-	CScene *pScene = NowFloor(pos);			// 現在いるフィールドを取得
-	CModel *pModel = GetModel();			// モデルの取得
-
-	// アニメーション情報の取得
-	ANIMATIONTYPE animType = (ANIMATIONTYPE)GetAnimType();
-
-	if (pScene != NULL)
-	{// 今立っている床が存在したとき
-		CMeshField *pFloor = (CMeshField*)pScene;		// キャスト
-		fHeight = pFloor->GetHeight(pos);				// 床の高さを求める
-	}
-
-	CInputKeyboard *pKeyboard = CManager::GetInputKeyboard();		// キーボードの取得
-
-	if (m_pSphere != NULL)
-	{//球体のポインタがNULLではないとき
-		m_pSphere->SetPosition(pos);				// 位置の設定
-	}
-
-	if (m_pAttack != NULL)
-	{
-		D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		D3DXVECTOR3 rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		D3DXMATRIX	mtxRot, mtxTrans, mtxView, mtxMeshRot, mtxMeshTrans;		//計算用マトリックス
-		D3DXMATRIX mtx;				// 武器のマトリックス
-
-		// ワールドマトリックスの初期化
-		D3DXMatrixIdentity(&mtx);
-
-		// 回転を反映
-		D3DXMatrixRotationYawPitchRoll(&mtxMeshRot, rot.y, rot.x, rot.z);
-		D3DXMatrixMultiply(&mtx, &mtx, &mtxMeshRot);
-
-		// 位置を反映
-		D3DXMatrixTranslation(&mtxMeshTrans, pos.x, pos.y, pos.z);
-		D3DXMatrixMultiply(&mtx, &mtx, &mtxMeshTrans);
-
-		// マトリックスの合成
-		D3DXMatrixMultiply(&mtx, &mtx, &pModel[7].GetMtxWorld());
-
-		m_pAttack->SetPosition(D3DXVECTOR3(mtx._41, mtx._42, mtx._43));			// 位置の設定
-	}
-
-	if (m_pBox != NULL)
-	{// ボックスコライダーが存在していたとき
-		m_pBox->SetPosition(pos);				// 位置の設定
-	}
-
-	if (pKeyboard->GetTriggerKeyboard(DIK_SPACE))
-	{// スペースキーが押されたとき
-		if (!m_bJump)
-		{
-			m_move = D3DXVECTOR3(0.0f, 5.0f, 0.0f);
-			m_bJump = true;
-		}
-	}
-
-	if (!m_bJump)
-	{// ジャンプしていないとき
-		// 行動処理
-		Move(pos);
-	}
-
-	// 当たり判定の更新
-	Collider();
-
-	// 位置更新
-	pos += m_move;
-
-	// 減速
-	m_move.x += (0 - m_move.x) * 0.12f;
-	m_move.z += (0 - m_move.z) * 0.12f;
-
-	//重力処理
-	if (m_bJump)
-	{
-		if (pos.y > fHeight)
-		{// 自分が地面の高さより高かったとき
-			m_move.y += -0.7f;					// 移動量に加算する
-		}
-		else
-		{
-			pos.y = fHeight;					// 床の高さを求める
-			m_move.y = 0.0f;					// 移動量を0にする
-			if (m_bJump)
-			{// ジャンプしていたら
-				m_bJump = false;				// ジャンプの有無を変更
-			}
-		}
-	}
-	else
-	{
-		pos.y = fHeight;						// 床の高さを求める
-	}
-
-	if (m_pLife != NULL)
-	{// 体力ゲージが存在していたとき
-		if (animType == ANIMATIONTYPE_ATTACK || animType == ANIMATIONTYPE_RUN)
-		{// アニメーションが攻撃と走っているとき
-			m_pLife->SetPosition(D3DXVECTOR3(pos.x, pos.y + 200.0f, pos.z));			// ライフバーの表示位置を変更
-		}
-		else
-		{
-			m_pLife->SetPosition(D3DXVECTOR3(pos.x, pos.y + 150.0f, pos.z));			// ライフバーの表示位置を変更
-		}
-	}
-
-	if (animType == ANIMATIONTYPE_DIE)
-	{
-		D3DXVECTOR3 pos = GetPosition();				// 位置の取得
-		CEffect::Purification(pos);						// エフェクトの発生
-	}
-
-	SetPosition(pos);		// 位置情報の更新
-
 #ifdef _DEBUG
-	if (pKeyboard->GetTriggerKeyboard(DIK_0))
-	{// 0が押されたとき
-		AnimationSwitch(ANIMATIONTYPE_ATTACK);			// アニメーションの変更
-	}
-	if (pKeyboard->GetTriggerKeyboard(DIK_5))
-	{// 5が押されたとき
-		AnimationSwitch(ANIMATIONTYPE_DIE);				// アニメーションの変更
-	}
-
 	// キャラクターの更新処理
 	CCharacter::Update();
 
@@ -282,7 +120,10 @@ void CEnemy::Update(void)
 //=============================================================================
 void CEnemy::Draw(void)
 {
-	CCharacter::Draw();
+	if (CManager::GetMode() == CManager::MODE_GAME)
+	{
+		CCharacter::Draw();
+	}
 }
 
 //=============================================================================

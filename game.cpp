@@ -32,6 +32,7 @@
 #include "time.h"
 #include "result.h"
 #include "ui.h"
+#include "network.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -96,6 +97,9 @@ HRESULT CGame::Init(void)
 
 	// モデル情報の読み込み
 	CObject::LoadModelTest("data/text/model.txt");
+
+	// ネットワークでのゲーム時初期化処理
+	CManager::GetNetwork()->InitGame();
 	return S_OK;
 }
 
