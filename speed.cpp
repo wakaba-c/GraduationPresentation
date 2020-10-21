@@ -95,7 +95,7 @@ void CSpeed::Update(void)
 	// カウンタが0以上のとき
 	if (fDigit >= 0)
 	{
-		SetTime(fDigit);		// タイムの更新
+		SetTime((int)fDigit);		// タイムの更新
 	}
 }
 
@@ -136,7 +136,7 @@ void CSpeed::SetTime(int nTime)
 	int nNumber;
 
 	// タイムをフレームで割る
-	nTime = (int)(nTime / 1.0f + 1);
+	nTime = (int)(nTime / 1.0f);
 
 	// 最大桁数までカウント
 	for (int nCount = 0; nCount < MAX_DIGIT; nCount++)
