@@ -50,34 +50,6 @@ HRESULT CObject::Init(void)
 
 	D3DXVECTOR3 pos = D3DXVECTOR3(500.0f, 0.0f, 0.0f);
 
-	//switch (m_Type)
-	//{
-	//case OBJTYPE_FENCE:
-	//	m_ColliderBox = CColliderBox::Create(false, D3DXVECTOR3(550.0f, 120.0f, 50.0f));		// 生成
-	//	break;
-	//}
-
-	//if (m_ColliderBox != NULL)
-	//{// ボックスコライダーが存在していたとき
-	//	switch (m_Type)
-	//	{
-	//	case OBJTYPE_FENCE:
-	//		m_ColliderBox->SetScene(this);									// 持ち主を設定
-	//		m_ColliderBox->SetTag("fence");									// fenceを設定
-	//		m_ColliderBox->SetPosition(pos);								// 位置の設定
-	//		m_ColliderBox->SetOffset(D3DXVECTOR3(0.0f, 60.0f, 0.0f));		// オフセット値の設定
-	//		break;
-	//	}
-	//}
-
-	//if (m_ColliderSphere != NULL)
-	//{// 当たり判定が存在していたとき
-	//	m_ColliderSphere->SetScene(this);									// 持ち主を設定
-	//	m_ColliderSphere->SetTag("house");									// houseを設定
-	//	m_ColliderSphere->SetPosition(pos);									// 位置の設定
-	//	m_ColliderSphere->SetOffset(D3DXVECTOR3(0.0f, 85.0f, -10.0f));		// オフセット値の設定
-	//}
-
 	SetPosition(pos);			// 位置の設定
 	return S_OK;
 }
@@ -299,6 +271,7 @@ void CObject::LoadModelTest(char *add)
 					{//キャラクターの初期情報のとき
 						CObject *pObj;
 						pObj = CObject::Create();										// 床の作成
+						OutputDebugString("モデル作成");
 
 						if (pObj != NULL)
 						{
@@ -344,6 +317,17 @@ void CObject::LoadModelTest(char *add)
 
 									// 位置の設定
 									pObj->SetRotation(rot);
+								}
+								else if (strcmp(cHeadText, "SIZE") == 0)
+								{//パーツ総数のとき
+									D3DXVECTOR3 size;
+									sscanf(cReadText, "%s %s %f %f %f", &cDie, &cDie,
+										&size.x,
+										&size.y,
+										&size.z);
+
+									// 位置の設定
+									pObj->SetSize(size);
 								}
 							}
 						}

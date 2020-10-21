@@ -69,7 +69,7 @@ void CSceneX::Draw(void)
 	LPDIRECT3DDEVICE9 pDevice;
 	D3DXVECTOR3 pos = GetPosition();
 
-	D3DXMATRIX		mtxRot, mtxTrans;				//計算用マトリックス
+	D3DXMATRIX		mtxRot, mtxTrans, mtxSize;		//計算用マトリックス
 	D3DXMATERIAL	*pMat;							//現在のマテリアル保存用
 	D3DMATERIAL9	matDef;							//マテリアルデータへのポインタ
 
@@ -78,6 +78,10 @@ void CSceneX::Draw(void)
 
 	// ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&m_mtxWorld);
+
+	// サイズを反映
+	D3DXMatrixScaling(&mtxSize, m_size.x, m_size.y, m_size.z);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxSize);
 
 	// 回転を反映
 	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
