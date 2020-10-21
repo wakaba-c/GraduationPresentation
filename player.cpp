@@ -41,6 +41,7 @@
 #define ROT_AMOUNT 0.05f							// 回転の差を減らしていく量
 #define ROT_SPEED 0.3f								// 回転速度
 #define MODEL_FRONT 2								// モデル前輪
+#define SPEED_DOWN 0.06f							// スピード減少
 
 //=============================================================================
 // コンストラクタ
@@ -52,16 +53,15 @@ CPlayer::CPlayer(CScene::PRIORITY obj = CScene::PRIORITY_PLAYER) : CCharacter(ob
 
 	m_nLife = 100;										// 体力の初期化
 	m_fSpeed = NORMAL_SPEED;							// スピードの初期化
-	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// 回転の初期化
+	m_rot = D3DXVECTOR3(0.0f, D3DX_PI, 0.0f);				// 回転の初期化
 	m_move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// 移動量の初期化
-	m_dest = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// 移動先の初期化
+	m_dest = D3DXVECTOR3(0.0f, D3DX_PI, 0.0f);				// 移動先の初期化
 	m_difference = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 差の初期化
 	m_pColPlayerSphere = NULL;							// プレイヤー当たり判定ポインタの初期化
 	m_pColWeaponSphere = NULL;							// 刃当たり判定ポインタの初期化
 	m_pColHandSphere = NULL;							// 手の当たり判定の初期化
 	m_pBox = NULL;
 	m_bJump = false;									// ジャンプフラグの初期化
-	m_nCntAttacCombo = COUNTER_COMBO;					// 攻撃派生カウンタの初期化
 	m_nActionCount = 0;									// アクションカウンタの初期化
 	m_nParticleCount = 0;								// パーティクルカウンタの初期化
 	m_fDeathblow = 0.0f;								// 必殺技ポイントの初期化
@@ -96,7 +96,7 @@ HRESULT CPlayer::Init(void)
 
 	if (pCamera != NULL)
 	{
-		pCamera->SetPosCamera(pos, D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+		pCamera->SetPosCamera(pos, D3DXVECTOR3(0.0f, D3DX_PI, 0.0f));
 	}
 
 	// キャラクターの初期化処理
@@ -228,11 +228,12 @@ void CPlayer::Update(void)
 	// 位置更新
 	pos += m_move;
 
+	// ジャンプしていないとき
 	if (!m_bJump)
 	{
 		// 減速
-		m_move.x += (0 - m_move.x) * 0.12f;
-		m_move.z += (0 - m_move.z) * 0.12f;
+		m_move.x += (0 - m_move.x) * SPEED_DOWN;
+		m_move.z += (0 - m_move.z) * SPEED_DOWN;
 	}
 
 	////重力処理
@@ -252,7 +253,6 @@ void CPlayer::Update(void)
 	//			{
 	//				// 砂煙のエフェクト表現
 	//				CEffect::SandSmokeEffect(pos);
-
 	//				m_bJump = false;										// ジャンプ判定を変える
 	//				SetAnimPlayState(true);									// アニメーションの再開
 	//				AnimationSwitch(ANIMATIONTYPE_JUMP_5);					// アニメーションの変更
@@ -463,9 +463,6 @@ void CPlayer::Input(void)
 	// カメラの取得
 	CCamera *pCamera = CManager::GetCamera();
 
-	// サウンドの取得
-	CSound *pSound = CManager::GetSound();
-
 	// モデルの取得
 	CModel *pModel = GetModel();
 
@@ -474,11 +471,6 @@ void CPlayer::Input(void)
 	D3DXVECTOR3 Diff;	// 計算用格納変数
 	float nValueH = 0;									//コントローラー
 	float nValueV = 0;									//コントローラー
-
-	if (m_nCntAttacCombo <= COUNTER_COMBO)
-	{// 攻撃派生受付カウンタが15カウント未満だったとき
-		m_nCntAttacCombo++;				// カウンタに1プラス
-	}
 
 	// ====================== コントローラー ====================== //
 
@@ -618,8 +610,8 @@ void CPlayer::Input(void)
 			D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
 		}
 
-		// 左右ボタンを押しているとき
-		if (pKeyboard->GetPressKeyboard(MOVE_LEFT) || pKeyboard->GetPressKeyboard(MOVE_RIGHT))
+		// プレイヤーが動いているとき
+		if (m_move > 0)
 		{
 			// プレイヤーの回転と目標地点の差を格納
 			Diff.y = m_rot.y - m_dest.y;
@@ -636,10 +628,41 @@ void CPlayer::Input(void)
 			// 回転の設定
 			SetRotation(m_rot);
 		}
+
+		// アクセルブレーキを押しているとき
+		if (pKeyboard->GetPressKeyboard(MOVE_ACCEL) || pKeyboard->GetPressKeyboard(MOVE_BRAKE))
+		{
+			////左右操作
+			//if (pKeyboard->GetPressKeyboard(MOVE_LEFT))
+			//{
+			//	D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
+			//	m_dest.y = m_rot.y - ROT_SPEED;
+
+			//	// 前輪モデルの最終目的座標
+			//	fModelFront.y = -ROT_SPEED;
+
+			//	// 移動量設定
+			//	m_move.x += sinf(m_rot.y) * m_fSpeed;
+			//	m_move.z += cosf(m_rot.y) * m_fSpeed;
+			//}
+			//else if (pKeyboard->GetPressKeyboard(MOVE_RIGHT))
+			//{
+			//	D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
+			//	m_dest.y = m_rot.y + ROT_SPEED;
+
+			//	// 前輪モデルの最終目的座標
+			//	fModelFront.y = ROT_SPEED;
+
+			//	// 移動量設定
+			//	m_move.x += sinf(m_rot.y) * m_fSpeed;
+			//	m_move.z += cosf(m_rot.y) * m_fSpeed;
+			//}
+		}
 		else
 		{
 			// 前輪モデルの最終目的座標
 			fModelFront.y = 0;
+
 		}
 
 		// モデルの回転と目標地点の差を格納
