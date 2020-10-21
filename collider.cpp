@@ -1287,7 +1287,7 @@ bool CCollider::RayBlockCollision(D3DXVECTOR3 &pos, D3DXMATRIX *pMat)
 		//	逆行列を使用し、レイ始点情報を変換　位置と向きで変換する関数が異なるので要注意
 		D3DXVec3TransformCoord(&m_posBefore, &D3DXVECTOR3(pos.x, pMat->_42, pos.z), &invmat);
 		//	レイ終点情報を変換
-		D3DXVec3TransformCoord(&m_posAfter, &D3DXVECTOR3(pos.x, pos.y - 10, pos.z), &invmat);
+		D3DXVec3TransformCoord(&m_posAfter, &D3DXVECTOR3(pos.x, pos.y - 1, pos.z), &invmat);
 		//	レイ方向情報を変換
 		D3DXVec3Normalize(&direction, &(m_posAfter - m_posBefore));
 		//Rayを飛ばす
@@ -1314,9 +1314,9 @@ bool CCollider::RayBlockCollision(D3DXVECTOR3 &pos, D3DXMATRIX *pMat)
 				fData = vDistance[nCnt];
 			}
 		}
-		//if (fData < 10.0f)//Rayの長さの指定条件
+		if (fData < 30.0f)//Rayの長さの指定条件
 		{
-			pos.y = pos.y - fData + 10.0f;
+			pos.y = pos.y - fData + 12.28f;
 			bLand = true;
 		}
 		//Rayの判定圏内じゃなかったらジャンプできない
