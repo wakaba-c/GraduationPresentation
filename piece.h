@@ -53,7 +53,9 @@ public:
 	void OnCollisionEnter(CCollider *col) {};
 
 	PieceStatus GetStatus(void) { return m_Status; }								// ステータスの設定
-	bool GetPlaacement(void) { return m_bCreate; }									// 配置情報取得
+	bool GetCreate(void) { return m_bCreate; }										// 配置情報取得
+	bool GetPlaacement(void) { return m_bPlacement; }								// 配置情報取得
+	bool GetPuzzle(int nDepth, int nWidth) { return m_bPuzzle[nDepth][nWidth]; }	// パズル情報取得
 
 	void SetPlaacement(bool bCreate) { m_bCreate = bCreate; }						// 配置情報設定
 	static CPiece *Create(void);													// 生成処理
@@ -75,5 +77,7 @@ private:
 	bool m_bPlacement;																// 配置しているかどうか
 	bool m_bCreate;																	// 生成するかどうか
 	bool m_bMove;																	// 動くかどうか
+	bool m_bBox[Piece_Depth][Piece_Width];											// ボックスの状態
+	bool m_bPut;																	// 置く
 };
 #endif

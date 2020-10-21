@@ -13,6 +13,7 @@
 #include "scene2D.h"
 #include "takaseiLibrary.h"
 #include "debug.h"
+#include "box.h"
 
 //==================================================================================================================
 // マクロ定義
@@ -59,6 +60,8 @@ HRESULT CPiece::Init(void)
 	m_bPlacement = false;
 	m_bCreate = false;
 	m_bMove = false;
+	m_bPut = true;
+
 	m_Status = PieceStatus_None;
 
 	for (int nCntDepth = 0; nCntDepth < Piece_Depth; nCntDepth++)
@@ -66,7 +69,7 @@ HRESULT CPiece::Init(void)
 		for (int nCntWidth = 0; nCntWidth < Piece_Width; nCntWidth++)
 		{
 			m_bPuzzle[nCntDepth][nCntWidth] = false;
-
+			m_bBox[nCntDepth][nCntWidth] = false;
 			m_pBlock[nCntDepth][nCntWidth] = CScene2D::Create(PRIORITY_UI);
 
 			if (m_pBlock[nCntDepth][nCntWidth] != NULL)
@@ -106,10 +109,11 @@ void CPiece::Update(void)
 		// 横をカウント
 		for (int nWide = 0; nWide < Piece_Width; nWide++)
 		{
+			m_bBox[nDepth][nWide] = CBox::GetPuzzle(nDepth, nWide);
 			// ポジション取得
 			m_pos = m_pBlock[nDepth][nWide]->GetPosition();
 
-			// 初期配置
+			// 配置
 			if (nDepth == m_nCntMove_Y && nWide == m_nCntMove_X)
 			{
 				m_bPuzzle[nDepth][nWide] = true;
@@ -145,18 +149,40 @@ void CPiece::Update(void)
 				if (m_bPlacement == false)
 				{
 					// 色の変更
-					m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
+					if (m_bBox[m_nCntMove_Y][m_nCntMove_X] == false && m_bBox[m_nCntMove_Y][m_nCntMove_X + 1] == false &&
+						m_bBox[m_nCntMove_Y + 1][m_nCntMove_X] == false && m_bBox[m_nCntMove_Y + 1][m_nCntMove_X + 1] == false)
+					{
+						m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
+						m_bPut = true;
+					}
+					else
+					{
+						// 色の変更
+						m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+						m_bPut = false;
+					}
 				}
 				else
 				{
 					// 色の変更
 					m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 				}
+
 			}
 			else
 			{
 				// 色設定
 				m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
+			}
+
+			// 配置決定
+			if (pKeyboard->GetTriggerKeyboard(MOVE_JUMP))
+			{
+				if (m_bPut == true)
+				{
+					m_bPlacement = true;
+					m_bMove = true;
+				}
 			}
 		}
 	}
@@ -186,12 +212,7 @@ void CPiece::Update(void)
 			m_nCntMove_Y++;
 		}
 	}
-	// 配置決定
-	if (pKeyboard->GetTriggerKeyboard(MOVE_JUMP))
-	{
-		m_bPlacement = true;
-		m_bMove = true;
-	}
+
 	if (m_bMove == true)
 	{
 		// 生成
