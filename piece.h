@@ -51,9 +51,11 @@ public:
 
 	void OnTriggerEnter(CCollider *col) {};
 	void OnCollisionEnter(CCollider *col) {};
+
+	PieceStatus GetStatus(void) { return m_Status; }								// ステータスの設定
 	bool GetPlaacement(void) { return m_bCreate; }									// 配置情報取得
 
-	void SetPlaacement(bool bCreate) { m_bCreate = bCreate; }
+	void SetPlaacement(bool bCreate) { m_bCreate = bCreate; }						// 配置情報設定
 	static CPiece *Create(void);													// 生成処理
 	static HRESULT Load(void);														// テクスチャ情報ロード
 	static void Unload(void);														// テクスチャ情報アンロード
