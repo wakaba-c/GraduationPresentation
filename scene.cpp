@@ -691,10 +691,12 @@ void CScene::SaveModel(void)
 
 			D3DXVECTOR3 pos = pObject->GetPosition();		// 位置情報を書き込む
 			D3DXVECTOR3 rot = pObject->GetRotation();		// 回転情報を書き込む
+			D3DXVECTOR3 size = pObject->GetSize();			// 大きさ情報を書き込む
 
-			CWrite::Write("	MODEL_FILENAME = %s\n", pObject->GetAdd().c_str());	// アドレス情報を書き込む
+			CWrite::Write("	MODEL_FILENAME = %s\n", pObject->GetAdd().c_str());		// アドレス情報を書き込む
 			CWrite::Write("	POS = %.2f %.2f %.2f\n", pos.x, pos.y, pos.z);			// 位置情報を書き込む
-			CWrite::Write("	ROT = %.2f %.2f %.2f\n", rot.x, rot.y, rot.z);			// 位置情報を書き込む
+			CWrite::Write("	ROT = %.2f %.2f %.2f\n", rot.x, rot.y, rot.z);			// 回転情報を書き込む
+			CWrite::Write("	SIZE = %.2f %.2f %.2f\n", size.x, rot.y, rot.z);		// 大きさ情報を書き込む
 
 			CWrite::Write("END_MODELSET\n");				// 頂点情報の書き込み開始宣言
 			CWrite::Write("\n");							// 改行

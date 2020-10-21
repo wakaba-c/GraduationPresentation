@@ -81,6 +81,11 @@ public:
 	// [ned]   終点
 	static D3DXVECTOR3 OutputVector(const D3DXVECTOR3 & start, const D3DXVECTOR3 & end);
 
+	// 処理：二点間の距離計算
+	// [onePoint] 一つ目の点
+	// [twoPoint] 二つ目の点
+	static float OutputDistance(const D3DXVECTOR3 & onePoint, const D3DXVECTOR3 & twoPoint);
+
 	static HRESULT Up(CInputKeyboard	*Key, CInputController *pGamepad);	// 上入力
 	static HRESULT Down(CInputKeyboard	*Key, CInputController *pGamepad);	// 下入力
 	static HRESULT Left(CInputKeyboard	*Key, CInputController *pGamepad);	// 左入力

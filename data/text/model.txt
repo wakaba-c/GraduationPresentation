@@ -13,6 +13,7 @@ MODELSET
 	MODEL_FILENAME = data/model/load/stageLoad_1.x
 	POS = 0.00 0.00 0.00
 	ROT = 0.00 0.00 0.00
+	SIZE = 2.00 2.00 2.00
 END_MODELSET
 
 END_SCRIPT
