@@ -20,6 +20,8 @@
 #define WhileX 50.0f																// イチマスの長さ横
 #define WhileY 50.0f																// イチマスの長さ高さ
 #define WhileZ 50.0f																// イチマスの長さ縦
+#define Range_X 13																	// 横の範囲
+#define Range_Y 6																	// 縦の範囲
 
 //==================================================================================================================
 // 静的メンバ変数の初期化
@@ -111,22 +113,27 @@ void CPiece::Update(void)
 			if (nDepth == m_nCntMove_Y && nWide == m_nCntMove_X)
 			{
 				m_bPuzzle[nDepth][nWide] = true;
+				m_Status = PieceStatus_Plaacement;
 			}
 			else if (nDepth == m_nCntMove_Y && nWide == m_nCntMove_X + 1)
 			{
 				m_bPuzzle[nDepth][nWide] = true;
+				m_Status = PieceStatus_Plaacement;
 			}
 			else if (nDepth == m_nCntMove_Y + 1 && nWide == m_nCntMove_X)
 			{
 				m_bPuzzle[nDepth][nWide] = true;
+				m_Status = PieceStatus_Plaacement;
 			}
 			else if (nDepth == m_nCntMove_Y + 1 && nWide == m_nCntMove_X + 1)
 			{
 				m_bPuzzle[nDepth][nWide] = true;
+				m_Status = PieceStatus_Plaacement;
 			}
 			else
 			{
 				m_bPuzzle[nDepth][nWide] = false;
+				m_Status = PieceStatus_Not;
 			}
 
 			// 状態確認
@@ -200,18 +207,18 @@ void CPiece::Update(void)
 	{
 		m_nCntMove_X = 0;
 	}
-	else if (m_nCntMove_X >= 13)
+	else if (m_nCntMove_X >= Range_X)
 	{
-		m_nCntMove_X = 13;
+		m_nCntMove_X = Range_X;
 	}
 
 	if (m_nCntMove_Y <= 0)
 	{
 		m_nCntMove_Y = 0;
 	}
-	else if (m_nCntMove_Y >= 6)
+	else if (m_nCntMove_Y >= Range_Y)
 	{
-		m_nCntMove_Y = 6;
+		m_nCntMove_Y = Range_Y;
 	}
 }
 
