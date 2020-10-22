@@ -62,8 +62,6 @@ HRESULT CPiece::Init(void)
 	m_bMove = false;
 	m_bPut = true;
 
-	m_Status = PieceStatus_None;
-
 	for (int nCntDepth = 0; nCntDepth < Piece_Depth; nCntDepth++)
 	{
 		for (int nCntWidth = 0; nCntWidth < Piece_Width; nCntWidth++)
@@ -113,66 +111,199 @@ void CPiece::Update(void)
 			// ポジション取得
 			m_pos = m_pBlock[nDepth][nWide]->GetPosition();
 
-			// 配置
-			if (nDepth == m_nCntMove_Y && nWide == m_nCntMove_X)
+			// 形を変える
+			switch (m_PieceType)
 			{
-				m_bPuzzle[nDepth][nWide] = true;
-				m_Status = PieceStatus_Plaacement;
-			}
-			else if (nDepth == m_nCntMove_Y && nWide == m_nCntMove_X + 1)
-			{
-				m_bPuzzle[nDepth][nWide] = true;
-				m_Status = PieceStatus_Plaacement;
-			}
-			else if (nDepth == m_nCntMove_Y + 1 && nWide == m_nCntMove_X)
-			{
-				m_bPuzzle[nDepth][nWide] = true;
-				m_Status = PieceStatus_Plaacement;
-			}
-			else if (nDepth == m_nCntMove_Y + 1 && nWide == m_nCntMove_X + 1)
-			{
-				m_bPuzzle[nDepth][nWide] = true;
-				m_Status = PieceStatus_Plaacement;
-			}
-			else
-			{
-				m_bPuzzle[nDepth][nWide] = false;
-				m_Status = PieceStatus_Not;
-			}
 
-			// 状態確認
-			if (m_bPuzzle[nDepth][nWide] == true)
-			{
-				// テクスチャ変更
-				m_pBlock[nDepth][nWide]->BindTexture(CManager::GetResource("data/tex/grass.jpg"));
-				// 配置しているかどうか
-				if (m_bPlacement == false)
+			case PieceType_Square:
+				// 配置
+				if (nDepth == m_nCntMove_Y && nWide == m_nCntMove_X)
 				{
-					// 色の変更
-					if (m_bBox[m_nCntMove_Y][m_nCntMove_X] == false && m_bBox[m_nCntMove_Y][m_nCntMove_X + 1] == false &&
-						m_bBox[m_nCntMove_Y + 1][m_nCntMove_X] == false && m_bBox[m_nCntMove_Y + 1][m_nCntMove_X + 1] == false)
+					m_bPuzzle[nDepth][nWide] = true;
+				}
+				else if (nDepth == m_nCntMove_Y && nWide == m_nCntMove_X + 1)
+				{
+					m_bPuzzle[nDepth][nWide] = true;
+				}
+				else if (nDepth == m_nCntMove_Y + 1 && nWide == m_nCntMove_X)
+				{
+					m_bPuzzle[nDepth][nWide] = true;
+				}
+				else if (nDepth == m_nCntMove_Y + 1 && nWide == m_nCntMove_X + 1)
+				{
+					m_bPuzzle[nDepth][nWide] = true;
+				}
+				else
+				{
+					m_bPuzzle[nDepth][nWide] = false;
+				}
+
+				// 状態確認
+				if (m_bPuzzle[nDepth][nWide] == true)
+				{
+					// テクスチャ変更
+					m_pBlock[nDepth][nWide]->BindTexture(CManager::GetResource("data/tex/grass.jpg"));
+					// 配置しているかどうか
+					if (m_bPlacement == false)
 					{
-						m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
-						m_bPut = true;
+						// 色の変更
+						if (m_bBox[m_nCntMove_Y][m_nCntMove_X] == false && m_bBox[m_nCntMove_Y][m_nCntMove_X + 1] == false &&
+							m_bBox[m_nCntMove_Y + 1][m_nCntMove_X] == false && m_bBox[m_nCntMove_Y + 1][m_nCntMove_X + 1] == false)
+						{
+							m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
+							m_bPut = true;
+						}
+						else
+						{
+							// 色の変更
+							m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+							m_bPut = false;
+						}
 					}
 					else
 					{
 						// 色の変更
-						m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
-						m_bPut = false;
+						m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 					}
+
 				}
 				else
 				{
-					// 色の変更
-					m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+					// 色設定
+					m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
 				}
 
-			}
-			else
-			{
-				// 色設定
-				m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
+				break;
+
+			case PieceType_Rectangle:
+
+				// 配置
+				if (nDepth == m_nCntMove_Y && nWide == m_nCntMove_X)
+				{
+					m_bPuzzle[nDepth][nWide] = true;
+				}
+				else if (nDepth == m_nCntMove_Y && nWide == m_nCntMove_X + 1)
+				{
+					m_bPuzzle[nDepth][nWide] = true;
+				}
+				else if (nDepth == m_nCntMove_Y && nWide == m_nCntMove_X + 2)
+				{
+					m_bPuzzle[nDepth][nWide] = true;
+				}
+				else if (nDepth == m_nCntMove_Y + 1 && nWide == m_nCntMove_X)
+				{
+					m_bPuzzle[nDepth][nWide] = true;
+				}
+				else if (nDepth == m_nCntMove_Y + 1 && nWide == m_nCntMove_X + 1)
+				{
+					m_bPuzzle[nDepth][nWide] = true;
+				}
+				else if (nDepth == m_nCntMove_Y + 1 && nWide == m_nCntMove_X + 2)
+				{
+					m_bPuzzle[nDepth][nWide] = true;
+				}
+				else
+				{
+					m_bPuzzle[nDepth][nWide] = false;
+				}
+
+				// 状態確認
+				if (m_bPuzzle[nDepth][nWide] == true)
+				{
+					// テクスチャ変更
+					m_pBlock[nDepth][nWide]->BindTexture(CManager::GetResource("data/tex/grass.jpg"));
+					// 配置しているかどうか
+					if (m_bPlacement == false)
+					{
+						// 色の変更
+						if (m_bBox[m_nCntMove_Y][m_nCntMove_X] == false && m_bBox[m_nCntMove_Y][m_nCntMove_X + 1] == false &&
+							m_bBox[m_nCntMove_Y][m_nCntMove_X + 2] == false && m_bBox[m_nCntMove_Y + 1][m_nCntMove_X] == false && 
+							m_bBox[m_nCntMove_Y + 1][m_nCntMove_X + 1] == false && m_bBox[m_nCntMove_Y + 1][m_nCntMove_X + 2] == false)
+						{
+							m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
+							m_bPut = true;
+						}
+						else
+						{
+							// 色の変更
+							m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+							m_bPut = false;
+						}
+					}
+					else
+					{
+						// 色の変更
+						m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+					}
+
+				}
+				else
+				{
+					// 色設定
+					m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
+				}
+
+				break;
+
+			case PieceType_T_Type:
+
+				// 配置
+				if (nDepth == m_nCntMove_Y && nWide == m_nCntMove_X + 1)
+				{
+					m_bPuzzle[nDepth][nWide] = true;
+				}
+				else if (nDepth == m_nCntMove_Y + 1 && nWide == m_nCntMove_X)
+				{
+					m_bPuzzle[nDepth][nWide] = true;
+				}
+				else if (nDepth == m_nCntMove_Y + 1 && nWide == m_nCntMove_X + 1)
+				{
+					m_bPuzzle[nDepth][nWide] = true;
+				}
+				else if (nDepth == m_nCntMove_Y + 1 && nWide == m_nCntMove_X + 2)
+				{
+					m_bPuzzle[nDepth][nWide] = true;
+				}
+				else
+				{
+					m_bPuzzle[nDepth][nWide] = false;
+				}
+
+				// 状態確認
+				if (m_bPuzzle[nDepth][nWide] == true)
+				{
+					// テクスチャ変更
+					m_pBlock[nDepth][nWide]->BindTexture(CManager::GetResource("data/tex/grass.jpg"));
+					// 配置しているかどうか
+					if (m_bPlacement == false)
+					{
+						// 色の変更
+						if (m_bBox[m_nCntMove_Y][m_nCntMove_X + 1] == false && m_bBox[m_nCntMove_Y + 1][m_nCntMove_X] == false &&
+							m_bBox[m_nCntMove_Y + 1][m_nCntMove_X + 1] == false && m_bBox[m_nCntMove_Y + 1][m_nCntMove_X + 2] == false)
+						{
+							m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
+							m_bPut = true;
+						}
+						else
+						{
+							// 色の変更
+							m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+							m_bPut = false;
+						}
+					}
+					else
+					{
+						// 色の変更
+						m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+					}
+
+				}
+				else
+				{
+					// 色設定
+					m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
+				}				
+				break;
 			}
 
 			// 配置決定
@@ -213,15 +344,15 @@ void CPiece::Update(void)
 		}
 	}
 
-	if (m_bMove == true)
-	{
-		// 生成
-		if (pKeyboard->GetTriggerKeyboard(DIK_C))
-		{
-			m_bCreate = true;
-			m_bMove = false;
-		}
-	}
+	//if (m_bMove == true)
+	//{
+	//	// 生成
+	//	if (pKeyboard->GetTriggerKeyboard(DIK_C) || pKeyboard->GetTriggerKeyboard(DIK_V) || pKeyboard->GetTriggerKeyboard(DIK_B))
+	//	{
+	//		m_bCreate = true;
+	//		m_bMove = false;
+	//	}
+	//}
 
 	// 枠外に行かないようにする
 	if (m_nCntMove_X <= 0)
@@ -284,4 +415,12 @@ void CPiece::Unload(void)
 {
 	// テクスチャの開放
 
+}
+
+//==================================================================================================================
+// タイプ設定
+//==================================================================================================================
+void CPiece::SetPieceType(PieceType type)
+{
+	m_PieceType = type;
 }

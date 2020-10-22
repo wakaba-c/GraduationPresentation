@@ -80,6 +80,7 @@ HRESULT CBox::Init(void)
 		}
 	}
 	m_pPiece[m_nPieceNum] = CPiece::Create();
+	m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Square);
 
 
 	//m_bPuzzle[nCntMove_Y][nCntMove_X] = true;
@@ -108,14 +109,43 @@ void CBox::Update(void)
 	if (m_pPiece[m_nPieceNum] != NULL)
 	{
 		// 配置情報取得
-		m_bPiece = m_pPiece[m_nPieceNum]->GetCreate();
+		m_bPiece = m_pPiece[m_nPieceNum]->GetMove();
 	}
 
 	if (m_bPiece == true)
 	{
-		m_nPieceNum++;
+
+
+		// 生成
+		if (pKeyboard->GetTriggerKeyboard(DIK_C))
+		{
+			m_nPieceNum++;
+			m_pPiece[m_nPieceNum] = CPiece::Create();
+			m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Square);
+			// 配置情報
+			m_pPiece[m_nPieceNum]->SetMove(false);
+		}
+
+		// 生成
+		if (pKeyboard->GetTriggerKeyboard(DIK_V))
+		{
+			m_nPieceNum++;
+			m_pPiece[m_nPieceNum] = CPiece::Create();
+			m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Rectangle);
+			// 配置情報
+			m_pPiece[m_nPieceNum]->SetMove(false);
+		}
+		// 生成
+		if (pKeyboard->GetTriggerKeyboard(DIK_B))
+		{
+			m_nPieceNum++;
+			m_pPiece[m_nPieceNum] = CPiece::Create();
+			m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_T_Type);
+			// 配置情報
+			m_pPiece[m_nPieceNum]->SetMove(false);
+		}
 		// ピース生成
-		m_pPiece[m_nPieceNum] = CPiece::Create();
+		
 		//m_pPiece[m_nPieceNum]->SetPlaacement(false);
 	}
 
