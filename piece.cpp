@@ -173,6 +173,24 @@ void CPiece::Update(void)
 					m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
 				}
 
+				// 枠外に行かないようにする
+				if (m_nCntMove_X <= 0)
+				{
+					m_nCntMove_X = 0;
+				}
+				else if (m_nCntMove_X >= Range_X)
+				{
+					m_nCntMove_X = Range_X;
+				}
+
+				if (m_nCntMove_Y <= 0)
+				{
+					m_nCntMove_Y = 0;
+				}
+				else if (m_nCntMove_Y >= Range_Y)
+				{
+					m_nCntMove_Y = Range_Y;
+				}
 				break;
 
 			case PieceType_Rectangle:
@@ -242,7 +260,24 @@ void CPiece::Update(void)
 					// 色設定
 					m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
 				}
+				// 枠外に行かないようにする
+				if (m_nCntMove_X <= 0)
+				{
+					m_nCntMove_X = 0;
+				}
+				else if (m_nCntMove_X >= Range_X - 1)
+				{
+					m_nCntMove_X = Range_X - 1;
+				}
 
+				if (m_nCntMove_Y <= 0)
+				{
+					m_nCntMove_Y = 0;
+				}
+				else if (m_nCntMove_Y >= Range_Y)
+				{
+					m_nCntMove_Y = Range_Y;
+				}
 				break;
 
 			case PieceType_T_Type:
@@ -302,7 +337,27 @@ void CPiece::Update(void)
 				{
 					// 色設定
 					m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
-				}				
+				}
+
+				// 枠外に行かないようにする
+				if (m_nCntMove_X <= 0)
+				{
+					m_nCntMove_X = 0;
+				}
+				else if (m_nCntMove_X >= Range_X - 1)
+				{
+					m_nCntMove_X = Range_X - 1;
+				}
+
+				if (m_nCntMove_Y <= 0)
+				{
+					m_nCntMove_Y = 0;
+				}
+				else if (m_nCntMove_Y >= Range_Y)
+				{
+					m_nCntMove_Y = Range_Y;
+				}
+
 				break;
 			}
 
@@ -342,35 +397,6 @@ void CPiece::Update(void)
 		{
 			m_nCntMove_Y++;
 		}
-	}
-
-	//if (m_bMove == true)
-	//{
-	//	// 生成
-	//	if (pKeyboard->GetTriggerKeyboard(DIK_C) || pKeyboard->GetTriggerKeyboard(DIK_V) || pKeyboard->GetTriggerKeyboard(DIK_B))
-	//	{
-	//		m_bCreate = true;
-	//		m_bMove = false;
-	//	}
-	//}
-
-	// 枠外に行かないようにする
-	if (m_nCntMove_X <= 0)
-	{
-		m_nCntMove_X = 0;
-	}
-	else if (m_nCntMove_X >= Range_X)
-	{
-		m_nCntMove_X = Range_X;
-	}
-
-	if (m_nCntMove_Y <= 0)
-	{
-		m_nCntMove_Y = 0;
-	}
-	else if (m_nCntMove_Y >= Range_Y)
-	{
-		m_nCntMove_Y = Range_Y;
 	}
 }
 
