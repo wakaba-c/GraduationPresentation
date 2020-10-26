@@ -53,8 +53,7 @@ CBox::~CBox()
 HRESULT CBox::Init(void)
 {
 	// ‰Šú‰»
-	m_nCntMove_X = 0;
-	m_nCntMove_Y = 0;
+	m_nCntChange = 0;
 	m_nPieceNum = 0;
 	m_bPlacement = false;
 	m_bCreate = false;
@@ -114,8 +113,6 @@ void CBox::Update(void)
 
 	if (m_bPiece == true)
 	{
-
-
 		// ¶¬
 		if (pKeyboard->GetTriggerKeyboard(DIK_C))
 		{
@@ -147,6 +144,28 @@ void CBox::Update(void)
 		// ƒs[ƒX¶¬
 		
 		//m_pPiece[m_nPieceNum]->SetPlaacement(false);
+	}
+	else
+	{
+		// ¶¬
+		if (pKeyboard->GetTriggerKeyboard(DIK_Z))
+		{
+			if (m_nCntChange == 0)
+			{
+				m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Square);
+				m_nCntChange++;
+			}
+			else if (m_nCntChange == 1)
+			{
+				m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Rectangle);
+				m_nCntChange++;
+			}
+			else if (m_nCntChange == 2)
+			{
+				m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_T_Type);
+				m_nCntChange = 0;
+			}
+		}
 	}
 
 	for (int nCntDepth = 0; nCntDepth < Box_Depth; nCntDepth++)

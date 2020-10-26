@@ -61,8 +61,7 @@ private:
 	CScene2D *m_pBlock[Box_Depth][Box_Width];										// シーン2Dのポインタ
 	CPiece *m_pPiece[Piece_Num];													// ピース
 
-	int m_nCntMove_X;																// 移動カウントX
-	int m_nCntMove_Y;																// 移動カウントY
+	int m_nCntChange;																// 変えるカウント
 	int m_nPieceNum;																// ピース数
 
 	static bool m_bPuzzle[Box_Depth][Box_Width];									// 使用しているかどうか
