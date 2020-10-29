@@ -37,6 +37,8 @@ public:
 	void Draw(void);								// 描画処理
 
 	static CSpeed *Create(void);					// クリエイト処理
+	static void SetDigit(float fDigit) { m_fDigit = fDigit; }// 時速設定
+	static float GetDigit(void) { return m_fDigit; }// 時速取得
 
 	void OnTriggerEnter(CCollider *col) {};
 	void OnCollisionEnter(CCollider *col) {};
@@ -47,5 +49,7 @@ private:
 
 	CNumber *m_apNumber[MAX_DIGIT];// 数字ポインタ
 	DWORD m_dTimeFrame;			// フレーム数
+
+	static float m_fDigit;			// 時速
 };
 #endif

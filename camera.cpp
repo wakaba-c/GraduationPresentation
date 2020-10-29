@@ -58,7 +58,7 @@ HRESULT CCamera::Init(void)
 	pDevice = Renderer->GetDevice();							// デバイスの取得
 	m_worldPos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);					// マウスのワールド座標
 	m_bRotMove = false;											// 回転運動の更新
-	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);						// 回転量
+	m_rot = D3DXVECTOR3(0.0f, D3DX_PI, 0.0f);						// 回転量
 	m_rotDest = D3DXVECTOR3(0.0f, 0.0f, 0.0f);					// 回転量の目的地
 	m_posV = D3DXVECTOR3(0.0f, 500.0f, -316.0f);				// 視点
 	m_posVDest = m_posV;										// 視点の目的地
@@ -403,7 +403,7 @@ void CCamera::CameraMove(void)
 	D3DXVECTOR3 playerPos = D3DXVECTOR3_ZERO;
 	if (pPlayer != NULL)
 	{
-		playerRot = pPlayer->GetRotation();		// プレイヤー用回転変数
+		playerRot = pPlayer->GetCameraRot();	// プレイヤー用回転変数
 		playerPos = pPlayer->GetPosition();		// プレイヤー用位置変数
 	}
 
@@ -433,34 +433,11 @@ void CCamera::CameraMove(void)
 	m_posV.z += (m_posVDest.z - m_posV.z) * 1.0f;
 	m_posR += (m_posRDest - m_posR) * 1.0f;
 
-	// アクセルボタンを押しているとき
-	if (pKeyboard->GetPressKeyboard(MOVE_ACCEL) || pKeyboard->GetPressKeyboard(MOVE_BRAKE))
-	{
-		// キーボードの[A]または[D]を押したとき
-		if (pKeyboard->GetPressKeyboard(MOVE_LEFT) || pKeyboard->GetPressKeyboard(MOVE_RIGHT))
-		{
-			// 回転を始めるカウントを加算
-			m_nCntRot++;
-		}
-		else if (!pKeyboard->GetPressKeyboard(MOVE_LEFT) && !pKeyboard->GetPressKeyboard(MOVE_RIGHT))
-		{// キーボードの[A]と[D]が押されていないとき
-		 // 回転を始めるカウンタ初期化
-			m_nCntRot = 0;
+	// 差を徐々に縮めていく
+	m_rot.y -= fDiff.y * ROT_SHRINK;
 
-			// 差を徐々に縮めていく
-			m_rot.y -= fDiff.y * ROT_SHRINK;
-		}
-
-		// 回転を始めるカウンタが規定値を超えたとき
-		if (m_nCntRot >= ROT_COUNT)
-		{
-			// 差を徐々に縮めていく
-			m_rot.y -= fDiff.y * ROT_SHRINK;
-		}
-
-		// 回転の補正
-		CTakaseiLibrary::RotRevision(&m_rot);
-	}
+	// 回転の補正
+	CTakaseiLibrary::RotRevision(&m_rot);
 
 #ifdef _DEBUG
 	CInputMouse *pMouse = CManager::GetInputMouse();
