@@ -103,6 +103,7 @@ public:
 	static std::vector<std::string> split(std::string& input, char delimiter);				// 文字列分割処理
 	static float GetDistance(D3DXVECTOR3 FirstTarget, D3DXVECTOR3 SecondTarget);			// 2点間の距離を取得
 	static int GetRand(int nValue);															// ランダム整数の取得
+	static float DistanceForDotAndPlane(const D3DXVECTOR3 &point, const D3DXVECTOR3 &planePoint, const D3DXVECTOR3 &planeNormal);		// 点と平面の距離を求める
 
 	static float easeOut(float fValue);														// イージング(Out)
 	static float easeIn(float fTime, float fStart, float fDifference, float fTotal);		// イージング(In)
@@ -114,13 +115,14 @@ public:
 	static HRESULT LoadModel(std::string &Add);												// Xファイルのロード
 	static bool GetModelResource(std::string &Add, LPD3DXBUFFER &pBuffMat, DWORD &nNumMat, LPD3DXMESH &pMesh);	// Xファイルの取得
 
-	static HRESULT LoadShader(std::string &Add);											// Xファイルのロード
-	static LPD3DXEFFECT GetShaderResource(std::string &Add);								// Xファイルの取得
+	static HRESULT LoadShader(std::string Add);											// Xファイルのロード
+	static LPD3DXEFFECT GetShaderResource(std::string Add);								// Xファイルの取得
 
 	static D3DXVECTOR3 GetCursorPosWithCenter(void);
 
+	static D3DXVECTOR3 Slip(D3DXVECTOR3 L, D3DXVECTOR3 N);
+
 	static std::map<std::string, MODEL_INFO> GetModelMap(void) { return m_ModelMap; }
-	static std::vector<std::vector<std::string>> FileContens(char const * cns_cFile, char delimiter);
 
 private:
 	static void	LoadSystemFile(void);					// システムファイルのロード

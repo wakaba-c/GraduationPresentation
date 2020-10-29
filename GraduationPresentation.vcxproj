@@ -210,6 +210,7 @@
     <ClCompile Include="titleLogo.cpp" />
     <ClCompile Include="tree.cpp" />
     <ClCompile Include="ui.cpp" />
+    <ClCompile Include="wall.cpp" />
     <ClCompile Include="write.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -280,6 +281,7 @@
     <ClInclude Include="titleLogo.h" />
     <ClInclude Include="tree.h" />
     <ClInclude Include="ui.h" />
+    <ClInclude Include="wall.h" />
     <ClInclude Include="write.h" />
   </ItemGroup>
   <ItemGroup>

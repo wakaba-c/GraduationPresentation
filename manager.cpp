@@ -157,7 +157,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 	Load("data/model/akazukin/skin.jpg");
 	Load("data/model/akazukin/skirt.png");
 
-	SetMode(MODE_PUZZLE_CUSTOM);																		//モードセレクト
+	SetMode(MODE_GAME);																		//モードセレクト
 
 	return S_OK;
 }
@@ -441,8 +441,6 @@ void CManager::SetMode(MODE mode)
 		m_pPuzzle = new CPuzzle;
 		m_pPuzzle->Init();
 		break;
-		break;
-
 	case MODE_GAME:
 		m_pGame = new CGame;
 		m_pGame->Init();
@@ -507,6 +505,19 @@ int CManager::GetRand(int nValue)
 	float work = (*(float*)&res) - 1.0f;
 	//}
 	return nAnswer;
+}
+
+//=============================================================================
+// 点と平面の距離を求める
+//=============================================================================
+float CManager::DistanceForDotAndPlane(const D3DXVECTOR3 &point, const D3DXVECTOR3 &planePoint, const D3DXVECTOR3 &planeNormal)
+{
+	// 点と平面状の点のベクトル(点 - 平面上の点)
+	D3DXVECTOR3 pointVector;
+	pointVector = point - planePoint;
+
+	// 法線と点と平面の点を内積で計算
+	return fabs(D3DXVec3Dot(&planeNormal, &pointVector));
 }
 
 //=============================================================================
@@ -718,7 +729,7 @@ bool CManager::GetModelResource(std::string &Add, LPD3DXBUFFER &pBuffMat, DWORD 
 //=============================================================================
 // 指定したモデル情報を読み込む処理
 //=============================================================================
-HRESULT CManager::LoadShader(std::string & Add)
+HRESULT CManager::LoadShader(std::string Add)
 {
 	std::map<std::string, LPD3DXEFFECT>::const_iterator it = m_ShaderMap.find(Add);
 
@@ -753,7 +764,7 @@ HRESULT CManager::LoadShader(std::string & Add)
 //=============================================================================
 // 指定したモデル情報を取得する処理
 //=============================================================================
-LPD3DXEFFECT CManager::GetShaderResource(std::string & Add)
+LPD3DXEFFECT CManager::GetShaderResource(std::string Add)
 {
 	std::map<std::string, LPD3DXEFFECT>::const_iterator it = m_ShaderMap.find(Add);
 
@@ -814,6 +825,19 @@ D3DXVECTOR3 CManager::GetCursorPosWithCenter(void)
 	pos.z = 1.0f;
 
 	return pos;
+}
+
+//
+//D3DXVECTOR3 Slip(D3DXVECTOR3 L,D3DXVECTOR3 N)
+// L:入射ベクトル（レイ） N:ポリゴンの法線
+D3DXVECTOR3 CManager::Slip(D3DXVECTOR3 L, D3DXVECTOR3 N)
+{
+	D3DXVECTOR3 S; //滑りベクトル（滑る方向）
+
+	//滑りベクトル S=L-(N * L)/(|N|^2)*N
+	S = L - ((D3DXVec3Dot(&N, &L)) / (pow(D3DXVec3Length(&N), 2))) * N;
+
+	return S;
 }
 
 //=============================================================================
@@ -951,40 +975,4 @@ std::vector<std::string> CManager::split(
 	}
 	// 確保した文字列分返す
 	return vec_Result;
-}
-
-//=============================================================================
-// テキストデータの中身を整理する処理
-//=============================================================================
-std::vector<std::vector<std::string>> CManager::FileContens(
-	char const * cns_cFile,
-	char delimiter
-)
-{
-	// 変数宣言
-	std::ifstream				ifs_file;	// ファイル用ストリーム
-	std::string					s_Line;		// 1時的に1行読み込む
-	std::vector<std::vector<std::string>>	svec_Char;	// ファイルの中身格納用
-
-	// ファイルを開く
-	ifs_file.open(cns_cFile);
-	// 読み込みに失敗したらエラー文を出し関数を抜ける
-	if (ifs_file.fail())
-	{
-#ifdef _DEBUG
-		MessageBox(NULL, "CCalculation::FileContensの関数のファイル読み取りエラー", "警告", MB_ICONWARNING);
-#endif // _DEBUG
-		return svec_Char;
-	}
-	// 文字列がなくなるまでループ
-	while (getline(ifs_file, s_Line))
-	{
-		// １行ごと文字列を取得する
-		svec_Char.push_back(split(s_Line, delimiter));
-	}
-	// ファイルを閉じる
-	ifs_file.close();
-
-	// ファイルの中身を返す
-	return svec_Char;
 }
