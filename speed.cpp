@@ -18,6 +18,11 @@
 #define INTERVAL 33.0f		// 数字と数字の間
 
 //=============================================================================
+// 静的メンバ変数の初期化
+//=============================================================================
+float CSpeed::m_fDigit = 0.0f;
+
+//=============================================================================
 // コンストラクタ
 //=============================================================================
 CSpeed::CSpeed(CScene::PRIORITY obj = CScene::PRIORITY_UI) : CScene(obj)
@@ -72,7 +77,6 @@ void CSpeed::Update(void)
 	CPlayer *pPlayer = CGame::GetPlayer();
 	D3DXVECTOR3 pos, posOld;		// 現在の位置、前回の位置
 	float fDistance;				// 距離
-	float fDigit = 0.0f;			// 時速
 
 	// プレイヤーがいるとき
 	if (pPlayer != NULL)
@@ -90,12 +94,15 @@ void CSpeed::Update(void)
 	fDistance = CTakaseiLibrary::OutputDistance(posOld, pos);
 	
 	// 距離÷時間	fDigit = fDistance / m_dTimeFrame;
-	fDigit = 10.0f * fDistance;
+	m_fDigit = fDistance;
+
+	// 時速設定
+	SetDigit(m_fDigit);
 
 	// カウンタが0以上のとき
-	if (fDigit >= 0)
+	if (m_fDigit >= 0)
 	{
-		SetTime((int)fDigit);		// タイムの更新
+		SetTime((int)m_fDigit);		// タイムの更新
 	}
 }
 

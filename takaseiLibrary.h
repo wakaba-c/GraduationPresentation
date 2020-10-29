@@ -45,6 +45,7 @@ typedef enum
 	MOVE_BRAKE = DIK_S,		// ブレーキ入力
 	MOVE_LEFT  = DIK_A,		// 左入力
 	MOVE_RIGHT = DIK_D,		// 右入力
+	MOVE_DRIFT = DIK_LSHIFT,// ドリフト入力
 	MOVE_JUMP  = DIK_SPACE,	// ジャンプ入力
 } PLAYER_MOVE_KEY;
 
@@ -85,6 +86,11 @@ public:
 	// [onePoint] 一つ目の点
 	// [twoPoint] 二つ目の点
 	static float OutputDistance(const D3DXVECTOR3 & onePoint, const D3DXVECTOR3 & twoPoint);
+
+	// 処理：加速度計算
+	// [fVelocity] 速さ
+	// [fRadius] 半径
+	static float OutputAcceleration(const float & fVelocity, const float & fRadius);
 
 	static HRESULT Up(CInputKeyboard	*Key, CInputController *pGamepad);	// 上入力
 	static HRESULT Down(CInputKeyboard	*Key, CInputController *pGamepad);	// 下入力

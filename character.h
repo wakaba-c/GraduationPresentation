@@ -115,7 +115,6 @@ private:
 	D3DXVECTOR3						m_size;											// 大きさ
 	D3DXVECTOR3						m_rot;											// 回転量
 	D3DXCOLOR						m_color;										// 色
-	float							m_fSpeed;										// スピード
 	int								m_nActionCount;									// 次のアクションまでのカウンタ
 
 	/*=============== 3Dレンダリング関連 ===============*/
