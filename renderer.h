@@ -62,6 +62,7 @@ public:
 	void Update(void);												// 更新処理
 	void Draw(void);												// 描画処理
 	void SetUpdate(bool bValue);									// 更新処理の有無切り替え
+	void RendererRay(D3DXVECTOR3 start, D3DXVECTOR3 end);			// レイの描画
 
 	LPDIRECT3DDEVICE9 GetDevice(void) { return m_pD3DDevice; }		// デバイスの取得
 

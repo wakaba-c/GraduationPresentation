@@ -19,6 +19,7 @@
 #include "enemy.h"
 #include "inputMouse.h"
 #include "effect.h"
+#include "player.h"
 
 //=============================================================================
 // マクロ定義
@@ -69,7 +70,8 @@ bool CDebugProc::m_bRandomSpeed = false;								// スピードランダム化の有無
 //=============================================================================
 CDebugProc::CDebugProc()
 {
-
+	m_pSelect = NULL;
+	m_bInspectorWind = false;
 }
 
 //=============================================================================
@@ -174,14 +176,18 @@ void CDebugProc::Update(void)
 	{
 		if (m_bInspectorWind)
 		{
-			//ShowInspector();
+			ShowInspector();
 		}
 	}
 
 	CInputMouse *pMouse = CManager::GetInputMouse();
-	if (pMouse->GetTriggerMouse(MOUSE_LEFT))
+	CInputKeyboard *pKeyboard = CManager::GetInputKeyboard();
+	if (pKeyboard->GetPressKeyboard(DIK_F1))
 	{
-		SelectModel();
+		if (pMouse->GetTriggerMouse(MOUSE_LEFT))
+		{
+			SelectModel();
+		}
 	}
 
 	ImGui::End();
@@ -370,21 +376,50 @@ void CDebugProc::Debug(void)
 		{// メニューバーの生成
 			if (ImGui::BeginMenu("File"))
 			{// ファイルタブの生成
-				if (ImGui::MenuItem("Load"))
-				{// ロード
-					// 床情報の読み込み
-					CMeshField::LoadRand("data/stage/rand.txt", false);
+				if (ImGui::BeginMenu("Load"))
+				{// セーブタブの生成
+					if (ImGui::MenuItem("Rand"))
+					{// ロード
+					 // 床情報の読み込み
+						CMeshField::LoadRand("data/stage/rand.txt", false);
+					}
+					if (ImGui::MenuItem("Model"))
+					{// ロード
+					 // モデル情報の読み込み
+						CObject::LoadModelTest("data/text/model.txt");
+					}
+					if (ImGui::MenuItem("All"))
+					{// セーブ
+					 // 床情報の読み込み
+						CMeshField::LoadRand("data/stage/rand.txt", false);
 
-					// モデル情報の読み込み
-					CObject::LoadModelTest("data/text/model.txt");
+						// モデル情報の読み込み
+						CObject::LoadModelTest("data/text/model.txt");
+					}
+					ImGui::EndMenu();			// メニューの更新終了
 				}
-				if (ImGui::MenuItem("Save"))
-				{// セーブ
-					// 床情報の書き込み
-					CScene::SaveRand();
 
-					// モデル情報の書き込み
-					CScene::SaveModel();
+				if (ImGui::BeginMenu("Save"))
+				{// セーブタブの生成
+					if (ImGui::MenuItem("Rand"))
+					{// ロード
+					 // 床情報の書き込み
+						CScene::SaveRand();
+					}
+					if (ImGui::MenuItem("Model"))
+					{// ロード
+					 // モデル情報の書き込み
+						CScene::SaveModel();
+					}
+					if (ImGui::MenuItem("All"))
+					{// セーブ
+					 // 床情報の書き込み
+						CScene::SaveRand();
+
+						// モデル情報の書き込み
+						CScene::SaveModel();
+					}
+					ImGui::EndMenu();			// メニューの更新終了
 				}
 
 				ImGui::EndMenu();			// メニューの更新終了
@@ -890,7 +925,10 @@ void CDebugProc::CreateIndividual(D3DXVECTOR3 &worldPos)
 	if (pScene != NULL)
 	{// 床が存在していたとき
 		CMeshField *pMeshField = (CMeshField*)pScene;								// 床の取得
-		pos.y = pMeshField->GetHeight(worldPos);									// 床の高さを取得
+		if (pMeshField != NULL)
+		{
+			//pos.y = pMeshField->GetHeight(worldPos);									// 床の高さを取得
+		}
 	}
 
 	if (m_pSample != NULL)
@@ -914,6 +952,7 @@ void CDebugProc::CreateIndividual(D3DXVECTOR3 &worldPos)
 	{// 見本用オブジェクトが存在していたとき
 		m_pSample->SetPosition(pos);														// 見本用モデルの位置を現在のマウス座標に設定
 		m_pSample->SetRotation(rot);					// 回転値の取得
+		m_pSample->ShowInspector();
 	}
 
 	if (!pKeyboard->GetPressKeyboard(DIK_LALT))
@@ -927,7 +966,7 @@ void CDebugProc::CreateIndividual(D3DXVECTOR3 &worldPos)
 				if (pObject != NULL)
 				{
 					pObject->BindModel(m_currentItem);
-					pObject->SetPosition(worldPos);												// 見本の場所に設置
+					pObject->SetPosition(pos);												// 見本の場所に設置
 					pObject->SetRotation(rot);
 				}
 			}
@@ -1068,8 +1107,6 @@ void CDebugProc::ShowInspector(void)
 {
 	// 自分で作成した簡単なウィンドウを表示します。 Begin / Endペアを使用して、名前付きウィンドウを作成します。
 	ImGui::Begin("Inspector", &m_bInspectorWind, ImGuiWindowFlags_MenuBar);   // インスペクターウィンドウ生成
-
 	m_pSelect->ShowInspector();							// インスペクターを表示
-
 	ImGui::End();
 }

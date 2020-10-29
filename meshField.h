@@ -36,6 +36,7 @@ typedef enum
 // 前方宣言
 //=============================================================================
 class CCircle;
+class CWrite;
 
 //=============================================================================
 // クラス定義
@@ -83,7 +84,7 @@ public:
 	void MakeVertex(FILE *pFile, bool bDebug);										// 頂点情報の作成
 
 	void Debug(void);
-	void SaveRand(void);														// 地面の高さ書き込み
+	void SaveRand(CWrite *pWrite);														// 地面の高さ書き込み
 	void CreateRand(D3DXVECTOR3 &worldPos, float fRadius);							// 地形編集関数
 	void Paint(D3DXVECTOR3 &worldPos, float fRadius);								// ペイント
 

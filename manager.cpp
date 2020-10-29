@@ -157,7 +157,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 	Load("data/model/akazukin/skin.jpg");
 	Load("data/model/akazukin/skirt.png");
 
-	SetMode(MODE_GAME);																		//モードセレクト
+	SetMode(MODE_PUZZLE_CUSTOM);																		//モードセレクト
 
 	return S_OK;
 }

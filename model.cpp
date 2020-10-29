@@ -57,7 +57,7 @@ void CModel::Draw(D3DXMATRIX *mtxWorld)
 {
 	CRenderer *pRenderer = CManager::GetRenderer();
 	LPDIRECT3DDEVICE9 pDevice;
-	LPD3DXEFFECT ToonShader = CManager::GetShaderResource((std::string)SHADERADD_TOON);
+	LPD3DXEFFECT ToonShader = CManager::GetShaderResource(SHADERADD_TOON);
 	CCamera* pCamera = CManager::GetCamera();
 
 	D3DXMATRIX		mtxRot, mtxTrans;				//計算用マトリックス
@@ -150,10 +150,11 @@ void CModel::Draw(D3DXMATRIX *mtxWorld)
 					// テクスチャの設定
 					ToonShader->SetTexture("DecalTexture", CManager::GetResource("data/tex/default.jpg"));
 				}
+
+				// 情報の変更
+				ToonShader->CommitChanges();
 			}
 
-			// 情報の変更
-			ToonShader->CommitChanges();
 
 			// マテリアルの設定
 			pDevice->SetMaterial(&pMat[nCntMat].MatD3D);

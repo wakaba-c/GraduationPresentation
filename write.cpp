@@ -15,19 +15,30 @@
 #define COMMENT_BLOCK "#==============================================================================\n"
 
 //=============================================================================
-// 静的メンバ変数
+// コンストラクタ
 //=============================================================================
-FILE *CWrite::pFile = NULL;
+CWrite::CWrite()
+{
+	m_pFile = NULL;
+}
+
+//=============================================================================
+// コンストラクタ
+//=============================================================================
+CWrite::~CWrite()
+{
+
+}
 
 //=============================================================================
 // 開くなければ生成する処理
 //=============================================================================
 bool CWrite::Open(const std::string &add)
 {
-	if (pFile != NULL) End();
+	if (m_pFile != NULL) End();
 
 	// テキストデータロード
-	pFile = fopen(add.c_str(), "w");
+	m_pFile = fopen(add.c_str(), "w");
 
 	return true;
 }
@@ -37,7 +48,7 @@ bool CWrite::Open(const std::string &add)
 //=============================================================================
 bool CWrite::Write(const char* frm, ...)
 {
-	if (pFile == NULL) return false;				// ファイルが無ければ終わり
+	if (m_pFile == NULL) return false;				// ファイルが無ければ終わり
 
 	va_list args;			// リストの取得
 	char text[64];
@@ -47,7 +58,7 @@ bool CWrite::Write(const char* frm, ...)
 	va_end(args);						// リストを開放する
 
 	// 書き込み
-	fputs(text, pFile);
+	fputs(text, m_pFile);
 
 	return true;
 }
@@ -57,7 +68,7 @@ bool CWrite::Write(const char* frm, ...)
 //=============================================================================
 bool CWrite::TitleWrite(const char* frm, ...)
 {
-	if(pFile == NULL) return false;
+	if(m_pFile == NULL) return false;
 
 	va_list args;			// リストの取得
 	std::string write;
@@ -83,7 +94,7 @@ bool CWrite::TitleWrite(const char* frm, ...)
 	write += COMMENT_BLOCK;
 
 	// 書き込み
-	fputs(write.c_str(), pFile);
+	fputs(write.c_str(), m_pFile);
 
 	return true;
 }
@@ -93,7 +104,7 @@ bool CWrite::TitleWrite(const char* frm, ...)
 //=============================================================================
 bool CWrite::IndexWrite(const char* frm, ...)
 {
-	if (pFile == NULL) return false;				// ファイルが無ければ終わり
+	if (m_pFile == NULL) return false;				// ファイルが無ければ終わり
 
 	va_list args;			// リストの取得
 	std::string write;
@@ -113,7 +124,7 @@ bool CWrite::IndexWrite(const char* frm, ...)
 	write += COMMENT_BLOCK;
 
 	// 書き込み
-	fputs(write.c_str(), pFile);
+	fputs(write.c_str(), m_pFile);
 
 	return true;
 }
@@ -123,10 +134,10 @@ bool CWrite::IndexWrite(const char* frm, ...)
 //=============================================================================
 bool CWrite::End(void)
 {
-	if (pFile == NULL) return true;				// ファイルが無ければ終わり
+	if (m_pFile == NULL) return true;				// ファイルが無ければ終わり
 
 	//ファイル閉
-	if (EOF == fclose(pFile))
+	if (EOF == fclose(m_pFile))
 	{
 		return false;
 	}

@@ -65,8 +65,5 @@ private:
 	CEnemyUi *m_pEnemyUi;										// 敵の残り数のUI
 
 	int						m_nLife;							// 家の耐久値
-
-	CColliderBox *m_ColliderBox;								// ボックスコライダーのポインタ
-	CColliderSphere *m_ColliderSphere;							// スフィアコライダーのポインタ
 };
 #endif

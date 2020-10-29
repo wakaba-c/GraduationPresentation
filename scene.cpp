@@ -393,6 +393,15 @@ void CScene::ShowInspector(void)
 {
 	if (ImGui::BeginMenuBar())
 	{// メニューバーの生成
+		if (ImGui::BeginMenu("File"))
+		{// ファイルタブの生成
+			if (ImGui::MenuItem("Save"))
+			{// 2D物理特性マテリアルメニュー
+				SaveCollider();
+			}
+
+			ImGui::EndMenu();			// メニューの更新終了
+		}
 		if (ImGui::BeginMenu("Add Component"))
 		{// ファイルタブの生成
 			if (ImGui::BeginMenu("Physic 2D"))
@@ -405,7 +414,7 @@ void CScene::ShowInspector(void)
 					{// ボックスコライダーが存在していたとき
 						pCollider->SetScene(this);									// 持ち主を設定
 						pCollider->SetTag("none");									// fenceを設定
-						pCollider->SetPosition(m_pos);								// 位置の設定
+						pCollider->SetPosition(m_pos);						// 位置の設定
 						pCollider->SetOffset(D3DXVECTOR3(0.0f, 60.0f, 0.0f));		// オフセット値の設定
 						m_apCollider.push_back(pCollider);							// 作ったコライダーを配列の最後に追加する
 					}
@@ -454,20 +463,29 @@ void CScene::ShowInspector(void)
 
 				ImGui::EndMenu();			// メニューの更新終了
 			}
-
 			ImGui::EndMenu();			// メニューの更新終了
 		}
 		ImGui::EndMenuBar();		// メニューバーの更新終了
 	}
+
+	std::string Title;
 
 	for (int nCount = 0; nCount < (int)m_apCollider.size(); nCount++)
 	{
 		switch (m_apCollider[nCount]->GetColliderType())
 		{
 		case COLLISIONTYPE_BOX:
-			if (ImGui::CollapsingHeader("Box Collider"))
+			Title = "Box Collider";
+			Title += nCount;
+
+			if (ImGui::CollapsingHeader(Title.c_str()))
 			{
 				CColliderBox *pColliderBox = (CColliderBox*)m_apCollider[nCount];
+
+				// 衝突判定の有無
+				bool bTrigger = pColliderBox->GetTrigger();
+				ImGui::Checkbox("Trigger", &bTrigger);
+				pColliderBox->SetTrigger(bTrigger);
 
 				// オフセット値の設定
 				D3DXVECTOR3 offset = pColliderBox->GetOffset();
@@ -482,9 +500,17 @@ void CScene::ShowInspector(void)
 			}
 			break;
 		case COLLISIONTYPE_SPHERE:
-			if (ImGui::CollapsingHeader("Sphere Collider"))
+			Title = "Sphere Collider";
+			Title += nCount;
+
+			if (ImGui::CollapsingHeader(Title.c_str()))
 			{
 				CColliderSphere *pColliderSphere = (CColliderSphere*)m_apCollider[nCount];
+
+				// 衝突判定の有無
+				bool bTrigger = pColliderSphere->GetTrigger();
+				ImGui::Checkbox("Trigger", &bTrigger);
+				pColliderSphere->SetTrigger(bTrigger);
 
 				// オフセット値の設定
 				D3DXVECTOR3 offset = pColliderSphere->GetOffset();
@@ -551,6 +577,30 @@ void CScene::Delete(void)
 }
 
 //=============================================================================
+// スフィアコライダーの情報を書き込む処理
+//=============================================================================
+void CScene::WriteForSphereCollider(CWrite *pWrite ,CCollider *pCollider)
+{
+	CColliderSphere *pSphere = (CColliderSphere*)pCollider;
+	float fRadius = pSphere->GetRadius();
+	D3DXVECTOR3 center = pSphere->GetOffset();
+	pWrite->Write("	CENTER = %.2f %.2f %.2f\n", center.x, center.y, center.z);			// 位置情報を書き込む
+	pWrite->Write("	RADIUS = %.2f\n", fRadius);											// 大きさ情報を書き込む
+}
+
+//=============================================================================
+// ボックスコライダーの情報を書き込む処理
+//=============================================================================
+void CScene::WriteForBoxCollider(CWrite *pWrite, CCollider *pCollider)
+{
+	CColliderBox *pBox = (CColliderBox*)pCollider;
+	D3DXVECTOR3 size = pBox->GetSize();
+	D3DXVECTOR3 center = pBox->GetOffset();
+	pWrite->Write("	CENTER = %.2f %.2f %.2f\n", center.x, center.y, center.z);			// 位置情報を書き込む
+	pWrite->Write("	SIZE = %.2f %.2f %.2f\n", size.x, size.y, size.z);		// 大きさ情報を書き込む
+}
+
+//=============================================================================
 // 敵配置保存関数
 //=============================================================================
 void CScene::SaveEnemy(void)
@@ -603,6 +653,9 @@ void CScene::SaveEnemy(void)
 //=============================================================================
 void CScene::SaveRand(void)
 {
+	CWrite *pWrite = new CWrite;
+	if (pWrite == NULL) return;
+
 	//変数宣言
 	int nCntLoad = 0;			//ロードカウント
 	char text[64];				// テキスト
@@ -612,14 +665,14 @@ void CScene::SaveRand(void)
 
 
 	//開けた
-	if (CWrite::Open("data/text/rand.txt"))
+	if (pWrite->Open("data/text/rand.txt"))
 	{
 		strcpy(text, "# シーンデータスクリプト\n");
 		strcat(text, "# Author : masayasu wakita\n");
 
-		CWrite::TitleWrite(text);				// タイトルの形式で書き込む
-		CWrite::Write("SCRIPT\n");			// スクリプトの終了宣言
-		CWrite::Write("\n");
+		pWrite->TitleWrite(text);				// タイトルの形式で書き込む
+		pWrite->Write("SCRIPT\n");			// スクリプトの終了宣言
+		pWrite->Write("\n");
 
 		// 床の情報 //
 			// treeのオブジェクトのポジションを参照
@@ -633,22 +686,22 @@ void CScene::SaveRand(void)
 
 			if (!pMeshField->GetDebugRand())
 			{// デバッグ用の床ではないとき
-				CWrite::Write("FIELDSET\n");					// 頂点情報の書き込み開始宣言
+				pWrite->Write("FIELDSET\n");					// 頂点情報の書き込み開始宣言
 
 				D3DXVECTOR3 pos = pMeshField->GetPosition();
-				CWrite::Write("	POS = %.2f %.2f %.2f\n", pos.x, pos.y, pos.z);		// 中心位置の書き込み
+				pWrite->Write("	POS = %.2f %.2f %.2f\n", pos.x, pos.y, pos.z);		// 中心位置の書き込み
 
-				CWrite::Write("	VERTEXINFO\n");					// 頂点情報の書き込み開始宣言
-				pMeshField->SaveRand();							// 頂点情報の書き込み
-				CWrite::Write("	END_VERTEXINFO\n");				// 頂点情報の書き込み終了宣言
-				CWrite::Write("END_FIELDSET\n");					// 頂点情報の書き込み開始宣言
-				CWrite::Write("\n");							// 改行
+				pWrite->Write("	VERTEXINFO\n");					// 頂点情報の書き込み開始宣言
+				pMeshField->SaveRand(pWrite);							// 頂点情報の書き込み
+				pWrite->Write("	END_VERTEXINFO\n");				// 頂点情報の書き込み終了宣言
+				pWrite->Write("END_FIELDSET\n");					// 頂点情報の書き込み開始宣言
+				pWrite->Write("\n");							// 改行
 			}
 
 			pSceneNow = pSceneNext;													// 次回アップデート対象を格納
 		}
-		CWrite::Write("END_SCRIPT\n");			// スクリプトの終了宣言
-		CWrite::End();
+		pWrite->Write("END_SCRIPT\n");			// スクリプトの終了宣言
+		pWrite->End();
 	}
 }
 
@@ -657,6 +710,17 @@ void CScene::SaveRand(void)
 //=============================================================================
 void CScene::SaveModel(void)
 {
+	CWrite *pWrite = new CWrite;
+	if (pWrite == NULL) return;
+
+	CWrite *pPointWrite = new CWrite;
+	if (pPointWrite == NULL) return;
+
+	if(!pPointWrite->Open("data/text/point.txt"))
+	{
+		return;
+	}
+
 	//変数宣言
 	int nCntLoad = 0;			//ロードカウント
 	char text[64];				// テキスト
@@ -664,19 +728,18 @@ void CScene::SaveModel(void)
 	CScene *pSceneNext = NULL;	//次回アップデート対象
 	CScene *pSceneNow = NULL;
 
-
 	//開けた
-	if (CWrite::Open("data/text/model.txt"))
+	if (pWrite->Open("data/text/model.txt"))
 	{
 		strcpy(text, "# シーンデータスクリプト\n");
 		strcat(text, "# Author : masayasu wakita\n");
 
-		CWrite::TitleWrite(text);				// タイトルの形式で書き込む
-		CWrite::Write("SCRIPT\n");			// スクリプトの終了宣言
-		CWrite::Write("\n");
+		pWrite->TitleWrite(text);				// タイトルの形式で書き込む
+		pWrite->Write("SCRIPT\n");			// スクリプトの終了宣言
+		pWrite->Write("\n");
 
 		// モデルの情報 //
-		CWrite::IndexWrite("モデルの情報\n");
+		pWrite->IndexWrite("モデルの情報\n");
 
 		// objectのオブジェクトのポジションを参照
 		pSceneNow = m_apTop[PRIORITY_MODEL];
@@ -687,23 +750,99 @@ void CScene::SaveModel(void)
 			pSceneNext = pSceneNow->m_pNext[PRIORITY_MODEL];						//次回アップデート対象を控える
 			CObject *pObject = (CObject*)pSceneNow;
 
-			CWrite::Write("MODELSET\n");					// 頂点情報の書き込み開始宣言
+			if (pObject->GetAdd() == "data/model/point.x")
+			{
+				SavePoint(pPointWrite, pObject->GetPosition());
+			}
+			else
+			{
+				pWrite->Write("MODELSET\n");					// 頂点情報の書き込み開始宣言
 
-			D3DXVECTOR3 pos = pObject->GetPosition();		// 位置情報を書き込む
-			D3DXVECTOR3 rot = pObject->GetRotation();		// 回転情報を書き込む
-			D3DXVECTOR3 size = pObject->GetSize();			// 大きさ情報を書き込む
+				D3DXVECTOR3 pos = pObject->GetPosition();		// 位置情報を書き込む
+				D3DXVECTOR3 rot = pObject->GetRotation();		// 回転情報を書き込む
+				D3DXVECTOR3 size = pObject->GetSize();			// 大きさ情報を書き込む
 
-			CWrite::Write("	MODEL_FILENAME = %s\n", pObject->GetAdd().c_str());		// アドレス情報を書き込む
-			CWrite::Write("	POS = %.2f %.2f %.2f\n", pos.x, pos.y, pos.z);			// 位置情報を書き込む
-			CWrite::Write("	ROT = %.2f %.2f %.2f\n", rot.x, rot.y, rot.z);			// 回転情報を書き込む
-			CWrite::Write("	SIZE = %.2f %.2f %.2f\n", size.x, rot.y, rot.z);		// 大きさ情報を書き込む
+				pWrite->Write("	MODEL_FILENAME = %s\n", pObject->GetAdd().c_str());		// アドレス情報を書き込む
+				pWrite->Write("	POS = %.2f %.2f %.2f\n", pos.x, pos.y, pos.z);			// 位置情報を書き込む
+				pWrite->Write("	ROT = %.2f %.2f %.2f\n", rot.x, rot.y, rot.z);			// 回転情報を書き込む
+				pWrite->Write("	SIZE = %.2f %.2f %.2f\n", size.x, rot.y, rot.z);		// 大きさ情報を書き込む
 
-			CWrite::Write("END_MODELSET\n");				// 頂点情報の書き込み開始宣言
-			CWrite::Write("\n");							// 改行
+				pWrite->Write("END_MODELSET\n");				// 頂点情報の書き込み開始宣言
+				pWrite->Write("\n");							// 改行
+			}
 
 			pSceneNow = pSceneNext;													// 次回アップデート対象を格納
 		}
-		CWrite::Write("END_SCRIPT\n");			// スクリプトの終了宣言
-		CWrite::End();
+		pWrite->Write("END_SCRIPT\n");			// スクリプトの終了宣言
+		pWrite->End();
+		pPointWrite->End();
 	}
+
+	delete pWrite;
+	delete pPointWrite;
+}
+
+//=============================================================================
+// ポイント情報書き込み処理
+//=============================================================================
+void CScene::SavePoint(CWrite *pWrite, D3DXVECTOR3 &pos)
+{
+	pWrite->Write("	POS = %.2f %.2f %.2f\n", pos.x, pos.y, pos.z);		// 中心位置の書き込み
+}
+
+//=============================================================================
+// 当たり判定情報書き込み処理
+//=============================================================================
+void CScene::SaveCollider(void)
+{
+	CWrite *pWrite = new CWrite;
+	if (pWrite == NULL) return;
+
+	//変数宣言
+	char text[64];				// テキスト
+	char cEqual[8] = { "=" };	//イコール用
+	CScene *pSceneNext = NULL;	//次回アップデート対象
+	CScene *pSceneNow = NULL;
+
+	//開けた
+	if (pWrite->Open("data/text/collider.txt"))
+	{
+		strcpy(text, "# コライダーデータスクリプト\n");
+		strcat(text, "# Author : masayasu wakita\n");
+
+		pWrite->TitleWrite(text);				// タイトルの形式で書き込む
+		pWrite->Write("SCRIPT\n");			// スクリプトの終了宣言
+		pWrite->Write("\n");
+
+		// モデルの情報 //
+		pWrite->IndexWrite("モデルの情報\n");
+
+		for (unsigned int nCount = 0; nCount < m_apCollider.size(); nCount++)
+		{
+			pWrite->Write("COLLISIONSET\n");					// 頂点情報の書き込み開始宣言
+
+			// コライダーの種類を書き込む
+			switch (m_apCollider[nCount]->GetColliderType())
+			{
+			case COLLISIONTYPE_BOX:
+				pWrite->Write("	COLLISIONTYPE_BOX\n");			// 位置情報を書き込む
+				WriteForBoxCollider(pWrite, m_apCollider[nCount]);
+				break;
+			case COLLISIONTYPE_SPHERE:
+				pWrite->Write("	COLLISIONTYPE_SPHERE\n");			// 位置情報を書き込む
+				WriteForSphereCollider(pWrite, m_apCollider[nCount]);
+				break;
+			}
+
+			pWrite->Write("END_COLLISIONSET\n");				// 頂点情報の書き込み開始宣言
+			pWrite->Write("\n");							// 改行
+		}
+
+		pWrite->Write("END_SCRIPT\n");			// スクリプトの終了宣言
+		pWrite->End();
+
+		MessageBox(NULL, "当たり判定の書き込み終了しました！", "WARNING", MB_ICONWARNING);	// メッセージボックスの生成
+	}
+
+	delete pWrite;
 }

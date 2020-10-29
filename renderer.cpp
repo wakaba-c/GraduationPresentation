@@ -260,6 +260,19 @@ void CRenderer::SetUpdate(bool bValue)
 }
 
 //=============================================================================
+// レイの描画処理
+//=============================================================================
+void CRenderer::RendererRay(D3DXVECTOR3 start, D3DXVECTOR3 end)
+{
+	//最も簡単なライン 頂点にD3DXVECTOR3型だけを、そのまま使用
+	D3DXVECTOR3 vPoint[2];
+	vPoint[0] = start;
+	vPoint[1] = end;
+	m_pD3DDevice->SetFVF(D3DFVF_XYZ);
+	m_pD3DDevice->DrawPrimitiveUP(D3DPT_LINELIST, 1, vPoint, sizeof(D3DXVECTOR3));
+}
+
+//=============================================================================
 // デバッグ処理
 //=============================================================================
 void CRenderer::Debug(void)
