@@ -33,13 +33,14 @@ class CScene2D;
 class CPiece : public CScene
 {
 public:
-	enum PieceStatus
+	enum PieceType
 	{
-		PieceStatus_None = -1,
-		PieceStatus_Plaacement,
-		PieceStatus_Ok,
-		PieceStatus_Not,
-		PieceStatus_Max
+		PieceType_None = 0,
+		PieceType_Square,
+		PieceType_Rectangle,
+		PieceType_T_Type,
+		PieceType_Max,
+
 	};
 
 	CPiece(PRIORITY type);															// コンストラクタ
@@ -52,12 +53,13 @@ public:
 	void OnTriggerEnter(CCollider *col) {};
 	void OnCollisionEnter(CCollider *col) {};
 
-	PieceStatus GetStatus(void) { return m_Status; }								// ステータスの設定
 	bool GetCreate(void) { return m_bCreate; }										// 配置情報取得
+	bool GetMove(void) { return m_bMove; }											// 移動情報取得
 	bool GetPlaacement(void) { return m_bPlacement; }								// 配置情報取得
 	bool GetPuzzle(int nDepth, int nWidth) { return m_bPuzzle[nDepth][nWidth]; }	// パズル情報取得
 
-	void SetPlaacement(bool bCreate) { m_bCreate = bCreate; }						// 配置情報設定
+	void SetPieceType(PieceType type);												// タイプ設定
+	void SetMove(bool bMove) { m_bMove = bMove; }									// 移動
 	static CPiece *Create(void);													// 生成処理
 	static HRESULT Load(void);														// テクスチャ情報ロード
 	static void Unload(void);														// テクスチャ情報アンロード
@@ -73,7 +75,7 @@ private:
 
 	int m_nCntMove_X;																// 移動カウントX
 	int m_nCntMove_Y;																// 移動カウントY
-	PieceStatus m_Status;															// ピースの状態
+	PieceType m_PieceType;															// ピースの状態
 	bool m_bPlacement;																// 配置しているかどうか
 	bool m_bCreate;																	// 生成するかどうか
 	bool m_bMove;																	// 動くかどうか

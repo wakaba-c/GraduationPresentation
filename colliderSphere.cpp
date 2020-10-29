@@ -64,6 +64,8 @@ void CColliderSphere::Uninit(void)
 //=============================================================================
 void CColliderSphere::Update(void)
 {
+	CCollider::Update();
+
 #ifdef _DEBUG
 	if (m_pSphere != NULL)
 	{// スフィアコライダーが存在していたとき

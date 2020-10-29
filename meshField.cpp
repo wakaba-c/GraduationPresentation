@@ -28,7 +28,7 @@ CMeshField::CMeshField(CScene::PRIORITY obj = CScene::PRIORITY_FLOOR) : CScene(o
 	SetObjType(CScene::PRIORITY_FLOOR);
 
 	// 位置・回転の初期設定
-	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_rot = D3DXVECTOR3(0.0f, 1.57f, 0.0f);
 	m_col = D3DXCOLOR(0.0f, 1.0f, 0.4f, 1.0f);
 	m_bDebug = false;
 	m_bCalculation = false;
@@ -992,7 +992,7 @@ void CMeshField::Paint(D3DXVECTOR3 &worldPos, float fRadius)
 //=============================================================================
 // 地形高低保存関数
 //=============================================================================
-void CMeshField::SaveRand(void)
+void CMeshField::SaveRand(CWrite *pWrite)
 {
 	VERTEX_3D *pVtx;				// 頂点情報へのポインタ
 
@@ -1008,8 +1008,7 @@ void CMeshField::SaveRand(void)
 			D3DXCOLOR col = pVtx[0].col;
 
 			// 頂点情報の書き込み
-			CWrite::Write("		%.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f\n", pos.x, pos.y, pos.z, col.r, col.g, col.b, col.a);
-
+			pWrite->Write("		%.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f\n", pos.x, pos.y, pos.z, col.r, col.g, col.b, col.a);
 			pVtx++;				// ポインタをシフト
 		}
 	}

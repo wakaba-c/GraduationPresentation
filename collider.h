@@ -53,6 +53,7 @@ public:
 	void Release(void);					// 削除予約
 	void SetTag(std::string sTag);		// タグの設定
 	void SetScene(CScene *pScene);		// 当たり判定の持ち主を設定
+	void SetMatrix(D3DXMATRIX *mtx);	// ワールドマトリックスの設定
 	void SetTrigger(bool bValue);		// 当たり判定タイプの設定
 	void SetUse(bool bValue);			// 当たり判定の使用設定
 	void SetMoving(bool bValue);		// 位置修正の可否設定
@@ -77,11 +78,13 @@ public:
 	bool GetUse(void) { return m_bUse; }				// 当たり判定の使用状態取得
 	bool GetMoving(void) { return m_bMoving; }			// 位置修正の可否取得
 	D3DXVECTOR3 GetOffset(void) { return m_offset; }	// 位置を取得
-	static bool RayBlockCollision(D3DXVECTOR3 &pos, D3DXMATRIX *pMat);//Rayの判定
+
+	static bool RayBlockCollision(D3DXVECTOR3 &pos, D3DXMATRIX *pMat, float fOffset, float fLength);//Rayの判定
+	static D3DXVECTOR3 RayLeftWallCollision(float &fLeftLength, D3DXVECTOR3 &pos, D3DXVECTOR3 &rot, D3DXVECTOR3 &move, D3DXMATRIX *pMat);//Rayの判定
+	static D3DXVECTOR3 RayRightWallCollision(float &fRightLength, D3DXVECTOR3 &pos, D3DXVECTOR3 &rot, D3DXVECTOR3 &move, D3DXMATRIX *pMat);//Rayの判定
 
 private:
 	void Delete(void);									// 削除処理
-
 
 	static CCollider *m_apCur[COLLISIONTYPE_MAX];		// 最後尾情報
 	static CCollider *m_apTop[COLLISIONTYPE_MAX];		// 先頭情報
@@ -93,10 +96,12 @@ private:
 	bool m_bTrigger;						// 検知だけかどうか
 	bool m_bUse;							// 当たり判定の使用
 	bool m_bMoving;							// 当たり判定による位置修正の可否
-	COLLISIONTYPE m_Obj;					//オブジェクトの種類
-	bool	m_bActive;						//描画するかどうか
-	bool	m_bDie;							//Releaseするかどうか
+	COLLISIONTYPE m_Obj;					// オブジェクトの種類
+	bool	m_bActive;						// 描画するかどうか
+	bool	m_bDie;							// Releaseするかどうか
 	CScene *m_pScene;						// 対象のシーン
+	D3DXMATRIX	*m_mtxWorldParent;			// 親のワールドマトリックス
+	D3DXMATRIX m_mtxWorld;					// ワールドマトリックス
 	std::string	m_sTag;						// タグ
 	D3DXVECTOR3	m_offset;					// オフセット値
 	D3DXVECTOR3 m_pPos;						// 位置のポインタ

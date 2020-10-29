@@ -24,10 +24,13 @@ MODEL_FILENAME = data/model/akazukin/thigh_Left.x			# [11]太股(左)
 MODEL_FILENAME = data/model/akazukin/leg_Left.x				# [12]左足
 MODEL_FILENAME = data/model/akazukin/foot_Left.x			# [13]足(左)
 MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x		# [14]カッターナイフ
-MODEL_FILENAME = data/model/house/MedievalHouse_2.x			# [15]家
+MODEL_FILENAME = data/model/house/house.x			# [15]家
 MODEL_FILENAME = data/model/DirectionalLight.x				# [16]ディレクショナルライト
 MODEL_FILENAME = data/model/Sphere.x						# [17]球体
 MODEL_FILENAME = data/model/CarBody03_R.x					# [18]車 red
 MODEL_FILENAME = data/model/load/stageLoad_1.x				# [19]ステージモデル1
+MODEL_FILENAME = data/model/point.x							# [20]ポイント
+MODEL_FILENAME = data/model/wall.x							# [21]壁
+MODEL_FILENAME = data/model/wallPanel.x						# [22]壁用パネル
 
 END_SCRIPT		# この行は絶対消さないこと！

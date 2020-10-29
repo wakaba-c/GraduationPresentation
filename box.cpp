@@ -53,8 +53,7 @@ CBox::~CBox()
 HRESULT CBox::Init(void)
 {
 	// 初期化
-	m_nCntMove_X = 0;
-	m_nCntMove_Y = 0;
+	m_nCntChange = 0;
 	m_nPieceNum = 0;
 	m_bPlacement = false;
 	m_bCreate = false;
@@ -80,6 +79,7 @@ HRESULT CBox::Init(void)
 		}
 	}
 	m_pPiece[m_nPieceNum] = CPiece::Create();
+	m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Square);
 
 
 	//m_bPuzzle[nCntMove_Y][nCntMove_X] = true;
@@ -108,15 +108,64 @@ void CBox::Update(void)
 	if (m_pPiece[m_nPieceNum] != NULL)
 	{
 		// 配置情報取得
-		m_bPiece = m_pPiece[m_nPieceNum]->GetCreate();
+		m_bPiece = m_pPiece[m_nPieceNum]->GetMove();
 	}
 
 	if (m_bPiece == true)
 	{
-		m_nPieceNum++;
+		// 生成
+		if (pKeyboard->GetTriggerKeyboard(DIK_C))
+		{
+			m_nPieceNum++;
+			m_pPiece[m_nPieceNum] = CPiece::Create();
+			m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Square);
+			// 配置情報
+			m_pPiece[m_nPieceNum]->SetMove(false);
+		}
+
+		// 生成
+		if (pKeyboard->GetTriggerKeyboard(DIK_V))
+		{
+			m_nPieceNum++;
+			m_pPiece[m_nPieceNum] = CPiece::Create();
+			m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Rectangle);
+			// 配置情報
+			m_pPiece[m_nPieceNum]->SetMove(false);
+		}
+		// 生成
+		if (pKeyboard->GetTriggerKeyboard(DIK_B))
+		{
+			m_nPieceNum++;
+			m_pPiece[m_nPieceNum] = CPiece::Create();
+			m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_T_Type);
+			// 配置情報
+			m_pPiece[m_nPieceNum]->SetMove(false);
+		}
 		// ピース生成
-		m_pPiece[m_nPieceNum] = CPiece::Create();
+		
 		//m_pPiece[m_nPieceNum]->SetPlaacement(false);
+	}
+	else
+	{
+		// 生成
+		if (pKeyboard->GetTriggerKeyboard(DIK_Z))
+		{
+			if (m_nCntChange == 0)
+			{
+				m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Square);
+				m_nCntChange++;
+			}
+			else if (m_nCntChange == 1)
+			{
+				m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Rectangle);
+				m_nCntChange++;
+			}
+			else if (m_nCntChange == 2)
+			{
+				m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_T_Type);
+				m_nCntChange = 0;
+			}
+		}
 	}
 
 	for (int nCntDepth = 0; nCntDepth < Box_Depth; nCntDepth++)

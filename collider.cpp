@@ -47,10 +47,12 @@ CCollider::CCollider(COLLISIONTYPE Type)
 		m_nNumAll++;									// シーン数をプラスする
 		m_bDie = false;
 
+		m_mtxWorldParent = NULL;
 		m_pScene = NULL;								// シーンの初期化
 		m_sTag = "none";								// タグの初期化
 		m_bUse = true;									// 使用中にする
 		m_bMoving = true;								// 位置修正可能にする
+		m_bTrigger = true;								// トリガーの初期化
 	}
 }
 
@@ -83,7 +85,10 @@ void CCollider::Uninit(void)
 //==============================================================================
 void CCollider::Update(void)
 {
-
+	if (m_pScene != NULL)
+	{
+		m_pPos = m_pScene->GetPosition();
+	}
 }
 
 //==============================================================================
@@ -233,8 +238,6 @@ void CCollider::UpdateAll(void)
 
 		pSceneNow2 = m_apTop[COLLISIONTYPE_BOX];
 
-		pSceneNow->Update();
-
 		if (pSceneNow->GetUse())
 		{// 当たり判定の計算対象かどうか
 
@@ -296,8 +299,6 @@ void CCollider::UpdateAll(void)
 		pSceneNext = pSceneNow->m_pNext[COLLISIONTYPE_BOX];				//次回アップデート対象を控える
 
 		pSceneNow2 = m_apTop[COLLISIONTYPE_SPHERE];
-
-		pSceneNow->Update();
 
 		if (pSceneNow->GetUse())
 		{// 当たり判定の計算対象かどうか
@@ -361,8 +362,6 @@ void CCollider::UpdateAll(void)
 		pSceneNext = pSceneNow->m_pNext[COLLISIONTYPE_SPHERE];				//次回アップデート対象を控える
 
 		pSceneNow2 = m_apTop[COLLISIONTYPE_BOX];
-
-		pSceneNow->Update();
 
 		if (pSceneNow->GetUse())
 		{// 当たり判定の計算対象かどうか
@@ -492,6 +491,14 @@ void CCollider::SetTag(std::string sTag)
 void CCollider::SetScene(CScene *pScene)
 {
 	m_pScene = pScene;					// 生成主 のポインタ を代入
+}
+
+//==============================================================================
+// マトリックスの設定
+//==============================================================================
+void CCollider::SetMatrix(D3DXMATRIX *mtx)
+{
+	m_mtxWorld = *mtx;
 }
 
 //==============================================================================
@@ -1251,10 +1258,12 @@ void CCollider::Delete(void)
 	}
 }
 
+
+
 //======================================================================================================================
 // レイの判定
 //======================================================================================================================
-bool CCollider::RayBlockCollision(D3DXVECTOR3 &pos, D3DXMATRIX *pMat)
+bool CCollider::RayBlockCollision(D3DXVECTOR3 &pos, D3DXMATRIX *pMat, float fOffset, float fLength)
 {
 	// 地形判定 変数宣言
 	BOOL				bHitFlag = false;	// 判定が出たかのフラグ
@@ -1314,9 +1323,9 @@ bool CCollider::RayBlockCollision(D3DXVECTOR3 &pos, D3DXMATRIX *pMat)
 				fData = vDistance[nCnt];
 			}
 		}
-		if (fData < 30.0f)//Rayの長さの指定条件
+		if (fData < fLength)//Rayの長さの指定条件
 		{
-			pos.y = pos.y - fData + 12.28f;
+			pos.y = pos.y - fData + fOffset;
 			bLand = true;
 		}
 		//Rayの判定圏内じゃなかったらジャンプできない
@@ -1338,4 +1347,179 @@ bool CCollider::RayBlockCollision(D3DXVECTOR3 &pos, D3DXMATRIX *pMat)
 
 	// 判定フラグを返す
 	return bLand;
+}
+
+D3DXVECTOR3 CCollider::RayLeftWallCollision(float &fLeftLength, D3DXVECTOR3 &pos, D3DXVECTOR3 &rot, D3DXVECTOR3 &move, D3DXMATRIX * pMat)
+{
+	// 地形判定 変数宣言
+	BOOL				bHitFlag = false;		// 判定が出たかのフラグ
+	float				fLandDistance = 0;		// 距離
+	DWORD				dwHitIndex = -1;		// インデックス
+	float				fHitU = 0;		// U
+	float				fHitV = 0;		// V
+	D3DXMATRIX			invmat;							// 逆行列を格納する変数
+	D3DXVECTOR3			m_posAfter;						// 逆行列で出した終点情報を格納する
+	D3DXVECTOR3			m_posBefore;					// 終点情報を格納する
+	D3DXVECTOR3			direction;						// 変換後の位置、方向を格納する変数
+	D3DXVECTOR3			endPoint;						// 終了地点
+	std::vector<float>	vDistance;						// 長さの配列保存
+	float				fData = 0.0f;		// データ
+
+	float				fLeft;		// 壁の限界値
+
+	CScene *pSceneNext = NULL;														//次回アップデート対象
+	CScene *pSceneNow = NULL;
+
+	fLeft = 1000.0f;
+
+	endPoint.x = sinf(D3DX_PI * 0.5f + rot.y);
+	endPoint.z = cosf(D3DX_PI * 0.5f + rot.y);
+
+	// modelのオブジェクトのポジションを参照
+	pSceneNow = CScene::GetScene(CScene::PRIORITY_MODEL);
+
+	//次がなくなるまで繰り返す
+	while (pSceneNow != NULL)
+	{
+		pSceneNext = CScene::GetSceneNext(pSceneNow, (CScene::PRIORITY_MODEL));							//次回アップデート対象を控える
+		CObject *pObj = (CObject*)pSceneNow;
+
+		//	逆行列の取得
+		D3DXMatrixInverse(&invmat, NULL, &pObj->GetMtxWorld());
+		//	逆行列を使用し、レイ始点情報を変換　位置と向きで変換する関数が異なるので要注意
+		D3DXVec3TransformCoord(&m_posBefore, &D3DXVECTOR3(pos.x, pos.y - 100.0f, pos.z), &invmat);
+		//	レイ終点情報を変換
+		D3DXVec3TransformCoord(&m_posAfter, &D3DXVECTOR3(pos.x + endPoint.x, pos.y - 100.0f, pos.z + endPoint.z), &invmat);
+		//	レイ方向情報を変換
+		D3DXVec3Normalize(&direction, &(m_posAfter - m_posBefore));
+		//Rayを飛ばす
+		D3DXIntersect(pObj->GetMesh(), &m_posBefore, &direction, &bHitFlag, &dwHitIndex, &fHitU, &fHitV, &fLandDistance, NULL, NULL);
+		if (bHitFlag == TRUE)
+		{
+			//長さの保存追加
+			vDistance.emplace_back(fLandDistance);
+		}
+
+		pSceneNow = pSceneNext;													//次回アップデート対象を格納
+	}
+
+	//Rayのヒットした物があったとき
+	if (!vDistance.empty())
+	{
+		//最初の比較対象
+		fData = vDistance[0];
+		for (unsigned int nCnt = 0; vDistance.size() > nCnt; nCnt++)
+		{
+			if (vDistance[nCnt] < fData)
+			{
+				//比較対象が小さかったら代入
+				fData = vDistance[nCnt];
+			}
+		}
+		if (fData < 1500.0f)//Rayの長さの指定条件
+		{
+			fLeft = fData;
+		}
+	}
+
+	//配列を空にしておく
+	vDistance.clear();
+
+	D3DXVECTOR3 testPos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
+	fLeftLength = fLeft;
+	testPos = pos + endPoint * (fLeft - 20.0f);
+	testPos.y = pos.y;
+
+	CDebugProc::Log("壁の限界値 : Left = %.2f %.2f %.2f\n", testPos.x, testPos.y, testPos.z);
+
+	// 判定フラグを返す
+	return testPos;
+}
+
+D3DXVECTOR3 CCollider::RayRightWallCollision(float &fRightLength, D3DXVECTOR3 &pos, D3DXVECTOR3 &rot, D3DXVECTOR3 &move, D3DXMATRIX * pMat)
+{
+	// 地形判定 変数宣言
+	BOOL				bHitFlag = false;		// 判定が出たかのフラグ
+	float				fLandDistance = 0;		// 距離
+	DWORD				dwHitIndex = -1;		// インデックス
+	float				fHitU = 0;		// U
+	float				fHitV = 0;		// V
+	D3DXMATRIX			invmat;							// 逆行列を格納する変数
+	D3DXVECTOR3			m_posAfter;						// 逆行列で出した終点情報を格納する
+	D3DXVECTOR3			m_posBefore;					// 終点情報を格納する
+	D3DXVECTOR3			direction;						// 変換後の位置、方向を格納する変数
+	D3DXVECTOR3			endPoint;						// 終了地点
+
+	std::vector<float>	vDistance;						// 長さの配列保存
+	float				fData = 0.0f;		// データ
+
+	float				fRight = 1000.0f;		// 壁の限界値
+
+	CScene *pSceneNext = NULL;														//次回アップデート対象
+	CScene *pSceneNow = NULL;
+
+	endPoint.x = sinf(-D3DX_PI * 0.5f + rot.y);
+	endPoint.z = cosf(-D3DX_PI * 0.5f + rot.y);
+
+	// modelのオブジェクトのポジションを参照
+	pSceneNow = CScene::GetScene(CScene::PRIORITY_MODEL);
+
+	//次がなくなるまで繰り返す
+	while (pSceneNow != NULL)
+	{
+		pSceneNext = CScene::GetSceneNext(pSceneNow, (CScene::PRIORITY_MODEL));							//次回アップデート対象を控える
+		CObject *pObj = (CObject*)pSceneNow;
+
+		//	逆行列の取得
+		D3DXMatrixInverse(&invmat, NULL, &pObj->GetMtxWorld());
+		//	逆行列を使用し、レイ始点情報を変換　位置と向きで変換する関数が異なるので要注意
+		D3DXVec3TransformCoord(&m_posBefore, &D3DXVECTOR3(pos.x, pos.y - 100.0f, pos.z), &invmat);
+		//	レイ終点情報を変換
+		D3DXVec3TransformCoord(&m_posAfter, &D3DXVECTOR3(pos.x + endPoint.x, pos.y - 100.0f, pos.z + endPoint.z), &invmat);
+		//	レイ方向情報を変換
+		D3DXVec3Normalize(&direction, &(m_posAfter - m_posBefore));
+		//Rayを飛ばす
+		D3DXIntersect(pObj->GetMesh(), &m_posBefore, &direction, &bHitFlag, &dwHitIndex, &fHitU, &fHitV, &fLandDistance, NULL, NULL);
+		if (bHitFlag == TRUE)
+		{
+			//長さの保存追加
+			vDistance.emplace_back(fLandDistance);
+		}
+
+		pSceneNow = pSceneNext;													//次回アップデート対象を格納
+	}
+
+	//Rayのヒットした物があったとき
+	if (!vDistance.empty())
+	{
+		//最初の比較対象
+		fData = vDistance[0];
+		for (unsigned int nCnt = 0; vDistance.size() > nCnt; nCnt++)
+		{
+			if (vDistance[nCnt] < fData)
+			{
+				//比較対象が小さかったら代入
+				fData = vDistance[nCnt];
+			}
+		}
+		if (fData < 1500.0f)//Rayの長さの指定条件
+		{
+			fRight = fData;
+		}
+	}
+
+	//配列を空にしておく
+	vDistance.clear();
+
+	D3DXVECTOR3 testPos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
+	fRightLength = fRight;
+	testPos = pos + endPoint * (fRight - 20.0f);
+	testPos.y = pos.y;
+
+	CDebugProc::Log("壁の限界値 : Right = %.2f %.2f %.2f\n", testPos.x, testPos.y, testPos.z);
+
+	// 判定フラグを返す
+	return testPos;
 }

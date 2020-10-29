@@ -64,6 +64,8 @@ void CColliderBox::Uninit(void)
 //=============================================================================
 void CColliderBox::Update(void)
 {
+	CCollider::Update();
+
 #ifdef _DEBUG
 	if (m_pCube != NULL)
 	{// ボックスコライダーが存在していたとき

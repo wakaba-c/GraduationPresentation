@@ -18,13 +18,15 @@
 class CWrite
 {
 public:
-	static bool Open(const std::string &add);
-	static bool Write(const char* frm, ...);
-	static bool TitleWrite(const char* frm, ...);
-	static bool IndexWrite(const char* frm, ...);
-	static bool End(void);
+	CWrite();
+	~CWrite();
+	bool Open(const std::string &add);
+	bool Write(const char* frm, ...);
+	bool TitleWrite(const char* frm, ...);
+	bool IndexWrite(const char* frm, ...);
+	bool End(void);
 
 private:
-	static FILE *pFile;					// ファイルのポインタ
+	FILE *m_pFile;					// ファイルのポインタ
 };
 #endif

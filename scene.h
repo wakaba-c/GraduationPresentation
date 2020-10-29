@@ -18,6 +18,7 @@
 class CMeshCube;
 class CMeshSphere;
 class CCollider;
+class CWrite;
 
 //=============================================================================
 // クラス定義
@@ -30,6 +31,7 @@ public:
 		PRIORITY_NONE = -1,
 		PRIORITY_BG,
 		PRIORITY_FLOOR,
+		PRIORITY_WALL,
 		PRIORITY_SKY,
 		PRIORITY_MODEL,
 		PRIORITY_PLAYER,
@@ -74,24 +76,28 @@ public:
 	virtual void OnCollisionEnter(CCollider *col) = 0;
 	virtual void ShowInspector(void);
 
-	static void SaveEnemy(void);													// 敵情報の書き込み
-	static void SaveRand(void);														// 床情報の書き込み
-	static void SaveModel(void);													// 木配置情報の書き込み
+	static void SaveEnemy(void);					// 敵情報の書き込み
+	static void SaveRand(void);						// 床情報の書き込み
+	static void SaveModel(void);					// 木配置情報の書き込み
+	static void SavePoint(CWrite *pWrite, D3DXVECTOR3 &pos);			// ポイントモデルの書き込み
+	void SaveCollider(void);						// 当たり判定の書き込み
 
 private:
-	void Delete(void);																// 開放処理
+	void Delete(void);								// 開放処理
+	void WriteForSphereCollider(CWrite *pWrite, CCollider *pCollider);				// スフィアコライダー独自の値を書き込む
+	void WriteForBoxCollider(CWrite *pWrite, CCollider *pCollider);				// スフィアコライダー独自の値を書き込む
 
 	static int m_nNumAll;
-	static CScene *m_apCur[PRIORITY_MAX];											// 現在(最後尾)オブジェクトへのポインタ
-	static CScene *m_apTop[PRIORITY_MAX];											// 先頭オブジェクトへのポインタ
-	CScene *m_pPrev[PRIORITY_MAX];													// 前のオブジェクトポインタ
-	CScene *m_pNext[PRIORITY_MAX];													// 次のオブジェクトポインタ
-	std::vector<CCollider*> m_apCollider;											// 当たり判定
-	PRIORITY m_Obj;																	// オブジェクトの種類
-	bool	m_bActive;																// 描画するかどうか
-	bool	m_bDie;																	// Releaseするかどうか
+	static CScene *m_apCur[PRIORITY_MAX];			// 現在(最後尾)オブジェクトへのポインタ
+	static CScene *m_apTop[PRIORITY_MAX];			// 先頭オブジェクトへのポインタ
+	CScene *m_pPrev[PRIORITY_MAX];					// 前のオブジェクトポインタ
+	CScene *m_pNext[PRIORITY_MAX];					// 次のオブジェクトポインタ
+	PRIORITY m_Obj;									// オブジェクトの種類
+	bool	m_bActive;								// 描画するかどうか
+	bool	m_bDie;									// Releaseするかどうか
+	std::vector<CCollider*> m_apCollider;			// 当たり判定
 
-	D3DXVECTOR3 m_pos;																// 位置
-	D3DXVECTOR3 m_posOld;															// 前回の位置
+	D3DXVECTOR3 m_pos;								// 位置
+	D3DXVECTOR3 m_posOld;							// 前回の位置
 };
 #endif
