@@ -8,8 +8,6 @@
 #include "manager.h"
 #include "renderer.h"
 #include "meshField.h"
-#include "colliderBox.h"
-#include "colliderSphere.h"
 #include "camera.h"
 #include "house.h"
 
@@ -24,9 +22,6 @@
 CObject::CObject(CScene::PRIORITY obj = CScene::PRIORITY_MODEL) : CSceneX(obj)
 {
 	SetObjType(CScene::PRIORITY_MODEL);
-
-	m_ColliderBox = NULL;
-	m_ColliderSphere = NULL;
 }
 
 //=============================================================================
@@ -59,12 +54,6 @@ HRESULT CObject::Init(void)
 //=============================================================================
 void CObject::Uninit(void)
 {
-	if (m_ColliderBox != NULL)
-	{// ボックスコライダーが存在していたとき
-		m_ColliderBox->Release();			// 削除予約
-		m_ColliderBox = NULL;				// NULLを代入
-	}
-
 	// 開放処理
 	CSceneX::Uninit();
 }
@@ -75,15 +64,6 @@ void CObject::Uninit(void)
 void CObject::Update(void)
 {
 	D3DXVECTOR3 pos = GetPosition();				// 位置の取得
-
-	if (m_ColliderBox != NULL)
-	{// ボックスコライダーが存在していたとき
-		m_ColliderBox->SetPosition(pos);			// 位置の設定
-	}
-	if (m_ColliderSphere != NULL)
-	{// スフィアコライダーが存在していたとき
-		m_ColliderSphere->SetPosition(pos);			// 位置の設定
-	}
 
 	SetPosition(pos);		// 位置の設定
 #ifdef _DEBUG
@@ -104,7 +84,7 @@ void CObject::Draw(void)
 //=============================================================================
 CObject *CObject::Create(void)
 {
-	CObject *pObject;
+	CObject *pObject = NULL;
 	pObject = new CObject(CScene::PRIORITY_MODEL);
 
 	if (pObject != NULL)
@@ -269,9 +249,8 @@ void CObject::LoadModelTest(char *add)
 				{
 					if (strcmp(cHeadText, "MODELSET") == 0)
 					{//キャラクターの初期情報のとき
-						CObject *pObj;
+						CObject *pObj = NULL;
 						pObj = CObject::Create();										// 床の作成
-						OutputDebugString("モデル作成");
 
 						if (pObj != NULL)
 						{
@@ -283,18 +262,14 @@ void CObject::LoadModelTest(char *add)
 
 								if (strcmp(cHeadText, "MODEL_FILENAME") == 0)
 								{//パーツ総数のとき
-									std::string add;
 									char aModelAdd[64];
-									memset(&add, 0, sizeof(add));
+									memset(&aModelAdd, 0, sizeof(aModelAdd));
 
 									sscanf(cReadText, "%s %s %s", &cDie, &cDie,
 										&aModelAdd);
 
-									// charをstringに
-									add = aModelAdd;
-
 									// 位置の設定
-									pObj->BindModel(add);
+									pObj->BindModel(aModelAdd);
 								}
 								else if (strcmp(cHeadText, "POS") == 0)
 								{//パーツ総数のとき
@@ -363,6 +338,97 @@ void CObject::BindModel(std::string add)
 void CObject::ShowInspector(void)
 {
 	CSceneX::ShowInspector();
+}
+
+//=============================================================================
+// 当たり判定(レイ)
+//=============================================================================
+bool CObject::Collide(D3DXVECTOR3 vStart, D3DXVECTOR3 vDir, FLOAT* pfDistance, D3DXVECTOR3* pvNormal)
+{
+	BOOL boHit = false;
+	D3DXMATRIX mWorld;
+	D3DXVec3Normalize(&vDir, &vDir);
+
+	CScene *pSceneNext = NULL;														//次回アップデート対象
+	CScene *pSceneNow = NULL;
+
+	CDebugProc::Log("始点 : %.2f %.2f %.2f\n", vStart.x, vStart.y, vStart.z);
+	CDebugProc::Log("終点 : %.2f %.2f %.2f\n", vDir.x, vDir.y, vDir.z);
+
+	pSceneNow = CScene::GetScene(CScene::PRIORITY_MODEL);
+
+	//次がなくなるまで繰り返す
+	while (pSceneNow != NULL)
+	{
+		pSceneNext = CScene::GetSceneNext(pSceneNow, (CScene::PRIORITY_MODEL));							//次回アップデート対象を控える
+
+		CObject *pObj = (CObject*)pSceneNow;								// クラスチェンジ(床)
+
+		// レイを当てるメッシュが動いていたり回転している場合でも対象のワールド行列の逆行列を用いれば正しくレイが当たる
+		D3DXMatrixInverse(&mWorld, NULL, &pObj->GetMtxWorld());
+		D3DXVec3TransformCoord(&vStart, &vStart, &mWorld);
+
+		DWORD dwPolyIndex;
+		D3DXIntersect(pObj->m_pMesh, &vStart, &vDir, &boHit, &dwPolyIndex, NULL, NULL, pfDistance, NULL, NULL);
+		if (boHit)
+		{
+			//交差しているポリゴンの頂点を見つける
+			D3DXVECTOR3 vVertex[3];
+			FindVerticesOnPoly(pObj->m_pMesh, dwPolyIndex, vVertex);
+			D3DXPLANE p;
+			//その頂点から平面方程式を得る
+			D3DXPlaneFromPoints(&p, &vVertex[0], &vVertex[1], &vVertex[2]);
+			//平面方程式の係数が法線の成分
+			pvNormal->x = p.a;
+			pvNormal->y = p.b;
+			pvNormal->z = p.c;
+
+			return true;
+		}
+
+		pSceneNow = pSceneNext;														//次回アップデート対象を格納
+	}
+
+	return false;
+}
+
+//
+//HRESULT FindVerticesOnPoly(LPD3DXMESH pMesh,DWORD dwPolyIndex,D3DXVECTOR3* pvVertices )
+//そのポリゴンの頂点を見つける
+HRESULT CObject::FindVerticesOnPoly(LPD3DXMESH pMesh, DWORD dwPolyIndex, D3DXVECTOR3* pvVertices)
+{
+	DWORD dwStride = pMesh->GetNumBytesPerVertex();
+	DWORD dwVertexNum = pMesh->GetNumVertices();
+	DWORD dwPolyNum = pMesh->GetNumFaces();
+	WORD* pwPoly = NULL;
+	pMesh->LockIndexBuffer(D3DLOCK_READONLY, (VOID**)&pwPoly);
+
+	BYTE *pbVertices = NULL;
+	FLOAT* pfVetices = NULL;
+	LPDIRECT3DVERTEXBUFFER9 VB = NULL;
+	pMesh->GetVertexBuffer(&VB);
+	if (SUCCEEDED(VB->Lock(0, 0, (VOID**)&pbVertices, 0)))
+	{
+		pfVetices = (FLOAT*)&pbVertices[dwStride*pwPoly[dwPolyIndex * 3]];
+		pvVertices[0].x = pfVetices[0];
+		pvVertices[0].y = pfVetices[1];
+		pvVertices[0].z = pfVetices[2];
+
+		pfVetices = (FLOAT*)&pbVertices[dwStride*pwPoly[dwPolyIndex * 3 + 1]];
+		pvVertices[1].x = pfVetices[0];
+		pvVertices[1].y = pfVetices[1];
+		pvVertices[1].z = pfVetices[2];
+
+		pfVetices = (FLOAT*)&pbVertices[dwStride*pwPoly[dwPolyIndex * 3 + 2]];
+		pvVertices[2].x = pfVetices[0];
+		pvVertices[2].y = pfVetices[1];
+		pvVertices[2].z = pfVetices[2];
+
+		pMesh->UnlockIndexBuffer();
+		VB->Unlock();
+		VB->Release();
+	}
+	return S_OK;
 }
 
 #ifdef _DEBUG

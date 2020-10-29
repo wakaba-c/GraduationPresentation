@@ -83,6 +83,7 @@ private:
 	void MoveNearEnemy(void);														// 近くにいる敵に移動する処理
 	void Collision(void);															// 当たり判定処理
 	void Input(void);																// キー入力情報関数
+	void CollisionWall(void);														// 壁の当たり判定
 
 	/*================= プレイヤー関連 =================*/
 	D3DXVECTOR3						m_dest;											// モデルの最終到達点

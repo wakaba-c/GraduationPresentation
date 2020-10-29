@@ -30,6 +30,8 @@
 #include "fade.h"
 #include "takaseiLibrary.h"
 #include "sceneX.h"
+#include "wall.h"
+#include "object.h"
 
 //=============================================================================
 // マクロ定義
@@ -92,7 +94,7 @@ HRESULT CPlayer::Init(void)
 	CCamera *pCamera = CManager::GetCamera();
 	D3DXVECTOR3 pos = GetPosition();						//プレイヤーの位置取得
 
-	pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);			// プレイヤーの位置設定
+	pos = D3DXVECTOR3(-500.0f, 0.0f, -50.0f);			// プレイヤーの位置設定
 
 	if (pCamera != NULL)
 	{
@@ -188,7 +190,72 @@ void CPlayer::Update(void)
 
 	pos = GetPosition();				// 位置の取得
 
-	CCollider::RayBlockCollision(pos, &pModel[0].GetMtxWorld());
+	D3DXVECTOR3 pointLeft, pointRight;
+	float fLeftLength, fRightLength;
+
+	CCollider::RayBlockCollision(pos, &pModel[0].GetMtxWorld(), 12.28f, 30.0f);
+	pointRight = CCollider::RayRightWallCollision(fRightLength, pos, m_rot, m_move, &pModel[0].GetMtxWorld());
+	pointLeft = CCollider::RayLeftWallCollision(fLeftLength, pos, m_rot, m_move, &pModel[0].GetMtxWorld());
+
+	////当たり判定1
+	//FLOAT fDistance = 0;
+	//D3DXVECTOR3 vNormal;
+
+	//D3DXVECTOR3 rot = CManager::GetCamera()->GetRotation();
+	//D3DXVECTOR3 endPoint;
+	//endPoint.x = sinf(D3DX_PI * 1.0f + rot.y);
+	//endPoint.y = 0.0f;
+	//endPoint.z = cosf(D3DX_PI * 1.0f + rot.y);
+
+	//D3DXVECTOR3 playerPos = pos;
+	//playerPos.y += 5.0f;
+
+	//if (CObject::Collide(playerPos, playerPos + m_move, &fDistance, &vNormal) && fDistance <= 1000.0f)
+	//{
+	//	// 当たり状態なので、滑らせる
+	//	D3DXVECTOR3 move = CManager::Slip(playerPos + m_move, vNormal);// 滑りベクトルを計算
+	//	D3DXVec3Normalize(&move, &move);
+	//	move *= m_fSpeed;
+	//	m_move = move;
+
+	//	// 滑りベクトル先の壁とのレイ判定 ２重に判定
+	//	if (CObject::Collide(playerPos, playerPos + endPoint, &fDistance, &vNormal) && fDistance <= 20.0f)
+	//	{
+	//		m_move = D3DXVECTOR3_ZERO;//止める
+	//	}
+	//}
+
+	//CDebugProc::Log("距離 : %.2f", fDistance);
+
+	//if (m_pColPlayerSphere != NULL)
+	//{
+	//	D3DXVECTOR3 center = (pointLeft + pointRight) * 0.5f;
+	//	m_pColPlayerSphere->SetPosition(center);
+
+	//	float fLength, playerLength;
+	//	fLength = (pointLeft.x - pointRight.x) * (pointLeft.x - pointRight.x) + (pointLeft.z - pointRight.z) * (pointLeft.z - pointRight.z);
+
+	//	playerLength = (center.x - pos.x) * (center.x - pos.x) + (center.z - pos.z) * (center.z - pos.z);
+
+	//	if (fLength * 0.25f < playerLength)
+	//	{
+	//		D3DXVECTOR3 save = pos - D3DXVECTOR3(center.x, pos.y, center.z);
+	//		D3DXVECTOR3 vec;
+	//		D3DXVec3Normalize(&vec, &save);			//正規化する
+
+	//		float y = pos.y;
+
+	//		// 食い込んだ分を求める
+	//		pos = vec * ((fRightLength + fLeftLength) * 0.5f);
+	//		pos.y = y;
+
+	//		// 食い込んだ分だけ戻す
+	//		SetPosition(pos);
+	//	}
+
+	//	m_pColPlayerSphere->SetRadius((fRightLength + fLeftLength) * 0.5f);
+	//	CDebugProc::Log("距離 : %.2f", playerLength);
+	//}
 
 	//床の高さを取得する
 	CScene *pSceneNext = NULL;														// 初期化
@@ -268,6 +335,9 @@ void CPlayer::Update(void)
 
 	// 位置設定
 	SetPosition(pos);
+
+	// 壁の当たり判定
+	CollisionWall();
 
 	if (m_pBox != NULL)
 	{
@@ -690,6 +760,26 @@ void CPlayer::Input(void)
 		m_fDeathblow = 50.0f;				// 必殺技ポイントを最大値まで上げる
 	}
 #endif
+}
+
+//=============================================================================
+// 壁の当たり判定
+//=============================================================================
+void CPlayer::CollisionWall(void)
+{
+	CScene *pSceneNext = NULL;														// 初期化
+	CScene *pSceneNow = CScene::GetScene(CScene::PRIORITY_WALL);					// 先頭アドレスの取得
+
+	// 次がなくなるまで繰り返す
+	while (pSceneNow != NULL)
+	{
+		pSceneNext = CScene::GetSceneNext(pSceneNow, CScene::PRIORITY_WALL);		//次回アップデート対象を控える
+		CMeshWall *pMeshWall = (CMeshWall*)pSceneNow;
+
+		pMeshWall->GetWallHit(this);
+
+		pSceneNow = pSceneNext;								//次回アップデート対象を格納
+	}
 }
 
 #ifdef _DEBUG

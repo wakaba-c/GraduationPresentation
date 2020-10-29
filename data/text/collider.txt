@@ -1,0 +1,36 @@
+#==============================================================================
+#
+# コライダーデータスクリプト
+# Author : masayasu wakita
+#
+#==============================================================================
+SCRIPT
+
+#==============================================================================
+モデルの情報
+#==============================================================================
+COLLISIONSET
+	COLLISIONTYPE_BOX
+	CENTER = 0.00 301.00 0.00
+	SIZE = 46.00 812.00 50.00
+END_COLLISIONSET
+
+COLLISIONSET
+	COLLISIONTYPE_SPHERE
+	CENTER = 0.00 42.00 0.00
+	RADIUS = 100.00
+END_COLLISIONSET
+
+COLLISIONSET
+	COLLISIONTYPE_BOX
+	CENTER = 0.00 30.00 0.00
+	SIZE = 53.00 74.00 147.00
+END_COLLISIONSET
+
+COLLISIONSET
+	COLLISIONTYPE_SPHERE
+	CENTER = 172.00 176.00 0.00
+	RADIUS = 56.00
+END_COLLISIONSET
+
+END_SCRIPT

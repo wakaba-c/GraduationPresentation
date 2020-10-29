@@ -47,7 +47,7 @@ HRESULT CSceneX::Init(void)
 //=============================================================================
 void CSceneX::Uninit(void)
 {
-
+	OutputDebugString("開放処理");
 }
 
 //=============================================================================
@@ -110,7 +110,7 @@ void CSceneX::Draw(void)
 	switch (m_ShaderType)
 	{
 	case SHADERTYPE_LAMBERT:
-		pShader = CManager::GetShaderResource((std::string)SHADERADD_LAMBERT);
+		pShader = CManager::GetShaderResource(SHADERADD_LAMBERT);
 
 		// シェーダー処理
 		if (pShader != NULL)
@@ -140,7 +140,7 @@ void CSceneX::Draw(void)
 		}
 		break;
 	case SHADERTYPE_TOON:
-		pShader = CManager::GetShaderResource((std::string)SHADERADD_TOON);
+		pShader = CManager::GetShaderResource(SHADERADD_TOON);
 
 		// シェーダー処理
 		if (pShader != NULL)
@@ -295,6 +295,7 @@ void CSceneX::Load(void)
 void CSceneX::ShowInspector(void)
 {
 	D3DXVECTOR3 pos = GetPosition();
+
 	if (ImGui::CollapsingHeader("Transform"))
 	{
 		ImGui::DragFloat3("Position", (float*)&pos, 0.1f);
