@@ -23,6 +23,7 @@ class CEnemy;
 class CSky;
 class CHouse;
 class CHouseUi;
+class CSpeed;
 
 //=============================================================================
 // クラス定義
@@ -53,5 +54,6 @@ private:
 	static CEnemy		*m_pEnemy;											// 敵のポインタ
 	static CSky			*m_pSky;											// 空のポインタ
 	static CHouse		*m_pHouse;											// 家のポインタ
+	static CSpeed		*m_pSpeed;											// 時速のポインタ
 };
 #endif

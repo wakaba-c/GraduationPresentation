@@ -18,6 +18,7 @@
 //==================================================================================================================
 #define Box_Depth 8																	// 縦のポリゴン数
 #define Box_Width 15																// 横のブロック数
+#define Piece_Num 20																// ピース数
 
 //==================================================================================================================
 // 前方宣言
@@ -45,24 +46,28 @@ public:
 	void OnTriggerEnter(CCollider *col) {};
 	void OnCollisionEnter(CCollider *col) {};
 
+
 	static CBox *Create(void);														// 生成処理
 	static HRESULT Load(void);														// テクスチャ情報ロード
 	static void Unload(void);														// テクスチャ情報アンロード
+	static bool GetPuzzle(int nDepth, int nWidth) { return m_bPuzzle[nDepth][nWidth]; }	// パズル情報取得
+
 	bool GetPlaacement(void){ return m_bCreate; }									// 配置情報取得
 
 protected:
 
 private:
 	static LPDIRECT3DTEXTURE9 m_pTexture;											// テクスチャへのポインタ
-	bool m_bPuzzle[Box_Depth][Box_Width];											// 使用しているかどうか
 	CScene2D *m_pBlock[Box_Depth][Box_Width];										// シーン2Dのポインタ
-	CPiece *m_pPiece;																// ピース
+	CPiece *m_pPiece[Piece_Num];													// ピース
 
-	int m_nCntMove_X;																// 移動カウントX
-	int m_nCntMove_Y;																// 移動カウントY
+	int m_nCntChange;																// 変えるカウント
+	int m_nPieceNum;																// ピース数
 
+	static bool m_bPuzzle[Box_Depth][Box_Width];									// 使用しているかどうか
+	bool m_bPuzzleStorage[Box_Depth][Box_Width];									// 保管
 	bool m_bPlacement;																// 配置しているかどうか
-	bool m_bCreate;															// 生成するかどうか
+	bool m_bCreate;																	// 生成するかどうか
 	bool m_bMove;																	// 動くかどうか
 	bool m_bPiece;
 

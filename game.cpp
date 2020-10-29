@@ -34,6 +34,7 @@
 #include "ui.h"
 #include "network.h"
 #include "wall.h"
+#include "speed.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -44,6 +45,7 @@ CMeshSphere *CGame::m_pMeshSphere = NULL;		// メッシュスフィアのポインタ
 CEnemy		*CGame::m_pEnemy = NULL;			// 敵のポインタ
 CSky		*CGame::m_pSky = NULL;				// 空のポインタ
 CHouse		*CGame::m_pHouse = NULL;			// 家のポインタ
+CSpeed		*CGame::m_pSpeed = NULL;			// 時速のポインタ
 
 //=============================================================================
 // コンストラクタ
@@ -95,6 +97,9 @@ HRESULT CGame::Init(void)
 
 	// 時間のクリエイト処理
 	CTime::Create();
+
+	// 時速の生成
+	CSpeed::Create();
 
 	// モデル情報の読み込み
 	CObject::LoadModelTest("data/text/model.txt");

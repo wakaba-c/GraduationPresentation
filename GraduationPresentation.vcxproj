@@ -203,6 +203,7 @@
     <ClCompile Include="score.cpp" />
     <ClCompile Include="sky.cpp" />
     <ClCompile Include="sound.cpp" />
+    <ClCompile Include="speed.cpp" />
     <ClCompile Include="stage.cpp" />
     <ClCompile Include="takaseiLibrary.cpp" />
     <ClCompile Include="time.cpp" />
@@ -274,6 +275,7 @@
     <ClInclude Include="score.h" />
     <ClInclude Include="sky.h" />
     <ClInclude Include="sound.h" />
+    <ClInclude Include="speed.h" />
     <ClInclude Include="stage.h" />
     <ClInclude Include="takaseiLibrary.h" />
     <ClInclude Include="time.h" />

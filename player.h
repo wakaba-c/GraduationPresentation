@@ -17,7 +17,7 @@
 // マクロ定義
 //=============================================================================
 #define MAX_KEY 30
-#define NORMAL_SPEED 3.0f
+#define NORMAL_SPEED 2.5f
 #define SP_SPEED 2.0f
 
 //=============================================================================
@@ -109,7 +109,6 @@ private:
 	D3DXMATRIX						m_mtxWorld;										// ワールドマトリックス
 
 	CMeshOrbit						*m_pMeshOrbit;									// 軌跡のポインタ
-	int								m_nCntAttacCombo;								// コンボが持続するまでのカウンタ
 
 	/*===============当たり判定===============*/
 	CColliderSphere					*m_pColWeaponSphere;							// 武器の当たり判定のポインタ
