@@ -1433,7 +1433,9 @@ D3DXVECTOR3 CCollider::RayLeftWallCollision(float &fLeftLength, D3DXVECTOR3 &pos
 	testPos = pos + endPoint * (fLeft - 20.0f);
 	testPos.y = pos.y;
 
+#ifdef _DEBUG
 	CDebugProc::Log("壁の限界値 : Left = %.2f %.2f %.2f\n", testPos.x, testPos.y, testPos.z);
+#endif
 
 	// 判定フラグを返す
 	return testPos;
@@ -1520,7 +1522,9 @@ D3DXVECTOR3 CCollider::RayRightWallCollision(float &fRightLength, D3DXVECTOR3 &p
 	testPos = pos + endPoint * (fRight - 20.0f);
 	testPos.y = pos.y;
 
+#ifdef _DEBUG
 	CDebugProc::Log("壁の限界値 : Right = %.2f %.2f %.2f\n", testPos.x, testPos.y, testPos.z);
+#endif
 
 	// 判定フラグを返す
 	return testPos;

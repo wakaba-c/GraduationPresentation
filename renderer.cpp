@@ -223,7 +223,9 @@ void CRenderer::Draw(void)
 
 		CScene::DrawAll();
 
+#ifdef _DEBUG
 		CDebugProc::Log("FPS : %d", GetFPS());									// FPS
+#endif
 
 		if (m_bWireFrame)
 		{// 　ワイヤーフレームが有効だったとき
@@ -277,6 +279,7 @@ void CRenderer::RendererRay(D3DXVECTOR3 start, D3DXVECTOR3 end)
 //=============================================================================
 void CRenderer::Debug(void)
 {
+#ifdef _DEBUG
 	bool bWork = m_bWireFrame;
 
 	ImGui::Begin("System");
@@ -296,4 +299,5 @@ void CRenderer::Debug(void)
 			m_pD3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
 		}
 	}
+#endif
 }

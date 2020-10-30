@@ -164,6 +164,7 @@ void CDebugProc::Update(void)
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
+#ifdef _DEBUG
 	// 自分で作成した簡単なウィンドウを表示します。 Begin / Endペアを使用して、名前付きウィンドウを作成します。
 	ImGui::Begin("System");                          // 「System」というウィンドウを作成しますそれに追加します。
 
@@ -191,6 +192,7 @@ void CDebugProc::Update(void)
 	}
 
 	ImGui::End();
+#endif
 
 	Debug();
 }
@@ -318,6 +320,7 @@ void CDebugProc::Debug(void)
 	CInputKeyboard *pKeyboard = CManager::GetInputKeyboard();		// キーボードの取得
 	CCamera *pCamera = CManager::GetCamera();		// カメラ の取得
 
+#ifdef _DEBUG
 	ImGui::Begin("System");			// Systemウィンドウ の生成またはアクセス
 
 	ImGui::BeginChild("Scrolling");
@@ -356,6 +359,7 @@ void CDebugProc::Debug(void)
 
 	//デバッグ処理を終了
 	ImGui::End();
+#endif
 
 	// デバッグウィンドウの生成
 	if (m_bDebug)

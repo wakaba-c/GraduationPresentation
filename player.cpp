@@ -641,13 +641,15 @@ void CPlayer::Input(void)
 			// 加速度計算
 			acceleration = CTakaseiLibrary::OutputAcceleration(fDigit / 2, fRadius);
 
-			CDebugProc::Log("加速度：%f\n", acceleration);
 
 			// 加速度ベクトル設定
 			aVec.x += sinf(m_rot.y - D3DX_PI / 2) * acceleration;
 			aVec.z += cosf(m_rot.y - D3DX_PI / 2) * acceleration;
 
+#ifdef _DEBUG
+			CDebugProc::Log("加速度：%f\n", acceleration);
 			CDebugProc::Log("加速度ベクトル：%f, %f, %f\n", aVec.x, aVec.y, aVec.z);
+#endif
 
 			// ドリフトボタンを離したとき
 			if (!pKeyboard->GetPressKeyboard(MOVE_DRIFT))
@@ -708,7 +710,9 @@ void CPlayer::Input(void)
 			// プレイヤーを徐々に回転させていく
 			m_rot.y += m_dest.y * ROT_AMOUNT;
 
+#ifdef _DEBUG
 			CDebugProc::Log("運動ベクトル：%f, %f, %f\n", moveVec.x, moveVec.y, moveVec.z);
+#endif
 		}
 
 		// プレイヤーが動いていないとき
