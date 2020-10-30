@@ -16,8 +16,8 @@
 //=============================================================================
 // マクロ定義
 //=============================================================================
-#define WALL_DEPTH_FIELD	50									// 奥行き
-#define WALL_WIDE_FIELD 1									// 幅
+#define WALL_DEPTH_FIELD	2							// 奥行き
+#define WALL_WIDE_FIELD 1								// 幅
 #define SIZE		50.0f								// サイズ
 
 //=============================================================================
@@ -37,7 +37,7 @@ public:
 	static HRESULT Load(void);														// ロード処理
 
 	static void LoadRand(char *add, bool bDebug);									// 地面の高さ読み込み
-	void GetWallHit(CScene *pTarget);										// ポリゴンの高さを求める
+	bool GetWallHit(CScene *pTarget, D3DXVECTOR3 &nol);										// ポリゴンの高さを求める
 
 	static bool SphereModel(D3DXVECTOR3 C1, D3DXVECTOR3 C2, float R1);				// X軸とZ軸の当たり判定
 	bool CollisionRange(D3DXVECTOR3 pos);											// 自分の範囲内にいるかどうか
