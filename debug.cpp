@@ -913,14 +913,17 @@ void CDebugProc::CreateIndividual(D3DXVECTOR3 &worldPos)
 	CScene *pScene = CScene::NowFloor(worldPos);									// 現在いる場所のフィールドを取得
 
 	D3DXVECTOR3 pos = worldPos;
-	D3DXVECTOR3 rot;
+	D3DXVECTOR3 rot = D3DXVECTOR3_ZERO;
+	D3DXVECTOR3 size = D3DXVECTOR3_ZERO;
 
 	if (m_pSample != NULL)
 	{// 見本用オブジェクトが存在していたとき
 		rot = m_pSample->GetRotation();					// 回転値の取得
+		size = m_pSample->GetSize();					// サイズの取得
 	}
 
 	ImGui::DragFloat3("rot", (float*)&rot, 0.01f);
+	ImGui::DragFloat3("size", (float*)&size, 0.01f);
 
 	if (pScene != NULL)
 	{// 床が存在していたとき
@@ -951,8 +954,8 @@ void CDebugProc::CreateIndividual(D3DXVECTOR3 &worldPos)
 	if (m_pSample != NULL)
 	{// 見本用オブジェクトが存在していたとき
 		m_pSample->SetPosition(pos);														// 見本用モデルの位置を現在のマウス座標に設定
-		m_pSample->SetRotation(rot);					// 回転値の取得
-		m_pSample->ShowInspector();
+		m_pSample->SetRotation(rot);														// 回転値の取得
+		m_pSample->SetSize(size);
 	}
 
 	if (!pKeyboard->GetPressKeyboard(DIK_LALT))

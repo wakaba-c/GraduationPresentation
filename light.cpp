@@ -143,10 +143,10 @@ void CLight::Debug(void)
 
 	ImGui::DragFloat3("pos", (float*)&m_pos);
 
-	if (m_pDirectionalLight != NULL)
-	{
-		m_pDirectionalLight->SetPosition(m_pos);
-	}
+	//if (m_pDirectionalLight != NULL)
+	//{
+	//	m_pDirectionalLight->SetPosition(m_pos);
+	//}
 
 	//デバッグ処理を終了
 	ImGui::End();
