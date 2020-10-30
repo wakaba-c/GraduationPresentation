@@ -944,6 +944,8 @@ bool CCollider::CollisionHitSphereAndBox(CCollider * pFirstTarget, CCollider * p
 	CColliderBox *pBox = (CColliderBox*)pFirstTarget;
 	CColliderSphere *pSphere = (CColliderSphere*)pSecondTarget;														// 使える状態にキャスト
 
+	if(pBox->m_pScene == NULL || pSphere->m_pScene == NULL) { return false; }
+
 	D3DXVECTOR3 boxPos = pBox->m_pScene->GetPosition() + pBox->GetOffset();							// Target1の位置
 	D3DXVECTOR3 spherePos = pSphere->m_pScene->GetPosition() + pSphere->GetOffset();						// Target2の位置
 
