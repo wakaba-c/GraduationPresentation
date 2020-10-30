@@ -20,6 +20,11 @@
 #define WIDE 20												// 幅
 
 //=============================================================================
+// 前方宣言
+//=============================================================================
+class CColliderBox;
+
+//=============================================================================
 // クラス定義
 //=============================================================================
 class CObject : public CSceneX
@@ -62,7 +67,7 @@ public:
 	void OnCollisionEnter(CCollider *col) {};
 	void ShowInspector(void);
 
-	static bool Collide(D3DXVECTOR3 vStart, D3DXVECTOR3 vDir, FLOAT* pfDistance, D3DXVECTOR3* pvNormal);			// 当たり判定
+	static bool Collide(D3DXVECTOR3 vStart, D3DXVECTOR3 vDir, FLOAT* pfDistance, D3DXVECTOR3* pvNormal, D3DXMATRIX mtx);			// 当たり判定
 	static HRESULT FindVerticesOnPoly(LPD3DXMESH pMesh, DWORD dwPolyIndex, D3DXVECTOR3* pvVertices);
 
 private:
@@ -74,6 +79,7 @@ private:
 	LPD3DXMESH		m_pMesh;							// メッシュ情報へのポインタ
 	DWORD			m_nNumMat;							// マテリアル情報の数
 	LPD3DXBUFFER		m_pBuffMat;						// マテリアル情報へのポインタ
+	CColliderBox *m_pBox;					// 当たり判定ボックス
 
 	std::string m_Add;														// モデルのアドレス
 };
