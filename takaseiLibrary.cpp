@@ -113,6 +113,14 @@ float CTakaseiLibrary::OutputDistance(const D3DXVECTOR3 & onePoint, const D3DXVE
 }
 
 //=============================================================================
+// â¡ë¨ìxåvéZ
+//=============================================================================
+float CTakaseiLibrary::OutputAcceleration(const float & fVelocity, const float & fRadius)
+{
+	return (fVelocity * fVelocity) / fRadius;
+}
+
+//=============================================================================
 // è„ì¸óÕ
 //=============================================================================
 HRESULT CTakaseiLibrary::Up(CInputKeyboard * Key, CInputController * pGamepad)

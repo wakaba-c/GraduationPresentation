@@ -30,6 +30,7 @@
 #include "fade.h"
 #include "takaseiLibrary.h"
 #include "sceneX.h"
+#include "speed.h"
 #include "wall.h"
 #include "object.h"
 
@@ -40,9 +41,11 @@
 #define	SCRIPT_CAR01 "data/animation/car01.txt"		// 車01のモデル情報アドレス
 #define COUNTER_COMBO 30							// 派生攻撃受付カウンタ
 #define JUMP_MAX 10									// ジャンプの加速度
-#define ROT_AMOUNT 0.05f							// 回転の差を減らしていく量
-#define ROT_SPEED 0.3f								// 回転速度
+#define ROT_AMOUNT 0.1f								// 回転の差を減らしていく量
+#define ROT_SPEED 0.2f								// 回転速度
+#define ROT_SPEED_DRIFT 0.5f						// ドリフト時回転速度
 #define MODEL_FRONT 2								// モデル前輪
+#define MODEL_TIRE 2								// タイヤモデルの数
 #define SPEED_DOWN 0.06f							// スピード減少
 
 //=============================================================================
@@ -56,9 +59,11 @@ CPlayer::CPlayer(CScene::PRIORITY obj = CScene::PRIORITY_PLAYER) : CCharacter(ob
 	m_nLife = 100;										// 体力の初期化
 	m_fSpeed = NORMAL_SPEED;							// スピードの初期化
 	m_rot = D3DXVECTOR3(0.0f, D3DX_PI, 0.0f);			// 回転の初期化
+	m_fSpeed = 0;;										// スピードの初期化
 	m_move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// 移動量の初期化
-	m_dest = D3DXVECTOR3(0.0f, D3DX_PI, 0.0f);			// 移動先の初期化
+	m_dest = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// 移動先の初期化
 	m_difference = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 差の初期化
+	m_cameraRot = D3DXVECTOR3(0, D3DX_PI, 0);			// カメラの回転情報初期化
 	m_pColPlayerSphere = NULL;							// プレイヤー当たり判定ポインタの初期化
 	m_bHit = false;										// 当たり判定フラグの初期亜化
 	m_bJump = false;									// ジャンプフラグの初期化
@@ -66,6 +71,8 @@ CPlayer::CPlayer(CScene::PRIORITY obj = CScene::PRIORITY_PLAYER) : CCharacter(ob
 	m_nParticleCount = 0;								// パーティクルカウンタの初期化
 	m_fDeathblow = 0.0f;								// 必殺技ポイントの初期化
 	m_bEvent = false;									// イベント発生フラグの初期化
+	m_bDrift = false;									// ドリフトフラグ判定
+	m_bMove = false;									// 現在動いているかのフラグ
 
 	m_pPlayerUi = NULL;
 }
@@ -90,9 +97,9 @@ HRESULT CPlayer::Init(void)
 	pDevice = pRenderer->GetDevice();
 
 	CCamera *pCamera = CManager::GetCamera();
-	D3DXVECTOR3 pos = GetPosition();						//プレイヤーの位置取得
+	D3DXVECTOR3 pos = GetPosition();				// プレイヤーの位置取得
 
-	pos = D3DXVECTOR3(-500.0f, 0.0f, -50.0f);			// プレイヤーの位置設定
+	pos = D3DXVECTOR3(0.0f, 50.0f, 0.0f);			// プレイヤーの位置設定
 
 	if (pCamera != NULL)
 	{
@@ -466,7 +473,6 @@ void CPlayer::Input(void)
 	CModel *pModel = GetModel();
 
 	D3DXVECTOR3 rot = pCamera->GetRotation();
-	D3DXVECTOR3 nor;
 	D3DXVECTOR3 Diff;	// 計算用格納変数
 	float nValueH = 0;									//コントローラー
 	float nValueV = 0;									//コントローラー
@@ -544,9 +550,15 @@ void CPlayer::Input(void)
 	// モデルがあるとき
 	if (pModel != NULL)
 	{
-		D3DXVECTOR3 fModelFront = ZeroVector3;									// モデル前輪最終目的座標
-		D3DXVECTOR3 fModelFrontDiff = ZeroVector3;								// モデル前輪計算用マトリックス
-		D3DXVECTOR3 fModelRot = pModel[MODEL_FRONT].GetRotation();				// モデルの回転情報
+		D3DXVECTOR3 modelFrontDiff = D3DXVECTOR3(0, 0, 0);			// モデル前輪計算用マトリックス
+		D3DXVECTOR3 aVec = D3DXVECTOR3(0, 0, 0);					// プレイヤー加速度ベクトル
+		D3DXVECTOR3 cameraVec = D3DXVECTOR3(0, 0, 0);				// カメラの方向ベクトル
+		D3DXVECTOR3 moveVec = D3DXVECTOR3(0, 0, 0);					// プレイヤー運動ベクトル
+		D3DXVECTOR3 fModelRot = pModel[MODEL_FRONT].GetRotation();	// モデル前輪回転情報
+		float acceleration = 0.0f;									// 加速度
+		float fRadius = 100.0f;										// 回転半径
+		float fDigit = CSpeed::GetDigit();							// 時速取得
+		m_fSpeed = 0;
 
 		//if (pKeyboard->GetTriggerKeyboard(DIK_SPACE))
 		//{// スペースキーが押されたとき
@@ -560,124 +572,165 @@ void CPlayer::Input(void)
 		//上下操作
 		if (pKeyboard->GetPressKeyboard(MOVE_ACCEL))
 		{
-			//左右操作
-			if (pKeyboard->GetPressKeyboard(MOVE_LEFT))
-			{
-				D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
-				m_dest.y = m_rot.y - ROT_SPEED;
+			// 前輪モデルの最終目的座標
+			m_dest.y = 0.0f;
 
-				// 前輪モデルの最終目的座標
-				fModelFront.y = -ROT_SPEED;
-			}
-			else if (pKeyboard->GetPressKeyboard(MOVE_RIGHT))
-			{
-				D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
-				m_dest.y = m_rot.y + ROT_SPEED;
+			// 速度設定
+			m_fSpeed = -NORMAL_SPEED;
 
-				// 前輪モデルの最終目的座標
-				fModelFront.y = ROT_SPEED;
-			}
-
-			m_move.x += sinf(D3DX_PI * 1.0f + rot.y) * m_fSpeed;
-			m_move.z += cosf(D3DX_PI * 1.0f + rot.y) * m_fSpeed;
-
-			D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
+			// 動いていい
+			m_bMove = true;
 		}
 		else if (pKeyboard->GetPressKeyboard(MOVE_BRAKE))
 		{
+			// 前輪モデルの最終目的座標
+			m_dest.y = 0.0f;
+
+			// 速度設定
+			m_fSpeed = NORMAL_SPEED;
+
+			// 動いていい
+			m_bMove = true;
+		}
+
+		//左右操作
+		if (pKeyboard->GetPressKeyboard(MOVE_LEFT))
+		{
+			// 前輪モデルの最終目的座標
+			m_dest.y = -ROT_SPEED;
+		}
+		else if (pKeyboard->GetPressKeyboard(MOVE_RIGHT))
+		{
+			// 前輪モデルの最終目的座標
+			m_dest.y = ROT_SPEED;
+		}
+
+		// ドリフトしていないとき
+		if (!m_bDrift)
+		{
+			// ドリフトボタンを押したとき
+			if (pKeyboard->GetPressKeyboard(MOVE_DRIFT))
+			{
+				//左右操作
+				if (pKeyboard->GetPressKeyboard(MOVE_LEFT))
+				{
+					// ドリフトしている状態にする
+					m_bDrift = true;
+				}
+				else if (pKeyboard->GetPressKeyboard(MOVE_RIGHT))
+				{
+					// ドリフトしている状態にする
+					m_bDrift = true;
+				}
+			}
+		}
+		else
+		{// ドリフトしているとき
 			//左右操作
 			if (pKeyboard->GetPressKeyboard(MOVE_LEFT))
 			{
-				D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
-				m_dest.y = m_rot.y + ROT_SPEED;
-
-				// 前輪モデルの最終目的座標
-				fModelFront.y = -ROT_SPEED;
+				// 回転半径変更
+				fRadius = 1000.0f;
 			}
 			else if (pKeyboard->GetPressKeyboard(MOVE_RIGHT))
 			{
-				D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
-				m_dest.y = m_rot.y - ROT_SPEED;
-
-				// 前輪モデルの最終目的座標
-				fModelFront.y = ROT_SPEED;
+				// 回転半径変更
+				fRadius = 1000.0f;
 			}
 
-			m_move.x += sinf(D3DX_PI * 0.0f + rot.y) * m_fSpeed;
-			m_move.z += cosf(D3DX_PI * 0.0f + rot.y) * m_fSpeed;
+			// 加速度計算
+			acceleration = CTakaseiLibrary::OutputAcceleration(fDigit / 2, fRadius);
 
-			D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
+			CDebugProc::Log("加速度：%f\n", acceleration);
+
+			// 加速度ベクトル設定
+			aVec.x += sinf(m_rot.y - D3DX_PI / 2) * acceleration;
+			aVec.z += cosf(m_rot.y - D3DX_PI / 2) * acceleration;
+
+			CDebugProc::Log("加速度ベクトル：%f, %f, %f\n", aVec.x, aVec.y, aVec.z);
+
+			// ドリフトボタンを離したとき
+			if (!pKeyboard->GetPressKeyboard(MOVE_DRIFT))
+			{
+				// ドリフトしていない状態にする
+				m_bDrift = false;
+			}
 		}
 
-		// プレイヤーが動いているとき
-		if (m_move > 0)
-		{
-			// プレイヤーの回転と目標地点の差を格納
-			Diff.y = m_rot.y - m_dest.y;
+		{// 前輪設定
+			// モデルの回転と目標地点の差を格納
+			modelFrontDiff.y = fModelRot.y - m_dest.y;
 
 			// 回転の補正
-			CTakaseiLibrary::RotRevision(&Diff);
+			CTakaseiLibrary::RotRevision(&modelFrontDiff);
+
+			// モデルを徐々に回転させていく
+			fModelRot.y -= modelFrontDiff.y * ROT_AMOUNT;
+
+			// 回転の補正
+			CTakaseiLibrary::RotRevision(&fModelRot);
+
+			// モデルの回転の設定
+			pModel[MODEL_FRONT].SetRotation(fModelRot);
+		}
+
+		{// カメラ設定
+			// タイヤの回転の半分を差と格納
+			cameraVec.y = m_cameraRot.y - (m_rot.y + (m_dest.y / 2));
+
+			// 回転の補正
+			CTakaseiLibrary::RotRevision(&cameraVec);
+
+			// カメラを徐々に回転させていく
+			m_cameraRot.y -= cameraVec.y * ROT_AMOUNT;
+
+			// 回転の補正
+			CTakaseiLibrary::RotRevision(&m_cameraRot);
+
+			// カメラ回転設定
+			SetCameraRot(m_cameraRot);
+		}
+
+		// 移動していいとき
+		if (m_bMove)
+		{
+			// 運動ベクトル計算
+			moveVec.x += sinf(m_rot.y + m_dest.y) * m_fSpeed;
+			moveVec.z += cosf(m_rot.y + m_dest.y) * m_fSpeed;
+
+			//// 運動ベクトル計算
+			//m_move.x += sinf(m_rot.y + m_dest.y) * m_fSpeed;
+			//m_move.z += cosf(m_rot.y + m_dest.y) * m_fSpeed;
+
+			// 回転の補正
+			//CTakaseiLibrary::RotRevision(&m_dest);
 
 			// プレイヤーを徐々に回転させていく
-			m_rot.y -= Diff.y * ROT_AMOUNT;
+			m_rot.y += m_dest.y * ROT_AMOUNT;
 
-			// 回転の補正
-			CTakaseiLibrary::RotRevision(&m_rot);
-
-			// 回転の設定
-			SetRotation(m_rot);
+			CDebugProc::Log("運動ベクトル：%f, %f, %f\n", moveVec.x, moveVec.y, moveVec.z);
 		}
 
-		// アクセルブレーキを押しているとき
-		if (pKeyboard->GetPressKeyboard(MOVE_ACCEL) || pKeyboard->GetPressKeyboard(MOVE_BRAKE))
+		// プレイヤーが動いていないとき
+		if (fabs(m_move.x) <= 2 && fabs(m_move.z) <= 2)
 		{
-			////左右操作
-			//if (pKeyboard->GetPressKeyboard(MOVE_LEFT))
-			//{
-			//	D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
-			//	m_dest.y = m_rot.y - ROT_SPEED;
-
-			//	// 前輪モデルの最終目的座標
-			//	fModelFront.y = -ROT_SPEED;
-
-			//	// 移動量設定
-			//	m_move.x += sinf(m_rot.y) * m_fSpeed;
-			//	m_move.z += cosf(m_rot.y) * m_fSpeed;
-			//}
-			//else if (pKeyboard->GetPressKeyboard(MOVE_RIGHT))
-			//{
-			//	D3DXVec3Normalize(&nor, &D3DXVECTOR3(m_move.z, m_move.y, -m_move.x));
-			//	m_dest.y = m_rot.y + ROT_SPEED;
-
-			//	// 前輪モデルの最終目的座標
-			//	fModelFront.y = ROT_SPEED;
-
-			//	// 移動量設定
-			//	m_move.x += sinf(m_rot.y) * m_fSpeed;
-			//	m_move.z += cosf(m_rot.y) * m_fSpeed;
-			//}
-		}
-		else
-		{
-			// 前輪モデルの最終目的座標
-			fModelFront.y = 0;
-
+			// 移動不可
+			m_bMove = false;
 		}
 
-		// モデルの回転と目標地点の差を格納
-		fModelFrontDiff.y = fModelRot.y - fModelFront.y;
+		// 移動量設定
+		m_move.x += (moveVec.x + aVec.x) / 2;
+		m_move.z += (moveVec.z + aVec.z) / 2;
 
 		// 回転の補正
-		CTakaseiLibrary::RotRevision(&fModelFrontDiff);
+		CTakaseiLibrary::RotRevision(&m_rot);
 
-		// mモデルを徐々に回転させていく
-		fModelRot.y -= fModelFrontDiff.y * ROT_AMOUNT;
+		// 回転の設定
+		SetRotation(m_rot);
 
-		// 回転の補正
-		CTakaseiLibrary::RotRevision(&fModelRot);
-
-		// モデルの回転の設定
-		pModel[MODEL_FRONT].SetRotation(fModelRot);
+		//CDebugProc::Log("プレイヤー回転情報：%f\n", m_rot.y);
+		//CDebugProc::Log("スピード：%f\n", m_fSpeed);
+		//CDebugProc::Log("移動量：%f, %f, %f\n", m_move.x, m_move.y, m_move.z);
 	}
 
 #ifdef _DEBUG
@@ -688,6 +741,7 @@ void CPlayer::Input(void)
 	{// Kが押されたとき
 		m_fDeathblow = 50.0f;				// 必殺技ポイントを最大値まで上げる
 	}
+
 #endif
 }
 

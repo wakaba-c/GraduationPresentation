@@ -17,7 +17,7 @@
 // マクロ定義
 //=============================================================================
 #define MAX_KEY 30
-#define NORMAL_SPEED 2.5f
+#define NORMAL_SPEED 6.0f
 #define SP_SPEED 2.0f
 
 //=============================================================================
@@ -74,6 +74,8 @@ public:
 	D3DXVECTOR3 GetMove(void) { return m_move; }					// 移動量の取得
 	D3DXMATRIX GetMtxWorld(void) { return m_mtxWorld; }				// ワールドマトリックスの取得
 	D3DXVECTOR3 GetRotDest(void) { return m_dest; }					// 回転最終到達地点
+	D3DXVECTOR3 GetCameraRot(void) { return m_cameraRot; }			// カメラの回転情報
+	void SetCameraRot(D3DXVECTOR3 cameraRot) { m_cameraRot = cameraRot; }
 
 private:
 #ifdef _DEBUG
@@ -92,6 +94,7 @@ private:
 	D3DXVECTOR3						m_move;											// 移動量
 	D3DXVECTOR3						m_size;											// 大きさ
 	D3DXVECTOR3						m_rot;											// 回転量
+	D3DXVECTOR3						m_cameraRot;									// カメラの回転情報
 	D3DXCOLOR						m_color;										// 色
 	float							m_fSpeed;										// スピード
 	float							m_fDeathblow;									// 必殺技ポイント
@@ -101,6 +104,8 @@ private:
 	bool							m_bJump;										// ジャンプ
 	bool							m_bEvent;										// イベント発生フラグ
 	bool							m_bHit;											// ヒット判定
+	bool							m_bDrift;										// プレイヤーのドリフトフラグ
+	bool							m_bMove;										// 現在動いているかのフラグ
 	CPlayerUi						*m_pPlayerUi;									// キャラクター情報のUI
 
 	/*=============== 3Dレンダリング関連 ===============*/
