@@ -203,9 +203,16 @@ void CBox::Update(void)
 		{
 			for (int nCntWidth = 0; nCntWidth < Box_Width; nCntWidth++)
 			{
+				// 選択されているときの色
+				m_pPiece[m_nSelect]->SetCol(D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
 
-				//// 選択されているときの色
-				//m_pPiece[m_nSelect]->SetCol(D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
+			
+					if (m_nSelect != m_nPieceNum)
+					{
+						m_pPiece[m_nSelect - 1]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+						m_pPiece[m_nSelect + 1]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+					}
+				
 
 				// Qを押されたら
 				if (pKeyboard->GetTriggerKeyboard(DIK_Q))
@@ -230,8 +237,7 @@ void CBox::Update(void)
 		}
 		if (m_bRelease == true)
 		{
-			// ピース減算
-			m_nPieceNum--;
+			m_nSelect = 0;
 			m_bRelease = false;
 		}
 		// ピース生成
