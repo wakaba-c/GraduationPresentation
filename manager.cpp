@@ -799,6 +799,26 @@ LPD3DXEFFECT CManager::GetShaderResource(std::string Add)
 }
 
 //=============================================================================
+// 壁ずりベクトル
+//=============================================================================
+D3DXVECTOR3 *CManager::calcWallScratchVector(D3DXVECTOR3 *out, const D3DXVECTOR3 &front, const D3DXVECTOR3 &normal)
+{
+	D3DXVECTOR3 normal_n;
+	D3DXVec3Normalize(&normal_n, &normal);
+	return D3DXVec3Normalize(out, &(front - D3DXVec3Dot(&front, &normal_n) * normal_n));
+}
+
+//=============================================================================
+// 反射ベクトル
+//=============================================================================
+D3DXVECTOR3 * CManager::calcReflectVector(D3DXVECTOR3 * out, const D3DXVECTOR3 & front, const D3DXVECTOR3 & normal)
+{
+	D3DXVECTOR3 normal_n;
+	D3DXVec3Normalize(&normal_n, &normal);
+	return D3DXVec3Normalize(out, &(front - 2.0f * D3DXVec3Dot(&front, &normal_n) * normal_n));
+}
+
+//=============================================================================
 // ウィンドウの中心位置でマウスカーソルの位置を取得
 //=============================================================================
 D3DXVECTOR3 CManager::GetCursorPosWithCenter(void)

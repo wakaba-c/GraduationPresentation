@@ -80,9 +80,9 @@ HRESULT CGame::Init(void)
 	CObject::LoadScript();
 
 	// 各種アセットの生成＆設置
-	//CMeshField::LoadRand("data/stage/rand.csv", false);				// 床情報の読込
+	//CMeshField::LoadRand("data/stage/rand.csv", false);			// 床情報の読込
 	//CObject::LoadModel("data/stage/object.csv");					// モデル情報の読込
-	//CEnemy::LoadEnemy("data/stage/enemy.csv");						// 敵情報の読込
+	//CEnemy::LoadEnemy("data/stage/enemy.csv");					// 敵情報の読込
 
 	CEnemy *pEnemy = CEnemy::Create();			// クリエイト処理
 

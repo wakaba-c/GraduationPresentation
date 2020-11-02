@@ -57,16 +57,14 @@ CPlayer::CPlayer(CScene::PRIORITY obj = CScene::PRIORITY_PLAYER) : CCharacter(ob
 	SetObjType(CScene::PRIORITY_PLAYER);				// オブジェクトタイプ
 
 	m_nLife = 100;										// 体力の初期化
-	m_fSpeed = 0;										// スピードの初期化
 	m_rot = D3DXVECTOR3(0.0f, D3DX_PI, 0.0f);			// 回転の初期化
+	m_fSpeed = 0;										// スピードの初期化
 	m_move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// 移動量の初期化
 	m_dest = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// 移動先の初期化
 	m_difference = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 差の初期化
 	m_cameraRot = D3DXVECTOR3(0, D3DX_PI, 0);			// カメラの回転情報初期化
 	m_pColPlayerSphere = NULL;							// プレイヤー当たり判定ポインタの初期化
-	m_pColWeaponSphere = NULL;							// 刃当たり判定ポインタの初期化
-	m_pColHandSphere = NULL;							// 手の当たり判定の初期化
-	m_pBox = NULL;
+	m_bHit = false;										// 当たり判定フラグの初期亜化
 	m_bJump = false;									// ジャンプフラグの初期化
 	m_nActionCount = 0;									// アクションカウンタの初期化
 	m_nParticleCount = 0;								// パーティクルカウンタの初期化
@@ -116,24 +114,6 @@ HRESULT CPlayer::Init(void)
 	// プレイヤーモデル情報の読み込み
 	LoadScript(SCRIPT_CAR01, ANIMATIONTYPE_MAX);
 
-	// 武器の当たり判定を生成
-	m_pColWeaponSphere = CColliderSphere::Create(true, 30.0f);
-
-	if (m_pColWeaponSphere != NULL)
-	{ // 球体のポインタがNULLではないとき
-		m_pColWeaponSphere->SetScene(this);											// 呼び出し主 の設定
-		m_pColWeaponSphere->SetTag("weapon");										// タグ の設定
-	}
-
-	// 武器の当たり判定を生成
-	m_pColHandSphere = CColliderSphere::Create(true, 50.0f);
-
-	if (m_pColHandSphere != NULL)
-	{ // 球体のポインタがNULLではないとき
-		m_pColHandSphere->SetScene(this);											// 呼び出し主 の設定
-		m_pColHandSphere->SetTag("weapon");											// タグ の設定
-	}
-
 	// プレイヤーの当たり判定を生成
 	m_pColPlayerSphere = CColliderSphere::Create(false, 20.0f);
 
@@ -142,7 +122,7 @@ HRESULT CPlayer::Init(void)
 		m_pColPlayerSphere->SetScene(this);
 		m_pColPlayerSphere->SetTag("player");										// タグ の設定
 		m_pColPlayerSphere->SetPosition(pos);										// 位置 の設定
-		m_pColPlayerSphere->SetOffset(D3DXVECTOR3(0.0f, 100.0f, 0.0f));
+		m_pColPlayerSphere->SetOffset(D3DXVECTOR3(0.0f, 20.0f, 0.0f));
 	}
 
 	// 位置の設定
@@ -156,14 +136,6 @@ HRESULT CPlayer::Init(void)
 //=============================================================================
 void CPlayer::Uninit(void)
 {
-	if (m_pColWeaponSphere != NULL)
-	{// 武器の当たり判定が存在していたとき
-		if (m_pColWeaponSphere != NULL)
-		{
-			m_pColWeaponSphere->Release();
-		}
-	}
-
 	if (m_pColPlayerSphere != NULL)
 	{// 武器の当たり判定が存在していたとき
 		m_pColPlayerSphere->Release();
@@ -191,7 +163,11 @@ void CPlayer::Update(void)
 	if (!m_bEvent)
 	{// イベントが発生していなかったとき
 		// 入力処理
-		Input();
+		if (!m_bHit)
+		{// 当たっていなかったとき
+			// 入力処理
+			Input();
+		}
 	}
 
 	pos = GetPosition();				// 位置の取得
@@ -202,36 +178,6 @@ void CPlayer::Update(void)
 	CCollider::RayBlockCollision(pos, &pModel[0].GetMtxWorld(), 12.28f, 30.0f);
 	pointRight = CCollider::RayRightWallCollision(fRightLength, pos, m_rot, m_move, &pModel[0].GetMtxWorld());
 	pointLeft = CCollider::RayLeftWallCollision(fLeftLength, pos, m_rot, m_move, &pModel[0].GetMtxWorld());
-
-	////当たり判定1
-	//FLOAT fDistance = 0;
-	//D3DXVECTOR3 vNormal;
-
-	//D3DXVECTOR3 rot = CManager::GetCamera()->GetRotation();
-	//D3DXVECTOR3 endPoint;
-	//endPoint.x = sinf(D3DX_PI * 1.0f + rot.y);
-	//endPoint.y = 0.0f;
-	//endPoint.z = cosf(D3DX_PI * 1.0f + rot.y);
-
-	//D3DXVECTOR3 playerPos = pos;
-	//playerPos.y += 5.0f;
-
-	//if (CObject::Collide(playerPos, playerPos + m_move, &fDistance, &vNormal) && fDistance <= 1000.0f)
-	//{
-	//	// 当たり状態なので、滑らせる
-	//	D3DXVECTOR3 move = CManager::Slip(playerPos + m_move, vNormal);// 滑りベクトルを計算
-	//	D3DXVec3Normalize(&move, &move);
-	//	move *= m_fSpeed;
-	//	m_move = move;
-
-	//	// 滑りベクトル先の壁とのレイ判定 ２重に判定
-	//	if (CObject::Collide(playerPos, playerPos + endPoint, &fDistance, &vNormal) && fDistance <= 20.0f)
-	//	{
-	//		m_move = D3DXVECTOR3_ZERO;//止める
-	//	}
-	//}
-
-	//CDebugProc::Log("距離 : %.2f", fDistance);
 
 	//if (m_pColPlayerSphere != NULL)
 	//{
@@ -295,9 +241,6 @@ void CPlayer::Update(void)
 		}
 	}
 
-	// 当たり判定管理処理
-	Collision();
-
 	// 位置更新
 	pos += m_move;
 
@@ -342,13 +285,11 @@ void CPlayer::Update(void)
 	// 位置設定
 	SetPosition(pos);
 
-	// 壁の当たり判定
-	CollisionWall();
+	// 当たり判定管理処理
+	Collision();
 
-	if (m_pBox != NULL)
-	{
-		m_pBox->SetPosition(pos);
-	}
+	//	D3DXVECTOR3 move = CManager::Slip(playerPos + m_move, vNormal);// 滑りベクトルを計算
+
 
 	// キャラクターの更新処理
 	CCharacter::Update();
@@ -429,6 +370,13 @@ void CPlayer::OnTriggerEnter(CCollider *col)
 	{
 
 	}
+	if (sTag == "goal")
+	{
+		if (CFade::GetFade() == CFade::FADE_NONE)
+		{//フェードが処理をしていないとき
+			CFade::SetFade(CManager::MODE_PUZZLE_CUSTOM);					//フェードを入れる
+		}
+	}
 }
 
 //=============================================================================
@@ -500,27 +448,8 @@ void CPlayer::MoveNearEnemy(void)
 //=============================================================================
 void CPlayer::Collision(void)
 {
-	ANIMATIONTYPE animType = (ANIMATIONTYPE)GetAnimType();
-
-	switch (animType)
-	{
-	case ANIMATIONTYPE_ATTACK_1:				// 攻撃モーションのとき
-		if (m_pColWeaponSphere != NULL)
-		{// 武器の当たり判定が存在していたとき
-			if (!m_pColWeaponSphere->GetUse())
-			{// 当たり判定の対象外だったとき
-				m_pColWeaponSphere->SetUse(true);		// 対象にする
-			}
-		}
-		if (m_pMeshOrbit != NULL)
-		{// 軌跡が存在していたとき
-			if (!m_pMeshOrbit->GetOrbit())
-			{
-				m_pMeshOrbit->SetOrbit(true);
-			}
-		}
-		break;
-	}
+	//// 壁の当たり判定
+	//m_bHit = CollisionWall();
 }
 
 //=============================================================================
@@ -853,10 +782,11 @@ void CPlayer::Input(void)
 //=============================================================================
 // 壁の当たり判定
 //=============================================================================
-void CPlayer::CollisionWall(void)
+bool CPlayer::CollisionWall(void)
 {
 	CScene *pSceneNext = NULL;														// 初期化
 	CScene *pSceneNow = CScene::GetScene(CScene::PRIORITY_WALL);					// 先頭アドレスの取得
+	D3DXVECTOR3 normal = D3DXVECTOR3_ZERO;
 
 	// 次がなくなるまで繰り返す
 	while (pSceneNow != NULL)
@@ -864,10 +794,74 @@ void CPlayer::CollisionWall(void)
 		pSceneNext = CScene::GetSceneNext(pSceneNow, CScene::PRIORITY_WALL);		//次回アップデート対象を控える
 		CMeshWall *pMeshWall = (CMeshWall*)pSceneNow;
 
-		pMeshWall->GetWallHit(this);
+		if (pMeshWall->GetWallHit(this, normal))
+		{
+			D3DXVECTOR3 playerPos = GetPosition();
+			//playerPos.y += 5.0f;
+
+			OutputDebugString("当たった");
+			// //当たり状態なので、滑らせる
+			D3DXVECTOR3 move;
+			//move = CManager::Slip(playerPos + m_move, normal);// 滑りベクトルを計算
+			//D3DXVec3Normalize(&move, &move);
+			//move *= m_fSpeed;
+			//SetPosition(GetPosition() + move);
+
+			//CManager::calcWallScratchVector(&move, m_move, normal);
+			CManager::calcReflectVector(&move, m_move, normal);
+			m_move = move * 20;
+			return true;
+		}
 
 		pSceneNow = pSceneNext;								//次回アップデート対象を格納
 	}
+
+	return false;
+}
+
+//=============================================================================
+// レイによる壁の当たり判定
+//=============================================================================
+bool CPlayer::CollisionWallWithRay(void)
+{
+	FLOAT fDistance = 0;
+	D3DXVECTOR3 vNormal;
+
+	D3DXVECTOR3 rot = CManager::GetCamera()->GetRotation();
+	D3DXVECTOR3 endPoint;
+	endPoint.x = sinf(D3DX_PI * 1.0f + rot.y);
+	endPoint.y = 0.0f;
+	endPoint.z = cosf(D3DX_PI * 1.0f + rot.y);
+
+	D3DXVECTOR3 pos = GetPosition();
+	D3DXVECTOR3 playerPos = pos;
+	CModel *pModel = GetModel();
+	playerPos.y += 15.0f;
+
+	CDebugProc::Log("加速度 : %.2f %.2f %.2f\n", m_move.x, m_move.y, m_move.z);
+	CDebugProc::Log("始点 : %.2f %.2f %.2f\n", pos.x, pos.y, pos.z);
+	CDebugProc::Log("終点 : %.2f %.2f %.2f\n", playerPos.x + m_move.x, playerPos.y + m_move.y, playerPos.z + m_move.z);
+
+	if (CObject::Collide(playerPos, m_move, &fDistance, &vNormal, pModel[0].GetMtxWorld()) && fDistance <= 30.0f)
+	{
+		// 当たり状態なので、滑らせる
+		D3DXVECTOR3 move = CManager::Slip(m_move, vNormal);// 滑りベクトルを計算
+		//D3DXVec3Normalize(&move, &move);
+		//move *= m_fSpeed;
+		m_move = move;
+
+		// 滑りベクトル先の壁とのレイ判定 ２重に判定
+		if (CObject::Collide(playerPos, playerPos + endPoint, &fDistance, &vNormal, pModel[0].GetMtxWorld()) && fDistance <= 20.0f)
+		{
+			m_move = D3DXVECTOR3_ZERO;//止める
+		}
+
+		return true;
+	}
+
+	CDebugProc::Log("距離 : %.2f", fDistance);
+
+	return false;
 }
 
 #ifdef _DEBUG

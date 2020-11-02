@@ -10,6 +10,7 @@
 #include "meshField.h"
 #include "camera.h"
 #include "house.h"
+#include "colliderBox.h"
 
 //=============================================================================
 // マクロ定義
@@ -22,6 +23,8 @@
 CObject::CObject(CScene::PRIORITY obj = CScene::PRIORITY_MODEL) : CSceneX(obj)
 {
 	SetObjType(CScene::PRIORITY_MODEL);
+
+	m_pBox = NULL;
 }
 
 //=============================================================================
@@ -65,7 +68,24 @@ void CObject::Update(void)
 {
 	D3DXVECTOR3 pos = GetPosition();				// 位置の取得
 
+	if (m_Add == "data/model/GoalCircle35.x")
+	{
+		if (m_pBox == NULL)
+		{
+			m_pBox = CColliderBox::Create(true, D3DXVECTOR3(400.0f, 800.0f, 1400.0f));
+
+			if (m_pBox != NULL)
+			{
+				m_pBox->SetScene(this);
+				m_pBox->SetTag("goal");
+				m_pBox->SetPosition(pos);
+				m_pBox->SetOffset(D3DXVECTOR3(0.0f, 500.0f, 0.0f));
+			}
+		}
+	}
+
 	SetPosition(pos);		// 位置の設定
+
 #ifdef _DEBUG
 	Debug();				// デバッグ処理
 #endif
@@ -343,7 +363,7 @@ void CObject::ShowInspector(void)
 //=============================================================================
 // 当たり判定(レイ)
 //=============================================================================
-bool CObject::Collide(D3DXVECTOR3 vStart, D3DXVECTOR3 vDir, FLOAT* pfDistance, D3DXVECTOR3* pvNormal)
+bool CObject::Collide(D3DXVECTOR3 vStart, D3DXVECTOR3 vDir, FLOAT* pfDistance, D3DXVECTOR3* pvNormal, D3DXMATRIX mtx)
 {
 	BOOL boHit = false;
 	D3DXMATRIX mWorld;
@@ -351,6 +371,11 @@ bool CObject::Collide(D3DXVECTOR3 vStart, D3DXVECTOR3 vDir, FLOAT* pfDistance, D
 
 	CScene *pSceneNext = NULL;														//次回アップデート対象
 	CScene *pSceneNow = NULL;
+
+	D3DXMATRIX			invmat;							// 逆行列を格納する変数
+	D3DXVECTOR3			m_posAfter;						// 逆行列で出した終点情報を格納する
+	D3DXVECTOR3			m_posBefore;					// 終点情報を格納する
+	D3DXVECTOR3			direction;						// 変換後の位置、方向を格納する変数
 
 	CDebugProc::Log("始点 : %.2f %.2f %.2f\n", vStart.x, vStart.y, vStart.z);
 	CDebugProc::Log("終点 : %.2f %.2f %.2f\n", vDir.x, vDir.y, vDir.z);
@@ -364,12 +389,27 @@ bool CObject::Collide(D3DXVECTOR3 vStart, D3DXVECTOR3 vDir, FLOAT* pfDistance, D
 
 		CObject *pObj = (CObject*)pSceneNow;								// クラスチェンジ(床)
 
-		// レイを当てるメッシュが動いていたり回転している場合でも対象のワールド行列の逆行列を用いれば正しくレイが当たる
-		D3DXMatrixInverse(&mWorld, NULL, &pObj->GetMtxWorld());
-		D3DXVec3TransformCoord(&vStart, &vStart, &mWorld);
+		//// レイを当てるメッシュが動いていたり回転している場合でも対象のワールド行列の逆行列を用いれば正しくレイが当たる
+		//D3DXMatrixInverse(&mWorld, NULL, &pObj->GetMtxWorld());
+		//D3DXVec3TransformCoord(&vStart, &vStart, &mWorld);
+
+		//	逆行列の取得
+		D3DXMatrixInverse(&invmat, NULL, &pObj->GetMtxWorld());
+
+		//	逆行列を使用し、レイ始点情報を変換　位置と向きで変換する関数が異なるので要注意
+		D3DXVec3TransformCoord(&m_posBefore, &D3DXVECTOR3(vStart.x, mtx._42, vStart.z), &invmat);
+
+		//	レイ終点情報を変換
+		D3DXVec3TransformCoord(&m_posAfter, &D3DXVECTOR3(vDir.z, vStart.y, vDir.z), &invmat);
+
+		//	レイ方向情報を変換
+		D3DXVec3Normalize(&direction, &(m_posAfter - m_posBefore));
+		//Rayを飛ばす
+
 
 		DWORD dwPolyIndex;
-		D3DXIntersect(pObj->m_pMesh, &vStart, &vDir, &boHit, &dwPolyIndex, NULL, NULL, pfDistance, NULL, NULL);
+		D3DXIntersect(pObj->GetMesh(), &m_posBefore, &direction, &boHit, &dwPolyIndex, NULL, NULL, pfDistance, NULL, NULL);
+		//D3DXIntersect(pObj->m_pMesh, &vStart, &vDir, &boHit, &dwPolyIndex, NULL, NULL, pfDistance, NULL, NULL);
 		if (boHit)
 		{
 			//交差しているポリゴンの頂点を見つける
@@ -382,6 +422,8 @@ bool CObject::Collide(D3DXVECTOR3 vStart, D3DXVECTOR3 vDir, FLOAT* pfDistance, D
 			pvNormal->x = p.a;
 			pvNormal->y = p.b;
 			pvNormal->z = p.c;
+
+			CDebugProc::Log("モデルのアドレス : %s\n", pObj->m_Add.c_str());
 
 			return true;
 		}

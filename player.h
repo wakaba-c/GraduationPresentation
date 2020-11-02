@@ -85,7 +85,8 @@ private:
 	void MoveNearEnemy(void);														// 近くにいる敵に移動する処理
 	void Collision(void);															// 当たり判定処理
 	void Input(void);																// キー入力情報関数
-	void CollisionWall(void);														// 壁の当たり判定
+	bool CollisionWall(void);														// 壁の当たり判定
+	bool CollisionWallWithRay(void);												// レイによる壁の当たり判定
 
 	/*================= プレイヤー関連 =================*/
 	D3DXVECTOR3						m_dest;											// モデルの最終到達点
@@ -102,6 +103,7 @@ private:
 	int								m_nParticleCount;								// パーティクル生成までのカウンタ
 	bool							m_bJump;										// ジャンプ
 	bool							m_bEvent;										// イベント発生フラグ
+	bool							m_bHit;											// ヒット判定
 	bool							m_bDrift;										// プレイヤーのドリフトフラグ
 	bool							m_bMove;										// 現在動いているかのフラグ
 	CPlayerUi						*m_pPlayerUi;									// キャラクター情報のUI
@@ -116,9 +118,6 @@ private:
 	CMeshOrbit						*m_pMeshOrbit;									// 軌跡のポインタ
 
 	/*===============当たり判定===============*/
-	CColliderSphere					*m_pColWeaponSphere;							// 武器の当たり判定のポインタ
-	CColliderSphere					*m_pColHandSphere;								// 手の当たり判定のポインタ
 	CColliderSphere					*m_pColPlayerSphere;							// プレイヤーの当たり判定のポインタ
-	CColliderBox					*m_pBox;										// 箱
 };
 #endif

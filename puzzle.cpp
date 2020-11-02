@@ -56,9 +56,6 @@ HRESULT CPuzzle::Init(void)
 //=============================================================================
 void CPuzzle::Update(void)
 {
-
-
-#ifdef _DEBUG
 	CInputKeyboard *pInputKeyboard = CManager::GetInputKeyboard();
 	CInputController *pInputController = CManager::GetInputController();
 
@@ -87,7 +84,6 @@ void CPuzzle::Update(void)
 			}
 		}
 	}
-#endif
 }
 
 //=============================================================================

@@ -118,6 +118,9 @@ public:
 	static HRESULT LoadShader(std::string Add);											// Xファイルのロード
 	static LPD3DXEFFECT GetShaderResource(std::string Add);								// Xファイルの取得
 
+	static D3DXVECTOR3* calcWallScratchVector(D3DXVECTOR3* out, const D3DXVECTOR3& front, const D3DXVECTOR3& normal);		// 壁ずりベクトル
+	static D3DXVECTOR3* calcReflectVector(D3DXVECTOR3* out, const D3DXVECTOR3& front, const D3DXVECTOR3& normal);			// 反射ベクトル
+
 	static D3DXVECTOR3 GetCursorPosWithCenter(void);
 
 	static D3DXVECTOR3 Slip(D3DXVECTOR3 L, D3DXVECTOR3 N);

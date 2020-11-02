@@ -250,9 +250,10 @@ void CMeshWall::LoadRand(char *add, bool bDebug)
 //=============================================================================
 // ポリゴンの床の高さを求める
 //=============================================================================
-void CMeshWall::GetWallHit(CScene *pTarget)
+bool CMeshWall::GetWallHit(CScene *pTarget, D3DXVECTOR3 &nol)
 {
 	VERTEX_3D *pVtx;										//頂点情報へのポインタ
+	bool bHit = false;			// ヒットフラグ
 
 	D3DXVECTOR3 FieldPos = GetPosition();
 
@@ -411,9 +412,9 @@ void CMeshWall::GetWallHit(CScene *pTarget)
 				D3DXVECTOR3 clossAns[3];
 
 				//法線
-				fAnswer[0] = aWork[0].x * aPlayer[0].z - aWork[0].z * aPlayer[0].x;
-				fAnswer[1] = aWork[1].x * aPlayer[1].z - aWork[1].z * aPlayer[1].x;
-				fAnswer[2] = aWork[2].x * aPlayer[2].z - aWork[2].z * aPlayer[2].x;
+				fAnswer[0] = aWork[0].x * aPlayer[0].z - aWork[0].z * aPlayer[0].x - aWork[0].y * aPlayer[0].y;
+				fAnswer[1] = aWork[1].x * aPlayer[1].z - aWork[1].z * aPlayer[1].x - aWork[1].y * aPlayer[1].y;
+				fAnswer[2] = aWork[2].x * aPlayer[2].z - aWork[2].z * aPlayer[2].x - aWork[2].y * aPlayer[2].y;
 
 				D3DXVec3Cross(&clossAns[0], &aWork[0], &aPlayer[0]);
 				D3DXVec3Cross(&clossAns[1], &aWork[1], &aPlayer[1]);
@@ -422,18 +423,22 @@ void CMeshWall::GetWallHit(CScene *pTarget)
 				float dot_12 = D3DXVec3Dot(&clossAns[0], &clossAns[1]);
 				float dot_13 = D3DXVec3Dot(&clossAns[0], &clossAns[3]);
 
-				float fDistance = CManager::GetDistance(pTarget->GetPosition(), Ans);
+				float fDistance = CManager::GetDistance(pTarget->GetPosOld(), Ans);
 
-				if(fDistance < 120.0f)
+				//if ((fAnswer[0] >= 0 && fAnswer[1] >= 0 && fAnswer[2] >= 0) || (fAnswer[0] < 0 && fAnswer[1] < 0 && fAnswer[2] < 0))
 				{
 					if ((clossAns[0] > 0 && clossAns[1] > 0 && clossAns[2] > 0) || (clossAns[0] <= 0 && clossAns[1] <= 0 && clossAns[2] <= 0))
 					{
 						if (dot_12 > 0 && dot_13 > 0)
 						{
 							OutputDebugString("FinalPhase\n");
+							D3DXVECTOR3 old = pTarget->GetPosOld();
+							bHit = true;
 							pTarget->SetPosition(Ans);
-							pTarget->SetPosOld(Ans);
-							return;
+							pTarget->SetPosOld(old);
+							nol = apNor[((WALL_WIDE_FIELD * 2) * nDepth) + (2 * nWide)];
+							break;
+							break;
 						}
 					}
 				}
@@ -488,6 +493,11 @@ void CMeshWall::GetWallHit(CScene *pTarget)
 				aWork[2] = (pVtx[WALL_WIDE_FIELD + nWide + 2 + ((WALL_WIDE_FIELD + 1) * nDepth)].pos + FieldPos) - (pVtx[nWide + ((WALL_WIDE_FIELD + 1) * nDepth)].pos + FieldPos);
 				aPlayer[2] = Ans - (pVtx[nWide + ((WALL_WIDE_FIELD + 1) * nDepth)].pos + FieldPos);
 
+				//法線
+				fAnswer[0] = aWork[0].x * aPlayer[0].z - aWork[0].z * aPlayer[0].x - aWork[0].y * aPlayer[0].y;
+				fAnswer[1] = aWork[1].x * aPlayer[1].z - aWork[1].z * aPlayer[1].x - aWork[1].y * aPlayer[1].y;
+				fAnswer[2] = aWork[2].x * aPlayer[2].z - aWork[2].z * aPlayer[2].x - aWork[2].y * aPlayer[2].y;
+
 				D3DXVec3Cross(&clossAns[0], &aWork[0], &aPlayer[0]);
 				D3DXVec3Cross(&clossAns[1], &aWork[1], &aPlayer[1]);
 				D3DXVec3Cross(&clossAns[2], &aWork[2], &aPlayer[2]);
@@ -495,16 +505,20 @@ void CMeshWall::GetWallHit(CScene *pTarget)
 				dot_12 = D3DXVec3Dot(&clossAns[0], &clossAns[1]);
 				dot_13 = D3DXVec3Dot(&clossAns[0], &clossAns[3]);
 
-				if (fDistance < 120.0f)
+				//if ((fAnswer[0] >= 0 && fAnswer[1] >= 0 && fAnswer[2] >= 0) || (fAnswer[0] < 0 && fAnswer[1] < 0 && fAnswer[2] < 0))
 				{
-					if ((fAnswer[0] > 0 && fAnswer[1] > 0 && fAnswer[2] > 0) || (fAnswer[0] <= 0 && fAnswer[1] <= 0 && fAnswer[2] <= 0))
+					if ((clossAns[0] > 0 && clossAns[1] > 0 && clossAns[2] > 0) || (clossAns[0] <= 0 && clossAns[1] <= 0 && clossAns[2] <= 0))
 					{
 						if (dot_12 > 0 && dot_13 > 0)
 						{
 							OutputDebugString("FinalPhase\n");
+							D3DXVECTOR3 old = pTarget->GetPosOld();
+							bHit = true;
 							pTarget->SetPosition(Ans);
-							pTarget->SetPosOld(Ans);
-							return;
+							pTarget->SetPosOld(old);
+							nol = apNor[((WALL_WIDE_FIELD * 2) * nDepth) + (2 * nWide)];
+							break;
+							break;
 						}
 					}
 				}
@@ -516,7 +530,7 @@ void CMeshWall::GetWallHit(CScene *pTarget)
 
 	//頂点データのアンロック
 	m_pVtxBuff->Unlock();
-	return;
+	return bHit;
 }
 
 //=============================================================================

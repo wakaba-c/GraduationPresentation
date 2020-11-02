@@ -18,7 +18,7 @@
 //==================================================================================================================
 #define Box_Depth 8																	// 縦のポリゴン数
 #define Box_Width 15																// 横のブロック数
-#define Piece_Num 20																// ピース数
+#define Piece_Num 50																// ピース数
 
 //==================================================================================================================
 // 前方宣言
@@ -46,7 +46,6 @@ public:
 	void OnTriggerEnter(CCollider *col) {};
 	void OnCollisionEnter(CCollider *col) {};
 
-
 	static CBox *Create(void);														// 生成処理
 	static HRESULT Load(void);														// テクスチャ情報ロード
 	static void Unload(void);														// テクスチャ情報アンロード
@@ -63,6 +62,7 @@ private:
 
 	int m_nCntChange;																// 変えるカウント
 	int m_nPieceNum;																// ピース数
+	int m_nSelect;																	// 選択カウント
 
 	static bool m_bPuzzle[Box_Depth][Box_Width];									// 使用しているかどうか
 	bool m_bPuzzleStorage[Box_Depth][Box_Width];									// 保管
@@ -70,6 +70,6 @@ private:
 	bool m_bCreate;																	// 生成するかどうか
 	bool m_bMove;																	// 動くかどうか
 	bool m_bPiece;
-
+	bool m_bRelease;
 };
 #endif

@@ -944,6 +944,8 @@ bool CCollider::CollisionHitSphereAndBox(CCollider * pFirstTarget, CCollider * p
 	CColliderBox *pBox = (CColliderBox*)pFirstTarget;
 	CColliderSphere *pSphere = (CColliderSphere*)pSecondTarget;														// 使える状態にキャスト
 
+	if(pBox->m_pScene == NULL || pSphere->m_pScene == NULL) { return false; }
+
 	D3DXVECTOR3 boxPos = pBox->m_pScene->GetPosition() + pBox->GetOffset();							// Target1の位置
 	D3DXVECTOR3 spherePos = pSphere->m_pScene->GetPosition() + pSphere->GetOffset();						// Target2の位置
 
@@ -1431,7 +1433,9 @@ D3DXVECTOR3 CCollider::RayLeftWallCollision(float &fLeftLength, D3DXVECTOR3 &pos
 	testPos = pos + endPoint * (fLeft - 20.0f);
 	testPos.y = pos.y;
 
+#ifdef _DEBUG
 	CDebugProc::Log("壁の限界値 : Left = %.2f %.2f %.2f\n", testPos.x, testPos.y, testPos.z);
+#endif
 
 	// 判定フラグを返す
 	return testPos;
@@ -1518,7 +1522,9 @@ D3DXVECTOR3 CCollider::RayRightWallCollision(float &fRightLength, D3DXVECTOR3 &p
 	testPos = pos + endPoint * (fRight - 20.0f);
 	testPos.y = pos.y;
 
+#ifdef _DEBUG
 	CDebugProc::Log("壁の限界値 : Right = %.2f %.2f %.2f\n", testPos.x, testPos.y, testPos.z);
+#endif
 
 	// 判定フラグを返す
 	return testPos;
