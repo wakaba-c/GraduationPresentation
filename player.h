@@ -103,6 +103,7 @@ private:
 	int								m_nParticleCount;								// パーティクル生成までのカウンタ
 	bool							m_bJump;										// ジャンプ
 	bool							m_bEvent;										// イベント発生フラグ
+	bool							m_bColliderWithWall;							// 壁の当たり判定
 	bool							m_bHit;											// ヒット判定
 	bool							m_bDrift;										// プレイヤーのドリフトフラグ
 	bool							m_bMove;										// 現在動いているかのフラグ
