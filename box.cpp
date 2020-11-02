@@ -209,8 +209,11 @@ void CBox::Update(void)
 			
 					if (m_nSelect != m_nPieceNum)
 					{
-						m_pPiece[m_nSelect - 1]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 						m_pPiece[m_nSelect + 1]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+					}
+					if (m_nSelect != 0)
+					{
+						m_pPiece[m_nSelect - 1]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 					}
 				
 
