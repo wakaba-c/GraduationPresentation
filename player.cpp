@@ -172,42 +172,7 @@ void CPlayer::Update(void)
 
 	pos = GetPosition();				// ˆÊ’u‚Ìæ“¾
 
-	D3DXVECTOR3 pointLeft, pointRight;
-	float fLeftLength, fRightLength;
-
 	CCollider::RayBlockCollision(pos, &pModel[0].GetMtxWorld(), 12.28f, 30.0f);
-	pointRight = CCollider::RayRightWallCollision(fRightLength, pos, m_rot, m_move, &pModel[0].GetMtxWorld());
-	pointLeft = CCollider::RayLeftWallCollision(fLeftLength, pos, m_rot, m_move, &pModel[0].GetMtxWorld());
-
-	//if (m_pColPlayerSphere != NULL)
-	//{
-	//	D3DXVECTOR3 center = (pointLeft + pointRight) * 0.5f;
-	//	m_pColPlayerSphere->SetPosition(center);
-
-	//	float fLength, playerLength;
-	//	fLength = (pointLeft.x - pointRight.x) * (pointLeft.x - pointRight.x) + (pointLeft.z - pointRight.z) * (pointLeft.z - pointRight.z);
-
-	//	playerLength = (center.x - pos.x) * (center.x - pos.x) + (center.z - pos.z) * (center.z - pos.z);
-
-	//	if (fLength * 0.25f < playerLength)
-	//	{
-	//		D3DXVECTOR3 save = pos - D3DXVECTOR3(center.x, pos.y, center.z);
-	//		D3DXVECTOR3 vec;
-	//		D3DXVec3Normalize(&vec, &save);			//³‹K‰»‚·‚é
-
-	//		float y = pos.y;
-
-	//		// H‚¢‚ñ‚¾•ª‚ğ‹‚ß‚é
-	//		pos = vec * ((fRightLength + fLeftLength) * 0.5f);
-	//		pos.y = y;
-
-	//		// H‚¢‚ñ‚¾•ª‚¾‚¯–ß‚·
-	//		SetPosition(pos);
-	//	}
-
-	//	m_pColPlayerSphere->SetRadius((fRightLength + fLeftLength) * 0.5f);
-	//	CDebugProc::Log("‹——£ : %.2f", playerLength);
-	//}
 
 	//°‚Ì‚‚³‚ğæ“¾‚·‚é
 	CScene *pSceneNext = NULL;														// ‰Šú‰»

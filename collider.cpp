@@ -1280,6 +1280,7 @@ bool CCollider::RayBlockCollision(D3DXVECTOR3 &pos, D3DXMATRIX *pMat, float fOff
 	D3DXVECTOR3			direction;						// 変換後の位置、方向を格納する変数：
 	std::vector<float>	vDistance;						// 長さの配列保存
 	float				fData = 0.0f;		// データ
+	float				fDistanceMin = 100000.0f;		// 最も近かったもの
 
 	CScene *pSceneNext = NULL;														//次回アップデート対象
 	CScene *pSceneNow = NULL;
@@ -1301,6 +1302,8 @@ bool CCollider::RayBlockCollision(D3DXVECTOR3 &pos, D3DXMATRIX *pMat, float fOff
 		D3DXVec3TransformCoord(&m_posAfter, &D3DXVECTOR3(pos.x, pos.y - 1, pos.z), &invmat);
 		//	レイ方向情報を変換
 		D3DXVec3Normalize(&direction, &(m_posAfter - m_posBefore));
+
+		CDebugProc::Log("高さ : %.2f", m_posBefore.y);
 		//Rayを飛ばす
 		D3DXIntersect(pObj->GetMesh(), &m_posBefore, &direction, &bHitFlag, &dwHitIndex, &fHitU, &fHitV, &fLandDistance, NULL, NULL);
 		if (bHitFlag == TRUE)
@@ -1327,21 +1330,19 @@ bool CCollider::RayBlockCollision(D3DXVECTOR3 &pos, D3DXMATRIX *pMat, float fOff
 		}
 		if (fData < fLength)//Rayの長さの指定条件
 		{
-			pos.y = pos.y - fData + fOffset;
-			bLand = true;
+			if(fData < fDistanceMin) { fDistanceMin = fData; }
+			if(!bLand) { bLand = true; }
 		}
-		//Rayの判定圏内じゃなかったらジャンプできない
-		//else
-		//{
-		//	bLand = false;
-		//}
-
-
 	}
 	//Rayに判定がなかったらジャンプできない
 	else
 	{
 		bLand = false;
+	}
+
+	if (bLand)
+	{
+		pos.y = pos.y - fDistanceMin + fOffset;
 	}
 
 	//配列を空にしておく
