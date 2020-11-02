@@ -40,6 +40,25 @@ void CTakaseiLibrary::CalcMatrix(D3DXMATRIX * pMtx, const D3DXVECTOR3 & pos, con
 void CTakaseiLibrary::RotRevision(D3DXVECTOR3 * rot)
 {
 	// ·‚ªD3DX_PI‚æ‚è‘å‚«‚¢‚Æ‚«
+	if (rot->x > D3DX_PI)
+	{
+		// ˆêŽü–ß‚·
+		rot->x -= D3DX_PI * 2;
+	}
+	else if (rot->x < -D3DX_PI)
+	{// ·‚ª-D3DX_PI‚æ‚è¬‚³‚¢‚Æ‚«
+	 // ˆêŽü‘‚â‚·
+		rot->x += D3DX_PI * 2;
+	}
+
+	// â‘Î’l‚ª0.0f‚æ‚è¬‚³‚¢‚Æ‚«
+	if (fabsf(rot->x) < 0.0f)
+	{
+		// ·‚ð‚È‚­‚·
+		rot->x = 0.0f;
+	}
+
+	// ·‚ªD3DX_PI‚æ‚è‘å‚«‚¢‚Æ‚«
 	if (rot->y > D3DX_PI)
 	{
 		// ˆêŽü–ß‚·
@@ -56,6 +75,25 @@ void CTakaseiLibrary::RotRevision(D3DXVECTOR3 * rot)
 	{
 		// ·‚ð‚È‚­‚·
 		rot->y = 0.0f;
+	}
+
+	// ·‚ªD3DX_PI‚æ‚è‘å‚«‚¢‚Æ‚«
+	if (rot->z > D3DX_PI)
+	{
+		// ˆêŽü–ß‚·
+		rot->z -= D3DX_PI * 2;
+	}
+	else if (rot->z < -D3DX_PI)
+	{// ·‚ª-D3DX_PI‚æ‚è¬‚³‚¢‚Æ‚«
+	 // ˆêŽü‘‚â‚·
+		rot->z += D3DX_PI * 2;
+	}
+
+	// â‘Î’l‚ª0.0f‚æ‚è¬‚³‚¢‚Æ‚«
+	if (fabsf(rot->z) < 0.0f)
+	{
+		// ·‚ð‚È‚­‚·
+		rot->z = 0.0f;
 	}
 }
 
