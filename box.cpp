@@ -93,12 +93,6 @@ HRESULT CBox::Init(void)
 	m_pPiece[m_nPieceNum] = CPiece::Create();
 	m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Square);
 
-
-	//m_bPuzzle[nCntMove_Y][nCntMove_X] = true;
-	//m_bPuzzle[nCntMove_Y][nCntMove_X + 1] = true;
-	//m_bPuzzle[nCntMove_Y + 1][nCntMove_X] = true;
-	//m_bPuzzle[nCntMove_Y + 1][nCntMove_X + 1] = true;
-
 	return S_OK;
 }
 
@@ -176,7 +170,7 @@ void CBox::Update(void)
 			m_pPiece[m_nPieceNum]->SetMove(false);
 		}
 
-		
+
 		// 上下操作
 		if (pKeyboard->GetTriggerKeyboard(MOVE_ACCEL))
 		{
@@ -206,13 +200,14 @@ void CBox::Update(void)
 				// 選択されているときの色
 				m_pPiece[m_nSelect]->SetCol(D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
 
-			
-					if (m_nSelect != m_nPieceNum)
-					{
-						m_pPiece[m_nSelect - 1]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-						m_pPiece[m_nSelect + 1]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-					}
-				
+				if (m_nSelect != m_nPieceNum)
+				{
+					m_pPiece[m_nSelect + 1]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+				}
+				if (m_nSelect != 0)
+				{
+					m_pPiece[m_nSelect - 1]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+				}
 
 				// Qを押されたら
 				if (pKeyboard->GetTriggerKeyboard(DIK_Q))
@@ -241,7 +236,7 @@ void CBox::Update(void)
 			m_bRelease = false;
 		}
 		// ピース生成
-		
+
 		//m_pPiece[m_nPieceNum]->SetPlaacement(false);
 	}
 	else
