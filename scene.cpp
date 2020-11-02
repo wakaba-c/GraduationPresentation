@@ -751,7 +751,7 @@ void CScene::SaveModel(void)
 			pSceneNext = pSceneNow->m_pNext[PRIORITY_MODEL];						//次回アップデート対象を控える
 			CObject *pObject = (CObject*)pSceneNow;
 
-			if (pObject->GetAdd() == "data/model/point.x")
+			if (pObject->GetAdd() == "data/model/stick.x")
 			{
 				SavePoint(pPointWrite, pObject->GetPosition());
 			}
@@ -845,7 +845,8 @@ void CScene::SaveWall(void)
 //=============================================================================
 void CScene::SavePoint(CWrite *pWrite, D3DXVECTOR3 &pos)
 {
-	pWrite->Write("	POS = %.2f %.2f %.2f\n", pos.x, pos.y, pos.z);		// 中心位置の書き込み
+	pWrite->Write("	POS = %.2f %.2f %.2f\n", pos.x, 3000.0f, pos.z);		// 中心位置の書き込み
+	pWrite->Write("	POS = %.2f %.2f %.2f\n", pos.x, -500.0f, pos.z);		// 中心位置の書き込み
 }
 
 //=============================================================================

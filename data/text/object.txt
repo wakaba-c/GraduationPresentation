@@ -33,5 +33,8 @@ MODEL_FILENAME = data/model/point.x							# [20]ポイント
 MODEL_FILENAME = data/model/wall.x							# [21]壁
 MODEL_FILENAME = data/model/wallPanel.x						# [22]壁用パネル
 MODEL_FILENAME = data/model/GoalCircle35.x					# [23]ゴールポスト
+MODEL_FILENAME = data/model/stick.x							# [24]スティック
+MODEL_FILENAME = data/model/Gate/Gate_Start.x				# [25]ゲート(スタート)
+MODEL_FILENAME = data/model/Gate/Gate_Goal.x				# [25]ゲート(ゴール)
 
 END_SCRIPT		# この行は絶対消さないこと！
