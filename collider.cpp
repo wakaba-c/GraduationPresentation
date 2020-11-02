@@ -1529,3 +1529,50 @@ D3DXVECTOR3 CCollider::RayRightWallCollision(float &fRightLength, D3DXVECTOR3 &p
 	// 判定フラグを返す
 	return testPos;
 }
+
+bool CCollider::IsInside(D3DXVECTOR3 * pvI, D3DXVECTOR3 * pvA, D3DXVECTOR3 * pvB, D3DXVECTOR3 * pvC)
+{
+	//辺ベクトル
+	D3DXVECTOR3 vAB, vBC, vCA;
+	vAB = *pvB - *pvA;
+	vBC = *pvC - *pvB;
+	vCA = *pvA - *pvC;
+	//辺ベクトルと「頂点から交点へ向かうベクトル」との、それぞれの外積用
+	D3DXVECTOR3 vCrossAB, vCrossBC, vCrossCA;
+	//「外積結果のベクトル」と平面法線ベクトルとの、それぞれの内積用
+	FLOAT fAB, fBC, fCA;
+	// 法線用
+	D3DXVECTOR3 vNormal;
+	// まず、3頂点から平面方程式を求める。これは、同時に平面の法線を求めることでもある
+	D3DXPLANE pln;
+	D3DXPlaneFromPoints(&pln, pvA, pvB, pvC);
+	vNormal.x = pln.a;//法線のx成分は平面方程式のx係数
+	vNormal.y = pln.b;//法線のy成分は平面方程式のy係数
+	vNormal.z = pln.c;//法線のz成分は平面方程式のz係数
+	D3DXVec3Normalize(&vNormal, &vNormal);
+
+	// 各頂点から交点Iに向かうベクトルをvVとする
+	D3DXVECTOR3 vV;
+	// 辺ABベクトル（頂点Bベクトル-頂点Aベクトル)と、頂点Aから交点Iへ向かうベクトル、の外積を求める
+	vV = *pvI - *pvA;
+	D3DXVec3Cross(&vCrossAB, &vAB, &vV);
+	// 辺BCベクトル（頂点Cベクトル-頂点Bベクトル)と、頂点Bから交点Iへ向かうベクトル、の外積を求める
+	vV = *pvI - *pvB;
+	D3DXVec3Cross(&vCrossBC, &vBC, &vV);
+	// 辺CAベクトル（頂点Aベクトル-頂点Cベクトル)と、頂点Cから交点Iへ向かうベクトル、の外積を求める
+	vV = *pvI - *pvC;
+	D3DXVec3Cross(&vCrossCA, &vCA, &vV);
+	// それぞれの、外積ベクトルとの内積を計算する
+	fAB = D3DXVec3Dot(&vNormal, &vCrossAB);
+	fBC = D3DXVec3Dot(&vNormal, &vCrossBC);
+	fCA = D3DXVec3Dot(&vNormal, &vCrossCA);
+
+	// ３つの内積結果のうち、一つでもマイナス符号のものがあれば、交点は外にある。
+	if (fAB >= 0 && fBC >= 0 && fCA >= 0)
+	{
+		// 交点は、面の内にある
+		return true;
+	}
+	// 交点は面の外にある
+	return false;
+}

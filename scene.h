@@ -79,6 +79,7 @@ public:
 	static void SaveEnemy(void);					// 敵情報の書き込み
 	static void SaveRand(void);						// 床情報の書き込み
 	static void SaveModel(void);					// 木配置情報の書き込み
+	static void SaveWall(void);						// 壁情報の書き込み
 	static void SavePoint(CWrite *pWrite, D3DXVECTOR3 &pos);			// ポイントモデルの書き込み
 	void SaveCollider(void);						// 当たり判定の書き込み
 

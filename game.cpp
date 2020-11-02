@@ -105,7 +105,7 @@ HRESULT CGame::Init(void)
 	CObject::LoadModelTest("data/text/model.txt");
 
 	// 壁情報の読み込み
-	CMeshWall::LoadRand("data/text/wall.txt", false);
+	CMeshWall::LoadWall("data/text/wall.txt", false);
 
 	// ネットワークでのゲーム時初期化処理
 	CManager::GetNetwork()->InitGame();

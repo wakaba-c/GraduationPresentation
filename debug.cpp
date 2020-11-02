@@ -20,6 +20,7 @@
 #include "inputMouse.h"
 #include "effect.h"
 #include "player.h"
+#include "wall.h"
 
 //=============================================================================
 // マクロ定義
@@ -392,6 +393,11 @@ void CDebugProc::Debug(void)
 					 // モデル情報の読み込み
 						CObject::LoadModelTest("data/text/model.txt");
 					}
+					if (ImGui::MenuItem("wall"))
+					{// ロード
+					 // モデル情報の読み込み
+						CMeshWall::LoadWall("data/text/wall.txt", false);
+					}
 					if (ImGui::MenuItem("All"))
 					{// セーブ
 					 // 床情報の読み込み
@@ -414,6 +420,11 @@ void CDebugProc::Debug(void)
 					{// ロード
 					 // モデル情報の書き込み
 						CScene::SaveModel();
+					}
+					if (ImGui::MenuItem("wall"))
+					{// ロード
+					 // モデル情報の書き込み
+						CScene::SaveWall();
 					}
 					if (ImGui::MenuItem("All"))
 					{// セーブ
@@ -443,6 +454,17 @@ void CDebugProc::Debug(void)
 
 			LandScape(worldPos);
 			ImGui::Text(u8"ランドスケープ");				// 現在のデバッグモードの表示
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem(u8"壁の頂点編集"))
+		{// 壁の頂点編集モード
+			if (m_nMode != DEBUGMODE_WALL)
+			{
+				m_nMode = DEBUGMODE_WALL;
+			}
+
+			EditWallVertex();
+			ImGui::Text(u8"壁の頂点編集");				// 現在のデバッグモードの表示
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem(u8"フォリッジ"))
@@ -733,6 +755,28 @@ void CDebugProc::LandScape(D3DXVECTOR3 &worldPos)
 	}
 
 	m_mouseOld = worldPos;
+}
+
+//=============================================================================
+// 壁の頂点編集処理
+//=============================================================================
+void CDebugProc::EditWallVertex(void)
+{
+	CScene *pSceneNext = NULL;	//次回アップデート対象
+	CScene *pSceneNow = NULL;
+
+	// 壁の情報 //
+	// treeのオブジェクトのポジションを参照
+	pSceneNow = CScene::GetScene(CScene::PRIORITY_WALL);
+
+	//次がなくなるまで繰り返す
+	while (pSceneNow != NULL)
+	{
+		pSceneNext = CScene::GetSceneNext(pSceneNow, CScene::PRIORITY_WALL);						//次回アップデート対象を控える
+		CMeshWall *pMeshWall = (CMeshWall*)pSceneNow;
+		pMeshWall->EditWallVertex();			// 壁の頂点情報編集処理
+		pSceneNow = pSceneNext;													// 次回アップデート対象を格納
+	}
 }
 
 //=============================================================================
