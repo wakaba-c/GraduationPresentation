@@ -72,6 +72,7 @@ CPlayer::CPlayer(CScene::PRIORITY obj = CScene::PRIORITY_PLAYER) : CCharacter(ob
 	m_bEvent = false;									// イベント発生フラグの初期化
 	m_bDrift = false;									// ドリフトフラグ判定
 	m_bMove = false;									// 現在動いているかのフラグ
+	m_bColliderWithWall = false;						// 壁の当たり判定
 
 	m_pPlayerUi = NULL;
 }
@@ -285,8 +286,11 @@ void CPlayer::Update(void)
 	// 位置設定
 	SetPosition(pos);
 
-	// 当たり判定管理処理
-	Collision();
+	if (m_bColliderWithWall)
+	{
+		// 当たり判定管理処理
+		Collision();
+	}
 
 	//	D3DXVECTOR3 move = CManager::Slip(playerPos + m_move, vNormal);// 滑りベクトルを計算
 
@@ -372,10 +376,10 @@ void CPlayer::OnTriggerEnter(CCollider *col)
 	}
 	if (sTag == "goal")
 	{
-		if (CFade::GetFade() == CFade::FADE_NONE)
-		{//フェードが処理をしていないとき
-			CFade::SetFade(CManager::MODE_PUZZLE_CUSTOM);					//フェードを入れる
-		}
+		//if (CFade::GetFade() == CFade::FADE_NONE)
+		//{//フェードが処理をしていないとき
+		//	CFade::SetFade(CManager::MODE_PUZZLE_CUSTOM);					//フェードを入れる
+		//}
 	}
 }
 
@@ -880,6 +884,8 @@ void CPlayer::Debug(void)
 		ImGui::Text("posOld = %.2f, %.2f, %.2f", posOld.x, posOld.y, posOld.z);								// プレイヤーの現在位置を表示
 		ImGui::Text("move = %.2f, %.2f, %.2f", m_move.x, m_move.y, m_move.z);								// プレイヤーの現在位置を表示
 		ImGui::Text("HP = %d", m_nLife);				// プレイヤーの体力を表示
+
+		ImGui::Checkbox("ColliderWithWall", &m_bColliderWithWall);
 
 		if (ImGui::Button("BOSS"))
 		{
