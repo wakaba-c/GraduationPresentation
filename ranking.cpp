@@ -156,7 +156,7 @@ void CRanking::ConvertRanking(int nNumber)
 {
 	int nCount, nCountA;
 	int nNum01;
-	m_aScore[MAX_RANK] = nNumber;
+	m_aScore[MAX_RANK - 1] = nNumber;
 
 	//データのソートを実行
 	for (nCount = 0; nCount < MAX_RANK; nCount++)
