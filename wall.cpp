@@ -105,6 +105,7 @@ void CMeshWall::Update(void)
 //=============================================================================
 void CMeshWall::Draw(void)
 {
+#ifdef _DEBUG
 	D3DXVECTOR3 pos = GetPosition();
 	CRenderer *pRenderer = CManager::GetRenderer();
 
@@ -142,6 +143,7 @@ void CMeshWall::Draw(void)
 
 	//頂点フォーマットの設定
 	pDevice->SetTexture(0, NULL);
+#endif
 }
 
 //=============================================================================
@@ -170,7 +172,7 @@ HRESULT CMeshWall::Load(void)
 //=============================================================================
 // 地形高低読込関数
 //=============================================================================
-void CMeshWall::LoadRand(char *add, bool bDebug)
+void CMeshWall::LoadWall(char *add, bool bDebug)
 {
 	FILE *pFile = NULL;																	// ファイル
 	char cReadText[128];															// 文字
@@ -425,23 +427,58 @@ bool CMeshWall::GetWallHit(CScene *pTarget, D3DXVECTOR3 &nol)
 
 				float fDistance = CManager::GetDistance(pTarget->GetPosOld(), Ans);
 
-				//if ((fAnswer[0] >= 0 && fAnswer[1] >= 0 && fAnswer[2] >= 0) || (fAnswer[0] < 0 && fAnswer[1] < 0 && fAnswer[2] < 0))
 				{
-					if ((clossAns[0] > 0 && clossAns[1] > 0 && clossAns[2] > 0) || (clossAns[0] <= 0 && clossAns[1] <= 0 && clossAns[2] <= 0))
-					{
-						if (dot_12 > 0 && dot_13 > 0)
-						{
-							OutputDebugString("FinalPhase\n");
-							D3DXVECTOR3 old = pTarget->GetPosOld();
-							bHit = true;
-							pTarget->SetPosition(Ans);
-							pTarget->SetPosOld(old);
-							nol = apNor[((WALL_WIDE_FIELD * 2) * nDepth) + (2 * nWide)];
-							break;
-							break;
-						}
-					}
+					//D3DXPLANE p;
+					//D3DXPlaneFromPoints(&p, &aVertex[0], &aVertex[1], &aVertex[2]);
+					////パラメトリック方程式の媒介変数” t "を解く。
+					//FLOAT t = -((p.a * vP[1].x) + (p.b*vP[1].y) + (p.c*vP[1].z) + p.d) /
+					//	(((p.a*vP[0].x) + (p.b*vP[0].y) + (p.c*vP[0].z)) - ((p.a*vP[1].x) + (p.b*vP[1].y) + (p.c*vP[1].z)));
+					//// t が０から１の間であるなら交差していることになる（この時点では、まだ無限遠平面との交差）
+					//if (t >= 0 && t <= 1.0)
+					//{
+					//	//交点座標を得る　ｔが分かっていれば両端点から簡単に求まる
+					//	D3DXVECTOR3 v;
+					//	v.x = t*vP[0].x + (1 - t)*vP[1].x;
+					//	v.y = t*vP[0].y + (1 - t)*vP[1].y;
+					//	v.z = t*vP[0].z + (1 - t)*vP[1].z;
+					//	//交点が三角形の内か外かを判定　（ここで内部となれば、完全な交差となる）
+					//	if (CCollider::IsInside(&v, &aVertex[0], &aVertex[1], &aVertex[2]))
+					//	{
+					//		return true;
+					//	}
+					//	return false;
+					//}
 				}
+
+				if (CCollider::IsInside(&Ans, &aVertex[0], &aVertex[1], &aVertex[2]))
+				{
+					OutputDebugString("FinalPhase\n");
+					D3DXVECTOR3 old = pTarget->GetPosOld();
+					bHit = true;
+					pTarget->SetPosition(D3DXVECTOR3(Ans.x, pTarget->GetPosition().y, Ans.z));
+					pTarget->SetPosOld(old);
+					nol = apNor[((WALL_WIDE_FIELD * 2) * nDepth) + (2 * nWide)];
+					break;
+					break;
+				}
+
+				////if ((fAnswer[0] >= 0 && fAnswer[1] >= 0 && fAnswer[2] >= 0) || (fAnswer[0] < 0 && fAnswer[1] < 0 && fAnswer[2] < 0))
+				//{
+				//	if ((clossAns[0] > 0 && clossAns[1] > 0 && clossAns[2] > 0) || (clossAns[0] <= 0 && clossAns[1] <= 0 && clossAns[2] <= 0))
+				//	{
+				//		if (dot_12 > 0 && dot_13 > 0)
+				//		{
+				//			OutputDebugString("FinalPhase\n");
+				//			D3DXVECTOR3 old = pTarget->GetPosOld();
+				//			bHit = true;
+				//			pTarget->SetPosition(Ans);
+				//			pTarget->SetPosOld(old);
+				//			nol = apNor[((WALL_WIDE_FIELD * 2) * nDepth) + (2 * nWide)];
+				//			break;
+				//			break;
+				//		}
+				//	}
+				//}
 
 				P = pVtx[nWide + ((WALL_WIDE_FIELD + 1) * nDepth)].pos;	// 平面上の点P
 				A = pTarget->GetPosition();		// 始点
@@ -484,14 +521,14 @@ bool CMeshWall::GetWallHit(CScene *pTarget, D3DXVECTOR3 &nol)
 				Ans = A + (AB * hiritu);
 
 				//差分の計算
-				aWork[0] = (pVtx[nWide + ((WALL_WIDE_FIELD + 1) * nDepth)].pos + FieldPos) - (pVtx[1 + nWide + ((WALL_WIDE_FIELD + 1) * nDepth)].pos + FieldPos);
-				aPlayer[0] = Ans - (pVtx[1 + nWide + ((WALL_WIDE_FIELD + 1) * nDepth)].pos + FieldPos);
+				aWork[0] = (aVertex[2] + FieldPos) - (aVertex[3] + FieldPos);
+				aPlayer[0] = Ans - (aVertex[3] + FieldPos);
 
-				aWork[1] = (pVtx[1 + nWide + ((WALL_WIDE_FIELD + 1) * nDepth)].pos + FieldPos) - (pVtx[WALL_WIDE_FIELD + nWide + 2 + ((WALL_WIDE_FIELD + 1) * nDepth)].pos + FieldPos);
-				aPlayer[1] = Ans - (pVtx[WALL_WIDE_FIELD + nWide + 2 + ((WALL_WIDE_FIELD + 1) * nDepth)].pos + FieldPos);
+				aWork[1] = (aVertex[3] + FieldPos) - (aVertex[1] + FieldPos);
+				aPlayer[1] = Ans - (aVertex[1] + FieldPos);
 
-				aWork[2] = (pVtx[WALL_WIDE_FIELD + nWide + 2 + ((WALL_WIDE_FIELD + 1) * nDepth)].pos + FieldPos) - (pVtx[nWide + ((WALL_WIDE_FIELD + 1) * nDepth)].pos + FieldPos);
-				aPlayer[2] = Ans - (pVtx[nWide + ((WALL_WIDE_FIELD + 1) * nDepth)].pos + FieldPos);
+				aWork[2] = (aVertex[1] + FieldPos) - (aVertex[2] + FieldPos);
+				aPlayer[2] = Ans - (aVertex[2] + FieldPos);
 
 				//法線
 				fAnswer[0] = aWork[0].x * aPlayer[0].z - aWork[0].z * aPlayer[0].x - aWork[0].y * aPlayer[0].y;
@@ -505,25 +542,35 @@ bool CMeshWall::GetWallHit(CScene *pTarget, D3DXVECTOR3 &nol)
 				dot_12 = D3DXVec3Dot(&clossAns[0], &clossAns[1]);
 				dot_13 = D3DXVec3Dot(&clossAns[0], &clossAns[3]);
 
-				//if ((fAnswer[0] >= 0 && fAnswer[1] >= 0 && fAnswer[2] >= 0) || (fAnswer[0] < 0 && fAnswer[1] < 0 && fAnswer[2] < 0))
+				if (CCollider::IsInside(&Ans, &aVertex[1], &aVertex[2], &aVertex[3]))
 				{
-					if ((clossAns[0] > 0 && clossAns[1] > 0 && clossAns[2] > 0) || (clossAns[0] <= 0 && clossAns[1] <= 0 && clossAns[2] <= 0))
-					{
-						if (dot_12 > 0 && dot_13 > 0)
-						{
-							OutputDebugString("FinalPhase\n");
-							D3DXVECTOR3 old = pTarget->GetPosOld();
-							bHit = true;
-							pTarget->SetPosition(Ans);
-							pTarget->SetPosOld(old);
-							nol = apNor[((WALL_WIDE_FIELD * 2) * nDepth) + (2 * nWide)];
-							break;
-							break;
-						}
-					}
+					OutputDebugString("FinalPhase\n");
+					D3DXVECTOR3 old = pTarget->GetPosOld();
+					bHit = true;
+					pTarget->SetPosition(D3DXVECTOR3(Ans.x, pTarget->GetPosition().y, Ans.z));
+					pTarget->SetPosOld(old);
+					nol = apNor[((WALL_WIDE_FIELD * 2) * nDepth) + (2 * nWide)];
+					break;
+					break;
 				}
 
-				OutputDebugString("到達");
+				////if ((fAnswer[0] >= 0 && fAnswer[1] >= 0 && fAnswer[2] >= 0) || (fAnswer[0] < 0 && fAnswer[1] < 0 && fAnswer[2] < 0))
+				//{
+				//	if ((clossAns[0] > 0 && clossAns[1] > 0 && clossAns[2] > 0) || (clossAns[0] <= 0 && clossAns[1] <= 0 && clossAns[2] <= 0))
+				//	{
+				//		if (dot_12 > 0 && dot_13 > 0)
+				//		{
+				//			//OutputDebugString("FinalPhase\n");
+				//			//D3DXVECTOR3 old = pTarget->GetPosOld();
+				//			//bHit = true;
+				//			//pTarget->SetPosition(Ans);
+				//			//pTarget->SetPosOld(old);
+				//			//nol = apNor[((WALL_WIDE_FIELD * 2) * nDepth) + (2 * nWide)];
+				//			break;
+				//			break;
+				//		}
+				//	}
+				//}
 			}
 		}
 	}
@@ -931,9 +978,67 @@ void CMeshWall::MakeIndex(void)
 }
 
 //=============================================================================
+// 地形高低保存関数
+//=============================================================================
+void CMeshWall::SaveWall(CWrite *pWrite)
+{
+	VERTEX_3D *pVtx;				// 頂点情報へのポインタ
+
+	//頂点データの範囲をロックし、頂点バッファへのポインタを取得
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	for (int nDepth = 0; nDepth < WALL_DEPTH_FIELD + 1; nDepth++)
+	{
+		for (int nWide = 0; nWide < WALL_WIDE_FIELD + 1; nWide++)
+		{
+			//頂点座標の取得
+			D3DXVECTOR3 pos = pVtx[0].pos;
+			D3DXCOLOR col = pVtx[0].col;
+
+			// 頂点情報の書き込み
+			pWrite->Write("		%.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f\n", pos.x, pos.y, pos.z, col.r, col.g, col.b, col.a);
+			pVtx++;				// ポインタをシフト
+		}
+	}
+
+	//頂点データのアンロック
+	m_pVtxBuff->Unlock();
+}
+
+//=============================================================================
+// 壁の頂点情報編集処理
+//=============================================================================
+void CMeshWall::EditWallVertex(void)
+{
+	VERTEX_3D *pVtx;				// 頂点情報へのポインタ
+
+	//頂点データの範囲をロックし、頂点バッファへのポインタを取得
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	for (int nDepth = 0; nDepth < WALL_DEPTH_FIELD + 1; nDepth++)
+	{
+		for (int nWide = 0; nWide < WALL_WIDE_FIELD + 1; nWide++)
+		{
+			//頂点座標の取得
+			char label[16];
+			sprintf(label, "pos %d", nWide + WALL_DEPTH_FIELD * nDepth);
+			D3DXVECTOR3 pos = pVtx[0].pos;
+			ImGui::DragFloat3(label, (float*)&pos);
+			pVtx[0].pos = pos;
+			pVtx++;				// ポインタをシフト
+		}
+	}
+
+	//頂点データのアンロック
+	m_pVtxBuff->Unlock();
+}
+
+#ifdef _DEBUG
+//=============================================================================
 // デバッグ処理
 //=============================================================================
 void CMeshWall::Debug(void)
 {
 
 }
+#endif

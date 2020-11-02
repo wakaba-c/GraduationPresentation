@@ -27,6 +27,7 @@ typedef enum
 {
 	DEBUGMODE_NONE = 0,
 	DEBUGMODE_RAND,
+	DEBUGMODE_WALL,
 	DEBUGMODE_MANY,
 	DEBUGMODE_INDIVIDUAL,
 	DEBUGMODE_DELETE,
@@ -66,6 +67,7 @@ public:
 private:
 	static void Debug(void);								// デバッグ処理
 	static void LandScape(D3DXVECTOR3 &worldPos);			// ランドスケープ処理
+	static void EditWallVertex(void);						// 壁の頂点編集処理
 	static void Paint(D3DXVECTOR3 &worldPos);				// ペイント処理
 	static void CreateEnemy(D3DXVECTOR3 &worldPos);			// エネミー配置処理
 	static void CreateObject(D3DXVECTOR3 &worldPos);		// 木配置処理

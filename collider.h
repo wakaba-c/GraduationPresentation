@@ -82,6 +82,7 @@ public:
 	static bool RayBlockCollision(D3DXVECTOR3 &pos, D3DXMATRIX *pMat, float fOffset, float fLength);//Ray‚Ì”»’è
 	static D3DXVECTOR3 RayLeftWallCollision(float &fLeftLength, D3DXVECTOR3 &pos, D3DXVECTOR3 &rot, D3DXVECTOR3 &move, D3DXMATRIX *pMat);//Ray‚Ì”»’è
 	static D3DXVECTOR3 RayRightWallCollision(float &fRightLength, D3DXVECTOR3 &pos, D3DXVECTOR3 &rot, D3DXVECTOR3 &move, D3DXMATRIX *pMat);//Ray‚Ì”»’è
+	static bool IsInside(D3DXVECTOR3* pvI, D3DXVECTOR3* pvA, D3DXVECTOR3* pvB, D3DXVECTOR3* pvC);			// –ÊŒğ“_”»’è(—LŒÀ)
 
 private:
 	void Delete(void);									// íœˆ—

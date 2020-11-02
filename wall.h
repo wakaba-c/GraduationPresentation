@@ -16,7 +16,7 @@
 //=============================================================================
 // マクロ定義
 //=============================================================================
-#define WALL_DEPTH_FIELD	2							// 奥行き
+#define WALL_DEPTH_FIELD	50							// 奥行き
 #define WALL_WIDE_FIELD 1								// 幅
 #define SIZE		50.0f								// サイズ
 
@@ -36,8 +36,8 @@ public:
 	static CMeshWall *Create(void);													// クリエイト処理
 	static HRESULT Load(void);														// ロード処理
 
-	static void LoadRand(char *add, bool bDebug);									// 地面の高さ読み込み
-	bool GetWallHit(CScene *pTarget, D3DXVECTOR3 &nol);										// ポリゴンの高さを求める
+	static void LoadWall(char *add, bool bDebug);									// 地面の高さ読み込み
+	bool GetWallHit(CScene *pTarget, D3DXVECTOR3 &nol);								// ポリゴンの高さを求める
 
 	static bool SphereModel(D3DXVECTOR3 C1, D3DXVECTOR3 C2, float R1);				// X軸とZ軸の当たり判定
 	bool CollisionRange(D3DXVECTOR3 pos);											// 自分の範囲内にいるかどうか
@@ -61,9 +61,14 @@ public:
 
 	void MakeVertex(FILE *pFile, bool bDebug);										// 頂点情報の作成
 
-	void Debug(void);
+	void SaveWall(CWrite *pWrite);			// 壁情報保存処理
+	void EditWallVertex(void);				// 壁の頂点情報編集処理
 
 private:
+#ifdef _DEBUG
+	void Debug(void);																// デバッグ処理関数
+#endif
+
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;												// 頂点バッファへのポインタ
 	LPDIRECT3DINDEXBUFFER9	m_pIdxBuff;												// インデックスバッファへのポインタ
 

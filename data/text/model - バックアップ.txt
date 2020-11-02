@@ -1,0 +1,74 @@
+#==============================================================================
+#
+# シーンデータスクリプト
+# Author : masayasu wakita
+#
+#==============================================================================
+SCRIPT
+
+#==============================================================================
+モデルの情報
+#==============================================================================
+MODELSET
+	MODEL_FILENAME = data/model/load/stageLoad_1.x
+	POS = 0.00 -10.00 0.00
+	ROT = 0.00 0.00 0.00
+	SIZE = 2.00 2.00 2.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/wall.x
+	POS = 0.00 -10.00 0.00
+	ROT = 0.00 0.00 0.00
+	SIZE = 2.00 2.00 2.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/point.x
+	POS = -1240.66 -31.05 -921.96
+	ROT = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/point.x
+	POS = -624.57 -31.10 4094.74
+	ROT = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/point.x
+	POS = 72.01 -31.18 6328.38
+	ROT = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/point.x
+	POS = 2619.03 -31.20 6655.18
+	ROT = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/point.x
+	POS = 3201.19 -31.33 7431.68
+	ROT = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/point.x
+	POS = 3059.78 -31.57 8382.97
+	ROT = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/point.x
+	POS = 902.24 -32.10 8786.26
+	ROT = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	MODEL_FILENAME = data/model/GoalCircle35.x
+	POS = -22221.80 930.0 -9399.28
+	ROT = 0.00 1.54 0.00
+END_MODELSET
+
+END_SCRIPT

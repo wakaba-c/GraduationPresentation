@@ -20,6 +20,7 @@
 #include "write.h"
 #include "colliderBox.h"
 #include "colliderSphere.h"
+#include "wall.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -780,6 +781,63 @@ void CScene::SaveModel(void)
 
 	delete pWrite;
 	delete pPointWrite;
+}
+
+//=============================================================================
+// 壁情報書き込み処理
+//=============================================================================
+void CScene::SaveWall(void)
+{
+	CWrite *pWrite = new CWrite;
+	if (pWrite == NULL) return;
+
+	//変数宣言
+	int nCntLoad = 0;			//ロードカウント
+	char text[64];				// テキスト
+	char cEqual[8] = { "=" };	//イコール用
+	CScene *pSceneNext = NULL;	//次回アップデート対象
+	CScene *pSceneNow = NULL;
+
+
+	//開けた
+	if (pWrite->Open("data/text/wall.txt"))
+	{
+		strcpy(text, "# シーンデータスクリプト\n");
+		strcat(text, "# Author : masayasu wakita\n");
+
+		pWrite->TitleWrite(text);				// タイトルの形式で書き込む
+		pWrite->Write("SCRIPT\n");			// スクリプトの終了宣言
+		pWrite->Write("\n");
+
+		// 壁の情報 //
+		// treeのオブジェクトのポジションを参照
+		pSceneNow = m_apTop[PRIORITY_WALL];
+
+		//次がなくなるまで繰り返す
+		while (pSceneNow != NULL)
+		{
+			pSceneNext = pSceneNow->m_pNext[PRIORITY_WALL];						//次回アップデート対象を控える
+			CMeshWall *pMeshWall = (CMeshWall*)pSceneNow;
+
+			if (!pMeshWall->GetDebugRand())
+			{// デバッグ用の壁ではないとき
+				pWrite->Write("FIELDSET\n");					// 頂点情報の書き込み開始宣言
+
+				D3DXVECTOR3 pos = pMeshWall->GetPosition();
+				pWrite->Write("	POS = %.2f %.2f %.2f\n", pos.x, pos.y, pos.z);		// 中心位置の書き込み
+
+				pWrite->Write("	VERTEXINFO\n");					// 頂点情報の書き込み開始宣言
+				pMeshWall->SaveWall(pWrite);							// 頂点情報の書き込み
+				pWrite->Write("	END_VERTEXINFO\n");				// 頂点情報の書き込み終了宣言
+				pWrite->Write("END_FIELDSET\n");					// 頂点情報の書き込み開始宣言
+				pWrite->Write("\n");							// 改行
+			}
+
+			pSceneNow = pSceneNext;													// 次回アップデート対象を格納
+		}
+		pWrite->Write("END_SCRIPT\n");			// スクリプトの終了宣言
+		pWrite->End();
+	}
 }
 
 //=============================================================================
