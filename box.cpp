@@ -165,7 +165,19 @@ void CBox::Update(void)
 			// ピース生成
 			m_pPiece[m_nPieceNum] = CPiece::Create();
 			// ピースタイプ設定
-			m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Delete);
+			m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Square_1);
+			// 配置情報
+			m_pPiece[m_nPieceNum]->SetMove(false);
+		}
+		// 生成
+		if (pKeyboard->GetTriggerKeyboard(DIK_N))
+		{
+			// ピース数加算
+			m_nPieceNum++;
+			// ピース生成
+			m_pPiece[m_nPieceNum] = CPiece::Create();
+			// ピースタイプ設定
+			m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Rectangle_1);
 			// 配置情報
 			m_pPiece[m_nPieceNum]->SetMove(false);
 		}
@@ -269,7 +281,49 @@ void CBox::Update(void)
 			else if (m_nCntChange == 3)
 			{
 				// タイプ変更
-				m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Delete);
+				m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Square_1);
+				// カウント初期化
+				m_nCntChange++;
+			}
+			else if (m_nCntChange == 4)
+			{
+				// タイプ変更
+				m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Rectangle_1);
+				// カウント初期化
+				m_nCntChange++;
+			}
+			else if (m_nCntChange == 5)
+			{
+				// タイプ変更
+				m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Speed);
+				// カウント初期化
+				m_nCntChange++;
+			}
+			else if (m_nCntChange == 6)
+			{
+				// タイプ変更
+				m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Rectangle_2);
+				// カウント初期化
+				m_nCntChange++;
+			}
+			else if (m_nCntChange == 7)
+			{
+				// タイプ変更
+				m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_L_Type);
+				// カウント初期化
+				m_nCntChange++;
+			}
+			else if (m_nCntChange == 8)
+			{
+				// タイプ変更
+				m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Speed_1);
+				// カウント初期化
+				m_nCntChange++;
+			}
+			else if (m_nCntChange == 9)
+			{
+				// タイプ変更
+				m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Diagonal);
 				// カウント初期化
 				m_nCntChange = 0;
 			}

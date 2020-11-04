@@ -39,7 +39,13 @@ public:
 		PieceType_Square,
 		PieceType_Rectangle,
 		PieceType_T_Type,
-		PieceType_Delete,
+		PieceType_L_Type,
+		PieceType_Square_1,
+		PieceType_Rectangle_1,
+		PieceType_Rectangle_2,
+		PieceType_Speed,
+		PieceType_Speed_1,
+		PieceType_Diagonal,
 		PieceType_Max,
 	};
 
