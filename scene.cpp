@@ -766,7 +766,7 @@ void CScene::SaveModel(void)
 				pWrite->Write("	MODEL_FILENAME = %s\n", pObject->GetAdd().c_str());		// アドレス情報を書き込む
 				pWrite->Write("	POS = %.2f %.2f %.2f\n", pos.x, pos.y, pos.z);			// 位置情報を書き込む
 				pWrite->Write("	ROT = %.2f %.2f %.2f\n", rot.x, rot.y, rot.z);			// 回転情報を書き込む
-				pWrite->Write("	SIZE = %.2f %.2f %.2f\n", size.x, rot.y, rot.z);		// 大きさ情報を書き込む
+				pWrite->Write("	SIZE = %.2f %.2f %.2f\n", size.x, size.y, size.z);		// 大きさ情報を書き込む
 
 				pWrite->Write("END_MODELSET\n");				// 頂点情報の書き込み開始宣言
 				pWrite->Write("\n");							// 改行
