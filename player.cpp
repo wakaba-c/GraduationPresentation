@@ -173,7 +173,7 @@ void CPlayer::Update(void)
 
 	pos = GetPosition();				// ˆÊ’u‚Ìæ“¾
 
-	CCollider::RayBlockCollision(pos, &pModel[0].GetMtxWorld(), 12.28f, 30.0f);
+	CCollider::RayBlockCollision(pos, &pModel[0].GetMtxWorld(), 12.28f, 30000.0f);
 
 	//°‚Ì‚‚³‚ğæ“¾‚·‚é
 	CScene *pSceneNext = NULL;														// ‰Šú‰»
