@@ -99,6 +99,7 @@ private:
 	static float m_fSliderPow;
 	static std::string m_currentItem;
 	static HWND m_hWnd;										// ウィンドウハンドル
+	static bool m_bMouseCursorPosition;						// マウスカーソル座標の使用フラグ
 
 	// エフェクト作成関連
 	static int m_nParticleShape;							// パーティクル形状

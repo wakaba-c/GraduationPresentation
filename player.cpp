@@ -72,7 +72,7 @@ CPlayer::CPlayer(CScene::PRIORITY obj = CScene::PRIORITY_PLAYER) : CCharacter(ob
 	m_bEvent = false;									// イベント発生フラグの初期化
 	m_bDrift = false;									// ドリフトフラグ判定
 	m_bMove = false;									// 現在動いているかのフラグ
-	m_bColliderWithWall = false;						// 壁の当たり判定
+	m_bColliderWithWall = true;						// 壁の当たり判定
 
 	m_pPlayerUi = NULL;
 }

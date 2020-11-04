@@ -40,12 +40,13 @@ float CDebugProc::m_fPaintSize = 1;										// 地形編集ブラシの大きさ
 int CDebugProc::m_nCreateIndex = 0;										// 1フレームの生成数
 bool CDebugProc::m_bDebug = false;										// デバッグモードの切替
 bool CDebugProc::m_bInspectorWind = false;								// インスペクターウィンドウの表示切替
+bool CDebugProc::m_bMouseCursorPosition = false;						// マウスカーソル座標の使用フラグ
 int CDebugProc::m_nCntGeneration = 0;									// 生成数
 int	CDebugProc::m_nMode = 0;											// モード選択
 int CDebugProc::m_nParticleShape = PARTICLESHAPE_CONE;					// パーティクル形状
 int	CDebugProc::m_nCntContinue = 0;										// 再確認回数
 D3DXVECTOR2 CDebugProc::m_CreateRand = D3DXVECTOR2(0.0f, 0.0f);			// 床の量
-D3DXVECTOR2 CDebugProc::m_CreateRandOld = D3DXVECTOR2(0.0f, 0.0f);			// 床の量
+D3DXVECTOR2 CDebugProc::m_CreateRandOld = D3DXVECTOR2(0.0f, 0.0f);		// 床の量
 CMeshField *CDebugProc::m_apMeshField[FLOOR_LIMIT * FLOOR_LIMIT] = {};
 D3DXVECTOR3 CDebugProc::m_createPos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 float CDebugProc::m_fSliderPow = 1.0f;
@@ -54,15 +55,15 @@ bool CDebugProc::m_bHeightCalculation = false;
 HWND CDebugProc::m_hWnd = NULL;											// ウィンドウハンドル
 
 // エフェクト作成関連
-int CDebugProc::m_particleLife = 0;								// パーティクルの生存時間
-int CDebugProc::m_nCreate = 0;									// 生成数
-int CDebugProc::m_nInterval = 0;									// インターバル
-float CDebugProc::m_fStartRadius = 0.0f;							// 始まりの
-float CDebugProc::m_fRadius = 0.0f;									// 半径
-float CDebugProc::m_fMinSpeed = 0.0f;								// 最低スピード
-float CDebugProc::m_fSpeed = 0.0f;									// スピード
+int CDebugProc::m_particleLife = 0;										// パーティクルの生存時間
+int CDebugProc::m_nCreate = 0;											// 生成数
+int CDebugProc::m_nInterval = 0;										// インターバル
+float CDebugProc::m_fStartRadius = 0.0f;								// 始まりの
+float CDebugProc::m_fRadius = 0.0f;										// 半径
+float CDebugProc::m_fMinSpeed = 0.0f;									// 最低スピード
+float CDebugProc::m_fSpeed = 0.0f;										// スピード
 
-bool CDebugProc::m_bLoop = false;									// 生成を繰り返す
+bool CDebugProc::m_bLoop = false;										// 生成を繰り返す
 bool CDebugProc::m_bGravity = false;									// 重力の有無
 bool CDebugProc::m_bRandomSpeed = false;								// スピードランダム化の有無
 
@@ -960,16 +961,27 @@ void CDebugProc::CreateIndividual(D3DXVECTOR3 &worldPos)
 	CInputKeyboard *pKeyboard = CManager::GetInputKeyboard();						// キーボードの取得
 	CScene *pScene = CScene::NowFloor(worldPos);									// 現在いる場所のフィールドを取得
 
-	D3DXVECTOR3 pos = worldPos;
+	D3DXVECTOR3 pos = D3DXVECTOR3_ZERO;
 	D3DXVECTOR3 rot = D3DXVECTOR3_ZERO;
 	D3DXVECTOR3 size = D3DXVECTOR3_ZERO;
 
 	if (m_pSample != NULL)
 	{// 見本用オブジェクトが存在していたとき
+		if(!m_bMouseCursorPosition)
+		{
+			pos = m_pSample->GetPosition();				// 位置の取得
+		}
+		else
+		{
+			pos = worldPos;
+		}
+
 		rot = m_pSample->GetRotation();					// 回転値の取得
 		size = m_pSample->GetSize();					// サイズの取得
 	}
 
+	ImGui::Checkbox("MousePos", &m_bMouseCursorPosition);
+	ImGui::DragFloat3("pos", (float*)&pos);
 	ImGui::DragFloat3("rot", (float*)&rot, 0.01f);
 	ImGui::DragFloat3("size", (float*)&size, 0.01f);
 
