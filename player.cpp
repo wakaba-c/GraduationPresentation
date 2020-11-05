@@ -766,17 +766,11 @@ bool CPlayer::CollisionWall(void)
 		if (pMeshWall->GetWallHit(this, normal))
 		{
 			D3DXVECTOR3 playerPos = GetPosition();
-			//playerPos.y += 5.0f;
 
 			OutputDebugString("当たった");
+
 			// //当たり状態なので、滑らせる
 			D3DXVECTOR3 move;
-			//move = CManager::Slip(playerPos + m_move, normal);// 滑りベクトルを計算
-			//D3DXVec3Normalize(&move, &move);
-			//move *= m_fSpeed;
-			//SetPosition(GetPosition() + move);
-
-			//CManager::calcWallScratchVector(&move, m_move, normal);
 			CManager::calcReflectVector(&move, m_move, normal);
 			m_move = move * 20;
 			return true;

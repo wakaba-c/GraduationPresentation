@@ -1303,7 +1303,6 @@ bool CCollider::RayBlockCollision(D3DXVECTOR3 &pos, D3DXMATRIX *pMat, float fOff
 		//	ƒŒƒC•ûŒüî•ñ‚ð•ÏŠ·
 		D3DXVec3Normalize(&direction, &(m_posAfter - m_posBefore));
 
-		CDebugProc::Log("‚‚³ : %.2f", m_posBefore.y);
 		//Ray‚ð”ò‚Î‚·
 		D3DXIntersect(pObj->GetMesh(), &m_posBefore, &direction, &bHitFlag, &dwHitIndex, &fHitU, &fHitV, &fLandDistance, NULL, NULL);
 		if (bHitFlag == TRUE)
