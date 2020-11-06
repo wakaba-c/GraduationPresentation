@@ -57,6 +57,7 @@ HRESULT CPiece::Init(void)
 	// 初期化
 	m_nCntMove_X = 0;
 	m_nCntMove_Y = 0;
+	m_fSpeed = 0;
 	m_bPlacement = false;
 	m_bRelease = false;
 	m_bCreate = false;
@@ -106,6 +107,8 @@ void CPiece::Update(void)
 
 	// ピースの設定
 	SetPiece();
+
+	SetStatus();
 
 	// 配置決定
 	if (pKeyboard->GetTriggerKeyboard(MOVE_JUMP))
@@ -222,6 +225,92 @@ void CPiece::Unload(void)
 void CPiece::SetPieceType(PieceType type)
 {
 	m_PieceType = type;
+}
+
+//==================================================================================================================
+// ステータスの設定
+//==================================================================================================================
+void CPiece::SetStatus(void)
+{
+	// 配置してたら
+	if (m_bPlacement == true)
+	{
+		// 形を変える
+		switch (m_PieceType)
+		{
+			// ■■
+			// ■■
+		case PieceType_Square:
+
+			break;
+
+			// ■■
+			// ■■
+			// ■■
+			// ■■
+			// ■■
+		case PieceType_Rectangle:
+
+			break;
+
+			// 　■
+			// ■■■
+		case PieceType_T_Type:
+
+			break;
+
+			// ■
+			// ■
+			// ■
+			// ■■
+		case PieceType_L_Type:
+
+			break;
+			// ■
+		case PieceType_Square_1:
+
+			break;
+
+			// ■
+			// ■
+		case PieceType_Rectangle_1:
+
+			break;
+
+			// ■
+			// ■
+			// ■
+			// ■
+		case PieceType_Rectangle_2:
+
+			break;
+
+			// ■■
+			// ■■■
+			// 　　■■
+		case PieceType_Speed:
+			m_fSpeed = 10.0f;
+			break;
+
+			// ■■
+			// 　■
+			// 　■
+			// ■■
+			// ■
+		case PieceType_Speed_1:
+
+			break;
+
+			// 　　　■
+			// 　　■
+			// 　■
+			// ■
+		case PieceType_Diagonal:
+
+			break;
+		}
+
+	}
 }
 
 //==================================================================================================================
