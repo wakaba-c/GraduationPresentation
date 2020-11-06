@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AImove.cpp" />
     <ClCompile Include="bg.cpp" />
     <ClCompile Include="box.cpp" />
     <ClCompile Include="camera.cpp" />
@@ -216,6 +217,7 @@
     <ClCompile Include="write.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AImove.h" />
     <ClInclude Include="bg.h" />
     <ClInclude Include="box.h" />
     <ClInclude Include="camera.h" />
