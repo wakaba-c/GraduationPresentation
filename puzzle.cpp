@@ -17,6 +17,7 @@
 //=============================================================================
 // 静的メンバ変数
 //=============================================================================
+float CPuzzle::m_fSpeed = 0.0f;
 
 //=============================================================================
 // コンストラクタ
@@ -40,7 +41,7 @@ CPuzzle::~CPuzzle()
 HRESULT CPuzzle::Init(void)
 {
 	LoadAsset();
-	pBox = CBox::Create();
+	m_pBox = CBox::Create();
 
 	// 各種アセットの生成＆設置
 	//CMeshField::LoadRand("data/stage/rand.csv", false);				// 床情報の読込
@@ -58,6 +59,11 @@ void CPuzzle::Update(void)
 {
 	CInputKeyboard *pInputKeyboard = CManager::GetInputKeyboard();
 	CInputController *pInputController = CManager::GetInputController();
+
+	if (m_pBox != NULL)
+	{
+		m_fSpeed = m_pBox->GetSpeed();
+	}
 
 	if (CFade::GetFade() == CFade::FADE_NONE)
 	{//フェードが処理をしていないとき
