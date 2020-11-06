@@ -83,10 +83,13 @@ public:
 	static void SavePoint(CWrite *pWrite, D3DXVECTOR3 &pos);			// ポイントモデルの書き込み
 	void SaveCollider(void);						// 当たり判定の書き込み
 
+	static char *GetSceneTypeName(const int &nIndex);
+
 private:
 	void Delete(void);								// 開放処理
 	void WriteForSphereCollider(CWrite *pWrite, CCollider *pCollider);				// スフィアコライダー独自の値を書き込む
 	void WriteForBoxCollider(CWrite *pWrite, CCollider *pCollider);				// スフィアコライダー独自の値を書き込む
+	static void ShowHierarchy(void);				// ヒエラルキーの表示
 
 	static int m_nNumAll;
 	static CScene *m_apCur[PRIORITY_MAX];			// 現在(最後尾)オブジェクトへのポインタ
@@ -97,6 +100,7 @@ private:
 	bool	m_bActive;								// 描画するかどうか
 	bool	m_bDie;									// Releaseするかどうか
 	std::vector<CCollider*> m_apCollider;			// 当たり判定
+	std::string m_Label;							// ラベル
 
 	D3DXVECTOR3 m_pos;								// 位置
 	D3DXVECTOR3 m_posOld;							// 前回の位置

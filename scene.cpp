@@ -54,6 +54,11 @@ CScene::CScene(CScene::PRIORITY Type)
 
 	m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_posOld = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
+	char aLabel[32];
+	memset(&aLabel, 0, sizeof(aLabel));
+	sprintf(aLabel, "object : %d", CManager::GetRand(100000));
+	m_Label = aLabel;
 }
 
 //=============================================================================
@@ -142,11 +147,15 @@ void CScene::UpdateAll(void)
 
 			if (pSceneNow->GetActive())
 			{
-				pSceneNow->Update();																// アップデート
+				pSceneNow->Update();															// アップデート
+
 			}
 			pSceneNow = pSceneNext;																// 次回アップデート対象を格納
 		}
 	}
+
+	// ヒエラルキー表示処理
+	ShowHierarchy();
 
 	// 当たり判定
 	CCollider::UpdateAll();
@@ -580,7 +589,7 @@ void CScene::Delete(void)
 //=============================================================================
 // スフィアコライダーの情報を書き込む処理
 //=============================================================================
-void CScene::WriteForSphereCollider(CWrite *pWrite ,CCollider *pCollider)
+void CScene::WriteForSphereCollider(CWrite *pWrite, CCollider *pCollider)
 {
 	CColliderSphere *pSphere = (CColliderSphere*)pCollider;
 	float fRadius = pSphere->GetRadius();
@@ -717,7 +726,7 @@ void CScene::SaveModel(void)
 	CWrite *pPointWrite = new CWrite;
 	if (pPointWrite == NULL) return;
 
-	if(!pPointWrite->Open("data/text/point.txt"))
+	if (!pPointWrite->Open("data/text/point.txt"))
 	{
 		return;
 	}
@@ -904,4 +913,103 @@ void CScene::SaveCollider(void)
 	}
 
 	delete pWrite;
+}
+
+//=============================================================================
+// シーンタイプ名取得処理
+//=============================================================================
+char *CScene::GetSceneTypeName(const int &nIndex)
+{
+	switch (nIndex)
+	{
+	case PRIORITY_BG:
+		return STR(PRIORITY_BG);
+		break;
+	case PRIORITY_FLOOR:
+		return STR(PRIORITY_FLOOR);
+		break;
+	case PRIORITY_WALL:
+		return STR(PRIORITY_WALL);
+		break;
+	case PRIORITY_SKY:
+		return STR(PRIORITY_SKY);
+		break;
+	case PRIORITY_MODEL:
+		return STR(PRIORITY_MODEL);
+		break;
+	case PRIORITY_PLAYER:
+		return STR(PRIORITY_PLAYER);
+		break;
+	case PRIORITY_ENEMY:
+		return STR(PRIORITY_ENEMY);
+		break;
+	case PRIORITY_CHARACTER:
+		return STR(PRIORITY_CHARACTER);
+		break;
+	case PRIORITY_LIFE:
+		return STR(PRIORITY_LIFE);
+		break;
+	case PRIORITY_TREE:
+		return STR(PRIORITY_TREE);
+		break;
+	case PRIORITY_ORBIT:
+		return STR(PRIORITY_ORBIT);
+		break;
+	case PRIORITY_EFFECT:
+		return STR(PRIORITY_EFFECT);
+		break;
+	case PRIORITY_MESH:
+		return STR(PRIORITY_MESH);
+		break;
+	case PRIORITY_UI:
+		return STR(PRIORITY_UI);
+		break;
+	}
+
+	return "NONE";
+}
+
+//=============================================================================
+// ヒエラルキー表示処理
+//=============================================================================
+void CScene::ShowHierarchy(void)
+{
+#ifdef _DEBUG
+	CScene *pSceneNext = NULL;																	//次回アップデート対象
+	CScene *pSceneNow = NULL;
+
+	ImGui::Begin("hierarchy");			// hierarchyウィンドウ の生成またはアクセス
+
+	for (int nCount = 0; nCount < PRIORITY_MAX; nCount++)
+	{
+		pSceneNow = m_apTop[nCount];
+
+		// このif文おかしい
+		if (ImGui::CollapsingHeader(GetSceneTypeName(nCount)))
+		{
+			//次がなくなるまで繰り返す
+			while (pSceneNow != NULL)
+			{
+				pSceneNext = pSceneNow->m_pNext[nCount];											// 次回アップデート対象を控える
+
+				if (ImGui::TreeNode(pSceneNow->m_Label.c_str()))
+				{
+					ImGui::DragFloat3("pos", (float*)&pSceneNow->m_pos);
+
+					if (ImGui::Button("delete"))
+					{
+						pSceneNow->Release();
+					}
+
+					ImGui::TreePop();
+				}
+
+				pSceneNow = pSceneNext;																// 次回アップデート対象を格納
+			}
+		}
+	}
+
+	//デバッグ処理を終了
+	ImGui::End();
+#endif
 }
