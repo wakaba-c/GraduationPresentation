@@ -36,7 +36,7 @@ LPDIRECT3DTEXTURE9 CPiece::m_pTexture = NULL;			// テクスチャ変数
 //==================================================================================================================
 // コンストラクタ
 //==================================================================================================================
-CPiece::CPiece(PRIORITY type = CScene::PRIORITY_FLOOR) :CScene(type)
+CPiece::CPiece(PRIORITY type = CScene::PRIORITY_UI) :CScene(type)
 {
 
 }
@@ -81,7 +81,7 @@ HRESULT CPiece::Init(void)
 				m_pBlock[nCntDepth][nCntWidth]->SetSize(D3DXVECTOR3(50.0f, 50.0f, 0.0f));
 				m_pBlock[nCntDepth][nCntWidth]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
 				m_pBlock[nCntDepth][nCntWidth]->SetTransform();
-				
+
 			}
 		}
 	}
@@ -160,7 +160,7 @@ void CPiece::Update(void)
 		{
 			// 横をカウント
 			for (int nWide = 0; nWide < Piece_Width; nWide++)
-			{		
+			{
 				// 状態確認
 				if (m_bPuzzle[nDepth][nWide] == true)
 				{
@@ -187,7 +187,7 @@ void CPiece::Draw(void)
 CPiece *CPiece::Create(void)
 {
 	// シーン動的に確保
-	CPiece *pPiece = new CPiece(CScene::PRIORITY_FLOOR);
+	CPiece *pPiece = new CPiece(CScene::PRIORITY_UI);
 
 	if (pPiece != NULL)
 	{
@@ -384,7 +384,7 @@ void CPiece::SetPiece(void)
 						if (m_bBox[m_nCntMove_Y][m_nCntMove_X] == false && m_bBox[m_nCntMove_Y][m_nCntMove_X + 1] == false &&
 							m_bBox[m_nCntMove_Y + 1][m_nCntMove_X] == false && m_bBox[m_nCntMove_Y + 1][m_nCntMove_X + 1] == false &&
 							m_bBox[m_nCntMove_Y + 2][m_nCntMove_X] == false && m_bBox[m_nCntMove_Y + 2][m_nCntMove_X + 1] == false &&
-							m_bBox[m_nCntMove_Y + 3][m_nCntMove_X] == false && m_bBox[m_nCntMove_Y + 3][m_nCntMove_X + 1] == false && 
+							m_bBox[m_nCntMove_Y + 3][m_nCntMove_X] == false && m_bBox[m_nCntMove_Y + 3][m_nCntMove_X + 1] == false &&
 							m_bBox[m_nCntMove_Y + 4][m_nCntMove_X] == false && m_bBox[m_nCntMove_Y + 4][m_nCntMove_X + 1] == false)
 						{
 							m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
@@ -981,7 +981,7 @@ void CPiece::SetPiece(void)
 					{
 						// 色の変更
 						if (m_bBox[m_nCntMove_Y][m_nCntMove_X] == false && m_bBox[m_nCntMove_Y][m_nCntMove_X + 1] == false &&
-							m_bBox[m_nCntMove_Y + 1][m_nCntMove_X + 1] == false && m_bBox[m_nCntMove_Y + 2][m_nCntMove_X + 1] == false && 
+							m_bBox[m_nCntMove_Y + 1][m_nCntMove_X + 1] == false && m_bBox[m_nCntMove_Y + 2][m_nCntMove_X + 1] == false &&
 							m_bBox[m_nCntMove_Y + 3][m_nCntMove_X] == false && m_bBox[m_nCntMove_Y + 3][m_nCntMove_X + 1] == false &&
 							m_bBox[m_nCntMove_Y + 4][m_nCntMove_X] == false)
 						{
