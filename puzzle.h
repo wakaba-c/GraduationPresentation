@@ -30,11 +30,13 @@ public:
 	void Update(void);			// 更新処理
 	void Draw(void);			// 描画処理
 
-	static void	LoadAsset(void);		// アセットの読み込み処理
-
+	static void	LoadAsset(void);							// アセットの読み込み処理
+	static float GetSpeed(void) { return m_fSpeed; }		// スピードの取得
 
 private:
-	CBox *pBox;					// ボックスのポインタ
+	CBox *m_pBox;					// ボックスのポインタ
+
+	static float m_fSpeed;			// スピード
 
 };
 #endif

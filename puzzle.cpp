@@ -17,13 +17,14 @@
 //=============================================================================
 // 静的メンバ変数
 //=============================================================================
+float CPuzzle::m_fSpeed = 0.0f;
 
 //=============================================================================
 // コンストラクタ
 //=============================================================================
 CPuzzle::CPuzzle()
 {
-	pBox = NULL;
+	m_pBox = NULL;
 }
 
 //=============================================================================
@@ -40,7 +41,13 @@ CPuzzle::~CPuzzle()
 HRESULT CPuzzle::Init(void)
 {
 	LoadAsset();
-	pBox = CBox::Create();
+	m_pBox = CBox::Create();
+
+	// 各種アセットの生成＆設置
+	//CMeshField::LoadRand("data/stage/rand.csv", false);				// 床情報の読込
+	//CObject::LoadModel("data/stage/object.csv");						// モデル情報の読込
+	//CEnemy::LoadEnemy("data/stage/enemy.csv");						// 敵情報の読込
+
 	return S_OK;
 }
 
@@ -52,6 +59,11 @@ void CPuzzle::Update(void)
 	CInputKeyboard *pInputKeyboard = CManager::GetInputKeyboard();
 	CInputController *pInputController = CManager::GetInputController();
 	CNetwork *pNetwork = CManager::GetNetwork();
+
+	if (m_pBox != NULL)
+	{
+		//m_fSpeed = m_pBox->GetSpeed();
+	}
 
 	if (CFade::GetFade() == CFade::FADE_NONE)
 	{//フェードが処理をしていないとき
@@ -93,11 +105,11 @@ void CPuzzle::Draw(void)
 //=============================================================================
 void CPuzzle::Uninit(void)
 {
-	if (pBox != NULL)
+	if (m_pBox != NULL)
 	{
-		pBox->Uninit();
-		pBox->Release();
-		pBox = NULL;
+		m_pBox->Uninit();
+		m_pBox->Release();
+		m_pBox = NULL;
 	}
 
 	// ポリゴンの開放

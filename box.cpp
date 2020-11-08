@@ -56,6 +56,7 @@ HRESULT CBox::Init(void)
 	m_nCntChange = 0;
 	m_nPieceNum = 0;
 	m_nSelect = 0;
+	m_fSpeed = 0;
 	m_bPlacement = false;
 	m_bRelease = false;
 	m_bCreate = false;
@@ -182,7 +183,6 @@ void CBox::Update(void)
 			m_pPiece[m_nPieceNum]->SetMove(false);
 		}
 
-
 		// è„â∫ëÄçÏ
 		if (pKeyboard->GetTriggerKeyboard(MOVE_ACCEL))
 		{
@@ -246,6 +246,11 @@ void CBox::Update(void)
 		{
 			m_nSelect = 0;
 			m_bRelease = false;
+		}
+
+		for (int nCnt = 0; nCnt < m_nPieceNum; nCnt++)
+		{
+			m_fSpeed = m_pPiece[nCnt]->GetSpeed();
 		}
 		// ÉsÅ[ÉXê∂ê¨
 
@@ -329,6 +334,7 @@ void CBox::Update(void)
 			}
 		}
 	}
+
 	for (int nCntDepth = 0; nCntDepth < Box_Depth; nCntDepth++)
 	{
 		for (int nCntWidth = 0; nCntWidth < Box_Width; nCntWidth++)

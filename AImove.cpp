@@ -29,9 +29,6 @@ CAImove::~CAImove()
 //=============================================================================
 HRESULT CAImove::Init(void)
 {
-	CRenderer *pRenderer = CManager::GetRenderer();
-	LPDIRECT3DDEVICE9 pDevice;
-
 	return S_OK;
 }
 

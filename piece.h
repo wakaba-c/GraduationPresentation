@@ -63,8 +63,10 @@ public:
 	bool GetMove(void) { return m_bMove; }															// 移動情報取得
 	bool GetPlaacement(void) { return m_bPlacement; }												// 配置情報取得
 	bool GetPuzzle(int nDepth, int nWidth) { return m_bPuzzle[nDepth][nWidth]; }					// パズル情報取得
+	float GetSpeed(void) { return m_fSpeed; }														// スピード取得
 
 	void SetPieceType(PieceType type);																// タイプ設定
+	void SetStatus(void);																			// ステータス設定
 	void SetPiece(void);																			// ピース設定
 	void SetMove(bool bMove) { m_bMove = bMove; }													// 移動
 	void SetRelease(bool bRelease) { m_bRelease = bRelease; }										// 消すかどうか
@@ -85,6 +87,7 @@ private:
 
 	int m_nCntMove_X;																				// 移動カウントX
 	int m_nCntMove_Y;																				// 移動カウントY
+	float m_fSpeed;																					// 速さ
 	PieceType m_PieceType;																			// ピースの状態
 	bool m_bPlacement;																				// 配置しているかどうか
 	bool m_bCreate;																					// 生成するかどうか
