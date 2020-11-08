@@ -40,6 +40,11 @@ bool CWrite::Open(const std::string &add)
 	// テキストデータロード
 	m_pFile = fopen(add.c_str(), "w");
 
+	if (m_pFile == NULL)
+	{// 読み込めなかったとき
+		MessageBox(NULL, "ファイルの読み込みに失敗!", "警告！", MB_ICONWARNING);
+	}
+
 	return true;
 }
 
