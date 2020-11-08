@@ -118,29 +118,7 @@ HRESULT CGame::Init(void)
 //=============================================================================
 void CGame::Update(void)
 {
-#ifdef _DEBUG
-	CInputKeyboard *pKeyboard = CManager::GetInputKeyboard();
 
-	////ゲームの遷移
-	//if (pKeyboard->GetTriggerKeyboard(DIK_RETURN))
-	//{//エンターキーが押されたとき
-	//	if (CFade::GetFade() == CFade::FADE_NONE)
-	//	{//フェードが処理をしていないとき
-	//		CResult::SetIdxKill(15);			// Kill数をリザルトに渡す
-	//		//フェードを入れる
-	//		CFade::SetFade(CManager::MODE_RESULT);
-	//	}
-	//}
-
-	// ボスへのショートカット
-	if (pKeyboard->GetTriggerKeyboard(DIK_B))
-	{
-		if (m_pPlayer != NULL)
-		{// プレイヤーが存在していたとき
-			m_pPlayer->SetPosition(D3DXVECTOR3(5972.14f, 100.0f, 8000.62f));		// 位置の設定
-		}
-	}
-#endif
 }
 
 //=============================================================================
