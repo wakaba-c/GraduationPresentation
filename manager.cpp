@@ -157,7 +157,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 	Load("data/model/akazukin/skin.jpg");
 	Load("data/model/akazukin/skirt.png");
 
-	SetMode(MODE_PUZZLE_CUSTOM);																		//モードセレクト
+	SetMode(MODE_TITLE);																		//モードセレクト
 
 	return S_OK;
 }
@@ -379,11 +379,13 @@ void CManager::SetMode(MODE mode)
 	switch (m_mode)
 	{
 	case MODE_TITLE:
-		m_pTitle->Uninit();
-		delete m_pTitle;
-		m_pTitle = NULL;
+		if (m_pTitle != NULL)
+		{
+			m_pTitle->Uninit();
+			delete m_pTitle;
+			m_pTitle = NULL;
+		}
 		break;
-
 	case MODE_DEMO_PLAY:
 
 		break;
@@ -394,27 +396,36 @@ void CManager::SetMode(MODE mode)
 
 		break;
 	case MODE_PUZZLE_CUSTOM:
-		m_pPuzzle->Uninit();
-		delete m_pPuzzle;
-		m_pPuzzle = NULL;
+		if (m_pPuzzle != NULL)
+		{
+			m_pPuzzle->Uninit();
+			delete m_pPuzzle;
+			m_pPuzzle = NULL;
+		}
 		break;
-
 	case MODE_GAME:
-		m_pGame->Uninit();
-		delete m_pGame;
-		m_pGame = NULL;
+		if (m_pGame != NULL)
+		{
+			m_pGame->Uninit();
+			delete m_pGame;
+			m_pGame = NULL;
+		}
 		break;
-
 	case MODE_RESULT:
-		m_pResult->Uninit();
-		delete m_pResult;
-		m_pResult = NULL;
+		if (m_pResult != NULL)
+		{
+			m_pResult->Uninit();
+			delete m_pResult;
+			m_pResult = NULL;
+		}
 		break;
-
 	case MODE_RANKING:
-		m_pRanking->Uninit();
-		delete m_pRanking;
-		m_pRanking = NULL;
+		if (m_pRanking != NULL)
+		{
+			m_pRanking->Uninit();
+			delete m_pRanking;
+			m_pRanking = NULL;
+		}
 		break;
 	}
 
@@ -449,7 +460,6 @@ void CManager::SetMode(MODE mode)
 		m_pResult = new CResult;
 		m_pResult->Init();
 		break;
-
 	case MODE_RANKING:
 		m_pRanking = new CRanking;
 		m_pRanking->Init();
