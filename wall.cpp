@@ -7,8 +7,6 @@
 #include "wall.h"
 #include "manager.h"
 #include "renderer.h"
-#include "inputMouse.h"
-#include "inputKeyboard.h"
 #include "camera.h"
 #include "circle.h"
 #include "tree.h"
@@ -31,7 +29,7 @@ CMeshWall::CMeshWall(CScene::PRIORITY obj = CScene::PRIORITY_WALL) : CScene(obj)
 
 	// à íuÅEâÒì]ÇÃèâä˙ê›íË
 	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_col = D3DXCOLOR(0.0f, 1.0f, 0.4f, 1.0f);
+	m_col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	m_bDebug = false;
 	m_bCalculation = false;
 }
