@@ -34,7 +34,7 @@ bool CBox::m_bPuzzle[Box_Depth][Box_Width] = {};
 //==================================================================================================================
 // コンストラクタ
 //==================================================================================================================
-CBox::CBox(PRIORITY type = CScene::PRIORITY_FLOOR) :CScene(type)
+CBox::CBox(PRIORITY type = CScene::PRIORITY_UI) :CScene(type)
 {
 
 }
@@ -368,7 +368,7 @@ void CBox::Draw(void)
 CBox *CBox::Create(void)
 {
 	// シーン動的に確保
-	CBox *pBox = new CBox(CScene::PRIORITY_FLOOR);
+	CBox *pBox = new CBox(CScene::PRIORITY_UI);
 
 	if (pBox != NULL)
 	{
