@@ -44,21 +44,30 @@ CTitle::~CTitle()
 //=============================================================================
 HRESULT CTitle::Init(void)
 {
-	CCamera *pCamera = CManager::GetCamera();		// カメラの取得
+	//CCamera *pCamera = CManager::GetCamera();		// カメラの取得
 
-	if (pCamera != NULL)
-	{// カメラが存在していたとき
-		pCamera->SetPosCamera(D3DXVECTOR3(7099.40f, 187.26f, 7523.8f), D3DXVECTOR3(0.1f, -2.33f, 0.0f));		// 位置の設定
+	//if (pCamera != NULL)
+	//{// カメラが存在していたとき
+	//	pCamera->SetPosCamera(D3DXVECTOR3(7099.40f, 187.26f, 7523.8f), D3DXVECTOR3(0.1f, -2.33f, 0.0f));		// 位置の設定
+	//}
+
+	//m_pTitleLogo = CTitlelogo::Create();		// タイトルロゴの生成
+
+	CScene2D *pBack = CScene2D::Create(CScene::PRIORITY_UI);
+	if (pBack != NULL)
+	{
+		pBack->BindTexture(CManager::GetResource("data/tex/status_back.jpg"));
+		pBack->SetPosition(D3DXVECTOR3(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 0.0f));
+		pBack->SetSize(D3DXVECTOR3(SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f));
+		pBack->SetTransform();
 	}
 
-	m_pTitleLogo = CTitlelogo::Create();		// タイトルロゴの生成
+	//// 空の作成
+	//CSky::Create();
 
-	// 空の作成
-	CSky::Create();
-
-	// 各種アセットの生成＆設置
-	CMeshField::LoadRand("data/stage/rand.csv", false);				// 床情報の読込
-	CObject::LoadModel("data/stage/object.csv");					// モデル情報の読込
+	//// 各種アセットの生成＆設置
+	//CMeshField::LoadRand("data/stage/rand.csv", false);				// 床情報の読込
+	//CObject::LoadModel("data/stage/object.csv");					// モデル情報の読込
 	return S_OK;
 }
 
@@ -93,7 +102,7 @@ void CTitle::Update(void)
 		{// キーボードが存在していたとき
 			if (pInputKeyboard->GetTriggerKeyboard(DIK_RETURN))
 			{// 指定のキーが押されたとき
-				CFade::SetFade(CManager::MODE_GAME);					//フェードを入れる
+				CFade::SetFade(CManager::MODE_PUZZLE_CUSTOM);					//フェードを入れる
 			}
 		}
 		if (pInputController->GetJoypadUse(0))
