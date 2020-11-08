@@ -23,7 +23,7 @@
 //=============================================================================
 CPuzzle::CPuzzle()
 {
-
+	pBox = NULL;
 }
 
 //=============================================================================
@@ -41,13 +41,6 @@ HRESULT CPuzzle::Init(void)
 {
 	LoadAsset();
 	pBox = CBox::Create();
-
-	// 各種アセットの生成＆設置
-	//CMeshField::LoadRand("data/stage/rand.csv", false);				// 床情報の読込
-	//CObject::LoadModel("data/stage/object.csv");						// モデル情報の読込
-	//CEnemy::LoadEnemy("data/stage/enemy.csv");						// 敵情報の読込
-
-
 	return S_OK;
 }
 
@@ -58,6 +51,7 @@ void CPuzzle::Update(void)
 {
 	CInputKeyboard *pInputKeyboard = CManager::GetInputKeyboard();
 	CInputController *pInputController = CManager::GetInputController();
+	CNetwork *pNetwork = CManager::GetNetwork();
 
 	if (CFade::GetFade() == CFade::FADE_NONE)
 	{//フェードが処理をしていないとき
@@ -65,9 +59,9 @@ void CPuzzle::Update(void)
 		{// キーボードが存在していたとき
 			if (pInputKeyboard->GetTriggerKeyboard(DIK_RETURN))
 			{// 指定のキーが押されたとき
-				if (CManager::GetNetwork() != NULL)
+				if (pNetwork != NULL)
 				{
-					if (CManager::GetNetwork()->Connect() == S_OK)
+					if (pNetwork->Connect() == S_OK)
 					{
 						CFade::SetFade(CManager::MODE_GAME);					//フェードを入れる
 					}
@@ -99,6 +93,13 @@ void CPuzzle::Draw(void)
 //=============================================================================
 void CPuzzle::Uninit(void)
 {
+	if (pBox != NULL)
+	{
+		pBox->Uninit();
+		pBox->Release();
+		pBox = NULL;
+	}
+
 	// ポリゴンの開放
 	CScene::ReleaseAll();
 }
