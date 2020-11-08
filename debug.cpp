@@ -166,8 +166,6 @@ void CDebugProc::Update(void)
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
-	ImGui::ShowDemoWindow();
-
 #ifdef _DEBUG
 	// 自分で作成した簡単なウィンドウを表示します。 Begin / Endペアを使用して、名前付きウィンドウを作成します。
 	ImGui::Begin("System");                          // 「System」というウィンドウを作成しますそれに追加します。
