@@ -38,6 +38,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	CManager *pManager;
 
 #ifdef _DEBUG
+	//_CrtSetBreakAlloc(15272);                                        // メモリリーク検出用（）内に番号を入力してブレイクポイントを発生させる
 	// メモリリークの調査を設定
 	_CrtSetDbgFlag(_CRTDBG_LEAK_CHECK_DF | _CRTDBG_ALLOC_MEM_DF);
 #endif
