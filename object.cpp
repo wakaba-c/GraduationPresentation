@@ -18,6 +18,11 @@
 #define OBJECT_SCRIPT "data/text/object.txt"
 
 //=============================================================================
+// 静的メンバ変数の初期化
+//=============================================================================
+std::vector<CObject*> CObject::m_vPointObj = {};
+
+//=============================================================================
 // コンストラクタ
 //=============================================================================
 CObject::CObject(CScene::PRIORITY obj = CScene::PRIORITY_MODEL) : CSceneX(obj)
@@ -290,6 +295,12 @@ void CObject::LoadModelTest(char *add)
 
 									// 位置の設定
 									pObj->BindModel(aModelAdd);
+
+									// ポイントモデルのとき
+									if (strcmp(aModelAdd, "data/model/point.x") == 0)
+									{
+										m_vPointObj.push_back(pObj);
+									}
 								}
 								else if (strcmp(cHeadText, "POS") == 0)
 								{//パーツ総数のとき

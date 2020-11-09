@@ -62,6 +62,7 @@ public:
 
 	std::string GetAdd(void) { return m_Add; }
 	LPD3DXMESH GetMesh(void) { return m_pMesh; }	// メッシュ情報の取得
+	static std::vector<CObject*> GetPointObj(void) { return m_vPointObj; }
 
 	void OnTriggerEnter(CCollider *col) {};
 	void OnCollisionEnter(CCollider *col) {};
@@ -80,6 +81,9 @@ private:
 	DWORD			m_nNumMat;							// マテリアル情報の数
 	LPD3DXBUFFER		m_pBuffMat;						// マテリアル情報へのポインタ
 	CColliderBox *m_pBox;					// 当たり判定ボックス
+
+	int m_pointNum;						// ポイントの数
+	static std::vector<CObject*> m_vPointObj;
 
 	std::string m_Add;														// モデルのアドレス
 };
