@@ -97,6 +97,7 @@ private:
 	D3DXVECTOR3						m_cameraRot;									// カメラの回転情報
 	D3DXCOLOR						m_color;										// 色
 	float							m_fSpeed;										// スピード
+	float							m_fPuzzleSpeed;									// パズルのスピード
 	float							m_fDeathblow;									// 必殺技ポイント
 	int								m_nLife;										// 体力
 	int								m_nActionCount;									// 次のアクションまでのカウンタ

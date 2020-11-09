@@ -289,7 +289,7 @@ void CPiece::SetStatus(void)
 			// Å°Å°Å°
 			// Å@Å@Å°Å°
 		case PieceType_Speed:
-			m_fSpeed = 10.0f;
+			m_fSpeed = 3.0f;
 			break;
 
 			// Å°Å°
