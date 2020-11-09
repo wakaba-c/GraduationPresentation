@@ -579,6 +579,273 @@ bool CMeshWall::GetWallHit(CScene *pTarget, D3DXVECTOR3 &nol)
 }
 
 //=============================================================================
+// ポリゴンの壁通過判定
+//=============================================================================
+bool CMeshWall::GetWallTest(CScene * pTarget, D3DXVECTOR3 & nol, D3DXVECTOR3 &rot)
+{
+	VERTEX_3D *pVtx;										//頂点情報へのポインタ
+	bool bHit = false;			// ヒットフラグ
+
+	D3DXVECTOR3 FieldPos = GetPosition();
+
+	D3DXVECTOR3 AB;
+	D3DXVECTOR3 BC;
+
+	D3DXVECTOR3 point1;
+	D3DXVECTOR3 point2;
+	D3DXVECTOR3 point3;
+
+	D3DXVECTOR3 aWork[3];
+	D3DXVECTOR3 aPlayer[3];
+	float fHeight = 0;
+
+	D3DXVECTOR3 pointA, pointB;
+
+	pointA = pTarget->GetPosition();
+	pointB = pTarget->GetPosOld();
+
+	//頂点データの範囲をロックし、頂点バッファへのポインタを取得
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	for (int nDepth = 0; nDepth < WALL_DEPTH_FIELD; nDepth++)
+	{
+		for (int nWide = 0; nWide < WALL_WIDE_FIELD; nWide++)
+		{
+
+			D3DXVECTOR3 P = pVtx[nWide + ((WALL_WIDE_FIELD + 1) * nDepth)].pos;	// 平面上の点P
+			D3DXVECTOR3 A = pTarget->GetPosition();		// 始点
+			D3DXVECTOR3 B = pTarget->GetPosOld();		// 終点
+
+			P.y = 0.0f;
+			A.y = 0.0f;
+			B.y = 0.0f;
+
+			// PA PBベクトル
+			D3DXVECTOR3 PA = D3DXVECTOR3(P.x - A.x, P.y - A.y, P.z - A.z);
+			D3DXVECTOR3 PB = D3DXVECTOR3(P.x - B.x, P.y - B.y, P.z - B.z);
+
+			D3DXVec3Normalize(&PA, &PA);
+			D3DXVec3Normalize(&PB, &PB);
+
+			// PA PBそれぞれを平面法線と内積
+			float dot_PA = D3DXVec3Dot(&PA, &apNor[((WALL_WIDE_FIELD * 2) * nDepth) + (2 * nWide)]);
+			float dot_PB = D3DXVec3Dot(&PB, &apNor[((WALL_WIDE_FIELD * 2) * nDepth) + (2 * nWide)]);
+
+			// 誤差を吸収するための判定文
+			if (fabs(dot_PA) < 0.000001) { dot_PA = 0.0f; }
+			if (fabs(dot_PB) < 0.000001) { dot_PB = 0.0f; }
+
+			// 交差判定
+			if (dot_PA == 0.0f && dot_PB == 0.0f)
+			{
+				//両端が平面上にあり、交点を計算できない。
+				continue;
+			}
+			else
+			{
+				if ((dot_PA >= 0.0f && dot_PB <= 0.0f))
+					//(dot_PA <= 0.0f && dot_PB >= 0.0f))
+				{
+
+				}
+				else
+				{
+					//交差していない
+					continue;
+				}
+			}
+
+			// 以下交点を求める
+
+			D3DXVECTOR3 AB = B - A;
+
+			// 交点とAの距離 : 交点とBの距離 = dot_PA : dot_PB
+			float hiritu = fabs(dot_PA) / (fabs(dot_PA) + fabs(dot_PB));
+			D3DXVECTOR3 Ans = A + (AB * hiritu);
+
+			D3DXVECTOR3 aVertex[4];
+			aVertex[0] = pVtx[WALL_WIDE_FIELD + nWide + 1 + ((WALL_WIDE_FIELD + 1) * nDepth)].pos;
+			aVertex[1] = pVtx[WALL_WIDE_FIELD + nWide + 2 + ((WALL_WIDE_FIELD + 1) * nDepth)].pos;
+			aVertex[2] = pVtx[nWide + ((WALL_WIDE_FIELD + 1) * nDepth)].pos;
+			aVertex[3] = pVtx[1 + nWide + ((WALL_WIDE_FIELD + 1) * nDepth)].pos;
+
+			//差分の計算
+			aWork[0] = (aVertex[0] + FieldPos) - (aVertex[2] + FieldPos);
+			aPlayer[0] = Ans - (aVertex[0] + FieldPos);
+
+			aWork[1] = (aVertex[1] + FieldPos) - (aVertex[0] + FieldPos);
+			aPlayer[1] = Ans - (aVertex[1] + FieldPos);
+
+			aWork[2] = (aVertex[2] + FieldPos) - (aVertex[1] + FieldPos);
+			aPlayer[2] = Ans - (aVertex[2] + FieldPos);
+
+			float fAnswer[3];
+			D3DXVECTOR3 clossAns[3];
+
+			//法線
+			fAnswer[0] = aWork[0].x * aPlayer[0].z - aWork[0].z * aPlayer[0].x - aWork[0].y * aPlayer[0].y;
+			fAnswer[1] = aWork[1].x * aPlayer[1].z - aWork[1].z * aPlayer[1].x - aWork[1].y * aPlayer[1].y;
+			fAnswer[2] = aWork[2].x * aPlayer[2].z - aWork[2].z * aPlayer[2].x - aWork[2].y * aPlayer[2].y;
+
+			D3DXVec3Cross(&clossAns[0], &aWork[0], &aPlayer[0]);
+			D3DXVec3Cross(&clossAns[1], &aWork[1], &aPlayer[1]);
+			D3DXVec3Cross(&clossAns[2], &aWork[2], &aPlayer[2]);
+
+			float dot_12 = D3DXVec3Dot(&clossAns[0], &clossAns[1]);
+			float dot_13 = D3DXVec3Dot(&clossAns[0], &clossAns[3]);
+
+			float fDistance = CManager::GetDistance(pTarget->GetPosOld(), Ans);
+
+			RAY ray;
+			ray.vPoint[0] = pTarget->GetPosOld();
+			ray.vPoint[1] = pTarget->GetPosition();
+			ray.fYaw = 0.0f;
+			ray.vPos = D3DXVECTOR3_ZERO;
+
+			POLYGON poly;
+			poly.vPoint[0] = aVertex[0];
+			poly.vPoint[1] = aVertex[1];
+			poly.vPoint[2] = aVertex[2];
+
+			if (Intersect(&ray, &poly))
+			{
+				OutputDebugString("FinalPhase\n");
+				D3DXVECTOR3 old = pTarget->GetPosOld();
+				bHit = true;
+				pTarget->SetPosition(D3DXVECTOR3(Ans.x, pTarget->GetPosition().y, Ans.z));
+				pTarget->SetPosOld(old);
+				nol = apNor[((WALL_WIDE_FIELD * 2) * nDepth) + (2 * nWide)];
+				break;
+				break;
+			}
+
+			////if ((fAnswer[0] >= 0 && fAnswer[1] >= 0 && fAnswer[2] >= 0) || (fAnswer[0] < 0 && fAnswer[1] < 0 && fAnswer[2] < 0))
+			//{
+			//	if ((clossAns[0] > 0 && clossAns[1] > 0 && clossAns[2] > 0) || (clossAns[0] <= 0 && clossAns[1] <= 0 && clossAns[2] <= 0))
+			//	{
+			//		if (dot_12 > 0 && dot_13 > 0)
+			//		{
+			//			OutputDebugString("FinalPhase\n");
+			//			D3DXVECTOR3 old = pTarget->GetPosOld();
+			//			bHit = true;
+			//			pTarget->SetPosition(Ans);
+			//			pTarget->SetPosOld(old);
+			//			nol = apNor[((WALL_WIDE_FIELD * 2) * nDepth) + (2 * nWide)];
+			//			break;
+			//			break;
+			//		}
+			//	}
+			//}
+
+			P = pVtx[nWide + ((WALL_WIDE_FIELD + 1) * nDepth)].pos;	// 平面上の点P
+			A = pTarget->GetPosition();		// 始点
+			B = pTarget->GetPosOld();		// 終点
+
+											// PA PBベクトル
+			PA = D3DXVECTOR3(P.x - A.x, P.y - A.y, P.z - A.z);
+			PB = D3DXVECTOR3(P.x - B.x, P.y - B.y, P.z - B.z);
+
+			// PA PBそれぞれを平面法線と内積
+			dot_PA = D3DXVec3Dot(&PA, &apNor[((WALL_WIDE_FIELD * 2) * nDepth) + (2 * nWide) + 1]);
+			dot_PB = D3DXVec3Dot(&PB, &apNor[((WALL_WIDE_FIELD * 2) * nDepth) + (2 * nWide) + 1]);
+
+			// 誤差を吸収するための判定文
+			if (fabs(dot_PA) < 0.000001) { dot_PA = 0.0f; }
+			if (fabs(dot_PB) < 0.000001) { dot_PB = 0.0f; }
+
+			// 交差判定
+			if (dot_PA == 0.0f && dot_PB == 0.0f)
+			{
+				//両端が平面上にあり、交点を計算できない。
+				continue;
+			}
+			else
+			{
+				if ((dot_PA >= 0.0f && dot_PB <= 0.0f) ||
+					(dot_PA <= 0.0f && dot_PB >= 0.0f))
+				{
+
+				}
+				else
+				{
+					//交差していない
+					continue;
+				}
+			}
+
+			// 交点とAの距離 : 交点とBの距離 = dot_PA : dot_PB
+			hiritu = fabs(dot_PA) / (fabs(dot_PA) + fabs(dot_PB));
+			Ans = A + (AB * hiritu);
+
+			//差分の計算
+			aWork[0] = (aVertex[2] + FieldPos) - (aVertex[3] + FieldPos);
+			aPlayer[0] = Ans - (aVertex[3] + FieldPos);
+
+			aWork[1] = (aVertex[3] + FieldPos) - (aVertex[1] + FieldPos);
+			aPlayer[1] = Ans - (aVertex[1] + FieldPos);
+
+			aWork[2] = (aVertex[1] + FieldPos) - (aVertex[2] + FieldPos);
+			aPlayer[2] = Ans - (aVertex[2] + FieldPos);
+
+			//法線
+			fAnswer[0] = aWork[0].x * aPlayer[0].z - aWork[0].z * aPlayer[0].x - aWork[0].y * aPlayer[0].y;
+			fAnswer[1] = aWork[1].x * aPlayer[1].z - aWork[1].z * aPlayer[1].x - aWork[1].y * aPlayer[1].y;
+			fAnswer[2] = aWork[2].x * aPlayer[2].z - aWork[2].z * aPlayer[2].x - aWork[2].y * aPlayer[2].y;
+
+			D3DXVec3Cross(&clossAns[0], &aWork[0], &aPlayer[0]);
+			D3DXVec3Cross(&clossAns[1], &aWork[1], &aPlayer[1]);
+			D3DXVec3Cross(&clossAns[2], &aWork[2], &aPlayer[2]);
+
+			dot_12 = D3DXVec3Dot(&clossAns[0], &clossAns[1]);
+			dot_13 = D3DXVec3Dot(&clossAns[0], &clossAns[3]);
+
+			ray.vPoint[0] = pTarget->GetPosOld();
+			ray.vPoint[1] = pTarget->GetPosition();
+			ray.fYaw = 0.0f;
+			ray.vPos = D3DXVECTOR3_ZERO;
+
+			poly.vPoint[0] = aVertex[1];
+			poly.vPoint[1] = aVertex[2];
+			poly.vPoint[2] = aVertex[3];
+
+			if (Intersect(&ray, &poly))
+			{
+				OutputDebugString("FinalPhase\n");
+				D3DXVECTOR3 old = pTarget->GetPosOld();
+				bHit = true;
+				pTarget->SetPosition(D3DXVECTOR3(Ans.x, pTarget->GetPosition().y, Ans.z));
+				pTarget->SetPosOld(old);
+				nol = apNor[((WALL_WIDE_FIELD * 2) * nDepth) + (2 * nWide)];
+				break;
+				break;
+			}
+
+			////if ((fAnswer[0] >= 0 && fAnswer[1] >= 0 && fAnswer[2] >= 0) || (fAnswer[0] < 0 && fAnswer[1] < 0 && fAnswer[2] < 0))
+			//{
+			//	if ((clossAns[0] > 0 && clossAns[1] > 0 && clossAns[2] > 0) || (clossAns[0] <= 0 && clossAns[1] <= 0 && clossAns[2] <= 0))
+			//	{
+			//		if (dot_12 > 0 && dot_13 > 0)
+			//		{
+			//			//OutputDebugString("FinalPhase\n");
+			//			//D3DXVECTOR3 old = pTarget->GetPosOld();
+			//			//bHit = true;
+			//			//pTarget->SetPosition(Ans);
+			//			//pTarget->SetPosOld(old);
+			//			//nol = apNor[((WALL_WIDE_FIELD * 2) * nDepth) + (2 * nWide)];
+			//			break;
+			//			break;
+			//		}
+			//	}
+			//}
+		}
+	}
+
+	//頂点データのアンロック
+	m_pVtxBuff->Unlock();
+	return bHit;
+}
+
+//=============================================================================
 // X軸とZ軸の当たり判定
 //=============================================================================
 bool CMeshWall::SphereModel(D3DXVECTOR3 C1, D3DXVECTOR3 C2, float R1)
@@ -1029,6 +1296,51 @@ void CMeshWall::EditWallVertex(void)
 
 	//頂点データのアンロック
 	m_pVtxBuff->Unlock();
+}
+
+//
+//BOOL Intersect(RAY* pRay,POLYGON* pPoly)
+//無限遠平面と線分の交差を判定 （交差している場合はtrueを、していない場合はfalseを返す）
+bool CMeshWall::Intersect(RAY* pRay, POLYGON* pPoly)
+{
+	D3DXVECTOR3 vP[2];
+
+	//線分（レイ）の端点を得る
+	{
+		vP[0] = pRay->vPoint[0];
+		vP[1] = pRay->vPoint[1];
+
+		D3DXMATRIX mRotation;
+		D3DXMatrixRotationY(&mRotation, pRay->fYaw);
+		D3DXVec3TransformCoord(&vP[0], &vP[0], &mRotation);
+		D3DXVec3TransformCoord(&vP[1], &vP[1], &mRotation);
+		vP[0] += pRay->vPos;
+		vP[1] += pRay->vPos;
+	}
+	//判定部分
+	{
+		D3DXPLANE p;
+		D3DXPlaneFromPoints(&p, &pPoly->vPoint[0], &pPoly->vPoint[1], &pPoly->vPoint[2]);
+		//パラメトリック方程式の媒介変数” t "を解く。
+		FLOAT t = -((p.a * vP[1].x) + (p.b*vP[1].y) + (p.c*vP[1].z) + p.d) /
+			(((p.a*vP[0].x) + (p.b*vP[0].y) + (p.c*vP[0].z)) - ((p.a*vP[1].x) + (p.b*vP[1].y) + (p.c*vP[1].z)));
+		// t が０から１の間であるなら交差していることになる（この時点では、まだ無限遠平面との交差）
+		if (t >= 0 && t <= 1.0)
+		{
+			//交点座標を得る　ｔが分かっていれば両端点から簡単に求まる
+			D3DXVECTOR3 v;
+			v.x = t*vP[0].x + (1 - t)*vP[1].x;
+			v.y = t*vP[0].y + (1 - t)*vP[1].y;
+			v.z = t*vP[0].z + (1 - t)*vP[1].z;
+			//交点が三角形の内か外かを判定　（ここで内部となれば、完全な交差となる）
+			if (CCollider::IsInside(&v, &pPoly->vPoint[0], &pPoly->vPoint[1], &pPoly->vPoint[2]) == true)
+			{
+				return true;
+			}
+			return false;
+		}
+	}
+	return false;
 }
 
 #ifdef _DEBUG

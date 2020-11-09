@@ -173,6 +173,20 @@ void CPlayer::Update(void)
 
 	pos = GetPosition();				// 位置の取得
 
+	CInputKeyboard *pKeyboard = CManager::GetInputKeyboard();
+
+	//if (pKeyboard != NULL)
+	//{
+	//	if (pKeyboard->GetTriggerKeyboard(DIK_ADD))
+	//	{
+	//		pos.y += 10.0f;
+	//		f();
+	//	}
+	//	if (pKeyboard->GetTriggerKeyboard(DIK_SUBTRACT))
+	//	{
+	//		pos.y -= 10.0f;
+	//	}
+	//}
 	CCollider::RayBlockCollision(pos, &pModel[0].GetMtxWorld(), 12.28f, 30000.0f);
 
 	//床の高さを取得する
@@ -763,7 +777,7 @@ bool CPlayer::CollisionWall(void)
 		pSceneNext = CScene::GetSceneNext(pSceneNow, CScene::PRIORITY_WALL);		//次回アップデート対象を控える
 		CMeshWall *pMeshWall = (CMeshWall*)pSceneNow;
 
-		if (pMeshWall->GetWallHit(this, normal))
+		if (pMeshWall->GetWallTest(this, normal, m_rot))
 		{
 			D3DXVECTOR3 playerPos = GetPosition();
 

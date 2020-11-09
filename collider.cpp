@@ -1341,7 +1341,7 @@ bool CCollider::RayBlockCollision(D3DXVECTOR3 &pos, D3DXMATRIX *pMat, float fOff
 
 	if (bLand)
 	{
-		pos.y = pos.y - fDistanceMin + fOffset;
+		pos.y = pos.y - fData + fOffset;
 	}
 
 	//”z—ñ‚ð‹ó‚É‚µ‚Ä‚¨‚­

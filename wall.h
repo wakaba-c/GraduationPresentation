@@ -20,6 +20,28 @@
 #define WALL_WIDE_FIELD 1								// 幅
 #define SIZE		50.0f								// サイズ
 
+struct RAY //レイ
+{
+	D3DXVECTOR3 vPoint[2];
+	D3DXVECTOR3 vDirection;
+	D3DXVECTOR3 vPos;
+	FLOAT fYaw;
+
+	RAY()
+	{
+		ZeroMemory(this, sizeof(RAY));
+	}
+};
+
+struct POLYGON //平面（平面と言っても、無限遠平面上の3頂点を持っているに過ぎない）
+{
+	D3DXVECTOR3 vPoint[3];
+	POLYGON()
+	{
+		ZeroMemory(this, sizeof(POLYGON));
+	}
+};
+
 //=============================================================================
 // クラス定義
 //=============================================================================
@@ -38,6 +60,7 @@ public:
 
 	static void LoadWall(char *add, bool bDebug);									// 地面の高さ読み込み
 	bool GetWallHit(CScene *pTarget, D3DXVECTOR3 &nol);								// ポリゴンの高さを求める
+	bool GetWallTest(CScene *pTarget, D3DXVECTOR3 &nol, D3DXVECTOR3 &rot);
 
 	static bool SphereModel(D3DXVECTOR3 C1, D3DXVECTOR3 C2, float R1);				// X軸とZ軸の当たり判定
 	bool CollisionRange(D3DXVECTOR3 pos);											// 自分の範囲内にいるかどうか
@@ -68,6 +91,7 @@ private:
 #ifdef _DEBUG
 	void Debug(void);																// デバッグ処理関数
 #endif
+	static bool Intersect(RAY* pRay, POLYGON* pPoly);
 
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;												// 頂点バッファへのポインタ
 	LPDIRECT3DINDEXBUFFER9	m_pIdxBuff;												// インデックスバッファへのポインタ
