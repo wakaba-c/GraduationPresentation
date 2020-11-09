@@ -1297,7 +1297,7 @@ bool CCollider::RayBlockCollision(D3DXVECTOR3 &pos, D3DXMATRIX *pMat, float fOff
 		//	逆行列の取得
 		D3DXMatrixInverse(&invmat, NULL, &pObj->GetMtxWorld());
 		//	逆行列を使用し、レイ始点情報を変換　位置と向きで変換する関数が異なるので要注意
-		D3DXVec3TransformCoord(&m_posBefore, &D3DXVECTOR3(pos.x, pMat->_42, pos.z), &invmat);
+		D3DXVec3TransformCoord(&m_posBefore, &D3DXVECTOR3(pos.x, pMat->_42+ fLength, pos.z), &invmat);
 		//	レイ終点情報を変換
 		D3DXVec3TransformCoord(&m_posAfter, &D3DXVECTOR3(pos.x, pos.y - 1, pos.z), &invmat);
 		//	レイ方向情報を変換
@@ -1327,10 +1327,9 @@ bool CCollider::RayBlockCollision(D3DXVECTOR3 &pos, D3DXMATRIX *pMat, float fOff
 				fData = vDistance[nCnt];
 			}
 		}
-		if (fData < fLength)//Rayの長さの指定条件
+		if (fData < 30000)//Rayの長さの指定条件
 		{
-			if(fData < fDistanceMin) { fDistanceMin = fData; }
-			if(!bLand) { bLand = true; }
+			pos.y = pos.y - fData - fOffset+ fLength;
 		}
 	}
 	//Rayに判定がなかったらジャンプできない
@@ -1339,10 +1338,6 @@ bool CCollider::RayBlockCollision(D3DXVECTOR3 &pos, D3DXMATRIX *pMat, float fOff
 		bLand = false;
 	}
 
-	if (bLand)
-	{
-		pos.y = pos.y - fData + fOffset;
-	}
 
 	//配列を空にしておく
 	vDistance.clear();
