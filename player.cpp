@@ -33,6 +33,7 @@
 #include "speed.h"
 #include "wall.h"
 #include "object.h"
+#include "puzzle.h"
 
 //=============================================================================
 // マクロ定義
@@ -128,6 +129,10 @@ HRESULT CPlayer::Init(void)
 
 	// 位置の設定
 	SetPosition(pos);
+
+	float fSpeed = CPuzzle::GetSpeed();
+
+	m_fPuzzleSpeed = NORMAL_SPEED + CPuzzle::GetSpeed();
 
 	return S_OK;
 }
@@ -560,7 +565,7 @@ void CPlayer::Input(void)
 			m_dest.y = 0.0f;
 
 			// 速度設定
-			m_fSpeed = -NORMAL_SPEED;
+			m_fSpeed = -m_fPuzzleSpeed;
 
 			// タイヤ回転方向設定
 			fTireRotSpeed = TIRE_ROT_SPEED;
@@ -574,7 +579,7 @@ void CPlayer::Input(void)
 			m_dest.y = 0.0f;
 
 			// 速度設定
-			m_fSpeed = NORMAL_SPEED;
+			m_fSpeed = m_fPuzzleSpeed;
 
 			// タイヤ回転方向設定
 			fTireRotSpeed = -TIRE_ROT_SPEED;
