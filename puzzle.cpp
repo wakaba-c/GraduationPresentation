@@ -62,7 +62,7 @@ void CPuzzle::Update(void)
 
 	if (m_pBox != NULL)
 	{
-		//m_fSpeed = m_pBox->GetSpeed();
+		m_fSpeed = m_pBox->GetSpeed();
 	}
 
 	if (CFade::GetFade() == CFade::FADE_NONE)
