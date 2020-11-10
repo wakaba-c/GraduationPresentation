@@ -35,6 +35,7 @@
 #include "network.h"
 #include "wall.h"
 #include "speed.h"
+#include "GuideSign.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -107,6 +108,9 @@ HRESULT CGame::Init(void)
 	// 壁情報の読み込み
 	CMeshWall::LoadWall("data/text/wall.txt", false);
 
+	// 案内矢印の生成
+	CGuideSign::Create();
+
 	// ネットワークでのゲーム時初期化処理
 	CManager::GetNetwork()->InitGame();
 
@@ -158,4 +162,5 @@ void CGame::LoadAsset(void)
 	CNumber::Load();
 	CEnemyUi::Load();
 	CMessageWindow::Load();
+	CGuideSign::Load();
 }

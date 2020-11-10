@@ -112,8 +112,8 @@ public:
 	static HRESULT Load(std::string Add);													// テクスチャのロード
 	static LPDIRECT3DTEXTURE9 GetResource(std::string Add);									// テクスチャの取得
 
-	static HRESULT LoadModel(std::string &Add);												// Xファイルのロード
-	static bool GetModelResource(std::string &Add, LPD3DXBUFFER &pBuffMat, DWORD &nNumMat, LPD3DXMESH &pMesh);	// Xファイルの取得
+	static HRESULT LoadModel(std::string Add);												// Xファイルのロード
+	static bool GetModelResource(std::string Add, LPD3DXBUFFER &pBuffMat, DWORD &nNumMat, LPD3DXMESH &pMesh);	// Xファイルの取得
 
 	static HRESULT LoadShader(std::string Add);											// Xファイルのロード
 	static LPD3DXEFFECT GetShaderResource(std::string Add);								// Xファイルの取得
