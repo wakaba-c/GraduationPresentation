@@ -640,7 +640,7 @@ LPDIRECT3DTEXTURE9 CManager::GetResource(std::string Add)
 //=============================================================================
 // 指定したモデル情報を読み込む処理
 //=============================================================================
-HRESULT CManager::LoadModel(std::string &Add)
+HRESULT CManager::LoadModel(std::string Add)
 {
 	std::map<std::string, MODEL_INFO>::const_iterator it = m_ModelMap.find(Add);
 
@@ -675,7 +675,7 @@ HRESULT CManager::LoadModel(std::string &Add)
 //=============================================================================
 // 指定したモデルをもらう処理
 //=============================================================================
-bool CManager::GetModelResource(std::string &Add, LPD3DXBUFFER &pBuffMat, DWORD &nNumMat, LPD3DXMESH &pMesh)
+bool CManager::GetModelResource(std::string Add, LPD3DXBUFFER &pBuffMat, DWORD &nNumMat, LPD3DXMESH &pMesh)
 {
 	std::map<std::string, MODEL_INFO>::const_iterator it = m_ModelMap.find(Add);
 
