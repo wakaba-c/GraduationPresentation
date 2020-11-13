@@ -357,7 +357,7 @@ void CPiece::SetPiece(void)
 				if (m_bPuzzle[nDepth][nWide] == true)
 				{
 					// テクスチャ変更
-					m_pBlock[nDepth][nWide]->BindTexture(CManager::GetResource("data/tex/grass.jpg"));
+					m_pBlock[nDepth][nWide]->BindTexture("data/tex/grass.jpg");
 					// 配置しているかどうか
 					if (m_bPlacement == false)
 					{
@@ -465,7 +465,7 @@ void CPiece::SetPiece(void)
 				if (m_bPuzzle[nDepth][nWide] == true)
 				{
 					// テクスチャ変更
-					m_pBlock[nDepth][nWide]->BindTexture(CManager::GetResource("data/tex/grass.jpg"));
+					m_pBlock[nDepth][nWide]->BindTexture("data/tex/grass.jpg");
 					// 配置しているかどうか
 					if (m_bPlacement == false)
 					{
@@ -548,7 +548,7 @@ void CPiece::SetPiece(void)
 				if (m_bPuzzle[nDepth][nWide] == true)
 				{
 					// テクスチャ変更
-					m_pBlock[nDepth][nWide]->BindTexture(CManager::GetResource("data/tex/grass.jpg"));
+					m_pBlock[nDepth][nWide]->BindTexture("data/tex/grass.jpg");
 					// 配置しているかどうか
 					if (m_bPlacement == false)
 					{
@@ -639,7 +639,7 @@ void CPiece::SetPiece(void)
 				if (m_bPuzzle[nDepth][nWide] == true)
 				{
 					// テクスチャ変更
-					m_pBlock[nDepth][nWide]->BindTexture(CManager::GetResource("data/tex/grass.jpg"));
+					m_pBlock[nDepth][nWide]->BindTexture("data/tex/grass.jpg");
 					// 配置しているかどうか
 					if (m_bPlacement == false)
 					{
@@ -708,7 +708,7 @@ void CPiece::SetPiece(void)
 				if (m_bPuzzle[nDepth][nWide] == true)
 				{
 					// テクスチャ変更
-					m_pBlock[nDepth][nWide]->BindTexture(CManager::GetResource("data/tex/grass.jpg"));
+					m_pBlock[nDepth][nWide]->BindTexture("data/tex/grass.jpg");
 					// 配置しているかどうか
 					if (m_bPlacement == false)
 					{
@@ -782,7 +782,7 @@ void CPiece::SetPiece(void)
 				if (m_bPuzzle[nDepth][nWide] == true)
 				{
 					// テクスチャ変更
-					m_pBlock[nDepth][nWide]->BindTexture(CManager::GetResource("data/tex/grass.jpg"));
+					m_pBlock[nDepth][nWide]->BindTexture("data/tex/grass.jpg");
 					// 配置しているかどうか
 					if (m_bPlacement == false)
 					{
@@ -868,7 +868,7 @@ void CPiece::SetPiece(void)
 				if (m_bPuzzle[nDepth][nWide] == true)
 				{
 					// テクスチャ変更
-					m_pBlock[nDepth][nWide]->BindTexture(CManager::GetResource("data/tex/grass.jpg"));
+					m_pBlock[nDepth][nWide]->BindTexture("data/tex/grass.jpg");
 					// 配置しているかどうか
 					if (m_bPlacement == false)
 					{
@@ -962,7 +962,7 @@ void CPiece::SetPiece(void)
 				if (m_bPuzzle[nDepth][nWide] == true)
 				{
 					// テクスチャ変更
-					m_pBlock[nDepth][nWide]->BindTexture(CManager::GetResource("data/tex/grass.jpg"));
+					m_pBlock[nDepth][nWide]->BindTexture("data/tex/grass.jpg");
 					// 配置しているかどうか
 					if (m_bPlacement == false)
 					{
@@ -1064,7 +1064,7 @@ void CPiece::SetPiece(void)
 				if (m_bPuzzle[nDepth][nWide] == true)
 				{
 					// テクスチャ変更
-					m_pBlock[nDepth][nWide]->BindTexture(CManager::GetResource("data/tex/grass.jpg"));
+					m_pBlock[nDepth][nWide]->BindTexture("data/tex/grass.jpg");
 					// 配置しているかどうか
 					if (m_bPlacement == false)
 					{
@@ -1153,7 +1153,7 @@ void CPiece::SetPiece(void)
 				if (m_bPuzzle[nDepth][nWide] == true)
 				{
 					// テクスチャ変更
-					m_pBlock[nDepth][nWide]->BindTexture(CManager::GetResource("data/tex/grass.jpg"));
+					m_pBlock[nDepth][nWide]->BindTexture("data/tex/grass.jpg");
 					// 配置しているかどうか
 					if (m_bPlacement == false)
 					{

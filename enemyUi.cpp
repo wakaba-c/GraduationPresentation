@@ -39,7 +39,7 @@ CEnemyUi::~CEnemyUi()
 HRESULT CEnemyUi::Init(void)
 {
 	//テクスチャの割当
-	BindTexture(CManager::GetResource("data/tex/enemy.png"));
+	BindTexture("data/tex/enemy.png");
 
 	//テクスチャの中心位置の設定
 	SetCenter(TEXTUREVTX_CENTER);

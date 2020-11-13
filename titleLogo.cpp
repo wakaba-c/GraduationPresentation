@@ -34,7 +34,7 @@ HRESULT CTitlelogo::Init(void)
 
 	if (m_apScene2D[LOGOTYPE_IF] != NULL)
 	{// 存在していたとき
-		m_apScene2D[LOGOTYPE_IF]->BindTexture(CManager::GetResource("data/tex/if.png"));			// 背景テクスチャ のポインタ を渡す
+		m_apScene2D[LOGOTYPE_IF]->BindTexture("data/tex/if.png");			// 背景テクスチャ のポインタ を渡す
 		m_apScene2D[LOGOTYPE_IF]->SetCenter(CScene2D::TEXTUREVTX_CENTER);		// 中心 の設定
 		m_apScene2D[LOGOTYPE_IF]->SetSize(D3DXVECTOR3(100.0f, 70.0f, 0.0f));	// 大きさ の設定
 		m_apScene2D[LOGOTYPE_IF]->SetRotation(D3DXVECTOR3(-0.79f, -0.79f, 0.0f));
@@ -47,7 +47,7 @@ HRESULT CTitlelogo::Init(void)
 
 	if (m_apScene2D[LOGOTYPE_AKAZUKIN] != NULL)
 	{// 存在していたとき
-		m_apScene2D[LOGOTYPE_AKAZUKIN]->BindTexture(CManager::GetResource("data/tex/akazukin.png"));			// 背景テクスチャ のポインタ を渡す
+		m_apScene2D[LOGOTYPE_AKAZUKIN]->BindTexture("data/tex/akazukin.png");			// 背景テクスチャ のポインタ を渡す
 		m_apScene2D[LOGOTYPE_AKAZUKIN]->SetCenter(CScene2D::TEXTUREVTX_CENTER);		// 中心 の設定
 		m_apScene2D[LOGOTYPE_AKAZUKIN]->SetSize(D3DXVECTOR3(500.0f, 150.0f, 0.0f));	// 大きさ の設定
 		m_apScene2D[LOGOTYPE_AKAZUKIN]->SetPosition(D3DXVECTOR3(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 4, 0.0f));	// 位置 の設定
@@ -59,7 +59,7 @@ HRESULT CTitlelogo::Init(void)
 
 	if (m_apScene2D[LOGOTYPE_ATTACK] != NULL)
 	{// 存在していたとき
-		m_apScene2D[LOGOTYPE_ATTACK]->BindTexture(CManager::GetResource("data/tex/attack.png"));			// 背景テクスチャ のポインタ を渡す
+		m_apScene2D[LOGOTYPE_ATTACK]->BindTexture("data/tex/attack.png");			// 背景テクスチャ のポインタ を渡す
 		m_apScene2D[LOGOTYPE_ATTACK]->SetCenter(CScene2D::TEXTUREVTX_CENTER);		// 中心 の設定
 		m_apScene2D[LOGOTYPE_ATTACK]->SetSize(D3DXVECTOR3(250.0f, 100.0f, 0.0f));	// 大きさ の設定
 		m_apScene2D[LOGOTYPE_ATTACK]->SetPosition(D3DXVECTOR3(1000.0f, SCREEN_HEIGHT / 4 + 50, 0.0f));	// 位置 の設定
@@ -71,7 +71,7 @@ HRESULT CTitlelogo::Init(void)
 
 	if (m_apScene2D[LOGOTYPE_PRESS] != NULL)
 	{// 存在していたとき
-		m_apScene2D[LOGOTYPE_PRESS]->BindTexture(CManager::GetResource("data/tex/press_enter.png"));			// 背景テクスチャ のポインタ を渡す
+		m_apScene2D[LOGOTYPE_PRESS]->BindTexture("data/tex/press_enter.png");			// 背景テクスチャ のポインタ を渡す
 		m_apScene2D[LOGOTYPE_PRESS]->SetCenter(CScene2D::TEXTUREVTX_CENTER);		// 中心 の設定
 		m_apScene2D[LOGOTYPE_PRESS]->SetSize(D3DXVECTOR3(250.0f, 100.0f, 0.0f));	// 大きさ の設定
 		m_apScene2D[LOGOTYPE_PRESS]->SetPosition(D3DXVECTOR3(SCREEN_WIDTH / 2, 640, 0.0f));	// 位置 の設定
