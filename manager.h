@@ -126,6 +126,7 @@ public:
 	static D3DXVECTOR3 Slip(D3DXVECTOR3 L, D3DXVECTOR3 N);
 
 	static std::map<std::string, MODEL_INFO> GetModelMap(void) { return m_ModelMap; }
+	static std::map<std::string, LPDIRECT3DTEXTURE9> GetTextureMap(void) { return m_TexMap; }
 
 private:
 	static void	LoadSystemFile(void);					// システムファイルのロード

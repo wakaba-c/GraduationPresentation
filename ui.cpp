@@ -8,6 +8,7 @@
 #include "manager.h"
 #include "renderer.h"
 #include "scene2D.h"
+#include "write.h"
 
 //==============================================================================
 // コンストラクタ
@@ -70,13 +71,15 @@ void CUi::Draw(void)
 //==============================================================================
 // 生成処理
 //==============================================================================
-CUi *CUi::Create(const std::string &add)
+CUi *CUi::Create(void)
 {
 	CUi *pUi;		// 背景のポインタ
 
 	pUi = new CUi;		// 背景の生成
+
+	if(pUi == NULL) { return NULL; }
 	pUi->Init();							// 背景の初期化
-	pUi->LoadScript(add);					// スクリプトの読み込み
+
 	return pUi;
 }
 
@@ -163,7 +166,7 @@ bool CUi::LoadScript(const std::string &add)
 						{// アドレス情報のとき
 							sscanf(cReadText, "%s %s %s", &cDie, &cDie, &sAdd[0]);						//アドレスの取得
 							Add = sAdd;
-							scene->BindTexture(CManager::GetResource(Add));
+							scene->BindTexture(Add);
 						}
 						else if (strcmp(cHeadText, "POS") == 0)
 						{//位置
@@ -215,4 +218,132 @@ bool CUi::LoadScript(const std::string &add)
 	}
 
 	return false;
+}
+
+//==============================================================================
+// テクスチャ生成
+//==============================================================================
+void CUi::CreateTexture(std::string Add)
+{
+	CScene2D *pScene2D = CScene2D::Create(CScene2D::PRIORITY_UI);
+
+	if (pScene2D != NULL)
+	{
+		pScene2D->BindTexture(Add);			// テクスチャの設定
+		if (pScene2D->GetActive())
+		{
+			pScene2D->SetActive(true);
+		}
+		m_Scene.push_back(pScene2D);								// 最後尾に入れる
+	}
+}
+
+//==============================================================================
+// テクスチャ削除
+//==============================================================================
+void CUi::DeleteTexture(int nIndex)
+{
+	if (m_Scene[nIndex] == NULL) { return; }			// 中身が存在していないとき
+
+	m_Scene[nIndex]->Release();			// 削除予約
+	m_Scene[nIndex] = NULL;				// NULLを代入
+	m_Scene.erase(m_Scene.begin() + nIndex);	// 指定要素を削除
+}
+
+//==============================================================================
+// デバッグ調整処理
+//==============================================================================
+void CUi::SceneDebug(void)
+{
+	for (unsigned int nCount = 0; nCount < m_Scene.size(); nCount++)
+	{
+		char aTag[16];
+		memset(&aTag, 0, sizeof(aTag));
+		sprintf(aTag, "TEXTURE [%d]", nCount);
+		D3DXVECTOR3 pos, rot, size;
+		bool bActive;
+
+		if (ImGui::CollapsingHeader(aTag))
+		{
+			pos = m_Scene[nCount]->GetPosition();
+			rot = m_Scene[nCount]->GetRotation();
+			size = m_Scene[nCount]->GetSize();
+			bActive = m_Scene[nCount]->GetActive();
+
+			ImGui::DragFloat3("pos", (float*)&pos);
+			ImGui::DragFloat3("rot", (float*)&rot);
+			ImGui::DragFloat3("size", (float*)&size);
+
+			m_Scene[nCount]->SetPosition(pos);
+			m_Scene[nCount]->SetRotation(rot);
+			m_Scene[nCount]->SetSize(size);
+
+			if (bActive != m_Scene[nCount]->GetActive())
+			{
+				m_Scene[nCount]->SetActive(bActive);
+			}
+
+			m_Scene[nCount]->SetTransform();
+
+			if (ImGui::Button("delete"))
+			{
+				DeleteTexture(nCount);
+			}
+		}
+	}
+}
+
+//==============================================================================
+// スクリプトの書き出し処理
+//==============================================================================
+void CUi::SaveScript(std::string Add)
+{
+	CWrite *pWrite = new CWrite;
+	if (pWrite == NULL) return;
+
+	//変数宣言
+	char text[64];				// テキスト
+	char cEqual[8] = { "=" };	//イコール用
+	CScene *pSceneNext = NULL;	//次回アップデート対象
+	CScene *pSceneNow = NULL;
+
+	std::string Full = "data/text/";
+	Full += Add;
+	Full += ".txt";
+
+	//開けた
+	if (pWrite->Open(Full))
+	{
+		strcpy(text, "# UIデータスクリプト\n");
+		strcat(text, "# Author : masayasu wakita\n");
+
+		pWrite->TitleWrite(text);				// タイトルの形式で書き込む
+		pWrite->Write("SCRIPT\n");			// スクリプトの終了宣言
+		pWrite->Write("\n");
+
+		// モデルの情報 //
+		pWrite->IndexWrite("UIの情報\n");
+
+		D3DXVECTOR3 pos, rot, size;
+
+		for (unsigned int nCount = 0; nCount < m_Scene.size(); nCount++)
+		{
+			pos = m_Scene[nCount]->GetPosition();
+			rot = m_Scene[nCount]->GetRotation();
+			size = m_Scene[nCount]->GetSize();
+
+			pWrite->Write("UISET\n");					// 頂点情報の書き込み開始宣言
+			pWrite->Write("	TEXTURE_FILENAME = %s\n", m_Scene[nCount]->GetAdd().c_str());
+			pWrite->Write("	POS = %.2f %.2f %.2f\n", pos.x, pos.y, pos.z);		// 中心位置の書き込み
+			pWrite->Write("	ROT = %.2f %.2f %.2f\n", rot.x, rot.y, rot.z);		// 中心位置の書き込み
+			pWrite->Write("	SIZE = %.2f %.2f %.2f\n", size.x, size.y, size.z);		// 中心位置の書き込み
+			pWrite->Write("END_UISET\n");				// 頂点情報の書き込み開始宣言
+			pWrite->Write("\n");							// 改行
+		}
+
+		pWrite->Write("END_SCRIPT\n");			// スクリプトの終了宣言
+		pWrite->End();
+
+		MessageBox(NULL, "当たり判定の書き込み終了しました！", "WARNING", MB_ICONWARNING);	// メッセージボックスの生成
+	}
 }
