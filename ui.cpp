@@ -15,7 +15,7 @@
 //==============================================================================
 CUi::CUi()
 {
-
+	m_pos = D3DXVECTOR3_ZERO;
 }
 
 //=============================================================================
@@ -39,17 +39,17 @@ HRESULT CUi::Init(void)
 //=============================================================================
 void CUi::Uninit(void)
 {
-	for (unsigned int nCount = 0; nCount < m_Scene.size(); nCount++)
+	for (unsigned int nCount = 0; nCount < m_Asset.size(); nCount++)
 	{
-		if (m_Scene[nCount] == NULL) continue;				// ファイルが無ければ次へ
+		if (m_Asset[nCount] == NULL) continue;				// ファイルが無ければ次へ
 
 		// 開放処理
-		m_Scene[nCount]->Release();
-		m_Scene[nCount] = NULL;
+		m_Asset[nCount]->Release();
+		m_Asset[nCount] = NULL;
 	}
 
 	// 配列の要素を削除
-	m_Scene.clear();
+	m_Asset.clear();
 }
 
 //=============================================================================
@@ -77,7 +77,7 @@ CUi *CUi::Create(void)
 
 	pUi = new CUi;		// 背景の生成
 
-	if(pUi == NULL) { return NULL; }
+	if (pUi == NULL) { return NULL; }
 	pUi->Init();							// 背景の初期化
 
 	return pUi;
@@ -155,7 +155,7 @@ bool CUi::LoadScript(const std::string &add)
 					}
 
 					// 配列の最後尾に入れる
-					m_Scene.push_back(scene);
+					m_Asset.push_back(scene);
 
 					while (strcmp(cHeadText, "END_UISET") != 0)
 					{
@@ -234,7 +234,7 @@ void CUi::CreateTexture(std::string Add)
 		{
 			pScene2D->SetActive(true);
 		}
-		m_Scene.push_back(pScene2D);								// 最後尾に入れる
+		m_Asset.push_back(pScene2D);								// 最後尾に入れる
 	}
 }
 
@@ -243,11 +243,11 @@ void CUi::CreateTexture(std::string Add)
 //==============================================================================
 void CUi::DeleteTexture(int nIndex)
 {
-	if (m_Scene[nIndex] == NULL) { return; }			// 中身が存在していないとき
+	if (m_Asset[nIndex] == NULL) { return; }			// 中身が存在していないとき
 
-	m_Scene[nIndex]->Release();			// 削除予約
-	m_Scene[nIndex] = NULL;				// NULLを代入
-	m_Scene.erase(m_Scene.begin() + nIndex);	// 指定要素を削除
+	m_Asset[nIndex]->Release();			// 削除予約
+	m_Asset[nIndex] = NULL;				// NULLを代入
+	m_Asset.erase(m_Asset.begin() + nIndex);	// 指定要素を削除
 }
 
 //==============================================================================
@@ -255,7 +255,7 @@ void CUi::DeleteTexture(int nIndex)
 //==============================================================================
 void CUi::SceneDebug(void)
 {
-	for (unsigned int nCount = 0; nCount < m_Scene.size(); nCount++)
+	for (unsigned int nCount = 0; nCount < m_Asset.size(); nCount++)
 	{
 		char aTag[16];
 		memset(&aTag, 0, sizeof(aTag));
@@ -265,25 +265,25 @@ void CUi::SceneDebug(void)
 
 		if (ImGui::CollapsingHeader(aTag))
 		{
-			pos = m_Scene[nCount]->GetPosition();
-			rot = m_Scene[nCount]->GetRotation();
-			size = m_Scene[nCount]->GetSize();
-			bActive = m_Scene[nCount]->GetActive();
+			pos = m_Asset[nCount]->GetPosition();
+			rot = m_Asset[nCount]->GetRotation();
+			size = m_Asset[nCount]->GetSize();
+			bActive = m_Asset[nCount]->GetActive();
 
 			ImGui::DragFloat3("pos", (float*)&pos);
 			ImGui::DragFloat3("rot", (float*)&rot);
 			ImGui::DragFloat3("size", (float*)&size);
 
-			m_Scene[nCount]->SetPosition(pos);
-			m_Scene[nCount]->SetRotation(rot);
-			m_Scene[nCount]->SetSize(size);
+			m_Asset[nCount]->SetPosition(pos);
+			m_Asset[nCount]->SetRotation(rot);
+			m_Asset[nCount]->SetSize(size);
 
-			if (bActive != m_Scene[nCount]->GetActive())
+			if (bActive != m_Asset[nCount]->GetActive())
 			{
-				m_Scene[nCount]->SetActive(bActive);
+				m_Asset[nCount]->SetActive(bActive);
 			}
 
-			m_Scene[nCount]->SetTransform();
+			m_Asset[nCount]->SetTransform();
 
 			if (ImGui::Button("delete"))
 			{
@@ -326,14 +326,14 @@ void CUi::SaveScript(std::string Add)
 
 		D3DXVECTOR3 pos, rot, size;
 
-		for (unsigned int nCount = 0; nCount < m_Scene.size(); nCount++)
+		for (unsigned int nCount = 0; nCount < m_Asset.size(); nCount++)
 		{
-			pos = m_Scene[nCount]->GetPosition();
-			rot = m_Scene[nCount]->GetRotation();
-			size = m_Scene[nCount]->GetSize();
+			pos = m_Asset[nCount]->GetPosition();
+			rot = m_Asset[nCount]->GetRotation();
+			size = m_Asset[nCount]->GetSize();
 
 			pWrite->Write("UISET\n");					// 頂点情報の書き込み開始宣言
-			pWrite->Write("	TEXTURE_FILENAME = %s\n", m_Scene[nCount]->GetAdd().c_str());
+			pWrite->Write("	TEXTURE_FILENAME = %s\n", m_Asset[nCount]->GetAdd().c_str());
 			pWrite->Write("	POS = %.2f %.2f %.2f\n", pos.x, pos.y, pos.z);		// 中心位置の書き込み
 			pWrite->Write("	ROT = %.2f %.2f %.2f\n", rot.x, rot.y, rot.z);		// 中心位置の書き込み
 			pWrite->Write("	SIZE = %.2f %.2f %.2f\n", size.x, size.y, size.z);		// 中心位置の書き込み
@@ -346,4 +346,21 @@ void CUi::SaveScript(std::string Add)
 
 		MessageBox(NULL, "当たり判定の書き込み終了しました！", "WARNING", MB_ICONWARNING);	// メッセージボックスの生成
 	}
+}
+
+//==============================================================================
+// UIの位置
+//==============================================================================
+void CUi::SetPosition(D3DXVECTOR3 pos)
+{
+	D3DXVECTOR3 assetPos = D3DXVECTOR3_ZERO;
+
+	for (unsigned int nCount = 0; nCount < m_Asset.size(); nCount++)
+	{
+		assetPos = m_Asset[nCount]->GetPosition() - m_pos;				// 前の位置を取得
+		m_Asset[nCount]->SetPosition(assetPos + pos);			// 新しい位置に置く
+		m_Asset[nCount]->SetTransform();
+	}
+
+	m_pos = pos;
 }

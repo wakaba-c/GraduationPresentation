@@ -41,7 +41,12 @@ public:
 	void SceneDebug(void);
 	void SaveScript(std::string Add);
 
+	void SetPosition(D3DXVECTOR3 pos);
+
+	D3DXVECTOR3 GetPosition(void) { return m_pos; }
+
 private:
-	std::vector<CScene2D*> m_Scene;
+	D3DXVECTOR3 m_pos;
+	std::vector<CScene2D*> m_Asset;
 };
 #endif
