@@ -107,9 +107,9 @@ CColliderSphere *CColliderSphere::Create(bool bTrigger, float fRadius)
 
 	if (pColliderSphere != NULL)
 	{
-		pColliderSphere->SetTrigger(bTrigger);							//ƒgƒŠƒK[‚Ì—L–³‚ğİ’è
-		pColliderSphere->SetRadius(fRadius);							// ”¼Œa‚Ìİ’è
+		pColliderSphere->SetTrigger(bTrigger);							// ƒgƒŠƒK[‚Ì—L–³‚ğİ’è
 		pColliderSphere->Init();										// ‰Šú‰»
+		pColliderSphere->SetRadius(fRadius);							// ”¼Œa‚Ìİ’è
 	}
 	return pColliderSphere;
 }
