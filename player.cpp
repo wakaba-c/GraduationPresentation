@@ -69,6 +69,7 @@ CPlayer::CPlayer(CScene::PRIORITY obj = CScene::PRIORITY_PLAYER) : CCharacter(ob
 	m_bJump = false;									// ジャンプフラグの初期化
 	m_nActionCount = 0;									// アクションカウンタの初期化
 	m_nParticleCount = 0;								// パーティクルカウンタの初期化
+	m_nPointNum = 0;									// ポイント番号初期化
 	m_fDeathblow = 0.0f;								// 必殺技ポイントの初期化
 	m_bEvent = false;									// イベント発生フラグの初期化
 	m_bDrift = false;									// ドリフトフラグ判定
@@ -117,7 +118,7 @@ HRESULT CPlayer::Init(void)
 	LoadScript(SCRIPT_CAR01, ANIMATIONTYPE_MAX);
 
 	// プレイヤーの当たり判定を生成
-	m_pColPlayerSphere = CColliderSphere::Create(false, 20.0f);
+	m_pColPlayerSphere = CColliderSphere::Create(false, 50.0f);
 
 	if (m_pColPlayerSphere != NULL)
 	{ //球体のポインタがNULLではないとき
@@ -290,6 +291,11 @@ void CPlayer::Update(void)
 		Collision();
 	}
 
+	if (m_pColPlayerSphere != NULL)
+	{// 武器の当たり判定が存在していたとき
+		m_pColPlayerSphere->SetPosition(pos);
+	}
+
 	//	D3DXVECTOR3 move = CManager::Slip(playerPos + m_move, vNormal);// 滑りベクトルを計算
 
 
@@ -343,6 +349,7 @@ void CPlayer::OnTriggerEnter(CCollider *col)
 {
 	std::string sTag = col->GetTag();
 	CModel *pModel = GetModel();
+	std::vector<CObject*> pointObj = CObject::GetPointObj();
 
 	if (col->GetScene()->GetObjType() == PRIORITY_ENEMY)
 	{

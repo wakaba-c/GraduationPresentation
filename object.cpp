@@ -11,6 +11,7 @@
 #include "camera.h"
 #include "house.h"
 #include "colliderBox.h"
+#include "colliderSphere.h"
 
 //=============================================================================
 // マクロ定義
@@ -21,6 +22,8 @@
 // 静的メンバ変数の初期化
 //=============================================================================
 std::vector<CObject*> CObject::m_vPointObj = {};
+CColliderSphere *CObject::m_pSphere = NULL;
+unsigned int CObject::m_pointNum = 0;
 
 //=============================================================================
 // コンストラクタ
@@ -53,6 +56,24 @@ HRESULT CObject::Init(void)
 
 	D3DXVECTOR3 pos = D3DXVECTOR3(500.0f, 0.0f, 0.0f);
 
+	// ポイントオブジェクトのとき
+	if (m_Add == "data/model/point.x")
+	{
+		// スフィアがNULLのとき
+		if (m_pSphere == NULL)
+		{
+			// スフィアの生成処理
+			m_pSphere = CColliderSphere::Create(true, 1000.0f);
+
+			// スフィアがあるとき
+			if (m_pSphere != NULL)
+			{
+				m_pSphere->SetScene(this);
+				m_pSphere->SetTag("checkpoint");
+				m_pSphere->SetPosition(pos);
+			}
+		}
+	}
 	SetPosition(pos);			// 位置の設定
 	return S_OK;
 }
@@ -295,6 +316,7 @@ void CObject::LoadModelTest(char *add)
 
 									// 位置の設定
 									pObj->BindModel(aModelAdd);
+									pObj->Init();
 
 									// ポイントモデルのとき
 									if (strcmp(aModelAdd, "data/model/point.x") == 0)
@@ -361,6 +383,63 @@ void CObject::BindModel(std::string add)
 
 	// モデルの情報をセット
 	CSceneX::BindModel(m_pMesh, m_nNumMat, m_pBuffMat);
+}
+
+//=============================================================================
+// オブジェクトの当たり判定
+//=============================================================================
+void CObject::OnTriggerEnter(CCollider *col)
+{
+	std::string sTag = col->GetTag();
+
+	if (sTag == "player")
+	{
+		if (m_pSphere == NULL) { return; }
+
+		if (m_pSphere->GetTag() == "checkpoint")
+		{
+			if (m_vPointObj.size() < m_pointNum) { return; }		// 配列のサイズを超えないようにする処理
+
+			m_pointNum++;		// フラグの配列を次にする
+
+			// 配列が最大を超えたら
+			if (m_pointNum >= m_vPointObj.size())
+			{
+				// 初期値に戻す
+				m_pointNum = 0;
+			}
+
+			m_pSphere->SetScene(m_vPointObj[m_pointNum]);			// 次のシーンを格納する
+
+			// 半径の大きさを変える
+			if (m_pointNum == 19 || m_pointNum == 20 || m_pointNum == 22 || m_pointNum == 23 ||
+				m_pointNum == 25 || m_pointNum == 26 || m_pointNum == 28 || m_pointNum == 29)
+			{
+				m_pSphere->SetRadius(1250.0f);
+			}
+			else if (m_pointNum == 2 || m_pointNum == 18 || m_pointNum == 21 ||
+				m_pointNum == 24 || m_pointNum == 25)
+			{
+				m_pSphere->SetRadius(1500.0f);
+			}
+			else if (m_pointNum == 25)
+			{
+				m_pSphere->SetRadius(1700.0f);
+
+			}
+			else if (m_pointNum == 27)
+			{
+				m_pSphere->SetRadius(1850.0f);
+			}
+			else
+			{
+				m_pSphere->SetRadius(1000.0f);
+			}
+
+			// ポイント番号設定
+			SetPointNum(m_pointNum);
+		}
+	}
 }
 
 //=============================================================================

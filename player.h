@@ -104,6 +104,7 @@ private:
 	int								m_nLife;										// 体力
 	int								m_nActionCount;									// 次のアクションまでのカウンタ
 	int								m_nParticleCount;								// パーティクル生成までのカウンタ
+	int								m_nPointNum;									// ポイント番号
 	bool							m_bJump;										// ジャンプ
 	bool							m_bEvent;										// イベント発生フラグ
 	bool							m_bColliderWithWall;							// 壁の当たり判定
