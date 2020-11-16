@@ -149,6 +149,10 @@ HRESULT CPlayer::Init(void)
 		}
 	}
 
+	if (nCntPiece == 0)
+	{
+		m_fPuzzleMax = NORMAL_SPEED;
+	}
 	return S_OK;
 }
 
