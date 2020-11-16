@@ -56,11 +56,15 @@ HRESULT CBox::Init(void)
 	m_nCntChange = 0;
 	m_nPieceNum = 0;
 	m_nSelect = 0;
-	m_fSpeed = 0;
 	m_bPlacement = false;
 	m_bRelease = false;
 	m_bCreate = false;
 	m_bMove = false;
+
+	for (int nCnt = 0; nCnt < Piece_Num; nCnt++)
+	{
+		m_fSpeed[nCnt] = 0;
+	}
 
 	// ブロックの初期化
 	for (int nCntDepth = 0; nCntDepth < Box_Depth; nCntDepth++)
@@ -250,7 +254,7 @@ void CBox::Update(void)
 
 		for (int nCnt = 0; nCnt < m_nPieceNum; nCnt++)
 		{
-			m_fSpeed = m_pPiece[nCnt]->GetSpeed();
+			m_fSpeed[nCnt] = m_pPiece[nCnt]->GetSpeed();
 		}
 		// ピース生成
 

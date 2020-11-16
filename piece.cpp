@@ -250,7 +250,7 @@ void CPiece::SetStatus(void)
 			// Å°Å°
 			// Å°Å°
 		case PieceType_Rectangle:
-
+			m_fSpeed = 2.0f;
 			break;
 
 			// Å@Å°
