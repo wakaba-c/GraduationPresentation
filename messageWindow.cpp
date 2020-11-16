@@ -40,7 +40,7 @@ HRESULT CMessageWindow::Init(void)
 	CScene2D::Init();
 
 	// 背面テクスチャの設定
-	BindTexture(CManager::GetResource("data/tex/MessageWindow.png"));
+	BindTexture("data/tex/MessageWindow.png");
 
 	SetPosition(D3DXVECTOR3(640.0f, 500.0f, 0.0f));		// 背面の位置設定
 	SetSize(D3DXVECTOR3(SCREEN_WIDTH, 150.0f, 0.0f));		// 背面の大きさ設定
@@ -51,7 +51,7 @@ HRESULT CMessageWindow::Init(void)
 
 	if (m_pMessage != NULL)
 	{// メッセージが存在していたとき
-		m_pMessage->BindTexture(CManager::GetResource("data/tex/message.png"));		// テクスチャの設定
+		m_pMessage->BindTexture("data/tex/message.png");		// テクスチャの設定
 
 		m_pMessage->SetPosition(D3DXVECTOR3(640.0f, 500.0f, 0.0f));		// メッセージの位置設定
 		m_pMessage->SetSize(D3DXVECTOR3(1000.0f, 150.0f, 0.0f));		// メッセージの大きさ設定

@@ -40,7 +40,7 @@ CClearTime::~CClearTime()
 HRESULT CClearTime::Init(void)
 {
 	// テクスチャの割当
-	BindTexture(CManager::GetResource("data/tex/cleartime.png"));
+	BindTexture("data/tex/cleartime.png");
 
 	// テクスチャの中心位置の設定
 	SetCenter(TEXTUREVTX_CENTER);
@@ -74,7 +74,7 @@ HRESULT CClearTime::Init(void)
 
 	if (m_pScene2D != NULL)
 	{
-		m_pScene2D->BindTexture(CManager::GetResource("data/tex/colon.png"));
+		m_pScene2D->BindTexture("data/tex/colon.png");
 		m_pScene2D->SetPosition(D3DXVECTOR3(150.0f + 38.0f * MAX_CLEARTIME_NUMBER / 2, 150.0f, 0.0f));
 		m_pScene2D->SetSize(D3DXVECTOR3(120.0f, 210.0f, 0.0f));
 		m_pScene2D->SetTransform();
@@ -159,7 +159,7 @@ void CClearTime::SetNumberPos(D3DXVECTOR3 pos, float fInterval)
 
 	if (m_pScene2D != NULL)
 	{
-		m_pScene2D->BindTexture(CManager::GetResource("data/tex/colon.png"));
+		m_pScene2D->BindTexture("data/tex/colon.png");
 		m_pScene2D->SetPosition(D3DXVECTOR3(pos.x + fInterval * MAX_CLEARTIME_NUMBER / 2, pos.y, 0.0f));
 		m_pScene2D->SetTransform();
 	}

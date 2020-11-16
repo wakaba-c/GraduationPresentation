@@ -59,7 +59,7 @@ HRESULT CResult::Init(void)
 
 	if (pScene2D != NULL)
 	{// pScene2Dが存在していたとき
-		pScene2D->BindTexture(CManager::GetResource("data/tex/result.png"));		// 画像の読み込み
+		pScene2D->BindTexture("data/tex/result.png");		// 画像の読み込み
 		pScene2D->SetPosition(D3DXVECTOR3(300.0f, 150.0f, 0.0f));					// 位置設定
 		pScene2D->SetSize(D3DXVECTOR3(500.0f, 150.0f, 0.0f));						// 大きさ設定
 		pScene2D->SetTransform();													// 頂点情報の更新

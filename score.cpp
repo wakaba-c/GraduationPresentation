@@ -39,7 +39,7 @@ CScore::~CScore()
 HRESULT CScore::Init(void)
 {
 	//テクスチャの割当
-	BindTexture(CManager::GetResource("data/tex/total.png"));
+	BindTexture("data/tex/total.png");
 
 	//テクスチャの中心位置の設定
 	SetCenter(TEXTUREVTX_CENTER);

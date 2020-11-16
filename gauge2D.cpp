@@ -85,7 +85,7 @@ HRESULT CGauge2D::Init(void)
 
 	if (m_apScene2D[DRAWINGTYPE_FRONT] != NULL)
 	{// ゲージUIが存在していたとき
-		m_apScene2D[DRAWINGTYPE_FRONT]->BindTexture(CManager::GetResource("data/tex/Gauge.png"));	//UI用の画像を設定
+		m_apScene2D[DRAWINGTYPE_FRONT]->BindTexture("data/tex/Gauge.png");	//UI用の画像を設定
 		m_apScene2D[DRAWINGTYPE_FRONT]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));				// 色の設定
 		m_apScene2D[DRAWINGTYPE_FRONT]->SetCenter(CScene2D::TEXTUREVTX_LEFT);						// 中心位置を左に設定
 		m_apScene2D[DRAWINGTYPE_FRONT]->SetPosition(D3DXVECTOR3(0.0f, 0.0f, 0.0f));					// 位置の設定

@@ -35,7 +35,7 @@ public:
 	void Draw(void);																// 描画処理
 
 	static CScene2D *Create(CScene::PRIORITY obj);									// 作成
-	void BindTexture(LPDIRECT3DTEXTURE9 tex);										// テクスチャの設定
+	void BindTexture(std::string Add);										// テクスチャの設定
 
 	void SetTransform(void);														// 頂点情報を更新
 	void SetTransformTurnOver(void);												// 画像の反転
@@ -54,6 +54,7 @@ public:
 	TEXTUREVTX GetCenter(void) { return m_Vtx; }									// 中心の取得
 	D3DXCOLOR GetColor(void) { return m_col; }										// 色の取得
 	D3DXVECTOR3 GetSize(void) { return m_size; }									// 大きさを取得
+	std::string GetAdd(void) { return m_TexAdd; }									// テクスチャアドレスの取得
 
 	void OnTriggerEnter(CCollider *col) {};
 	void OnCollisionEnter(CCollider *col) {};
@@ -67,7 +68,7 @@ private:
 	D3DXVECTOR2					m_DrawPos;											// テクスチャの描画位置
 	D3DXVECTOR3					m_rot;												// 回転量
 	D3DXCOLOR					m_col;												// 色
-	char						*m_pTexAdd;											// テクスチャアドレス
+	std::string					m_TexAdd;											// テクスチャアドレス
 	float m_fAngle;																	// 角度
 	float m_fLength;																// 長さ
 };
