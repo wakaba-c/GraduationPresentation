@@ -96,7 +96,7 @@ HRESULT CPlayer::Init(void)
 
 	//デバイスを取得する
 	pDevice = pRenderer->GetDevice();
-
+	m_fPuzzleMax = 0;
 	CCamera *pCamera = CManager::GetCamera();
 	D3DXVECTOR3 pos = GetPosition();				// プレイヤーの位置取得
 
@@ -130,9 +130,23 @@ HRESULT CPlayer::Init(void)
 	// 位置の設定
 	SetPosition(pos);
 
-	float fSpeed = CPuzzle::GetSpeed();
+	int nCntPiece = CPuzzle::GetPieceNum();
 
-	m_fPuzzleSpeed = NORMAL_SPEED + CPuzzle::GetSpeed();
+	for (int nCnt = 0; nCnt < nCntPiece; nCnt++)
+	{
+		float fSpeed = CPuzzle::GetSpeed(nCnt);
+
+		m_fPuzzleSpeed[nCnt] = CPuzzle::GetSpeed(nCnt);
+
+	}
+
+	for (int nCnt = 0; nCnt < nCntPiece; nCnt++)
+	{
+		if (m_fPuzzleSpeed[nCnt + 1] >= 0)
+		{
+			m_fPuzzleMax = m_fPuzzleSpeed[nCnt] + m_fPuzzleSpeed[nCnt + 1] + NORMAL_SPEED;
+		}
+	}
 
 	return S_OK;
 }
@@ -565,7 +579,7 @@ void CPlayer::Input(void)
 			m_dest.y = 0.0f;
 
 			// 速度設定
-			m_fSpeed = -m_fPuzzleSpeed;
+			m_fSpeed = -m_fPuzzleMax;
 
 			// タイヤ回転方向設定
 			fTireRotSpeed = TIRE_ROT_SPEED;
@@ -579,7 +593,7 @@ void CPlayer::Input(void)
 			m_dest.y = 0.0f;
 
 			// 速度設定
-			m_fSpeed = m_fPuzzleSpeed;
+			m_fSpeed = m_fPuzzleMax;
 
 			// タイヤ回転方向設定
 			fTireRotSpeed = -TIRE_ROT_SPEED;

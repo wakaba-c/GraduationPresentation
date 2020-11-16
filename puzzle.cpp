@@ -11,13 +11,13 @@
 #include "manager.h"
 #include "inputKeyboard.h"
 #include "inputController.h"
-#include "box.h"
 #include "network.h"
 
 //=============================================================================
 // 静的メンバ変数
 //=============================================================================
-float CPuzzle::m_fSpeed = 0.0f;
+float CPuzzle::m_fSpeed[Piece_Num] = {};
+int CPuzzle::m_nPieceNum = 0;
 
 //=============================================================================
 // コンストラクタ
@@ -60,9 +60,14 @@ void CPuzzle::Update(void)
 	CInputController *pInputController = CManager::GetInputController();
 	CNetwork *pNetwork = CManager::GetNetwork();
 
+	m_nPieceNum = m_pBox->GetPieceNum();
+
 	if (m_pBox != NULL)
 	{
-		m_fSpeed = m_pBox->GetSpeed();
+		for ( int nCnt = 0;nCnt < m_nPieceNum; nCnt++)
+		{
+			m_fSpeed[nCnt] = m_pBox->GetSpeed(nCnt);
+		}
 	}
 
 	if (CFade::GetFade() == CFade::FADE_NONE)

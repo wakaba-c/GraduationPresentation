@@ -33,20 +33,50 @@ class CScene2D;
 class CPiece : public CScene
 {
 public:
+
+	//================================
+	// ステータスのタイプ
+	//================================
+	enum StatusType
+	{
+		StatusType_None = 0,						 // 初期
+		StatusType_MiniMap,							 // ミニマップ表示＆加速度上昇
+		StatusType_Route,							 // ルート案内表示＆旋回速度上昇
+		StatusType_Ranking,							 // 順位表示＆最高速度上昇
+		StatusType_All_MediumUp,					 // 最高速度＆スピード上昇率＆旋回速度＆パワーを中アップ
+		StatusType_MaxSpeed_GreatUp,				 // 最高速度大アップ
+		StatusType_MaxSpeed_MediumUp,				 // 最高速度中アップ
+		StatusType_MaxSpeed_SmallUp,				 // 最高速度小アップ
+		StatusType_Rate_GreatUp,					 // スピード上昇率大アップ
+		StatusType_Rate_MediumUp,					 // スピード上昇率中アップ
+		StatusType_Rate_SmallUp,					 // スピード上昇率小アップ
+		StatusType_Turning_GreatUp,					 // 旋回速度大アップ
+		StatusType_Turning_MediumUp,				 // 旋回速度中アップ
+		StatusType_Turning_SmallUp,					 // 旋回速度小アップ
+		StatusType_Power_MediumUp,					 // パワー中アップ
+		StatusType_Power_SmallUp,					 // パワー小アップ
+		StatusType_Decay_Down,						 // スピード減衰率低下
+		StatusType_MaxSpeed_LimitBreak,				 // 最高速度の限界突破
+		StatusType_Max,								 // 最大数
+	};
+
+	//================================
+	// ピースのタイプ
+	//================================
 	enum PieceType
 	{
-		PieceType_None = 0,
-		PieceType_Square,
-		PieceType_Rectangle,
-		PieceType_T_Type,
-		PieceType_L_Type,
-		PieceType_Square_1,
-		PieceType_Rectangle_1,
-		PieceType_Rectangle_2,
-		PieceType_Speed,
-		PieceType_Speed_1,
-		PieceType_Diagonal,
-		PieceType_Max,
+		PieceType_None = 0,				
+		PieceType_Square,				
+		PieceType_Rectangle,			
+		PieceType_T_Type,				
+		PieceType_L_Type,				
+		PieceType_Square_1,				
+		PieceType_Rectangle_1,			
+		PieceType_Rectangle_2,			
+		PieceType_Speed,				
+		PieceType_Speed_1,				
+		PieceType_Diagonal,				
+		PieceType_Max,					
 	};
 
 	CPiece(PRIORITY type);																			// コンストラクタ
@@ -88,6 +118,8 @@ private:
 	int m_nCntMove_X;																				// 移動カウントX
 	int m_nCntMove_Y;																				// 移動カウントY
 	float m_fSpeed;																					// 速さ
+	float m_fRate;																					// スピード上昇率
+	int m_nPower;																					// パワー
 	PieceType m_PieceType;																			// ピースの状態
 	bool m_bPlacement;																				// 配置しているかどうか
 	bool m_bCreate;																					// 生成するかどうか
