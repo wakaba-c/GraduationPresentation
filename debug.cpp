@@ -21,6 +21,7 @@
 #include "effect.h"
 #include "player.h"
 #include "wall.h"
+#include "ui.h"
 
 //=============================================================================
 // マクロ定義
@@ -50,7 +51,8 @@ D3DXVECTOR2 CDebugProc::m_CreateRandOld = D3DXVECTOR2(0.0f, 0.0f);		// 床の量
 CMeshField *CDebugProc::m_apMeshField[FLOOR_LIMIT * FLOOR_LIMIT] = {};
 D3DXVECTOR3 CDebugProc::m_createPos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 float CDebugProc::m_fSliderPow = 1.0f;
-std::string CDebugProc::m_currentItem = {};
+std::string CDebugProc::m_currentModel = {};
+std::string CDebugProc::m_currentTexture = {};
 bool CDebugProc::m_bHeightCalculation = false;
 HWND CDebugProc::m_hWnd = NULL;											// ウィンドウハンドル
 
@@ -66,6 +68,9 @@ float CDebugProc::m_fSpeed = 0.0f;										// スピード
 bool CDebugProc::m_bLoop = false;										// 生成を繰り返す
 bool CDebugProc::m_bGravity = false;									// 重力の有無
 bool CDebugProc::m_bRandomSpeed = false;								// スピードランダム化の有無
+
+CUi *CDebugProc::m_pCreateUi = NULL;										// UIの初期化
+char CDebugProc::m_CreateName[NAME_SIZE] = {};				// 生成名
 
 //=============================================================================
 // コンストラクタ
@@ -325,14 +330,14 @@ void CDebugProc::Debug(void)
 #ifdef _DEBUG
 	ImGui::Begin("System");			// Systemウィンドウ の生成またはアクセス
 
-	ImGui::BeginChild("Scrolling");
-	for (int n = 0; n < 50; n++)
-		ImGui::Text("%04d: Some text", n);
-	ImGui::EndChild();
+	//ImGui::BeginChild("Scrolling");
+	//for (int n = 0; n < 50; n++)
+	//	ImGui::Text("%04d: Some text", n);
+	//ImGui::EndChild();
 
-	const char* listbox_items[] = { "Apple", "Banana", "Cherry", "Kiwi", "Mango", "Orange", "Pineapple", "Strawberry", "Watermelon" };
-	static int listbox_item_current = 1;
-	ImGui::ListBox("listbox\n(single select)", &listbox_item_current, listbox_items, IM_ARRAYSIZE(listbox_items), 4);
+	//const char* listbox_items[] = { "Apple", "Banana", "Cherry", "Kiwi", "Mango", "Orange", "Pineapple", "Strawberry", "Watermelon" };
+	//static int listbox_item_current = 1;
+	//ImGui::ListBox("listbox\n(single select)", &listbox_item_current, listbox_items, IM_ARRAYSIZE(listbox_items), 4);
 
 	if (ImGui::Checkbox("DebugMode", &m_bDebug))		// 地形編集モード切り替え
 	{
@@ -356,7 +361,7 @@ void CDebugProc::Debug(void)
 		// オブジェクトマップ
 		std::map<std::string, MODEL_INFO> modelMap = CManager::GetModelMap();
 		auto itr = modelMap.begin();
-		m_currentItem = itr->first.c_str();
+		m_currentModel = itr->first.c_str();
 	}
 
 	//デバッグ処理を終了
@@ -495,13 +500,44 @@ void CDebugProc::Debug(void)
 
 				if (m_pSample != NULL)
 				{
-					m_pSample->BindModel(m_currentItem);
+					m_pSample->BindModel(m_currentModel);
 					m_pSample->SetPosition(worldPos);								// 位置をマウスのワールド座標に設定
 					m_pSample->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f));			// 色の変更
 				}
 			}
 			ImGui::SameLine();															// 改行回避
 			ImGui::RadioButton("delete", &m_nMode, DEBUGMODE_DELETE);					// 選択肢 範囲内多数生成モード を追加
+
+			// 現在のデバッグタイプを表示
+			ImGui::Text("individual Debug");
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem(u8"UI作成モード"))
+		{// UI作成モード
+			if (m_nMode != DEBUGMODE_UI)
+			{
+				m_nMode = DEBUGMODE_UI;
+			}
+
+			if (m_pCreateUi != NULL)
+			{
+				if (ImGui::Button("create"))
+				{
+					m_pCreateUi->CreateTexture(m_currentTexture);
+				}
+
+				m_pCreateUi->SceneDebug();
+				ImGui::InputText("default", m_CreateName, NAME_SIZE);
+
+				if (ImGui::Button("Export"))
+				{
+					m_pCreateUi->SaveScript(m_CreateName);
+				}
+			}
+			else
+			{
+				m_pCreateUi = CUi::Create();
+			}
 
 			// 現在のデバッグタイプを表示
 			ImGui::Text("individual Debug");
@@ -570,23 +606,14 @@ void CDebugProc::Debug(void)
 			ImGui::SliderFloat("paintSize", &m_fPaintSize, 1.0f, 10000.0f);			// スライダーを使用して1つのフロートを編集します
 		}
 
-		if (m_nMode != DEBUGMODE_RAND)
+		if (m_nMode != DEBUGMODE_RAND && m_nMode != DEBUGMODE_UI)
 		{// 地形編集モードじゃないとき
-			if (ImGui::BeginCombo(u8"オブジェクトの種類", m_currentItem.c_str()))
-			{
-				// オブジェクトマップ
-				std::map<std::string, MODEL_INFO> modelMap = CManager::GetModelMap();
-				for (auto itr = modelMap.begin(); itr != modelMap.end(); itr++)
-				{
-					bool is_selected = (m_currentItem == itr->first.c_str());
-					if (ImGui::Selectable(itr->first.c_str()))
-					{
-						m_currentItem = itr->first.c_str();
-					}
-				}
+			SelectAssetWithModel();
+		}
 
-				ImGui::EndCombo();
-			}
+		if (m_nMode == DEBUGMODE_UI)
+		{// UI作成モードのとき
+			SelectAssetWithTexture();
 		}
 
 		if (m_nMode != DEBUGMODE_INDIVIDUAL)
@@ -595,6 +622,16 @@ void CDebugProc::Debug(void)
 			{// ポインタが存在していたとき
 				m_pSample->Release();				// 開放予約
 				m_pSample = NULL;
+			}
+		}
+
+		if (m_nMode != DEBUGMODE_UI)
+		{// UI生成モードではなかったとき
+			if (m_pCreateUi != NULL)
+			{// UIが存在していたとき
+				m_pCreateUi->Uninit();				// 開放処理
+				delete m_pCreateUi;					// 削除
+				m_pCreateUi = NULL;					// NULLを代入
 			}
 		}
 
@@ -915,7 +952,7 @@ void CDebugProc::CreateObject(D3DXVECTOR3 &worldPos)
 							pObject = CObject::Create();
 							if (pObject != NULL)
 							{
-								pObject->BindModel(m_currentItem);
+								pObject->BindModel(m_currentModel);
 							}
 						}
 
@@ -967,7 +1004,7 @@ void CDebugProc::CreateIndividual(D3DXVECTOR3 &worldPos)
 
 	if (m_pSample != NULL)
 	{// 見本用オブジェクトが存在していたとき
-		if(!m_bMouseCursorPosition)
+		if (!m_bMouseCursorPosition)
 		{
 			pos = m_pSample->GetPosition();				// 位置の取得
 		}
@@ -996,7 +1033,7 @@ void CDebugProc::CreateIndividual(D3DXVECTOR3 &worldPos)
 
 	if (m_pSample != NULL)
 	{
-		if (strcmp(m_pSample->GetAdd().c_str(), m_currentItem.c_str()) != 0)
+		if (strcmp(m_pSample->GetAdd().c_str(), m_currentModel.c_str()) != 0)
 		{// 現在のモデルタイプが前回のモデルと違うとき
 			m_pSample->Uninit();															// 前のモデルを開放
 			m_pSample->Release();															// 前のモデルの開放フラグを立てる
@@ -1006,7 +1043,7 @@ void CDebugProc::CreateIndividual(D3DXVECTOR3 &worldPos)
 
 			if (m_pSample != NULL)
 			{
-				m_pSample->BindModel(m_currentItem);
+				m_pSample->BindModel(m_currentModel);
 			}
 		}
 	}
@@ -1028,7 +1065,7 @@ void CDebugProc::CreateIndividual(D3DXVECTOR3 &worldPos)
 
 				if (pObject != NULL)
 				{
-					pObject->BindModel(m_currentItem);
+					pObject->BindModel(m_currentModel);
 					pObject->SetPosition(pos);												// 見本の場所に設置
 					pObject->SetRotation(rot);
 				}
@@ -1172,4 +1209,48 @@ void CDebugProc::ShowInspector(void)
 	ImGui::Begin("Inspector", &m_bInspectorWind, ImGuiWindowFlags_MenuBar);   // インスペクターウィンドウ生成
 	m_pSelect->ShowInspector();							// インスペクターを表示
 	ImGui::End();
+}
+
+//=============================================================================
+// モデル選択処理
+//=============================================================================
+void CDebugProc::SelectAssetWithModel(void)
+{
+	if (ImGui::BeginCombo(u8"オブジェクトの種類", m_currentModel.c_str()))
+	{
+		// オブジェクトマップ
+		std::map<std::string, MODEL_INFO> modelMap = CManager::GetModelMap();
+		for (auto itr = modelMap.begin(); itr != modelMap.end(); itr++)
+		{
+			bool is_selected = (m_currentModel == itr->first.c_str());
+			if (ImGui::Selectable(itr->first.c_str()))
+			{
+				m_currentModel = itr->first.c_str();
+			}
+		}
+
+		ImGui::EndCombo();
+	}
+}
+
+//=============================================================================
+// テクスチャ選択処理
+//=============================================================================
+void CDebugProc::SelectAssetWithTexture(void)
+{
+	if (ImGui::BeginCombo(u8"テクスチャの種類", m_currentTexture.c_str()))
+	{
+		// テクスチャマップ
+		std::map<std::string, LPDIRECT3DTEXTURE9> modelMap = CManager::GetTextureMap();
+		for (auto itr = modelMap.begin(); itr != modelMap.end(); itr++)
+		{
+			bool is_selected = (m_currentTexture == itr->first.c_str());
+			if (ImGui::Selectable(itr->first.c_str()))
+			{
+				m_currentTexture = itr->first.c_str();
+			}
+		}
+
+		ImGui::EndCombo();
+	}
 }

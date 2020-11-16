@@ -11,6 +11,7 @@
 // インクルードファイル
 //=============================================================================
 #include "main.h"
+#include "box.h"
 
 //=============================================================================
 // 前方宣言
@@ -30,13 +31,15 @@ public:
 	void Update(void);			// 更新処理
 	void Draw(void);			// 描画処理
 
-	static void	LoadAsset(void);							// アセットの読み込み処理
-	static float GetSpeed(void) { return m_fSpeed; }		// スピードの取得
+	static void	LoadAsset(void);												// アセットの読み込み処理
+	static float GetSpeed(int nPieceNum) { return m_fSpeed[nPieceNum]; }		// スピードの取得
+	static int GetPieceNum(void) { return m_nPieceNum; }						// ピース数
 
 private:
-	CBox *m_pBox;					// ボックスのポインタ
+	CBox *m_pBox;								// ボックスのポインタ
 
-	static float m_fSpeed;			// スピード
+	static float m_fSpeed[Piece_Num];			// スピード
+	static int m_nPieceNum;						// ピース数
 
 };
 #endif

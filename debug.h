@@ -19,6 +19,7 @@
 // マクロ定義
 //=============================================================================
 #define FLOOR_LIMIT 20
+#define NAME_SIZE 32
 
 //=============================================================================
 // 構造体定義
@@ -33,6 +34,7 @@ typedef enum
 	DEBUGMODE_DELETE,
 	DEBUGMODE_PAINT,
 	DEBUGMODE_ENEMY,
+	DEBUGMODE_UI,
 	DEBUGMODE_MAX
 } DEBUGMODE;
 
@@ -44,6 +46,7 @@ class CScene;
 class CObject;
 class CEnemy;
 class CMeshField;
+class CUi;
 
 //=============================================================================
 // クラス定義
@@ -76,6 +79,8 @@ private:
 	static void CreateParticle(void);						// パーティクル作成
 	static void DebugFloorCreate(const int &nWide, const int &nDepth, D3DXVECTOR3 &createPos);
 	static void ShowInspector(void);
+	static void SelectAssetWithModel(void);						// モデル選択処理
+	static void SelectAssetWithTexture(void);				// テクスチャ選択処理
 
 	LPD3DXFONT	m_pFont;									// フォントへのポインタ
 	static char m_aStr[1024];								// 文字列
@@ -97,7 +102,8 @@ private:
 	static CMeshField *m_apMeshField[FLOOR_LIMIT * FLOOR_LIMIT];
 	static D3DXVECTOR3 m_createPos;
 	static float m_fSliderPow;
-	static std::string m_currentItem;
+	static std::string m_currentModel;						// アセットのアドレス
+	static std::string m_currentTexture;					// テクスチャアドレス
 	static HWND m_hWnd;										// ウィンドウハンドル
 	static bool m_bMouseCursorPosition;						// マウスカーソル座標の使用フラグ
 
@@ -114,5 +120,9 @@ private:
 	static bool m_bLoop;									// 生成を繰り返す
 	static bool m_bGravity;									// 重力の有無
 	static bool m_bRandomSpeed;								// スピードランダム化の有無
+
+	// UI生成関連
+	static char m_CreateName[NAME_SIZE];		// 生成名
+	static CUi *m_pCreateUi;			// UI
 };
 #endif

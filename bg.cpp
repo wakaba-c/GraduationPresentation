@@ -32,7 +32,7 @@ HRESULT CBg::Init(void)
 	// 初期化
 	CScene2D::Init();
 
-	BindTexture(CManager::GetResource("data/tex/back.png"));			// 背景テクスチャのポインタ を渡す
+	BindTexture("data/tex/back.png");			// 背景テクスチャのポインタ を渡す
 
 	SetCenter(CScene2D::TEXTUREVTX_CENTER);		// 中心の設定
 

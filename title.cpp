@@ -56,7 +56,7 @@ HRESULT CTitle::Init(void)
 	CScene2D *pBack = CScene2D::Create(CScene::PRIORITY_UI);
 	if (pBack != NULL)
 	{
-		pBack->BindTexture(CManager::GetResource("data/tex/status_back.jpg"));
+		pBack->BindTexture("data/tex/status_back.jpg");
 		pBack->SetPosition(D3DXVECTOR3(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 0.0f));
 		pBack->SetSize(D3DXVECTOR3(SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f));
 		pBack->SetTransform();

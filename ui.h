@@ -30,11 +30,16 @@ public:
 	void Update(void);			// 更新処理
 	void Draw(void);			// 描画処理
 
-	static CUi *Create(const std::string &add);	// クリエイト処理
+	static CUi *Create(void);	// クリエイト処理
 	static HRESULT Load(void);	// ロード処理
 	bool LoadScript(const std::string &add);		// スクリプトデータロード処理
 
 	void ShowInspector(void) {};
+
+	void CreateTexture(std::string Add);
+	void DeleteTexture(int nIndex);
+	void SceneDebug(void);
+	void SaveScript(std::string Add);
 
 private:
 	std::vector<CScene2D*> m_Scene;

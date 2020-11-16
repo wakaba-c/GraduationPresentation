@@ -46,7 +46,8 @@ HRESULT CScene2D::Init(void)
 	LPDIRECT3DDEVICE9 pDevice;
 	pDevice = Renderer->GetDevice();
 
-	D3DXVECTOR3 pos = GetPosition();				// 位置の取得
+	D3DXVECTOR3 pos = D3DXVECTOR3(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 0.0f);				// 位置の取得
+	SetPosition(pos);			// 位置情報の設定
 
 	//頂点バッファの生成
 	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4, D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
@@ -146,9 +147,10 @@ CScene2D *CScene2D::Create(CScene::PRIORITY obj)
 //=============================================================================
 // テクスチャの設定
 //=============================================================================
-void CScene2D::BindTexture(LPDIRECT3DTEXTURE9 tex)
+void CScene2D::BindTexture(std::string Add)
 {
-	m_pTexture = tex;
+	m_pTexture = CManager::GetResource(Add);
+	m_TexAdd = Add;
 }
 
 //=============================================================================
