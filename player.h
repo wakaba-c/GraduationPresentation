@@ -32,6 +32,7 @@ class CColliderBox;
 class CScene2D;
 class CModel;
 class CPlayerUi;
+class CNumber;
 
 //=============================================================================
 // クラス定義
@@ -112,6 +113,7 @@ private:
 	bool							m_bDrift;										// プレイヤーのドリフトフラグ
 	bool							m_bMove;										// 現在動いているかのフラグ
 	CPlayerUi						*m_pPlayerUi;									// キャラクター情報のUI
+	CNumber							*m_pRank;										// ランキング用UI
 
 	/*=============== 3Dレンダリング関連 ===============*/
 	LPDIRECT3DVERTEXBUFFER9			m_pVtxBuff;										// 頂点バッファへのポインタ

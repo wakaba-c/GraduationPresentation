@@ -41,6 +41,7 @@ CNetwork::CNetwork()
 		m_selectState[nCount].bReady = false;
 		m_selectState[nCount].nType = -1;
 		m_selectState[nCount].pBalloonNum = NULL;
+		m_nRank[nCount] = 0;
 	}
 }
 

@@ -131,7 +131,7 @@ void CEnemyUi::SetNumberPos(D3DXVECTOR3 pos, float fInterval)
 		if (m_apNumber[nCntNumber] != NULL)
 		{// 数が存在していたとき
 			m_apNumber[nCntNumber]->SetPosition(D3DXVECTOR3(pos.x + fInterval * nCntNumber, pos.y, 0.0f));		// 位置の設定
-			m_apNumber[nCntNumber]->MakeVertex();																// 頂点情報の更新
+			m_apNumber[nCntNumber]->SetTransform();																// 頂点情報の更新
 		}
 	}
 }
@@ -147,7 +147,7 @@ void CEnemyUi::SetNumderSize(D3DXVECTOR3 size)
 		if (m_apNumber[nCntNumber] != NULL)
 		{// 数字が存在していたとき
 			m_apNumber[nCntNumber]->SetSize(size);			// サイズの設定
-			m_apNumber[nCntNumber]->MakeVertex();			// 頂点情報の更新
+			m_apNumber[nCntNumber]->SetTransform();			// 頂点情報の更新
 		}
 	}
 }

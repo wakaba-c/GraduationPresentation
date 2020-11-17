@@ -153,7 +153,7 @@ void CClearTime::SetNumberPos(D3DXVECTOR3 pos, float fInterval)
 			}
 
 			m_apNumber[nCntNumber]->SetPosition(workPos);		// 位置設定
-			m_apNumber[nCntNumber]->MakeVertex();				// 頂点情報の更新
+			m_apNumber[nCntNumber]->SetTransform();				// 頂点情報の更新
 		}
 	}
 
@@ -176,7 +176,7 @@ void CClearTime::SetNumderSize(D3DXVECTOR3 size)
 		if (m_apNumber[nCntNumber] != NULL)
 		{// 数字が存在していたとき
 			m_apNumber[nCntNumber]->SetSize(size);		// サイズの設定
-			m_apNumber[nCntNumber]->MakeVertex();		// 頂点情報の更新
+			m_apNumber[nCntNumber]->SetTransform();		// 頂点情報の更新
 		}
 	}
 }

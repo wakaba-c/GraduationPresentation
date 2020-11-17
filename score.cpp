@@ -122,7 +122,7 @@ void CScore::SetNumberPos(D3DXVECTOR3 pos, float fInterval)
 		if (m_apNumber[nCntNumber] != NULL)
 		{
 			m_apNumber[nCntNumber]->SetPosition(D3DXVECTOR3(pos.x + fInterval * nCntNumber, pos.y, 0.0f));
-			m_apNumber[nCntNumber]->MakeVertex();
+			m_apNumber[nCntNumber]->SetTransform();
 		}
 	}
 }
@@ -138,7 +138,7 @@ void CScore::SetNumderSize(D3DXVECTOR3 size)
 		if (m_apNumber[nCntNumber] != NULL)
 		{
 			m_apNumber[nCntNumber]->SetSize(size);
-			m_apNumber[nCntNumber]->MakeVertex();
+			m_apNumber[nCntNumber]->SetTransform();
 		}
 	}
 }

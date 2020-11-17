@@ -35,6 +35,9 @@
 #include "object.h"
 #include "puzzle.h"
 
+#include "number.h"
+#include "network.h"
+
 //=============================================================================
 // マクロ定義
 //=============================================================================
@@ -74,9 +77,10 @@ CPlayer::CPlayer(CScene::PRIORITY obj = CScene::PRIORITY_PLAYER) : CCharacter(ob
 	m_bEvent = false;									// イベント発生フラグの初期化
 	m_bDrift = false;									// ドリフトフラグ判定
 	m_bMove = false;									// 現在動いているかのフラグ
-	m_bColliderWithWall = true;						// 壁の当たり判定
+	m_bColliderWithWall = true;							// 壁の当たり判定
 
 	m_pPlayerUi = NULL;
+	m_pRank = NULL;
 }
 
 //=============================================================================
@@ -153,6 +157,15 @@ HRESULT CPlayer::Init(void)
 	{
 		m_fPuzzleMax = NORMAL_SPEED;
 	}
+
+	m_pRank = CNumber::Create();
+
+	if (m_pRank != NULL)
+	{
+		m_pRank->SetPosition(D3DXVECTOR3(100.0f, 100.0f, 0.0f));
+		m_pRank->SetSize(D3DXVECTOR3(100.0f, 100.0f, 0.0f));
+		m_pRank->SetTransform();
+	}
 	return S_OK;
 }
 
@@ -176,6 +189,7 @@ void CPlayer::Update(void)
 {
 	D3DXVECTOR3 pos;
 	CSound *pSound = CManager::GetSound();
+	CNetwork *pNetwork = CManager::GetNetwork();
 	float fHeight = 0.0f;
 	CModel *pModel = GetModel();
 
@@ -305,6 +319,11 @@ void CPlayer::Update(void)
 
 	// キャラクターの更新処理
 	CCharacter::Update();
+
+	if (m_pRank != NULL)
+	{
+		m_pRank->SetNumber(2);
+	}
 
 #ifdef _DEBUG
 	Debug();
