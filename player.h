@@ -78,6 +78,7 @@ public:
 	D3DXVECTOR3 GetRotDest(void) { return m_dest; }					// 回転最終到達地点
 	D3DXVECTOR3 GetCameraRot(void) { return m_cameraRot; }			// カメラの回転情報
 	void SetCameraRot(D3DXVECTOR3 cameraRot) { m_cameraRot = cameraRot; }
+	int GetNumRound(void) { return m_nRound; }
 
 private:
 #ifdef _DEBUG
@@ -114,6 +115,9 @@ private:
 	bool							m_bMove;										// 現在動いているかのフラグ
 	CPlayerUi						*m_pPlayerUi;									// キャラクター情報のUI
 	CNumber							*m_pRank;										// ランキング用UI
+
+	// レースゲーム関連
+	int								m_nRound;										// 現在の周回回数
 
 	/*=============== 3Dレンダリング関連 ===============*/
 	LPDIRECT3DVERTEXBUFFER9			m_pVtxBuff;										// 頂点バッファへのポインタ

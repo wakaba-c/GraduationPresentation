@@ -13,6 +13,7 @@
 #include "fade.h"
 #include "inputController.h"
 #include "enemy.h"
+#include "object.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -453,6 +454,8 @@ bool CNetwork::KeyData(void)
 	}
 
 	D3DXVECTOR3 pos = pPlayer->GetPosition();
+	int nNumFlag = CObject::GetPointNum();
+	int nNumRound = pPlayer->GetNumRound();
 
 	if (pNetwork != NULL)
 	{
@@ -479,12 +482,16 @@ bool CNetwork::KeyData(void)
 		}
 
 		// ID, Wキー, Aキー, Sキー, Dキー, SPACEキー, スティックH, スティックV, 回転情報, 位置X, 位置Y, 位置Z, スコア
-		sprintf(data, "SAVE_KEY %d %d %d %d %d %d %f %f %f %f %f %f", m_nId, pKeyboard->GetPressKeyboard(DIK_W), pKeyboard->GetPressKeyboard(DIK_A),
+		sprintf(data, "SAVE_KEY %d %d %d %d %d %d %f %f %f %f %f %f %d %d",
+			m_nId,
+			pKeyboard->GetPressKeyboard(DIK_W), pKeyboard->GetPressKeyboard(DIK_A),
 			pKeyboard->GetPressKeyboard(DIK_S), pKeyboard->GetPressKeyboard(DIK_D), aKeyState[NUM_KEY_SPACE],		// キー入力情報
 			stick_H,					// スティックH
 			stick_V,					// スティックV
 			rot.y,						// 回転
-			pos.x, pos.y, pos.z			// 位置
+			pos.x, pos.y, pos.z,		// 位置
+			nNumFlag,					// 次のチェックポイント
+			nNumRound					// 現在の周回回数
 		);
 		pNetwork->SendUDP(data, sizeof("SAVE_KEY") + 1024);
 	}

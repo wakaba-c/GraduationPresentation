@@ -85,7 +85,7 @@ private:
 	LPD3DXBUFFER		m_pBuffMat;						// マテリアル情報へのポインタ
 	CColliderBox *m_pBox;								// 当たり判定ボックス
 
-	static CColliderSphere *m_pSphere;			// 当たり判定スフィア
+	static CColliderSphere *m_pSphere;					// 当たり判定スフィア
 	static unsigned int m_pointNum;						// ポイントの数
 	static std::vector<CObject*> m_vPointObj;
 

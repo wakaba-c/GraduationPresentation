@@ -172,7 +172,7 @@ private:
 	bool m_bTimeout;						// タイムアウトフラグ
 	D3DXVECTOR3 m_playerPos[MAX_PLAYER];	// プレイヤー位置情報
 	bool m_bDie[MAX_PLAYER];				// 1つ前の死亡フラグ
-	int m_nRank[MAX_PLAYER];
+	int m_nRank[MAX_PLAYER];				// 現在のランキング
 	CItem *m_apItem[MAX_COIN];				// コインのポインタ
 	CEnemy *m_pEnemy[MAX_PLAYER];			// 役者のポインタ
 

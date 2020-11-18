@@ -81,6 +81,8 @@ CPlayer::CPlayer(CScene::PRIORITY obj = CScene::PRIORITY_PLAYER) : CCharacter(ob
 
 	m_pPlayerUi = NULL;
 	m_pRank = NULL;
+
+	m_nRound = 0;			// Œ»Ý‚ÌŽü‰ñ‰ñ”
 }
 
 //=============================================================================
@@ -322,7 +324,8 @@ void CPlayer::Update(void)
 
 	if (m_pRank != NULL)
 	{
-		m_pRank->SetNumber(2);
+		m_pRank->SetNumber(pNetwork->GetRank(0));
+		//m_pRank->SetNumber(pNetwork->GetRank(pNetwork->GetId()));
 	}
 
 #ifdef _DEBUG
