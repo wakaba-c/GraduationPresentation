@@ -194,6 +194,7 @@
     <ClCompile Include="number.cpp" />
     <ClCompile Include="object.cpp" />
     <ClCompile Include="piece.cpp" />
+    <ClCompile Include="pieceSelect.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="puzzle.cpp" />
     <ClCompile Include="ranking.cpp" />
@@ -265,6 +266,7 @@
     <ClInclude Include="number.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="piece.h" />
+    <ClInclude Include="pieceSelect.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="playerUi.h" />
     <ClInclude Include="purpose.h" />
