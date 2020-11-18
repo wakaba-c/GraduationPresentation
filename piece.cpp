@@ -782,7 +782,8 @@ void CPiece::SetPiece(void)
 				if (m_bPuzzle[nDepth][nWide] == true)
 				{
 					// テクスチャ変更
-					m_pBlock[nDepth][nWide]->BindTexture("data/tex/grass.jpg");
+					m_pBlock[nDepth][nWide]->BindTexture("data/tex/core.png");
+					m_pBlock[nDepth][nWide]->SpriteAnimation(D3DXVECTOR2(3.0f, 5.0f), 1.0f, 1.0f);
 					// 配置しているかどうか
 					if (m_bPlacement == false)
 					{
