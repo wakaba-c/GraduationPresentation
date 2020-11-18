@@ -324,8 +324,7 @@ void CPlayer::Update(void)
 
 	if (m_pRank != NULL)
 	{
-		m_pRank->SetNumber(pNetwork->GetRank(0));
-		//m_pRank->SetNumber(pNetwork->GetRank(pNetwork->GetId()));
+		m_pRank->SetNumber(pNetwork->GetRank(pNetwork->GetId()));
 	}
 
 #ifdef _DEBUG
