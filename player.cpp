@@ -24,8 +24,6 @@
 #include "sound.h"
 #include "scene2D.h"
 #include "effect.h"
-#include "gauge2D.h"
-#include "messageWindow.h"
 #include "result.h"
 #include "fade.h"
 #include "takaseiLibrary.h"
@@ -79,7 +77,6 @@ CPlayer::CPlayer(CScene::PRIORITY obj = CScene::PRIORITY_PLAYER) : CCharacter(ob
 	m_bMove = false;									// Œ»Ý“®‚¢‚Ä‚¢‚é‚©‚Ìƒtƒ‰ƒO
 	m_bColliderWithWall = true;							// •Ç‚Ì“–‚½‚è”»’è
 
-	m_pPlayerUi = NULL;
 	m_pRank = NULL;
 
 	m_nRound = 0;			// Œ»Ý‚ÌŽü‰ñ‰ñ”
@@ -164,7 +161,8 @@ HRESULT CPlayer::Init(void)
 
 	if (m_pRank != NULL)
 	{
-		m_pRank->SetPosition(D3DXVECTOR3(100.0f, 100.0f, 0.0f));
+		m_pRank->BindTexture("data/tex/number_rank.png");
+		m_pRank->SetPosition(D3DXVECTOR3(1110.0f, 75.0f, 0.0f));
 		m_pRank->SetSize(D3DXVECTOR3(100.0f, 100.0f, 0.0f));
 		m_pRank->SetTransform();
 	}

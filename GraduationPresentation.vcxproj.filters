@@ -39,9 +39,6 @@
     <ClCompile Include="circle.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="clearTime.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="collider.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -60,13 +57,7 @@
     <ClCompile Include="enemy.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="enemyUi.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="fade.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="gauge2D.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="input.cpp">
@@ -93,9 +84,6 @@
     <ClCompile Include="manager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="messageWindow.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="model.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -111,9 +99,6 @@
     <ClCompile Include="renderer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="score.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="sky.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -124,9 +109,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="time.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="titleLogo.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="tree.cpp">
@@ -239,9 +221,6 @@
     <ClInclude Include="circle.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="clearTime.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="collider.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -260,13 +239,7 @@
     <ClInclude Include="enemy.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="enemyUi.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="fade.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="gauge2D.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="house.h">
@@ -299,9 +272,6 @@
     <ClInclude Include="manager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="messageWindow.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="model.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -314,9 +284,6 @@
     <ClInclude Include="player.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="playerUi.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="purpose.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -324,9 +291,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="score.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="sky.h">
@@ -339,9 +303,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="time.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="titleLogo.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="tree.h">

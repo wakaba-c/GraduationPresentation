@@ -117,8 +117,8 @@ void CModel::Draw(D3DXMATRIX *mtxWorld)
 		ToonShader->SetMatrix("mView", &mtxView);
 		ToonShader->SetMatrix("mWorld", &m_mtxWorld);
 
-		ToonShader->SetTexture("ShadeTexture", CManager::GetResource("Shade.bmp"));
-		ToonShader->SetTexture("LineTexture", CManager::GetResource("Outline.bmp"));
+		ToonShader->SetTexture("ShadeTexture", CManager::GetResource("data/tex/ToonShader/Shade.bmp"));
+		ToonShader->SetTexture("LineTexture", CManager::GetResource("data/tex/ToonShader/Outline.bmp"));
 
 		CCamera *pCamera = CManager::GetCamera();
 		CLight *pLight = CManager::GetLight();

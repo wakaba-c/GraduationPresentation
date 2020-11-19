@@ -31,7 +31,6 @@ class CColliderSphere;
 class CColliderBox;
 class CScene2D;
 class CModel;
-class CPlayerUi;
 class CNumber;
 
 //=============================================================================
@@ -72,7 +71,6 @@ public:
 	void BehaviorForMaxKey(void);				// 最大キー数に到達したときの処理
 
 	float GetDeathblow(void) { return m_fDeathblow; }				// 必殺技ポイント数の取得
-	CPlayerUi *GetPlayerUi(void) { return m_pPlayerUi; }			// プレイヤーUIの取得
 	D3DXVECTOR3 GetMove(void) { return m_move; }					// 移動量の取得
 	D3DXMATRIX GetMtxWorld(void) { return m_mtxWorld; }				// ワールドマトリックスの取得
 	D3DXVECTOR3 GetRotDest(void) { return m_dest; }					// 回転最終到達地点
@@ -113,7 +111,6 @@ private:
 	bool							m_bHit;											// ヒット判定
 	bool							m_bDrift;										// プレイヤーのドリフトフラグ
 	bool							m_bMove;										// 現在動いているかのフラグ
-	CPlayerUi						*m_pPlayerUi;									// キャラクター情報のUI
 	CNumber							*m_pRank;										// ランキング用UI
 
 	// レースゲーム関連

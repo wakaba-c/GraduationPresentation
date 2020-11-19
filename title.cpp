@@ -16,12 +16,6 @@
 #include "object.h"
 #include "camera.h"
 #include "sky.h"
-#include "titleLogo.h"
-
-//=============================================================================
-// 静的メンバ変数
-//=============================================================================
-CTitlelogo	*CTitle::m_pTitleLogo = NULL;		// タイトルロゴのポインタ
 
 //=============================================================================
 // コンストラクタ
@@ -76,14 +70,6 @@ HRESULT CTitle::Init(void)
 //=============================================================================
 void CTitle::Uninit(void)
 {
-	// タイトルロゴの開放
-	if (m_pTitleLogo != NULL)
-	{// 存在していたとき
-		m_pTitleLogo->Uninit();			// 開放処理
-		delete m_pTitleLogo;			// 削除
-		m_pTitleLogo = NULL;			// NULLの代入
-	}
-
 	//ポリゴンの開放
 	CScene::ReleaseAll();
 }
@@ -130,5 +116,5 @@ void CTitle::Draw(void)
 //=============================================================================
 void CTitle::LoadAsset(void)
 {
-	CTitlelogo::Load();
+
 }

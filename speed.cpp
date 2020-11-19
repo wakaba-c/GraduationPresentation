@@ -11,6 +11,7 @@
 #include "number.h"
 #include "player.h"
 #include "takaseiLibrary.h"
+#include "ui.h"
 
 //=============================================================================
 // マクロ定義
@@ -54,10 +55,19 @@ HRESULT CSpeed::Init(void)
 
 		if (m_apNumber[nCnt] != NULL)
 		{
-			m_apNumber[nCnt]->SetPosition(D3DXVECTOR3(50 + INTERVAL * nCnt, 700.0f, 0));	// 位置設定
+			m_apNumber[nCnt]->BindTexture("data/tex/number_speed.png");
+			m_apNumber[nCnt]->SetPosition(D3DXVECTOR3(55 + INTERVAL * nCnt, 687.0f, 0));	// 位置設定
 			m_apNumber[nCnt]->SetSize(D3DXVECTOR3(INTERVAL, 60, 0));						// 大きさ設定
 			m_apNumber[nCnt]->SetTransform();
 		}
+	}
+
+	CUi *pSpeedUi = CUi::Create();
+
+	if (pSpeedUi != NULL)
+	{
+		pSpeedUi->LoadScript("data/text/ui/SpeedMeter.txt");
+		pSpeedUi->SetPosition(D3DXVECTOR3(201.0f, 692.0f, 0.0f));
 	}
 
 	return S_OK;

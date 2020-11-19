@@ -328,7 +328,7 @@ void CUi::SaveScript(std::string Add)
 
 		for (unsigned int nCount = 0; nCount < m_Asset.size(); nCount++)
 		{
-			pos = m_Asset[nCount]->GetPosition();
+			pos = m_Asset[nCount]->GetPosition() - m_pos;
 			rot = m_Asset[nCount]->GetRotation();
 			size = m_Asset[nCount]->GetSize();
 

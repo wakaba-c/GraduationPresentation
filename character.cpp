@@ -24,8 +24,6 @@
 #include "sound.h"
 #include "scene2D.h"
 #include "effect.h"
-#include "gauge2D.h"
-#include "messageWindow.h"
 #include "result.h"
 #include "fade.h"
 

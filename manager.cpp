@@ -152,11 +152,6 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 	CGame::LoadAsset();
 	CResult::LoadAsset();
 
-	Load("data/model/akazukin/clothes.jpg");
-	Load("data/model/akazukin/hair.jpg");
-	Load("data/model/akazukin/skin.jpg");
-	Load("data/model/akazukin/skirt.png");
-
 	SetMode(MODE_TITLE);																		//モードセレクト
 
 	return S_OK;
