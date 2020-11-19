@@ -12,6 +12,7 @@
 #include "inputKeyboard.h"
 #include "inputController.h"
 #include "network.h"
+#include "pieceSelect.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -43,6 +44,7 @@ HRESULT CPuzzle::Init(void)
 	LoadAsset();
 	m_pBox = CBox::Create();
 
+	CPieceSelect::Create();
 	// 各種アセットの生成＆設置
 	//CMeshField::LoadRand("data/stage/rand.csv", false);				// 床情報の読込
 	//CObject::LoadModel("data/stage/object.csv");						// モデル情報の読込
