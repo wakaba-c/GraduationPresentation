@@ -66,7 +66,7 @@ private:
 	int m_nPieceNum;																// ピース数
 	int m_nSelect;																	// 選択カウント
 
-	float m_fSpeed[Piece_Num];																	// スピード
+	float m_fSpeed[Piece_Num];														// スピード
 
 	static bool m_bPuzzle[Box_Depth][Box_Width];									// 使用しているかどうか
 	bool m_bPuzzleStorage[Box_Depth][Box_Width];									// 保管
