@@ -802,7 +802,7 @@ bool CNetwork::UpdateTCP(void)
 			sscanf(aFunc, "%s %d %d %d %d", &aDie, &nRank[0], &nRank[1], &nRank[2], &nRank[3]);
 
 			// チュートリアルへ
-			CFade::SetFade(CManager::MODE_RESULT);
+			CFade::SetFade(CManager::MODE_RESULT, CFade::FADETYPE_SLIDE);
 		}
 	}
 	else if (strcmp(cHeadText, "GAME_START") == 0)
@@ -817,7 +817,7 @@ bool CNetwork::UpdateTCP(void)
 			}
 
 			// チュートリアルへ
-			CFade::SetFade(CManager::MODE_GAME);
+			CFade::SetFade(CManager::MODE_GAME, CFade::FADETYPE_SLIDE);
 		}
 	}
 	else if (strcmp(cHeadText, "CHARACTER_SELECT") == 0)

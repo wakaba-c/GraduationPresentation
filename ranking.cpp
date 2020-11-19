@@ -93,7 +93,7 @@ void CRanking::Update(void)
 		{// キーボードが存在していたとき
 			if (pInputKeyboard->GetTriggerKeyboard(DIK_RETURN))
 			{// 指定のキーが押されたとき
-				CFade::SetFade(CManager::MODE_TITLE);					//フェードを入れる
+				CFade::SetFade(CManager::MODE_TITLE, CFade::FADETYPE_SLIDE);					//フェードを入れる
 			}
 		}
 		if (pInputController->GetJoypadUse(0))
@@ -102,7 +102,7 @@ void CRanking::Update(void)
 			if (pInputController->GetControllerTrigger(0, JOYPADKEY_A) ||			// ゲームパッドのAボダンが押されたとき
 				pInputController->GetControllerTrigger(0, JOYPADKEY_START))			// ゲームパッドのSTARTボタンが押されたとき
 			{
-				CFade::SetFade(CManager::MODE_TITLE);					//フェードを入れる
+				CFade::SetFade(CManager::MODE_TITLE, CFade::FADETYPE_SLIDE);					//フェードを入れる
 			}
 		}
 	}

@@ -408,7 +408,7 @@ void CPlayer::OnTriggerEnter(CCollider *col)
 			if (m_nLife < 0)
 			{
 				CResult::SetIdxKill(CEnemy::GetEnemyKill());			// Kill”‚ðƒŠƒUƒ‹ƒg‚É“n‚·
-				CFade::SetFade(CManager::MODE_RESULT);					// ƒŠƒUƒ‹ƒg‚É‘JˆÚ
+				CFade::SetFade(CManager::MODE_RESULT, CFade::FADETYPE_SLIDE);					// ƒŠƒUƒ‹ƒg‚É‘JˆÚ
 			}
 		}
 	}
