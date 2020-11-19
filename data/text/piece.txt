@@ -11,17 +11,122 @@ SCRIPT
 // ----------------------------------------------------------------------------
 
 PIECESET
-	POS = 500.0 500.0 0.0
+	POS = 100.0 500.0 0.0
 	TYPE = 0
 	SIZE = 100.0 100.0 0.0
-	TEX = data/tex/core.png
+	TEX = data/tex/core/core.png
+END_PIECESET
+
+PIECESET
+	POS = 200.0 500.0 0.0
+	TYPE = 1
+	SIZE = 100.0 100.0 0.0
+	TEX = data/tex/core/core_00.png
+END_PIECESET
+
+PIECESET
+	POS = 300.0 500.0 0.0
+	TYPE = 2
+	SIZE = 100.0 100.0 0.0
+	TEX = data/tex/core/core_01.png
+END_PIECESET
+
+PIECESET
+	POS = 400.0 500.0 0.0
+	TYPE = 3
+	SIZE = 100.0 100.0 0.0
+	TEX = data/tex/core/core_02.png
+END_PIECESET
+
+PIECESET
+	POS = 500.0 500.0 0.0
+	TYPE = 4
+	SIZE = 100.0 100.0 0.0
+	TEX = data/tex/core/core_03.png
 END_PIECESET
 
 PIECESET
 	POS = 600.0 500.0 0.0
-	TYPE = 1
+	TYPE = 5
 	SIZE = 100.0 100.0 0.0
-	TEX = data/tex/core.png
+	TEX = data/tex/core/core_04.png
+END_PIECESET
+
+PIECESET
+	POS = 700.0 500.0 0.0
+	TYPE = 6
+	SIZE = 100.0 100.0 0.0
+	TEX = data/tex/core/core_05.png
+END_PIECESET
+
+PIECESET
+	POS = 800.0 500.0 0.0
+	TYPE = 7
+	SIZE = 100.0 100.0 0.0
+	TEX = data/tex/core/core_06.png
+END_PIECESET
+
+PIECESET
+	POS = 900.0 500.0 0.0
+	TYPE = 8
+	SIZE = 100.0 100.0 0.0
+	TEX = data/tex/core/core_07.png
+END_PIECESET
+
+PIECESET
+	POS = 1000.0 500.0 0.0
+	TYPE = 9
+	SIZE = 100.0 100.0 0.0
+	TEX = data/tex/core/core_08.png
+END_PIECESET
+
+PIECESET
+	POS = 100.0 600.0 0.0
+	TYPE = 10
+	SIZE = 100.0 100.0 0.0
+	TEX = data/tex/core/core_09.png
+END_PIECESET
+
+PIECESET
+	POS = 200.0 600.0 0.0
+	TYPE = 11
+	SIZE = 100.0 100.0 0.0
+	TEX = data/tex/core/core_10.png
+END_PIECESET
+
+PIECESET
+	POS = 300.0 600.0 0.0
+	TYPE = 12
+	SIZE = 100.0 100.0 0.0
+	TEX = data/tex/core/core_11.png
+END_PIECESET
+
+PIECESET
+	POS = 400.0 600.0 0.0
+	TYPE = 13
+	SIZE = 100.0 100.0 0.0
+	TEX = data/tex/core/core_12.png
+END_PIECESET
+
+PIECESET
+	POS = 500.0 600.0 0.0
+	TYPE = 14
+	SIZE = 100.0 100.0 0.0
+	TEX = data/tex/core/core_13.png
+END_PIECESET
+
+PIECESET
+	POS = 600.0 600.0 0.0
+	TYPE = 15
+	SIZE = 100.0 100.0 0.0
+	TEX = data/tex/core/core_14.png
+END_PIECESET
+
+PIECESET
+	POS = 600.0 600.0 0.0
+	TYPE = 15
+	SIZE = 100.0 100.0 0.0
+	TEX = data/tex/core/core_14.png
 END_PIECESET
 
 END_SCRIPT
