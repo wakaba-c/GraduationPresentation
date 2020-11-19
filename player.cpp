@@ -24,8 +24,6 @@
 #include "sound.h"
 #include "scene2D.h"
 #include "effect.h"
-#include "gauge2D.h"
-#include "messageWindow.h"
 #include "result.h"
 #include "fade.h"
 #include "takaseiLibrary.h"
@@ -164,7 +162,7 @@ HRESULT CPlayer::Init(void)
 
 	if (m_pRank != NULL)
 	{
-		m_pRank->SetPosition(D3DXVECTOR3(100.0f, 100.0f, 0.0f));
+		m_pRank->SetPosition(D3DXVECTOR3(1120.0f, 75.0f, 0.0f));
 		m_pRank->SetSize(D3DXVECTOR3(100.0f, 100.0f, 0.0f));
 		m_pRank->SetTransform();
 	}

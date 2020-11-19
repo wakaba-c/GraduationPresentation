@@ -24,12 +24,9 @@
 #include "stage.h"
 #include "house.h"
 #include "phase.h"
-#include "enemyUi.h"
 #include "effect.h"
-#include "messageWindow.h"
 #include "result.h"
 #include "sound.h"
-#include "gauge2D.h"
 
 //=============================================================================
 // ƒ}ƒNƒ’è‹`

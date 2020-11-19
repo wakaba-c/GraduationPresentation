@@ -9,7 +9,6 @@
 #include "camera.h"
 #include "player.h"
 #include "game.h"
-#include "score.h"
 #include "fade.h"
 #include "inputController.h"
 #include "enemy.h"

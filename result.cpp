@@ -11,10 +11,7 @@
 #include "inputKeyboard.h"
 #include "inputController.h"
 #include "bg.h"
-#include "enemyUi.h"
-#include "score.h"
 #include "number.h"
-#include "clearTime.h"
 #include "ranking.h"
 
 //=============================================================================
@@ -65,48 +62,6 @@ HRESULT CResult::Init(void)
 		pScene2D->SetTransform();													// 頂点情報の更新
 	}
 
-	// =============== 敵の討伐数 =============== //
-	CEnemyUi *pEnemyUi = CEnemyUi::Create();
-
-	if (pEnemyUi != NULL)
-	{// pEnemyUiが存在していたとき
-		pEnemyUi->SetPosition(D3DXVECTOR3(350.0f, 370.0f, 0.0f));					// 位置の設定
-		pEnemyUi->SetSize(D3DXVECTOR3(300.0f, 100.0f, 0.0f));						// サイズの設定
-		pEnemyUi->SetNumderSize(D3DXVECTOR3(70.0f, 180.0f, 0.0f));					// 数字のサイズ設定
-		pEnemyUi->SetNumberPos(D3DXVECTOR3(730.0f, 368.0f, 0.0f), 55.0f);			// 数字の位置設定
-		pEnemyUi->SetNumber(m_nKill);												// 数字の設定
-		pEnemyUi->SetTransform();													// 頂点情報の更新
-	}
-
-	// =============== クリアタイム =============== //
-	CClearTime *pClearTime = CClearTime::Create();
-
-	if (pClearTime != NULL)
-	{// pClearTimeが存在していたとき
-		pClearTime->SetPosition(D3DXVECTOR3(350.0f, 250.0f, 0.0f));					// 位置の設定
-		pClearTime->SetSize(D3DXVECTOR3(300.0f, 100.0f, 0.0f));						// サイズの設定
-		pClearTime->SetNumderSize(D3DXVECTOR3(70.0f, 180.0f, 0.0f));				// 数字のサイズ設定
-		pClearTime->SetNumberPos(D3DXVECTOR3(730.0f, 248.0f, 0.0f), 55.0f);			// 数字の位置設定
-
-		m_nMinutes *= 100;
-		pClearTime->SetNumber(m_nMinutes + m_nSeconds);								// 数字の設定
-		pClearTime->SetTransform();													// 頂点情報の更新
-	}
-
-	// =============== 総合点 =============== //
-	CScore *pScore = CScore::Create();
-
-	if (pScore != NULL)
-	{// pEnemyUiが存在していたとき
-		pScore->SetPosition(D3DXVECTOR3(350.0f, 620.0f, 0.0f));						// 位置の設定
-		pScore->SetSize(D3DXVECTOR3(300.0f, 100.0f, 0.0f));							// サイズの設定
-		pScore->SetNumderSize(D3DXVECTOR3(70.0f, 180.0f, 0.0f));					// 数字のサイズ設定
-		pScore->SetNumberPos(D3DXVECTOR3(730.0f, 608.0f, 0.0f), 55.0f);				// 数字の位置設定
-
-		pScore->SetNumber(m_nKill * ((MAX_MAGNIFICATION - m_nMinutes) * 100));		// 数字の設定
-		pScore->SetTransform();														// 頂点情報の更新
-	}
-
 	CRanking::SetResultIndex(m_nKill * ((MAX_MAGNIFICATION - m_nMinutes) * 100));	// ランキングに今回の得点を送る
 	return S_OK;
 }
@@ -120,7 +75,7 @@ void CResult::Uninit(void)
 	m_nSeconds = 0;		// 秒数を初期化
 	m_nMinutes = 0;		// 分数を初期化
 
-						//ポリゴンの開放
+	// ポリゴンの開放
 	CScene::ReleaseAll();
 }
 
@@ -167,11 +122,7 @@ void CResult::Draw(void)
 void CResult::LoadAsset(void)
 {
 	CBg::Load();
-	CScore::Load();
 	CNumber::Load();
-	CClearTime::Load();
-
-	CManager::Load("data/tex/result.png");
 }
 
 //=============================================================================

@@ -23,12 +23,9 @@
 #include "circle.h"
 #include "stage.h"
 #include "meshOrbit.h"
-#include "gauge2D.h"
 #include "effect.h"
 #include "tree.h"
 #include "number.h"
-#include "enemyUi.h"
-#include "messageWindow.h"
 #include "time.h"
 #include "result.h"
 #include "ui.h"
@@ -93,9 +90,6 @@ HRESULT CGame::Init(void)
 		pEnemy->SetTarget(TARGETTYPE_PLAYER);				// 攻撃対象の設定
 	}
 
-	// メッセージウィンドウの作成
-	CMessageWindow::Create(CMessageWindow::MESSAGETYPE_START);
-
 	// 時間のクリエイト処理
 	CTime::Create();
 
@@ -110,6 +104,14 @@ HRESULT CGame::Init(void)
 
 	// 案内矢印の生成
 	CGuideSign::Create();
+
+	CUi *pUi = CUi::Create();
+
+	if (pUi != NULL)
+	{
+		pUi->LoadScript("data/text/NowRank.txt");
+		pUi->SetPosition(D3DXVECTOR3(1150.0f, 100.0f, 0.0f));
+	}
 
 	// ネットワークでのゲーム時初期化処理
 	CManager::GetNetwork()->InitGame();
@@ -157,10 +159,7 @@ void CGame::LoadAsset(void)
 	CEnemy::Load();
 	CObject::Load();
 	CMeshSphere::Load();
-	CGauge2D::Load();
 	CEffect::Load();
 	CNumber::Load();
-	CEnemyUi::Load();
-	CMessageWindow::Load();
 	CGuideSign::Load();
 }
