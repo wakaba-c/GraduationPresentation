@@ -284,9 +284,6 @@
     <ClInclude Include="player.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="playerUi.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="purpose.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>

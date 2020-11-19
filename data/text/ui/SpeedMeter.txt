@@ -10,17 +10,10 @@ SCRIPT
 UIÇÃèÓïÒ
 #==============================================================================
 UISET
-	TEXTURE_FILENAME = data/tex/status_back.jpg
+	TEXTURE_FILENAME = data/tex/spe.png
 	POS = 0.00 0.00 0.00
 	ROT = 0.00 0.00 0.00
-	SIZE = 1280.00 720.00 0.00
-END_UISET
-
-UISET
-	TEXTURE_FILENAME = data/tex/NoSignal.png
-	POS = 0.00 0.00 0.00
-	ROT = 0.00 0.00 0.00
-	SIZE = 500.00 150.00 0.00
+	SIZE = 162.00 49.00 0.00
 END_UISET
 
 END_SCRIPT

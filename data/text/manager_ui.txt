@@ -9,6 +9,8 @@ SCRIPT			# この行は絶対消さないこと！
 #------------------------------------------------------------------------------
 # UIファイル名
 #------------------------------------------------------------------------------
-UI_FILENAME = data/text/NoSignal.txt					# [0]ノーシグナル画面
+UI_FILENAME = data/text/ui/NoSignal.txt					# [0]ノーシグナル画面
+UI_FILENAME = data/text/ui/SpeedMeter.txt				# [1]スピード単位
+UI_FILENAME = data/text/ui/TargetDistance.txt			# [2]次のターゲットまでの距離
 
 END_SCRIPT		# この行は絶対消さないこと！

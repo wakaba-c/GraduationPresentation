@@ -105,12 +105,20 @@ HRESULT CGame::Init(void)
 	// 案内矢印の生成
 	CGuideSign::Create();
 
-	CUi *pUi = CUi::Create();
+	CUi *pRankUi = CUi::Create();
 
-	if (pUi != NULL)
+	if (pRankUi != NULL)
 	{
-		pUi->LoadScript("data/text/NowRank.txt");
-		pUi->SetPosition(D3DXVECTOR3(1150.0f, 100.0f, 0.0f));
+		pRankUi->LoadScript("data/text/ui/NowRank.txt");
+		pRankUi->SetPosition(D3DXVECTOR3(1150.0f, 100.0f, 0.0f));
+	}
+
+	CUi* pDistance = CUi::Create();
+
+	if (pDistance != NULL)
+	{
+		pDistance->LoadScript("data/text/ui/TargetDistance.txt");
+		pDistance->SetPosition(D3DXVECTOR3(200.0f, 80.0f, 0.0f));
 	}
 
 	// ネットワークでのゲーム時初期化処理

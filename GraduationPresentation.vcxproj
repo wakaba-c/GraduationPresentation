@@ -258,7 +258,6 @@
     <ClInclude Include="piece.h" />
     <ClInclude Include="pieceSelect.h" />
     <ClInclude Include="player.h" />
-    <ClInclude Include="playerUi.h" />
     <ClInclude Include="purpose.h" />
     <ClInclude Include="puzzle.h" />
     <ClInclude Include="ranking.h" />

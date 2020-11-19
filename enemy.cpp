@@ -235,31 +235,6 @@ void CEnemy::OnTriggerEnter(CCollider *col)
 						m_pLife->SetLifeBar((float)m_nLife / MAX_LIFE);
 					}
 
-					if (pPlayer != NULL)
-					{// プレイヤーが存在していたとき
-						CPlayerUi *pPlayerUi = pPlayer->GetPlayerUi();				// プレイヤーUIの取得
-
-						if (pPlayerUi != NULL)
-						{// プレイヤーUIが存在していたとき
-							float fDeathblow = pPlayer->GetDeathblow();				// 現在の必殺技ポイントを取得
-
-							if (fDeathblow < 50.0f)
-							{// 必殺技ポイントが5より小さかったとき
-							}
-						}
-
-						if (pPlayer->GetAnimType() == CPlayer::ANIMATIONTYPE_ATTACK_1)
-						{// ノックバック処理
-							D3DXVECTOR3 vec;
-
-							vec = GetPosition() - pPlayer->GetPosition();		//差分を求める(方向を求めるため)
-							D3DXVec3Normalize(&vec, &vec);			//正規化する
-
-							m_move.x = vec.x * 10;
-							m_move.z = vec.z * 10;
-						}
-					}
-
 					if (m_nLife < 1)
 					{// 体力が 1 を下回ったとき
 						D3DXVECTOR3 vec;
