@@ -161,6 +161,7 @@
     <ClCompile Include="colliderBox.cpp" />
     <ClCompile Include="colliderSphere.cpp" />
     <ClCompile Include="debug.cpp" />
+    <ClCompile Include="distanceNext.cpp" />
     <ClCompile Include="effect.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="fade.cpp" />
@@ -223,6 +224,7 @@
     <ClInclude Include="colliderBox.h" />
     <ClInclude Include="colliderSphere.h" />
     <ClInclude Include="debug.h" />
+    <ClInclude Include="distanceNext.h" />
     <ClInclude Include="effect.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="fade.h" />

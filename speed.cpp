@@ -145,6 +145,7 @@ CSpeed *CSpeed::Create(void)
 void CSpeed::SetTime(int nTime)
 {
 	int nNumber;
+	int nLength = CManager::LengthCalculation(nTime);
 
 	// タイムをフレームで割る
 	nTime = (int)(nTime / 1.0f);
@@ -157,5 +158,20 @@ void CSpeed::SetTime(int nTime)
 
 		// 数字設定
 		m_apNumber[nCount]->SetNumber(nNumber);
+
+		if (MAX_DIGIT - nCount <= nLength)
+		{// 最大桁数より小さい桁だったとき
+			if (!m_apNumber[nCount]->GetActive())
+			{
+				m_apNumber[nCount]->SetActive(true);
+			}
+		}
+		else
+		{// 最大桁数より大きい桁だったとき
+			if (m_apNumber[nCount]->GetActive())
+			{
+				m_apNumber[nCount]->SetActive(false);
+			}
+		}
 	}
 }

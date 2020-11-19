@@ -113,14 +113,6 @@ HRESULT CGame::Init(void)
 		pRankUi->SetPosition(D3DXVECTOR3(1150.0f, 100.0f, 0.0f));
 	}
 
-	CUi* pDistance = CUi::Create();
-
-	if (pDistance != NULL)
-	{
-		pDistance->LoadScript("data/text/ui/TargetDistance.txt");
-		pDistance->SetPosition(D3DXVECTOR3(200.0f, 80.0f, 0.0f));
-	}
-
 	// ネットワークでのゲーム時初期化処理
 	CManager::GetNetwork()->InitGame();
 

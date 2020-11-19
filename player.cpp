@@ -35,6 +35,7 @@
 
 #include "number.h"
 #include "network.h"
+#include "distanceNext.h"
 
 //=============================================================================
 // マクロ定義
@@ -66,6 +67,7 @@ CPlayer::CPlayer(CScene::PRIORITY obj = CScene::PRIORITY_PLAYER) : CCharacter(ob
 	m_difference = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 差の初期化
 	m_cameraRot = D3DXVECTOR3(0, D3DX_PI, 0);			// カメラの回転情報初期化
 	m_pColPlayerSphere = NULL;							// プレイヤー当たり判定ポインタの初期化
+	m_pDistanceNext = NULL;								// 次のプレイヤーとの距離のUI
 	m_bHit = false;										// 当たり判定フラグの初期亜化
 	m_bJump = false;									// ジャンプフラグの初期化
 	m_nActionCount = 0;									// アクションカウンタの初期化
@@ -76,6 +78,7 @@ CPlayer::CPlayer(CScene::PRIORITY obj = CScene::PRIORITY_PLAYER) : CCharacter(ob
 	m_bDrift = false;									// ドリフトフラグ判定
 	m_bMove = false;									// 現在動いているかのフラグ
 	m_bColliderWithWall = true;							// 壁の当たり判定
+
 
 	m_pRank = NULL;
 
@@ -166,6 +169,17 @@ HRESULT CPlayer::Init(void)
 		m_pRank->SetSize(D3DXVECTOR3(100.0f, 100.0f, 0.0f));
 		m_pRank->SetTransform();
 	}
+
+	m_pDistanceNext = CDistanceNext::Create();
+
+	if (m_pDistanceNext != NULL)
+	{
+		m_pDistanceNext->SetPosition(D3DXVECTOR3(200.0f, 80.0f, 0.0f));
+		m_pDistanceNext->SetDistance(D3DXVECTOR3(-10.0f, -8.0f, 0.0f));
+		m_pDistanceNext->SetIntervalNum(D3DXVECTOR3(45.0f, 0.0f, 0.0f));
+		m_pDistanceNext->SetNumber(256);
+	}
+
 	return S_OK;
 }
 

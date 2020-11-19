@@ -32,6 +32,7 @@ class CColliderBox;
 class CScene2D;
 class CModel;
 class CNumber;
+class CDistanceNext;
 
 //=============================================================================
 // クラス定義
@@ -112,6 +113,7 @@ private:
 	bool							m_bDrift;										// プレイヤーのドリフトフラグ
 	bool							m_bMove;										// 現在動いているかのフラグ
 	CNumber							*m_pRank;										// ランキング用UI
+	CDistanceNext					*m_pDistanceNext;								// 次のプレイヤーとの距離のUI
 
 	// レースゲーム関連
 	int								m_nRound;										// 現在の周回回数
