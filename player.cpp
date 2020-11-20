@@ -193,6 +193,12 @@ void CPlayer::Uninit(void)
 		m_pColPlayerSphere->Release();
 	}
 
+	if (m_pDistanceNext != NULL)
+	{
+		m_pDistanceNext->Uninit();
+		m_pDistanceNext = NULL;
+	}
+
 	CCharacter::Uninit();
 }
 
@@ -337,6 +343,11 @@ void CPlayer::Update(void)
 	if (m_pRank != NULL)
 	{
 		m_pRank->SetNumber(pNetwork->GetRank(pNetwork->GetId()));
+	}
+
+	if (m_pDistanceNext != NULL)
+	{
+		m_pDistanceNext->Update();
 	}
 
 #ifdef _DEBUG

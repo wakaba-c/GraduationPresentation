@@ -15,6 +15,11 @@
 #include "takaseiLibrary.h"
 
 //==============================================================================
+// マクロ定義
+//==============================================================================
+#define DIVISION (0.00622f)
+
+//==============================================================================
 // コンストラクタ
 //==============================================================================
 CDistanceNext::CDistanceNext()
@@ -84,7 +89,7 @@ void CDistanceNext::Update(void)
 {
 	CNetwork *pNetwork = CManager::GetNetwork();			// ネットワークの取得
 	std::vector<CObject*> pointObj = CObject::GetPointObj();// オブジェクト情報取得
-	int pointNum = CObject::GetPointNum();					// 現在のポイント番号取得
+	unsigned int pointNum = CObject::GetPointNum();					// 現在のポイント番号取得
 	D3DXVECTOR3 distance;									// 二点間の差
 	CPlayer *pPlayer = CGame::GetPlayer();					// プレイヤー情報取得
 	D3DXVECTOR3 Target = D3DXVECTOR3_ZERO;					// 敵の位置
@@ -113,9 +118,48 @@ void CDistanceNext::Update(void)
 			}
 		}
 
-		// 距離を算出
-		fDistance = CTakaseiLibrary::OutputDistance(pointObj[pointNum + 1]->GetPosition(), pPlayer->GetPosition());
-		//SetNumber();
+		//// 周回遅れの時
+		//if (nRound > 0)
+		//{
+		//	// 最大チェックポイントまでカウント
+		//	for (int nCnt = 0; nCnt < pointObj.size(); nCnt++)
+		//	{
+		//
+		//	}
+		//}
+		if (pNetwork->GetFlag(pNetwork->GetId()) != nFlag)
+		{
+			if (pointNum < pointObj.size() - 1)
+			{
+				// プレイヤーと次のチェックポイントの距離計算
+				fDistance = CTakaseiLibrary::OutputDistance(pointObj[pointNum + 1]->GetPosition(), pPlayer->GetPosition());
+
+				// 敵までのチェックポイントの数まで加算
+				for (int nCnt = pointNum; nCnt < nFlag; nCnt++)
+				{
+					// 距離計算
+					fDistance = fDistance + CTakaseiLibrary::OutputDistance(pointObj[nCnt]->GetPosition(), pointObj[nCnt + 1]->GetPosition());
+				}
+
+				// 敵と前のチェックポイントの距離計算
+				fDistance = fDistance + CTakaseiLibrary::OutputDistance(pointObj[nFlag]->GetPosition(), Target);
+			}
+		}
+		else
+		{
+			// 敵と前のチェックポイントの距離計算
+			fDistance = fDistance + CTakaseiLibrary::OutputDistance(pPlayer->GetPosition(), Target);
+		}
+
+		fDistance *= DIVISION;
+
+		if (fDistance > 999)
+		{
+			fDistance = 999;
+		}
+
+		// 数字設定
+		SetNumber((int)fDistance);
 	}
 	else
 	{
