@@ -12,6 +12,7 @@
 //=============================================================================
 #include "main.h"
 #include "scene2D.h"
+#include "box.h"
 
 //=============================================================================
 // マクロ定義
@@ -22,6 +23,7 @@
 // 前方宣言
 //=============================================================================
 class CScene2D;
+class CPiece;
 
 //=============================================================================
 // クラス定義
@@ -72,12 +74,14 @@ public:
 	void LoadPiece(void);
 
 private:
-	CScene2D *m_pPieceSelect[MAX_CORE];
+	CScene2D *m_pPieceSelect[MAX_CORE];				// Scene2Dのポインタ
+	CPiece *m_pPiece[Piece_Num];					// ピース
 
-	PIECETYPE m_type;
+	PIECETYPE m_type;								// ピースのタイプ
 
-	bool m_bSelect[MAX_CORE];
+	bool m_bSelect[MAX_CORE];						// 選ばれているかどうか
+	bool m_bPiece;									// 置いてるかどうか
 
-	int m_nSelectCnt;
+	int m_nSelectCnt;								// セレクトカウント
 };
 #endif
