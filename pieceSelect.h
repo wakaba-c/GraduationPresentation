@@ -54,12 +54,12 @@ public:
 		PIECETYPE_MAX				// 最大数
 	} PIECETYPE;					// タイプ
 
-	CPieceSelect(PRIORITY obj);			// コンストラクタ
-	~CPieceSelect();						// デストラクタ
-	HRESULT Init(void);			// 初期化処理
-	void Uninit(void);			// 開放処理
-	void Update(void);			// 更新処理
-	void Draw(void);			// 描画処理
+	CPieceSelect(PRIORITY obj);		// コンストラクタ
+	~CPieceSelect();				// デストラクタ
+	HRESULT Init(void);				// 初期化処理
+	void Uninit(void);				// 開放処理
+	void Update(void);				// 更新処理
+	void Draw(void);				// 描画処理
 
 	void OnTriggerEnter(CCollider *col) {};
 	void OnCollisionEnter(CCollider *col) {};
