@@ -105,14 +105,6 @@ HRESULT CGame::Init(void)
 	// 案内矢印の生成
 	CGuideSign::Create();
 
-	CUi *pRankUi = CUi::Create();
-
-	if (pRankUi != NULL)
-	{
-		pRankUi->LoadScript("data/text/ui/NowRank.txt");
-		pRankUi->SetPosition(D3DXVECTOR3(1150.0f, 100.0f, 0.0f));
-	}
-
 	// ネットワークでのゲーム時初期化処理
 	CManager::GetNetwork()->InitGame();
 
