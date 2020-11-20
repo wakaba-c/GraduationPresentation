@@ -36,6 +36,7 @@
 #include "number.h"
 #include "network.h"
 #include "distanceNext.h"
+#include "ui.h"
 
 //=============================================================================
 // マクロ定義
@@ -79,8 +80,8 @@ CPlayer::CPlayer(CScene::PRIORITY obj = CScene::PRIORITY_PLAYER) : CCharacter(ob
 	m_bMove = false;									// 現在動いているかのフラグ
 	m_bColliderWithWall = true;							// 壁の当たり判定
 
-
 	m_pRank = NULL;
+	m_pRankUi = NULL;
 
 	m_nRound = 0;			// 現在の周回回数
 }
@@ -180,6 +181,14 @@ HRESULT CPlayer::Init(void)
 		m_pDistanceNext->SetNumber(256);
 	}
 
+	m_pRankUi = CUi::Create();
+
+	if (m_pRankUi != NULL)
+	{
+		m_pRankUi->LoadScript("data/text/ui/NowRank.txt");
+		m_pRankUi->SetPosition(D3DXVECTOR3(1150.0f, 100.0f, 0.0f));
+	}
+
 	return S_OK;
 }
 
@@ -191,6 +200,20 @@ void CPlayer::Uninit(void)
 	if (m_pColPlayerSphere != NULL)
 	{// 武器の当たり判定が存在していたとき
 		m_pColPlayerSphere->Release();
+	}
+
+	if (m_pDistanceNext != NULL)
+	{
+		m_pDistanceNext->Uninit();
+		delete m_pDistanceNext;
+		m_pDistanceNext = NULL;
+	}
+
+	if (m_pRankUi != NULL)
+	{
+		m_pRankUi->Uninit();
+		delete m_pRankUi;
+		m_pRankUi = NULL;
 	}
 
 	CCharacter::Uninit();
@@ -337,6 +360,11 @@ void CPlayer::Update(void)
 	if (m_pRank != NULL)
 	{
 		m_pRank->SetNumber(pNetwork->GetRank(pNetwork->GetId()));
+	}
+
+	if (m_pDistanceNext != NULL)
+	{
+		m_pDistanceNext->Update();
 	}
 
 #ifdef _DEBUG

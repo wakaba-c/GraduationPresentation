@@ -32,6 +32,7 @@ CSpeed::CSpeed(CScene::PRIORITY obj = CScene::PRIORITY_UI) : CScene(obj)
 
 	//’l‚Ì‰Šú‰»
 	m_dTimeFrame = 0;			// ƒtƒŒ[ƒ€”‚Ì‰Šú‰»
+	m_pSpeedUi = NULL;			// UI‚Ì‰Šú‰»
 }
 
 //=============================================================================
@@ -62,12 +63,12 @@ HRESULT CSpeed::Init(void)
 		}
 	}
 
-	CUi *pSpeedUi = CUi::Create();
+	m_pSpeedUi = CUi::Create();
 
-	if (pSpeedUi != NULL)
+	if (m_pSpeedUi != NULL)
 	{
-		pSpeedUi->LoadScript("data/text/ui/SpeedMeter.txt");
-		pSpeedUi->SetPosition(D3DXVECTOR3(201.0f, 692.0f, 0.0f));
+		m_pSpeedUi->LoadScript("data/text/ui/SpeedMeter.txt");
+		m_pSpeedUi->SetPosition(D3DXVECTOR3(201.0f, 692.0f, 0.0f));
 	}
 
 	return S_OK;
@@ -78,7 +79,11 @@ HRESULT CSpeed::Init(void)
 //=============================================================================
 void CSpeed::Uninit(void)
 {
-
+	if (m_pSpeedUi != NULL)
+	{
+		m_pSpeedUi->Uninit();
+		delete m_pSpeedUi;
+	}
 }
 
 //=============================================================================

@@ -32,6 +32,7 @@ int CPuzzle::m_nPieceNum = 0;
 CPuzzle::CPuzzle()
 {
 	m_pBox = NULL;
+	m_pUi = NULL;
 }
 
 //=============================================================================
@@ -49,11 +50,11 @@ HRESULT CPuzzle::Init(void)
 {
 	LoadAsset();
 
-	CUi *pUI = CUi::Create();
+	m_pUi = CUi::Create();
 
-	if (pUI != NULL)
+	if (m_pUi != NULL)
 	{
-		pUI->LoadScript("data/text/ui/puzzleUI.txt");
+		m_pUi->LoadScript("data/text/ui/puzzleUI.txt");
 	}
 
 	m_pBox = CBox::Create();
@@ -137,6 +138,12 @@ void CPuzzle::Uninit(void)
 		m_pBox->Uninit();
 		m_pBox->Release();
 		m_pBox = NULL;
+	}
+
+	if (m_pUi != NULL)
+	{
+		m_pUi->Uninit();
+		delete m_pUi;
 	}
 
 	// ƒ|ƒŠƒSƒ“‚ÌŠJ•ú

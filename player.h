@@ -33,6 +33,7 @@ class CScene2D;
 class CModel;
 class CNumber;
 class CDistanceNext;
+class CUi;
 
 //=============================================================================
 // クラス定義
@@ -114,6 +115,7 @@ private:
 	bool							m_bMove;										// 現在動いているかのフラグ
 	CNumber							*m_pRank;										// ランキング用UI
 	CDistanceNext					*m_pDistanceNext;								// 次のプレイヤーとの距離のUI
+	CUi								*m_pRankUi;											// 現在順位Uiのポインタ
 
 	// レースゲーム関連
 	int								m_nRound;										// 現在の周回回数
