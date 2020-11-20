@@ -36,16 +36,16 @@ END_PIECESET
 
 PIECESET
 	POS = 100.0 600.0 0.0
-	TYPE = 0
+	TYPE = 4
 	SIZE = 100.0 100.0 0.0
-	TEX = data/tex/core/core.png
+	TEX = data/tex/core/core_03.png
 END_PIECESET
 
 PIECESET
 	POS = 200.0 600.0 0.0
-	TYPE = 4
+	TYPE = 0
 	SIZE = 100.0 100.0 0.0
-	TEX = data/tex/core/core_03.png
+	TEX = data/tex/core/core.png
 END_PIECESET
 
 PIECESET
@@ -57,23 +57,23 @@ END_PIECESET
 
 PIECESET
 	POS = 400.0 600.0 0.0
-	TYPE = 6
+	TYPE = 8
 	SIZE = 100.0 100.0 0.0
-	TEX = data/tex/core/core_05.png
+	TEX = data/tex/core/core_07.png
 END_PIECESET
 
 PIECESET
 	POS = 500.0 600.0 0.0
-	TYPE = 7
+	TYPE = 14
 	SIZE = 100.0 100.0 0.0
-	TEX = data/tex/core/core_06.png
+	TEX = data/tex/core/core_13.png
 END_PIECESET
 
 PIECESET
 	POS = 600.0 600.0 0.0
-	TYPE = 8
+	TYPE = 15
 	SIZE = 100.0 100.0 0.0
-	TEX = data/tex/core/core_07.png
+	TEX = data/tex/core/core_14.png
 END_PIECESET
 
 PIECESET
@@ -113,16 +113,16 @@ END_PIECESET
 
 PIECESET
 	POS = 900.0 600.0 0.0
-	TYPE = 14
+	TYPE = 7
 	SIZE = 100.0 100.0 0.0
-	TEX = data/tex/core/core_13.png
+	TEX = data/tex/core/core_06.png
 END_PIECESET
 
 PIECESET
 	POS = 800.0 600.0 0.0
-	TYPE = 15
+	TYPE = 6
 	SIZE = 100.0 100.0 0.0
-	TEX = data/tex/core/core_14.png
+	TEX = data/tex/core/core_05.png
 END_PIECESET
 
 PIECESET

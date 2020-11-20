@@ -68,7 +68,6 @@ public:
 		PieceType_None = 0,				
 		PieceType_Square,				
 		PieceType_Rectangle,			
-		PieceType_T_Type,				
 		PieceType_L_Type,				
 		PieceType_Square_1,				
 		PieceType_Rectangle_1,			
