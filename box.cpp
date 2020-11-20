@@ -244,6 +244,10 @@ void CBox::Update(void)
 		for (int nCnt = 0; nCnt < m_nPieceNum; nCnt++)
 		{
 			m_fSpeed[nCnt] = m_pPiece[nCnt]->GetSpeed();
+			m_fRate[nCnt] = m_pPiece[nCnt]->GetRate();												// スピード上昇率
+			m_fTurning[nCnt] = m_pPiece[nCnt]->GetTurning();										// 旋回速度
+			m_fDecay[nCnt] = m_pPiece[nCnt]->GetDecay();											// 減衰率
+			m_nPower[nCnt] = m_pPiece[nCnt]->GetPower();											// パワー
 		}
 		// ピース生成
 
