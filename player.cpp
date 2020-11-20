@@ -446,9 +446,12 @@ void CPlayer::OnTriggerEnter(CCollider *col)
 	}
 	if (sTag == "goal")
 	{
+		CNetwork *pNetwork = CManager::GetNetwork();
+		pNetwork->SendTCP("GOAL", sizeof("GOAL"));
+
 		//if (CFade::GetFade() == CFade::FADE_NONE)
 		//{//フェードが処理をしていないとき
-		//	CFade::SetFade(CManager::MODE_PUZZLE_CUSTOM);					//フェードを入れる
+		//	CFade::SetFade(CManager::MODE_RESULT, CFade::FADETYPE_NORMAL);					//フェードを入れる
 		//}
 	}
 }

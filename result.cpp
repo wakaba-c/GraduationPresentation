@@ -51,17 +51,6 @@ HRESULT CResult::Init(void)
 
 	CBg::Create();			// 背景の作成
 
-	// =============== タイトル ================ //
-	CScene2D *pScene2D = CScene2D::Create(CScene::PRIORITY_UI);
-
-	if (pScene2D != NULL)
-	{// pScene2Dが存在していたとき
-		pScene2D->BindTexture("data/tex/result.png");		// 画像の読み込み
-		pScene2D->SetPosition(D3DXVECTOR3(300.0f, 150.0f, 0.0f));					// 位置設定
-		pScene2D->SetSize(D3DXVECTOR3(500.0f, 150.0f, 0.0f));						// 大きさ設定
-		pScene2D->SetTransform();													// 頂点情報の更新
-	}
-
 	CRanking::SetResultIndex(m_nKill * ((MAX_MAGNIFICATION - m_nMinutes) * 100));	// ランキングに今回の得点を送る
 	return S_OK;
 }
@@ -93,7 +82,7 @@ void CResult::Update(void)
 		{// キーボードが存在していたとき
 			if (pInputKeyboard->GetTriggerKeyboard(DIK_RETURN))
 			{// 指定のキーが押されたとき
-				CFade::SetFade(CManager::MODE_RANKING, CFade::FADETYPE_SLIDE);					//フェードを入れる
+				CFade::SetFade(CManager::MODE_TITLE, CFade::FADETYPE_SLIDE);					//フェードを入れる
 			}
 		}
 		if (pInputController->GetJoypadUse(0))
@@ -102,7 +91,7 @@ void CResult::Update(void)
 			if (pInputController->GetControllerTrigger(0, JOYPADKEY_A) ||			// ゲームパッドのAボダンが押されたとき
 				pInputController->GetControllerTrigger(0, JOYPADKEY_START))			// ゲームパッドのSTARTボタンが押されたとき
 			{
-				CFade::SetFade(CManager::MODE_RANKING, CFade::FADETYPE_SLIDE);					//フェードを入れる
+				CFade::SetFade(CManager::MODE_TITLE, CFade::FADETYPE_SLIDE);					//フェードを入れる
 			}
 		}
 	}

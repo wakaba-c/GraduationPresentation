@@ -805,10 +805,8 @@ bool CNetwork::UpdateTCP(void)
 
 		if (CFade::GetFade() == CFade::FADE_NONE)
 		{// フェードしていないとき
-			sscanf(aFunc, "%s %d %d %d %d", &aDie, &nRank[0], &nRank[1], &nRank[2], &nRank[3]);
-
 			// チュートリアルへ
-			CFade::SetFade(CManager::MODE_RESULT, CFade::FADETYPE_SLIDE);
+			CFade::SetFade(CManager::MODE_RESULT, CFade::FADETYPE_NORMAL);
 		}
 	}
 	else if (strcmp(cHeadText, "GAME_START") == 0)

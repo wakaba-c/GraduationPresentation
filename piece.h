@@ -65,17 +65,17 @@ public:
 	//================================
 	enum PieceType
 	{
-		PieceType_None = 0,				
-		PieceType_Square,				
-		PieceType_Rectangle,			
-		PieceType_L_Type,				
-		PieceType_Square_1,				
-		PieceType_Rectangle_1,			
-		PieceType_Rectangle_2,			
-		PieceType_Speed,				
-		PieceType_Speed_1,				
-		PieceType_Diagonal,				
-		PieceType_Max,					
+		PieceType_None = 0,
+		PieceType_Square,
+		PieceType_Rectangle,
+		PieceType_L_Type,
+		PieceType_Square_1,
+		PieceType_Rectangle_1,
+		PieceType_Rectangle_2,
+		PieceType_Speed,
+		PieceType_Speed_1,
+		PieceType_Diagonal,
+		PieceType_Max,
 	};
 
 	CPiece(PRIORITY type);																			// コンストラクタ
@@ -98,7 +98,7 @@ public:
 	float GetRate(void) { return m_fRate; }															// スピード上昇率取得
 	float GetTurning(void) { return m_fTurning; }													// 旋回速度取得
 	float GetDecay(void) { return m_fDecay; }														// 減衰率取得
-	float GetPower(void) { return m_nPower; }														// パワー取得
+	int GetPower(void) { return m_nPower; }															// パワー取得
 
 	void SetPieceType(PieceType type);																// タイプ設定
 	void SetStatus(void);																			// ステータス設定

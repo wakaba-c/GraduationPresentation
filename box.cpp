@@ -248,7 +248,7 @@ void CBox::Update(void)
 			m_fRate[nCnt] = m_pPiece[nCnt]->GetRate();												// スピード上昇率
 			m_fTurning[nCnt] = m_pPiece[nCnt]->GetTurning();										// 旋回速度
 			m_fDecay[nCnt] = m_pPiece[nCnt]->GetDecay();											// 減衰率
-			m_nPower[nCnt] = m_pPiece[nCnt]->GetPower();											// パワー
+			m_nPower[nCnt] = (int)m_pPiece[nCnt]->GetPower();											// パワー
 			m_bRoute[nCnt] = m_pPiece[nCnt]->GetRoute();
 		}
 		// ピース生成
