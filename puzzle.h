@@ -39,6 +39,7 @@ public:
 	static float GetDecay(int nPieceNum) { return m_fDecay[nPieceNum]; }		// 減衰率取得
 	static int GetPower(int nPieceNum) { return m_nPower[nPieceNum]; }			// パワー取得
 	static int GetPieceNum(void) { return m_nPieceNum; }						// ピース数
+	static bool GetRoute(int nPieceNum) { return m_bRoute[nPieceNum]; }			// ルート
 
 private:
 	CBox *m_pBox;								// ボックスのポインタ
@@ -49,6 +50,7 @@ private:
 	static float m_fTurning[Piece_Num];			// 旋回速度
 	static float m_fDecay[Piece_Num];			// 減衰率
 	static int m_nPower[Piece_Num];				// パワー
+	static bool m_bRoute[Piece_Num];			// ルートを表示するか
 	static int m_nPieceNum;						// ピース数
 
 };

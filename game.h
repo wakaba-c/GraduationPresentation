@@ -11,6 +11,7 @@
 // インクルードファイル
 //=============================================================================
 #include "main.h"
+#include "box.h"
 
 //=============================================================================
 // 前方宣言
@@ -55,5 +56,8 @@ private:
 	static CSky			*m_pSky;											// 空のポインタ
 	static CHouse		*m_pHouse;											// 家のポインタ
 	static CSpeed		*m_pSpeed;											// 時速のポインタ
+
+	bool m_bGuideSign[Piece_Num];
+	bool m_bRate;
 };
 #endif

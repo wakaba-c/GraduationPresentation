@@ -59,6 +59,7 @@ public:
 	float GetDecay(int nPieceNum) { return m_fDecay[nPieceNum]; }					// 減衰率
 	int GetPower(int nPieceNum) { return m_nPower[nPieceNum]; }						// パワー
 	int GetPieceNum(void) { return m_nPieceNum; }									// ピース数
+	bool GetRoute(int nPieceNum) { return m_bRoute[nPieceNum]; }					// ルート
 
 protected:
 
@@ -76,6 +77,7 @@ private:
 	float m_fTurning[Piece_Num];													// 旋回速度
 	float m_fDecay[Piece_Num];														// 減衰率
 	int m_nPower[Piece_Num];														// パワー
+	bool m_bRoute[Piece_Num];														// ルートを表示するか
 
 
 	static bool m_bPuzzle[Box_Depth][Box_Width];									// 使用しているかどうか

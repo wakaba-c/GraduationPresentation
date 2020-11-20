@@ -65,6 +65,7 @@ HRESULT CBox::Init(void)
 	for (int nCnt = 0; nCnt < Piece_Num; nCnt++)
 	{
 		m_fSpeed[nCnt] = 0;
+		m_bRoute[nCnt] = false;
 	}
 
 	// ブロックの初期化
@@ -248,6 +249,7 @@ void CBox::Update(void)
 			m_fTurning[nCnt] = m_pPiece[nCnt]->GetTurning();										// 旋回速度
 			m_fDecay[nCnt] = m_pPiece[nCnt]->GetDecay();											// 減衰率
 			m_nPower[nCnt] = m_pPiece[nCnt]->GetPower();											// パワー
+			m_bRoute[nCnt] = m_pPiece[nCnt]->GetRoute();
 		}
 		// ピース生成
 

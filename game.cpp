@@ -33,6 +33,7 @@
 #include "wall.h"
 #include "speed.h"
 #include "GuideSign.h"
+#include "puzzle.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -68,7 +69,7 @@ HRESULT CGame::Init(void)
 {
 	// エフェクトの生成
 	CEffect::Create();
-
+	m_bRate = false;
 	// プレイヤーの生成
 	m_pPlayer = CPlayer::Create();
 
@@ -102,8 +103,25 @@ HRESULT CGame::Init(void)
 	// 壁情報の読み込み
 	CMeshWall::LoadWall("data/text/wall.txt", false);
 
-	// 案内矢印の生成
-	CGuideSign::Create();
+	int nCntPiece = CPuzzle::GetPieceNum();
+
+	for (int nCnt = 0; nCnt < nCntPiece; nCnt++)
+	{
+		m_bGuideSign[nCnt] = false;
+	}
+	for (int nCnt = 0; nCnt < nCntPiece; nCnt++)
+	{
+		m_bGuideSign[nCnt] = CPuzzle::GetRoute(nCnt);
+		if (m_bGuideSign[nCnt] == true)
+		{
+			m_bRate = true;
+		}
+	}
+	if (m_bRate == true)
+	{
+		// 案内矢印の生成
+		CGuideSign::Create();
+	}
 
 	// ネットワークでのゲーム時初期化処理
 	CManager::GetNetwork()->InitGame();

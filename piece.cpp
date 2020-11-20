@@ -250,23 +250,23 @@ void CPiece::SetStatus(void)
 			// Å°Å°
 			// Å°Å°
 		case PieceType_Square:
-			switch (m_StatusType)
+		/*	switch (m_StatusType)
 			{
 			case StatusType_MiniMap:
 				m_fRate = MediumUp;
 				m_bMap = true;
 				break;
 
-			case StatusType_Route:
+			case StatusType_Route:*/
 				m_fTurning = MediumUp;
 				m_bRoute = true;
-				break;
+				/*break;
 
 			case StatusType_Ranking:
 				m_fSpeed = MediumUp;
 				m_bRanking = true;
 				break;
-			}
+			}*/
 			break;
 
 			// Å°Å°

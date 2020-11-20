@@ -91,7 +91,9 @@ public:
 	bool GetMove(void) { return m_bMove; }															// 移動情報取得
 	bool GetPlaacement(void) { return m_bPlacement; }												// 配置情報取得
 	bool GetPuzzle(int nDepth, int nWidth) { return m_bPuzzle[nDepth][nWidth]; }					// パズル情報取得
-	bool GetMap(void){ return m_bMap; }																// 
+	bool GetMap(void) { return m_bMap; }															// マップ取得
+	bool GetRoute(void) { return m_bRoute; }														// ルート取得
+	bool GetRanking(void){ return m_bRanking; }														// ランキング取得
 	float GetSpeed(void) { return m_fSpeed; }														// スピード取得
 	float GetRate(void) { return m_fRate; }															// スピード上昇率取得
 	float GetTurning(void) { return m_fTurning; }													// 旋回速度取得
