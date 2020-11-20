@@ -12,6 +12,7 @@
 //=============================================================================
 #include "main.h"
 #include "scene2D.h"
+#include "box.h"
 
 //=============================================================================
 // マクロ定義
@@ -22,6 +23,7 @@
 // 前方宣言
 //=============================================================================
 class CScene2D;
+class CPiece;
 
 //=============================================================================
 // クラス定義
@@ -54,12 +56,12 @@ public:
 		PIECETYPE_MAX				// 最大数
 	} PIECETYPE;					// タイプ
 
-	CPieceSelect(PRIORITY obj);			// コンストラクタ
-	~CPieceSelect();						// デストラクタ
-	HRESULT Init(void);			// 初期化処理
-	void Uninit(void);			// 開放処理
-	void Update(void);			// 更新処理
-	void Draw(void);			// 描画処理
+	CPieceSelect(PRIORITY obj);		// コンストラクタ
+	~CPieceSelect();				// デストラクタ
+	HRESULT Init(void);				// 初期化処理
+	void Uninit(void);				// 開放処理
+	void Update(void);				// 更新処理
+	void Draw(void);				// 描画処理
 
 	void OnTriggerEnter(CCollider *col) {};
 	void OnCollisionEnter(CCollider *col) {};
@@ -72,8 +74,14 @@ public:
 	void LoadPiece(void);
 
 private:
-	CScene2D *m_pPieceSelect[MAX_CORE];
+	CScene2D *m_pPieceSelect[MAX_CORE];				// Scene2Dのポインタ
+	CPiece *m_pPiece[Piece_Num];					// ピース
 
-	PIECETYPE m_type;
+	PIECETYPE m_type;								// ピースのタイプ
+
+	bool m_bSelect[MAX_CORE];						// 選ばれているかどうか
+	bool m_bPiece;									// 置いてるかどうか
+
+	int m_nSelectCnt;								// セレクトカウント
 };
 #endif

@@ -7,6 +7,9 @@
 #include "pieceSelect.h"
 #include "manager.h"
 #include "renderer.h"
+#include "inputKeyboard.h"
+#include "takaseiLibrary.h"
+#include "box.h"
 
 //=============================================================================
 // マクロ定義
@@ -36,10 +39,14 @@ CPieceSelect::~CPieceSelect()
 //==============================================================================
 HRESULT CPieceSelect::Init(void)
 {
+	// 初期化
+	m_nSelectCnt = 0;
+	m_bPiece = false;
 
 	for (int nCnt = 0; nCnt < MAX_CORE; nCnt++)
 	{
 		m_pPieceSelect[nCnt] = CScene2D::Create(PRIORITY_UI);
+		m_bSelect[nCnt] = false;
 	}
 
 	LoadPiece();
@@ -61,6 +68,79 @@ void CPieceSelect::Uninit(void)
 //=============================================================================
 void CPieceSelect::Update(void)
 {
+	// キーボード取得
+	CInputKeyboard *pKeyboard = CManager::GetInputKeyboard();
+
+	m_bPiece = CBox::GetPiece();
+
+	if (m_bPiece == false)
+	{
+		// Zを押されたら
+		if (pKeyboard->GetTriggerKeyboard(DIK_Z))
+		{
+			switch (m_nSelectCnt)
+			{
+			case 0:
+				m_bSelect[PIECETYPE_CORE_16] = false;
+				m_bSelect[PIECETYPE_CORE_01] = true;
+				m_nSelectCnt++;
+				break;
+			case 1:
+				m_bSelect[PIECETYPE_CORE_01] = false;
+				m_bSelect[PIECETYPE_CORE_04] = true;
+				m_nSelectCnt++;
+				break;
+			case 2:
+				m_bSelect[PIECETYPE_CORE_04] = false;
+				m_bSelect[PIECETYPE_CORE_12] = true;
+				m_nSelectCnt++;
+				break;
+			case 3:
+				m_bSelect[PIECETYPE_CORE_12] = false;
+				m_bSelect[PIECETYPE_CORE_00] = true;
+				m_nSelectCnt++;
+				break;
+			case 4:
+				m_bSelect[PIECETYPE_CORE_00] = false;
+				m_bSelect[PIECETYPE_CORE_05] = true;
+				m_nSelectCnt++;
+				break;
+			case 5:
+				m_bSelect[PIECETYPE_CORE_05] = false;
+				m_bSelect[PIECETYPE_CORE_08] = true;
+				m_nSelectCnt++;
+				break;
+			case 6:
+				m_bSelect[PIECETYPE_CORE_08] = false;
+				m_bSelect[PIECETYPE_CORE_14] = true;
+				m_nSelectCnt++;
+				break;
+			case 7:
+				m_bSelect[PIECETYPE_CORE_14] = false;
+				m_bSelect[PIECETYPE_CORE_15] = true;
+				m_nSelectCnt++;
+				break;
+			case 8:
+				m_bSelect[PIECETYPE_CORE_15] = false;
+				m_bSelect[PIECETYPE_CORE_16] = true;
+				m_nSelectCnt = 0;
+				break;
+			}
+		}
+	}
+
+	for (int nCnt = 0; nCnt < MAX_CORE; nCnt++)
+	{
+		if (m_bSelect[nCnt] == true)
+		{
+			m_pPieceSelect[nCnt]->SetColor(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+		}
+		else
+		{
+			m_pPieceSelect[nCnt]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+
+		}
+	}
 
 }
 

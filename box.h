@@ -52,6 +52,7 @@ public:
 	static bool GetPuzzle(int nDepth, int nWidth) { return m_bPuzzle[nDepth][nWidth]; }	// パズル情報取得
 
 	bool GetPlaacement(void){ return m_bCreate; }									// 配置情報取得
+	static bool GetPiece(void) {return m_bPiece;}
 	float GetSpeed(int nPieceNum) { return m_fSpeed[nPieceNum]; }					// スピード取得
 	int GetPieceNum(void) { return m_nPieceNum; }									// ピース数
 
@@ -73,7 +74,7 @@ private:
 	bool m_bPlacement;																// 配置しているかどうか
 	bool m_bCreate;																	// 生成するかどうか
 	bool m_bMove;																	// 動くかどうか
-	bool m_bPiece;
+	static bool m_bPiece;
 	bool m_bRelease;
 };
 #endif
