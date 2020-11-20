@@ -19,6 +19,10 @@
 // ê√ìIÉÅÉìÉoïœêî
 //=============================================================================
 float CPuzzle::m_fSpeed[Piece_Num] = {};
+float CPuzzle::m_fRate[Piece_Num] = {};
+float CPuzzle::m_fTurning[Piece_Num] = {};
+float CPuzzle::m_fDecay[Piece_Num] = {};
+int CPuzzle::m_nPower[Piece_Num] = {};
 int CPuzzle::m_nPieceNum = 0;
 
 //=============================================================================
@@ -79,6 +83,10 @@ void CPuzzle::Update(void)
 		for ( int nCnt = 0;nCnt < m_nPieceNum; nCnt++)
 		{
 			m_fSpeed[nCnt] = m_pBox->GetSpeed(nCnt);
+			m_fRate[nCnt] = m_pBox->GetRate(nCnt);
+			m_fTurning[nCnt] = m_pBox->GetTurning(nCnt);
+			m_fDecay[nCnt] = m_pBox->GetDecay(nCnt);
+			m_nPower[nCnt] = m_pBox->GetPower(nCnt);
 		}
 	}
 

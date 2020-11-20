@@ -33,12 +33,20 @@ public:
 
 	static void	LoadAsset(void);												// アセットの読み込み処理
 	static float GetSpeed(int nPieceNum) { return m_fSpeed[nPieceNum]; }		// スピードの取得
+	static float GetRate(int nPieceNum) { return m_fRate[nPieceNum]; }			// スピード上昇率の取得
+	static float GetTurning(int nPieceNum) { return m_fTurning[nPieceNum]; }	// 旋回速度取得
+	static float GetDecay(int nPieceNum) { return m_fDecay[nPieceNum]; }		// 減衰率取得
+	static int GetPower(int nPieceNum) { return m_nPower[nPieceNum]; }			// パワー取得
 	static int GetPieceNum(void) { return m_nPieceNum; }						// ピース数
 
 private:
 	CBox *m_pBox;								// ボックスのポインタ
 
 	static float m_fSpeed[Piece_Num];			// スピード
+	static float m_fRate[Piece_Num];			// スピード上昇率
+	static float m_fTurning[Piece_Num];			// 旋回速度
+	static float m_fDecay[Piece_Num];			// 減衰率
+	static int m_nPower[Piece_Num];				// パワー
 	static int m_nPieceNum;						// ピース数
 
 };

@@ -54,6 +54,10 @@ public:
 	bool GetPlaacement(void){ return m_bCreate; }									// 配置情報取得
 	static bool GetPiece(void) {return m_bPiece;}
 	float GetSpeed(int nPieceNum) { return m_fSpeed[nPieceNum]; }					// スピード取得
+	float GetRate(int nPieceNum) { return m_fRate[nPieceNum]; }						// スピード上昇率取得
+	float GetTurning(int nPieceNum) { return m_fTurning[nPieceNum]; }				// 旋回速度
+	float GetDecay(int nPieceNum) { return m_fDecay[nPieceNum]; }					// 減衰率
+	int GetPower(int nPieceNum) { return m_nPower[nPieceNum]; }						// パワー
 	int GetPieceNum(void) { return m_nPieceNum; }									// ピース数
 
 protected:
@@ -68,6 +72,11 @@ private:
 	int m_nSelect;																	// 選択カウント
 
 	float m_fSpeed[Piece_Num];														// スピード
+	float m_fRate[Piece_Num];														// スピード上昇率
+	float m_fTurning[Piece_Num];													// 旋回速度
+	float m_fDecay[Piece_Num];														// 減衰率
+	int m_nPower[Piece_Num];														// パワー
+
 
 	static bool m_bPuzzle[Box_Depth][Box_Width];									// 使用しているかどうか
 	bool m_bPuzzleStorage[Box_Depth][Box_Width];									// 保管
