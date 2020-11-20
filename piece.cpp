@@ -23,6 +23,9 @@
 #define WhileZ 50.0f																// イチマスの長さ縦
 #define Range_X 13																	// 横の範囲
 #define Range_Y 6																	// 縦の範囲
+#define SmallUp 1																	// 小アップ
+#define MediumUp 2																	// 中アップ
+#define GreatUp 3																	// 大アップ
 
 //==================================================================================================================
 // 静的メンバ変数の初期化
@@ -57,12 +60,18 @@ HRESULT CPiece::Init(void)
 	// 初期化
 	m_nCntMove_X = 0;
 	m_nCntMove_Y = 0;
-	m_fSpeed = 0;
+	m_fSpeed = 0;																			
+	m_fRate = 0;																			
+	m_fTurning = 0;																			
+	m_fDecay = 0;																			
+	m_nPower = 0;																			
 	m_bPlacement = false;
 	m_bRelease = false;
-	m_bCreate = false;
 	m_bMove = false;
 	m_bPut = true;
+	m_bMap = false;
+	m_bRoute = false;
+	m_bRanking = false;
 	m_col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// ブロックの初期化
@@ -241,7 +250,23 @@ void CPiece::SetStatus(void)
 			// ■■
 			// ■■
 		case PieceType_Square:
+			switch (m_StatusType)
+			{
+			case StatusType_MiniMap:
+				m_fRate = MediumUp;
+				m_bMap = true;
+				break;
 
+			case StatusType_Route:
+				m_fTurning = MediumUp;
+				m_bRoute = true;
+				break;
+
+			case StatusType_Ranking:
+				m_fSpeed = MediumUp;
+				m_bRanking = true;
+				break;
+			}
 			break;
 
 			// ■■
@@ -250,7 +275,8 @@ void CPiece::SetStatus(void)
 			// ■■
 			// ■■
 		case PieceType_Rectangle:
-			m_fSpeed = 2.0f;
+
+			m_fSpeed = MediumUp;
 			break;
 
 			// ■
@@ -258,17 +284,48 @@ void CPiece::SetStatus(void)
 			// ■
 			// ■■
 		case PieceType_L_Type:
-
+			m_fTurning = 3.0f;
 			break;
 			// ■
 		case PieceType_Square_1:
 
+			switch (m_StatusType)
+			{
+			case StatusType_MaxSpeed_SmallUp:
+				m_fSpeed = SmallUp;
+				break;
+
+			case StatusType_Rate_SmallUp:
+				m_fRate = SmallUp;
+				break;
+
+			case StatusType_Turning_SmallUp:
+				m_fTurning = SmallUp;
+				break;
+
+			case StatusType_Power_SmallUp:
+				m_nPower = SmallUp;
+				break;
+			}
 			break;
 
 			// ■
 			// ■
 		case PieceType_Rectangle_1:
+			switch (m_StatusType)
+			{
+			case StatusType_MaxSpeed_MediumUp:
+				m_fSpeed = MediumUp;
+				break;
 
+			case StatusType_Rate_MediumUp:
+				m_fRate = MediumUp;
+				break;
+
+			case StatusType_Turning_MediumUp:
+				m_fTurning = MediumUp;
+				break;
+			}
 			break;
 
 			// ■
@@ -276,6 +333,16 @@ void CPiece::SetStatus(void)
 			// ■
 			// ■
 		case PieceType_Rectangle_2:
+			switch (m_StatusType)
+			{
+			case StatusType_Power_MediumUp:
+				m_nPower = MediumUp;
+				break;
+
+			case StatusType_Decay_Down:
+				m_fDecay = MediumUp;
+				break;
+			}
 
 			break;
 
@@ -283,7 +350,7 @@ void CPiece::SetStatus(void)
 			// ■■■
 			// 　　■■
 		case PieceType_Speed:
-			m_fSpeed = 3.0f;
+			m_fSpeed = GreatUp;
 			break;
 
 			// ■■
@@ -292,7 +359,7 @@ void CPiece::SetStatus(void)
 			// ■■
 			// ■
 		case PieceType_Speed_1:
-
+			m_fRate = GreatUp;
 			break;
 
 			// 　　　■
@@ -300,7 +367,7 @@ void CPiece::SetStatus(void)
 			// 　■
 			// ■
 		case PieceType_Diagonal:
-
+			m_fSpeed = GreatUp + 1;
 			break;
 		}
 
