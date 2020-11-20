@@ -150,6 +150,14 @@ void CGame::Draw(void)
 //=============================================================================
 void CGame::Uninit(void)
 {
+	CNetwork *pNetwork = CManager::GetNetwork();
+
+	if (pNetwork != NULL)
+	{// ネットワークが存在していたとき
+		pNetwork->StopUpdate();				// 更新停止予約
+		pNetwork->CloseTCP();				// サーバーとの窓口を閉める
+	}
+
 	CObject::Unload();
 
 	// ポリゴンの開放
