@@ -709,6 +709,12 @@ bool CNetwork::UpdateUDP(void)
 			// ランクの代入
 			m_nRank[nCount] = (int)fData[RECVDATA_RANK];
 
+			// チェックポイント
+			m_nNumFlag[nCount] = (int)fData[RECVDATA_FLAG];
+
+			// 周回回数
+			m_nNumRound[nCount] = (int)fData[RECVDATA_ROUND];
+
 			m_nStick[STICKTYPE_H] = (int)fData[RECVDATA_STICK_H];
 			m_nStick[STICKTYPE_V] = (int)fData[RECVDATA_STICK_V];
 		}

@@ -9,6 +9,10 @@
 #include "renderer.h"
 #include "ui.h"
 #include "number.h"
+#include "object.h"
+#include "player.h"
+#include "game.h"
+#include "takaseiLibrary.h"
 
 //==============================================================================
 // コンストラクタ
@@ -53,6 +57,12 @@ HRESULT CDistanceNext::Init(void)
 		}
 	}
 
+	// 最大人数までカウント
+	for (int nCnt = 0; nCnt < MAX_PLAYER; nCnt++)
+	{
+		m_nRank[nCnt] = 0;
+	}
+
 	// 位置関係の設定
 	SetTransform();
 	SetNumber(0);
@@ -72,7 +82,46 @@ void CDistanceNext::Uninit(void)
 //=============================================================================
 void CDistanceNext::Update(void)
 {
+	CNetwork *pNetwork = CManager::GetNetwork();			// ネットワークの取得
+	std::vector<CObject*> pointObj = CObject::GetPointObj();// オブジェクト情報取得
+	int pointNum = CObject::GetPointNum();					// 現在のポイント番号取得
+	D3DXVECTOR3 distance;									// 二点間の差
+	CPlayer *pPlayer = CGame::GetPlayer();					// プレイヤー情報取得
+	D3DXVECTOR3 Target = D3DXVECTOR3_ZERO;					// 敵の位置
+	int nRound = 0;											// 敵の周回回数
+	int nFlag = 0;											// 敵のフラグ番号
+	float fDistance = 0.0f;									// 距離
 
+	// 現在の順位取得
+	int nRank = pNetwork->GetRank(pNetwork->GetId());
+
+	// 順位が2位以下の時
+	if (nRank > 1)
+	{
+		// 最大人数までカウント
+		for (int nCnt = 0; nCnt < MAX_PLAYER; nCnt++)
+		{
+			if(nCnt == pNetwork->GetId()) { continue; }
+
+			// 順位より上の順位取得
+			if (pNetwork->GetRank(nCnt) == nRank - 1)
+			{
+				Target = pNetwork->GetPosition(nCnt);	// 敵の位置取得
+				nFlag = pNetwork->GetFlag(nCnt);		// 敵のフラグ番号取得
+				nRound = pNetwork->GetRound(nCnt);		// 敵の周回数取得
+				break;
+			}
+		}
+
+		// 距離を算出
+		fDistance = CTakaseiLibrary::OutputDistance(pointObj[pointNum + 1]->GetPosition(), pPlayer->GetPosition());
+		//SetNumber();
+	}
+	else
+	{
+		// ゼロにする
+		SetNumber(0);
+	}
 }
 
 //=============================================================================
