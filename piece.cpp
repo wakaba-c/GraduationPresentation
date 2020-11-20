@@ -253,12 +253,6 @@ void CPiece::SetStatus(void)
 			m_fSpeed = 2.0f;
 			break;
 
-			// 　■
-			// ■■■
-		case PieceType_T_Type:
-
-			break;
-
 			// ■
 			// ■
 			// ■
@@ -517,89 +511,6 @@ void CPiece::SetPiece(void)
 					m_nCntMove_Y = Range_Y - 3;
 				}
 				break;
-
-			// 　■
-			// ■■■
-			case PieceType_T_Type:
-
-				// 配置
-				if (nDepth == m_nCntMove_Y && nWide == m_nCntMove_X + 1)
-				{
-					m_bPuzzle[nDepth][nWide] = true;
-				}
-				else if (nDepth == m_nCntMove_Y + 1 && nWide == m_nCntMove_X)
-				{
-					m_bPuzzle[nDepth][nWide] = true;
-				}
-				else if (nDepth == m_nCntMove_Y + 1 && nWide == m_nCntMove_X + 1)
-				{
-					m_bPuzzle[nDepth][nWide] = true;
-				}
-				else if (nDepth == m_nCntMove_Y + 1 && nWide == m_nCntMove_X + 2)
-				{
-					m_bPuzzle[nDepth][nWide] = true;
-				}
-				else
-				{
-					m_bPuzzle[nDepth][nWide] = false;
-				}
-
-				// 状態確認
-				if (m_bPuzzle[nDepth][nWide] == true)
-				{
-					// テクスチャ変更
-					m_pBlock[nDepth][nWide]->BindTexture("data/tex/grass.jpg");
-					// 配置しているかどうか
-					if (m_bPlacement == false)
-					{
-						// 色の変更
-						if (m_bBox[m_nCntMove_Y][m_nCntMove_X + 1] == false && m_bBox[m_nCntMove_Y + 1][m_nCntMove_X] == false &&
-							m_bBox[m_nCntMove_Y + 1][m_nCntMove_X + 1] == false && m_bBox[m_nCntMove_Y + 1][m_nCntMove_X + 2] == false)
-						{
-							m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
-							m_bPut = true;
-						}
-						else
-						{
-							// 色の変更
-							m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
-							m_bPut = false;
-						}
-					}
-					else
-					{
-						// 色の変更
-						m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-					}
-
-				}
-				else
-				{
-					// 色設定
-					m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
-				}
-
-				// 枠外に行かないようにする
-				if (m_nCntMove_X <= 0)
-				{
-					m_nCntMove_X = 0;
-				}
-				else if (m_nCntMove_X >= Range_X - 1)
-				{
-					m_nCntMove_X = Range_X - 1;
-				}
-
-				if (m_nCntMove_Y <= 0)
-				{
-					m_nCntMove_Y = 0;
-				}
-				else if (m_nCntMove_Y >= Range_Y)
-				{
-					m_nCntMove_Y = Range_Y;
-				}
-
-				break;
-
 			// ■
 			// ■
 			// ■

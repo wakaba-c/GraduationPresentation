@@ -75,5 +75,9 @@ private:
 	CScene2D *m_pPieceSelect[MAX_CORE];
 
 	PIECETYPE m_type;
+
+	bool m_bSelect[MAX_CORE];
+
+	int m_nSelectCnt;
 };
 #endif
