@@ -13,6 +13,7 @@
 #include "inputController.h"
 #include "network.h"
 #include "pieceSelect.h"
+#include "ui.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -42,9 +43,18 @@ CPuzzle::~CPuzzle()
 HRESULT CPuzzle::Init(void)
 {
 	LoadAsset();
+
+	CUi *pUI = CUi::Create();
+
+	if (pUI != NULL)
+	{
+		pUI->LoadScript("data/text/ui/puzzleUI.txt");
+	}
+
 	m_pBox = CBox::Create();
 
 	CPieceSelect::Create();
+
 	// 各種アセットの生成＆設置
 	//CMeshField::LoadRand("data/stage/rand.csv", false);				// 床情報の読込
 	//CObject::LoadModel("data/stage/object.csv");						// モデル情報の読込
