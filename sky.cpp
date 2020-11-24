@@ -10,11 +10,6 @@
 #include "meshSphere.h"
 
 //=============================================================================
-// 静的メンバ変数
-//=============================================================================
-PDIRECT3DTEXTURE9 CSky::m_pTexture = NULL;
-
-//=============================================================================
 // コンストラクタ処理
 //=============================================================================
 CSky::CSky(CScene::PRIORITY obj = CScene::PRIORITY_SKY) : CScene(obj)
@@ -112,7 +107,7 @@ void CSky::Draw(void)
 		pDevice->SetFVF(FVF_VERTEX_3D);
 
 		// 頂点フォーマットの設定
-		pDevice->SetTexture(0, m_pTexture);
+		pDevice->SetTexture(0, CManager::GetResource("data/tex/skydome.png"));
 
 		// ポリゴンの描画		※1番上
 		pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLEFAN, 0, 0, m_nNumVertexSphere, 0, m_nNumPolygonSphere);
@@ -174,15 +169,8 @@ CSky *CSky::Create(void)
 //=============================================================================
 HRESULT CSky::Load(void)
 {
-	CRenderer *pRenderer = CManager::GetRenderer();
-	LPDIRECT3DDEVICE9 pDevice;
-
-	//デバイスを取得する
-	pDevice = pRenderer->GetDevice();
-
 	//テクスチャの読み込み
-	D3DXCreateTextureFromFile(pDevice, "data/tex/skydome.png", &m_pTexture);
-
+	CManager::Load("data/tex/skydome.png");
 	return S_OK;
 }
 
@@ -191,12 +179,7 @@ HRESULT CSky::Load(void)
 //=============================================================================
 void CSky::Unload(void)
 {
-	// テクスチャの開放
-	if (m_pTexture != NULL)
-	{
-		m_pTexture->Release();
-		m_pTexture = NULL;
-	}
+
 }
 
 //=============================================================================

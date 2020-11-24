@@ -43,13 +43,15 @@ typedef enum
 
 typedef enum
 {
-	RECVDATA_STICK_H = NUM_KEY_M,
-	RECVDATA_STICK_V,
-	RECVDATA_ROT,
-	RECVDATA_POS_X,
-	RECVDATA_POS_Y,
-	RECVDATA_POS_Z,
-	RECVDATA_RANK,
+	RECVDATA_STICK_H = NUM_KEY_M,		// スティック
+	RECVDATA_STICK_V,					// スティック
+	RECVDATA_ROT,						// Y軸回転
+	RECVDATA_POS_X,						// X軸
+	RECVDATA_POS_Y,						// Y軸
+	RECVDATA_POS_Z,						// Z軸
+	RECVDATA_RANK,						// 順位
+	RECVDATA_FLAG,						// チェックポイント
+	RECVDATA_ROUND,						// 周回回数
 	RECVDATA_MAX
 } RECVDATA;
 
@@ -135,6 +137,8 @@ public:
 
 	D3DXVECTOR3 GetPosition(int nIndex) { return m_playerPos[nIndex]; }
 	int GetRank(int nIndex) { return m_nRank[nIndex]; }
+	int GetRound(int nIndex) { return m_nNumRound[nIndex]; }
+	int GetFlag(int nIndex) { return m_nNumFlag[nIndex]; }
 	bool GetDie(int nIndex) { return m_bDie[nIndex]; }
 	bool CheckCharacterReady(int nIndex);
 
@@ -172,7 +176,9 @@ private:
 	bool m_bTimeout;						// タイムアウトフラグ
 	D3DXVECTOR3 m_playerPos[MAX_PLAYER];	// プレイヤー位置情報
 	bool m_bDie[MAX_PLAYER];				// 1つ前の死亡フラグ
-	int m_nRank[MAX_PLAYER];
+	int m_nRank[MAX_PLAYER];				// 現在のランキング
+	int m_nNumFlag[MAX_PLAYER];				// チェックポイント
+	int m_nNumRound[MAX_PLAYER];			// 周回回数
 	CItem *m_apItem[MAX_COIN];				// コインのポインタ
 	CEnemy *m_pEnemy[MAX_PLAYER];			// 役者のポインタ
 

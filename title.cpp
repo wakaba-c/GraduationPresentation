@@ -16,12 +16,6 @@
 #include "object.h"
 #include "camera.h"
 #include "sky.h"
-#include "titleLogo.h"
-
-//=============================================================================
-// 静的メンバ変数
-//=============================================================================
-CTitlelogo	*CTitle::m_pTitleLogo = NULL;		// タイトルロゴのポインタ
 
 //=============================================================================
 // コンストラクタ
@@ -76,14 +70,6 @@ HRESULT CTitle::Init(void)
 //=============================================================================
 void CTitle::Uninit(void)
 {
-	// タイトルロゴの開放
-	if (m_pTitleLogo != NULL)
-	{// 存在していたとき
-		m_pTitleLogo->Uninit();			// 開放処理
-		delete m_pTitleLogo;			// 削除
-		m_pTitleLogo = NULL;			// NULLの代入
-	}
-
 	//ポリゴンの開放
 	CScene::ReleaseAll();
 }
@@ -102,7 +88,7 @@ void CTitle::Update(void)
 		{// キーボードが存在していたとき
 			if (pInputKeyboard->GetTriggerKeyboard(DIK_RETURN))
 			{// 指定のキーが押されたとき
-				CFade::SetFade(CManager::MODE_PUZZLE_CUSTOM);					//フェードを入れる
+				CFade::SetFade(CManager::MODE_PUZZLE_CUSTOM, CFade::FADETYPE_SLIDE);					//フェードを入れる
 			}
 		}
 		if (pInputController->GetJoypadUse(0))
@@ -111,7 +97,7 @@ void CTitle::Update(void)
 			if (pInputController->GetControllerTrigger(0, JOYPADKEY_A) ||			// ゲームパッドのAボダンが押されたとき
 				pInputController->GetControllerTrigger(0, JOYPADKEY_START))			// ゲームパッドのSTARTボタンが押されたとき
 			{
-				CFade::SetFade(CManager::MODE_GAME);					//フェードを入れる
+				CFade::SetFade(CManager::MODE_GAME, CFade::FADETYPE_SLIDE);					//フェードを入れる
 			}
 		}
 	}
@@ -130,5 +116,5 @@ void CTitle::Draw(void)
 //=============================================================================
 void CTitle::LoadAsset(void)
 {
-	CTitlelogo::Load();
+
 }

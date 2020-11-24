@@ -11,7 +11,6 @@
 #include "inputKeyboard.h"
 #include "inputController.h"
 #include "bg.h"
-#include "score.h"
 #include "number.h"
 
 //=============================================================================
@@ -68,30 +67,6 @@ HRESULT CRanking::Init(void)
 	// ランキングを保存する
 	SaveRanking();
 
-	for (int nCount = 0; nCount < MAX_RANK - 1; nCount++)
-	{
-		CScore *pScore = CScore::Create();
-		m_apRank[nCount] = CNumber::Create();
-
-		if (pScore != NULL)
-		{// スコアが存在していたとき
-			pScore->BindTexture("data/tex/rank.png");
-			pScore->SetPosition(D3DXVECTOR3(350.0f, 200.0f + 100 * nCount, 0.0f));
-			pScore->SetSize(D3DXVECTOR3(300.0f, 100.0f, 0.0f));
-			pScore->SetNumderSize(D3DXVECTOR3(70.0f, 150.0f, 0.0f));
-			pScore->SetNumberPos(D3DXVECTOR3(730.0f, 208.0f + 100 * nCount, 0.0f), 55.0f);
-			pScore->SetNumber(m_aScore[nCount]);
-			pScore->SetTransform();
-		}
-		if (m_apRank[nCount] != NULL)
-		{// 数字が存在していたとき
-			m_apRank[nCount]->SetPosition(D3DXVECTOR3(350.0f, 200.0f + 100 * nCount, 0.0f));
-			m_apRank[nCount]->SetSize(D3DXVECTOR3(120.0f, 100.0f, 0.0f));
-			m_apRank[nCount]->Init();
-			m_apRank[nCount]->SetNumber(nCount + 1);
-		}
-	}
-
 	return S_OK;
 }
 
@@ -118,7 +93,7 @@ void CRanking::Update(void)
 		{// キーボードが存在していたとき
 			if (pInputKeyboard->GetTriggerKeyboard(DIK_RETURN))
 			{// 指定のキーが押されたとき
-				CFade::SetFade(CManager::MODE_TITLE);					//フェードを入れる
+				CFade::SetFade(CManager::MODE_TITLE, CFade::FADETYPE_SLIDE);					//フェードを入れる
 			}
 		}
 		if (pInputController->GetJoypadUse(0))
@@ -127,7 +102,7 @@ void CRanking::Update(void)
 			if (pInputController->GetControllerTrigger(0, JOYPADKEY_A) ||			// ゲームパッドのAボダンが押されたとき
 				pInputController->GetControllerTrigger(0, JOYPADKEY_START))			// ゲームパッドのSTARTボタンが押されたとき
 			{
-				CFade::SetFade(CManager::MODE_TITLE);					//フェードを入れる
+				CFade::SetFade(CManager::MODE_TITLE, CFade::FADETYPE_SLIDE);					//フェードを入れる
 			}
 		}
 	}

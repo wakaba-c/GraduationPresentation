@@ -31,7 +31,9 @@ class CColliderSphere;
 class CColliderBox;
 class CScene2D;
 class CModel;
-class CPlayerUi;
+class CNumber;
+class CDistanceNext;
+class CUi;
 
 //=============================================================================
 // クラス定義
@@ -71,12 +73,12 @@ public:
 	void BehaviorForMaxKey(void);				// 最大キー数に到達したときの処理
 
 	float GetDeathblow(void) { return m_fDeathblow; }				// 必殺技ポイント数の取得
-	CPlayerUi *GetPlayerUi(void) { return m_pPlayerUi; }			// プレイヤーUIの取得
 	D3DXVECTOR3 GetMove(void) { return m_move; }					// 移動量の取得
 	D3DXMATRIX GetMtxWorld(void) { return m_mtxWorld; }				// ワールドマトリックスの取得
 	D3DXVECTOR3 GetRotDest(void) { return m_dest; }					// 回転最終到達地点
 	D3DXVECTOR3 GetCameraRot(void) { return m_cameraRot; }			// カメラの回転情報
 	void SetCameraRot(D3DXVECTOR3 cameraRot) { m_cameraRot = cameraRot; }
+	int GetNumRound(void) { return m_nRound; }
 
 private:
 #ifdef _DEBUG
@@ -113,7 +115,12 @@ private:
 	bool							m_bHit;											// ヒット判定
 	bool							m_bDrift;										// プレイヤーのドリフトフラグ
 	bool							m_bMove;										// 現在動いているかのフラグ
-	CPlayerUi						*m_pPlayerUi;									// キャラクター情報のUI
+	CNumber							*m_pRank;										// ランキング用UI
+	CDistanceNext					*m_pDistanceNext;								// 次のプレイヤーとの距離のUI
+	CUi								*m_pRankUi;											// 現在順位Uiのポインタ
+
+	// レースゲーム関連
+	int								m_nRound;										// 現在の周回回数
 
 	/*=============== 3Dレンダリング関連 ===============*/
 	LPDIRECT3DVERTEXBUFFER9			m_pVtxBuff;										// 頂点バッファへのポインタ

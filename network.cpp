@@ -9,10 +9,10 @@
 #include "camera.h"
 #include "player.h"
 #include "game.h"
-#include "score.h"
 #include "fade.h"
 #include "inputController.h"
 #include "enemy.h"
+#include "object.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -41,6 +41,7 @@ CNetwork::CNetwork()
 		m_selectState[nCount].bReady = false;
 		m_selectState[nCount].nType = -1;
 		m_selectState[nCount].pBalloonNum = NULL;
+		m_nRank[nCount] = 0;
 	}
 }
 
@@ -452,6 +453,8 @@ bool CNetwork::KeyData(void)
 	}
 
 	D3DXVECTOR3 pos = pPlayer->GetPosition();
+	int nNumFlag = CObject::GetPointNum();
+	int nNumRound = pPlayer->GetNumRound();
 
 	if (pNetwork != NULL)
 	{
@@ -478,12 +481,16 @@ bool CNetwork::KeyData(void)
 		}
 
 		// ID, Wキー, Aキー, Sキー, Dキー, SPACEキー, スティックH, スティックV, 回転情報, 位置X, 位置Y, 位置Z, スコア
-		sprintf(data, "SAVE_KEY %d %d %d %d %d %d %f %f %f %f %f %f", m_nId, pKeyboard->GetPressKeyboard(DIK_W), pKeyboard->GetPressKeyboard(DIK_A),
+		sprintf(data, "SAVE_KEY %d %d %d %d %d %d %f %f %f %f %f %f %d %d",
+			m_nId,
+			pKeyboard->GetPressKeyboard(DIK_W), pKeyboard->GetPressKeyboard(DIK_A),
 			pKeyboard->GetPressKeyboard(DIK_S), pKeyboard->GetPressKeyboard(DIK_D), aKeyState[NUM_KEY_SPACE],		// キー入力情報
 			stick_H,					// スティックH
 			stick_V,					// スティックV
 			rot.y,						// 回転
-			pos.x, pos.y, pos.z			// 位置
+			pos.x, pos.y, pos.z,		// 位置
+			nNumFlag,					// 次のチェックポイント
+			nNumRound					// 現在の周回回数
 		);
 		pNetwork->SendUDP(data, sizeof("SAVE_KEY") + 1024);
 	}
@@ -702,6 +709,12 @@ bool CNetwork::UpdateUDP(void)
 			// ランクの代入
 			m_nRank[nCount] = (int)fData[RECVDATA_RANK];
 
+			// チェックポイント
+			m_nNumFlag[nCount] = (int)fData[RECVDATA_FLAG];
+
+			// 周回回数
+			m_nNumRound[nCount] = (int)fData[RECVDATA_ROUND];
+
 			m_nStick[STICKTYPE_H] = (int)fData[RECVDATA_STICK_H];
 			m_nStick[STICKTYPE_V] = (int)fData[RECVDATA_STICK_V];
 		}
@@ -792,10 +805,8 @@ bool CNetwork::UpdateTCP(void)
 
 		if (CFade::GetFade() == CFade::FADE_NONE)
 		{// フェードしていないとき
-			sscanf(aFunc, "%s %d %d %d %d", &aDie, &nRank[0], &nRank[1], &nRank[2], &nRank[3]);
-
 			// チュートリアルへ
-			CFade::SetFade(CManager::MODE_RESULT);
+			CFade::SetFade(CManager::MODE_RESULT, CFade::FADETYPE_NORMAL);
 		}
 	}
 	else if (strcmp(cHeadText, "GAME_START") == 0)
@@ -810,7 +821,7 @@ bool CNetwork::UpdateTCP(void)
 			}
 
 			// チュートリアルへ
-			CFade::SetFade(CManager::MODE_GAME);
+			CFade::SetFade(CManager::MODE_GAME, CFade::FADETYPE_SLIDE);
 		}
 	}
 	else if (strcmp(cHeadText, "CHARACTER_SELECT") == 0)

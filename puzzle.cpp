@@ -12,11 +12,18 @@
 #include "inputKeyboard.h"
 #include "inputController.h"
 #include "network.h"
+#include "pieceSelect.h"
+#include "ui.h"
 
 //=============================================================================
 // 静的メンバ変数
 //=============================================================================
 float CPuzzle::m_fSpeed[Piece_Num] = {};
+float CPuzzle::m_fRate[Piece_Num] = {};
+float CPuzzle::m_fTurning[Piece_Num] = {};
+float CPuzzle::m_fDecay[Piece_Num] = {};
+int CPuzzle::m_nPower[Piece_Num] = {};
+bool CPuzzle::m_bRoute[Piece_Num] = {};
 int CPuzzle::m_nPieceNum = 0;
 
 //=============================================================================
@@ -25,6 +32,7 @@ int CPuzzle::m_nPieceNum = 0;
 CPuzzle::CPuzzle()
 {
 	m_pBox = NULL;
+	m_pUi = NULL;
 }
 
 //=============================================================================
@@ -41,7 +49,17 @@ CPuzzle::~CPuzzle()
 HRESULT CPuzzle::Init(void)
 {
 	LoadAsset();
+
+	m_pUi = CUi::Create();
+
+	if (m_pUi != NULL)
+	{
+		m_pUi->LoadScript("data/text/ui/puzzleUI.txt");
+	}
+
 	m_pBox = CBox::Create();
+
+	CPieceSelect::Create();
 
 	// 各種アセットの生成＆設置
 	//CMeshField::LoadRand("data/stage/rand.csv", false);				// 床情報の読込
@@ -67,6 +85,11 @@ void CPuzzle::Update(void)
 		for ( int nCnt = 0;nCnt < m_nPieceNum; nCnt++)
 		{
 			m_fSpeed[nCnt] = m_pBox->GetSpeed(nCnt);
+			m_fRate[nCnt] = m_pBox->GetRate(nCnt);
+			m_fTurning[nCnt] = m_pBox->GetTurning(nCnt);
+			m_fDecay[nCnt] = m_pBox->GetDecay(nCnt);
+			m_nPower[nCnt] = m_pBox->GetPower(nCnt);
+			m_bRoute[nCnt] = m_pBox->GetRoute(nCnt);
 		}
 	}
 
@@ -80,7 +103,7 @@ void CPuzzle::Update(void)
 				{
 					//if (pNetwork->Connect() == S_OK)
 					{
-						CFade::SetFade(CManager::MODE_GAME);					//フェードを入れる
+						CFade::SetFade(CManager::MODE_GAME, CFade::FADETYPE_SLIDE);					//フェードを入れる
 					}
 				}
 			}
@@ -91,7 +114,7 @@ void CPuzzle::Update(void)
 			if (pInputController->GetControllerTrigger(0, JOYPADKEY_A) ||			// ゲームパッドのAボダンが押されたとき
 				pInputController->GetControllerTrigger(0, JOYPADKEY_START))			// ゲームパッドのSTARTボタンが押されたとき
 			{
-				CFade::SetFade(CManager::MODE_GAME);					//フェードを入れる
+				CFade::SetFade(CManager::MODE_GAME, CFade::FADETYPE_SLIDE);					//フェードを入れる
 			}
 		}
 	}
@@ -115,6 +138,12 @@ void CPuzzle::Uninit(void)
 		m_pBox->Uninit();
 		m_pBox->Release();
 		m_pBox = NULL;
+	}
+
+	if (m_pUi != NULL)
+	{
+		m_pUi->Uninit();
+		delete m_pUi;
 	}
 
 	// ポリゴンの開放

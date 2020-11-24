@@ -26,6 +26,7 @@
 //=============================================================================
 // マクロ定義
 //=============================================================================
+#define UIMANAGER_SCRIPT "data/text/manager_ui.txt"
 #define CONTINUE_MAX 10													// 再計算回数
 
 //=============================================================================
@@ -51,26 +52,30 @@ D3DXVECTOR2 CDebugProc::m_CreateRandOld = D3DXVECTOR2(0.0f, 0.0f);		// 床の量
 CMeshField *CDebugProc::m_apMeshField[FLOOR_LIMIT * FLOOR_LIMIT] = {};
 D3DXVECTOR3 CDebugProc::m_createPos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 float CDebugProc::m_fSliderPow = 1.0f;
-std::string CDebugProc::m_currentModel = {};
-std::string CDebugProc::m_currentTexture = {};
+
+std::string CDebugProc::m_currentModel = {};		// モデルのアドレス
+std::string CDebugProc::m_currentTexture = {};		// テクスチャのアドレス
+std::string CDebugProc::m_currentUi = {};			// UIのアドレス
+
 bool CDebugProc::m_bHeightCalculation = false;
-HWND CDebugProc::m_hWnd = NULL;											// ウィンドウハンドル
+HWND CDebugProc::m_hWnd = NULL;								// ウィンドウハンドル
 
 // エフェクト作成関連
-int CDebugProc::m_particleLife = 0;										// パーティクルの生存時間
-int CDebugProc::m_nCreate = 0;											// 生成数
-int CDebugProc::m_nInterval = 0;										// インターバル
-float CDebugProc::m_fStartRadius = 0.0f;								// 始まりの
-float CDebugProc::m_fRadius = 0.0f;										// 半径
-float CDebugProc::m_fMinSpeed = 0.0f;									// 最低スピード
-float CDebugProc::m_fSpeed = 0.0f;										// スピード
+int CDebugProc::m_particleLife = 0;							// パーティクルの生存時間
+int CDebugProc::m_nCreate = 0;								// 生成数
+int CDebugProc::m_nInterval = 0;							// インターバル
+float CDebugProc::m_fStartRadius = 0.0f;					// 始まりの
+float CDebugProc::m_fRadius = 0.0f;							// 半径
+float CDebugProc::m_fMinSpeed = 0.0f;						// 最低スピード
+float CDebugProc::m_fSpeed = 0.0f;							// スピード
 
-bool CDebugProc::m_bLoop = false;										// 生成を繰り返す
-bool CDebugProc::m_bGravity = false;									// 重力の有無
-bool CDebugProc::m_bRandomSpeed = false;								// スピードランダム化の有無
+bool CDebugProc::m_bLoop = false;							// 生成を繰り返す
+bool CDebugProc::m_bGravity = false;						// 重力の有無
+bool CDebugProc::m_bRandomSpeed = false;					// スピードランダム化の有無
 
-CUi *CDebugProc::m_pCreateUi = NULL;										// UIの初期化
+CUi *CDebugProc::m_pCreateUi = NULL;						// UIの初期化
 char CDebugProc::m_CreateName[NAME_SIZE] = {};				// 生成名
+std::vector<std::string> CDebugProc::m_AddUi = {};						// アドレスの配列(UI)
 
 //=============================================================================
 // コンストラクタ
@@ -127,6 +132,8 @@ HRESULT CDebugProc::Init(HWND hWnd)
 
 	// 円の作成
 	m_pCircle = CCircle::Create();
+
+	LoadAddWithUI();
 	return S_OK;
 }
 
@@ -521,17 +528,31 @@ void CDebugProc::Debug(void)
 
 			if (m_pCreateUi != NULL)
 			{
-				if (ImGui::Button("create"))
-				{
-					m_pCreateUi->CreateTexture(m_currentTexture);
+				D3DXVECTOR3 pos = m_pCreateUi->GetPosition();
+				ImGui::DragFloat3("pos_ui", (float*)&pos);
+				m_pCreateUi->SetPosition(pos);
+
+				if (ImGui::Button("Open"))
+				{// 開く
+					m_pCreateUi->LoadScript(m_currentUi);				// スクリプトの読み込み
+				}
+
+				if (ImGui::Button("AssetCreate"))
+				{// アセット作成
+					m_pCreateUi->CreateTexture(m_currentTexture);		// アセットの作成
 				}
 
 				m_pCreateUi->SceneDebug();
 				ImGui::InputText("default", m_CreateName, NAME_SIZE);
 
 				if (ImGui::Button("Export"))
-				{
-					m_pCreateUi->SaveScript(m_CreateName);
+				{// 出力ボタン
+					m_pCreateUi->SaveScript(m_CreateName);		// スクリプトに書き込み処理
+				}
+
+				if (ImGui::Button("End"))
+				{// 終了ボタン
+					m_pCreateUi->Uninit();				// 表示中のアセットを開放
 				}
 			}
 			else
@@ -613,6 +634,7 @@ void CDebugProc::Debug(void)
 
 		if (m_nMode == DEBUGMODE_UI)
 		{// UI作成モードのとき
+			SelectAssetWithUI();
 			SelectAssetWithTexture();
 		}
 
@@ -1252,5 +1274,90 @@ void CDebugProc::SelectAssetWithTexture(void)
 		}
 
 		ImGui::EndCombo();
+	}
+}
+
+//=============================================================================
+// UI選択処理
+//=============================================================================
+void CDebugProc::SelectAssetWithUI(void)
+{
+	if (ImGui::BeginCombo(u8"UIの種類", m_currentUi.c_str()))
+	{
+		for (auto itr = m_AddUi.begin(); itr != m_AddUi.end(); itr++)
+		{
+			bool is_selected = (m_currentUi == itr->c_str());
+			if (ImGui::Selectable(itr->c_str()))
+			{
+				m_currentUi = itr->c_str();
+			}
+		}
+
+		ImGui::EndCombo();
+	}
+}
+
+//=============================================================================
+// Uiのアドレス読み込み
+//=============================================================================
+void CDebugProc::LoadAddWithUI(void)
+{
+	FILE *pFile;
+	char cReadText[128];		//文字
+	char cHeadText[128];		//比較
+	char cDie[128];
+	int nCntPointer = 0;		//ポインターの数値
+
+	char sAdd[64];				//モデルのアドレス
+	std::string Add;
+
+	int nCntMotion = 0;			//参照するポインタの値を初期化
+	int nCntKey = 0;
+
+	int nMaxModel = 0;
+
+	//テキストデータロード
+	pFile = fopen(UIMANAGER_SCRIPT, "r");
+
+	if (pFile != NULL)
+	{
+		//ポインターのリセット
+		nCntPointer = 0;
+
+		//スクリプトが来るまでループ
+		while (strcmp(cHeadText, "SCRIPT") != 0)
+		{
+			fgets(cReadText, sizeof(cReadText), pFile);
+			sscanf(cReadText, "%s", &cHeadText);
+		}
+
+		//スクリプトだったら
+		if (strcmp(cHeadText, "SCRIPT") == 0)
+		{
+			//エンドスクリプトが来るまで
+			while (strcmp(cHeadText, "END_SCRIPT") != 0)
+			{
+				fgets(cReadText, sizeof(cReadText), pFile);
+				sscanf(cReadText, "%s", &cHeadText);
+
+				//改行
+				if (strcmp(cReadText, "\n") != 0)
+				{
+					if (strcmp(cHeadText, "UI_FILENAME") == 0)
+					{//パーツモデルのアドレス情報のとき
+						sscanf(cReadText, "%s %s %s", &cDie, &cDie, &sAdd[0]);						//アドレスの取得
+						Add = sAdd;
+						m_AddUi.push_back(Add);
+					}
+				}
+			}
+		}
+
+		//ファイル閉
+		fclose(pFile);
+	}
+	else
+	{
+
 	}
 }

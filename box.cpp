@@ -26,6 +26,7 @@
 //==================================================================================================================
 LPDIRECT3DTEXTURE9 CBox::m_pTexture = NULL;			// テクスチャ変数
 bool CBox::m_bPuzzle[Box_Depth][Box_Width] = {};
+bool CBox::m_bPiece = false;
 
 //==================================================================================================================
 // グローバル変数
@@ -64,6 +65,7 @@ HRESULT CBox::Init(void)
 	for (int nCnt = 0; nCnt < Piece_Num; nCnt++)
 	{
 		m_fSpeed[nCnt] = 0;
+		m_bRoute[nCnt] = false;
 	}
 
 	// ブロックの初期化
@@ -147,18 +149,6 @@ void CBox::Update(void)
 			m_pPiece[m_nPieceNum] = CPiece::Create();
 			// ピースタイプ設定
 			m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Rectangle);
-			// 配置情報
-			m_pPiece[m_nPieceNum]->SetMove(false);
-		}
-		// 生成
-		if (pKeyboard->GetTriggerKeyboard(DIK_B))
-		{
-			// ピース数加算
-			m_nPieceNum++;
-			// ピース生成
-			m_pPiece[m_nPieceNum] = CPiece::Create();
-			// ピースタイプ設定
-			m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_T_Type);
 			// 配置情報
 			m_pPiece[m_nPieceNum]->SetMove(false);
 		}
@@ -255,6 +245,11 @@ void CBox::Update(void)
 		for (int nCnt = 0; nCnt < m_nPieceNum; nCnt++)
 		{
 			m_fSpeed[nCnt] = m_pPiece[nCnt]->GetSpeed();
+			m_fRate[nCnt] = m_pPiece[nCnt]->GetRate();												// スピード上昇率
+			m_fTurning[nCnt] = m_pPiece[nCnt]->GetTurning();										// 旋回速度
+			m_fDecay[nCnt] = m_pPiece[nCnt]->GetDecay();											// 減衰率
+			m_nPower[nCnt] = (int)m_pPiece[nCnt]->GetPower();											// パワー
+			m_bRoute[nCnt] = m_pPiece[nCnt]->GetRoute();
 		}
 		// ピース生成
 
@@ -283,53 +278,46 @@ void CBox::Update(void)
 			else if (m_nCntChange == 2)
 			{
 				// タイプ変更
-				m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_T_Type);
-				// カウント加算
-				m_nCntChange++;
-			}
-			else if (m_nCntChange == 3)
-			{
-				// タイプ変更
 				m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Square_1);
 				// カウント初期化
 				m_nCntChange++;
 			}
-			else if (m_nCntChange == 4)
+			else if (m_nCntChange == 3)
 			{
 				// タイプ変更
 				m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Rectangle_1);
 				// カウント初期化
 				m_nCntChange++;
 			}
-			else if (m_nCntChange == 5)
+			else if (m_nCntChange == 4)
 			{
 				// タイプ変更
 				m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Speed);
 				// カウント初期化
 				m_nCntChange++;
 			}
-			else if (m_nCntChange == 6)
+			else if (m_nCntChange == 5)
 			{
 				// タイプ変更
 				m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Rectangle_2);
 				// カウント初期化
 				m_nCntChange++;
 			}
-			else if (m_nCntChange == 7)
+			else if (m_nCntChange == 6)
 			{
 				// タイプ変更
 				m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_L_Type);
 				// カウント初期化
 				m_nCntChange++;
 			}
-			else if (m_nCntChange == 8)
+			else if (m_nCntChange == 7)
 			{
 				// タイプ変更
 				m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Speed_1);
 				// カウント初期化
 				m_nCntChange++;
 			}
-			else if (m_nCntChange == 9)
+			else if (m_nCntChange == 8)
 			{
 				// タイプ変更
 				m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Diagonal);

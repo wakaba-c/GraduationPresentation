@@ -23,12 +23,9 @@
 #include "circle.h"
 #include "stage.h"
 #include "meshOrbit.h"
-#include "gauge2D.h"
 #include "effect.h"
 #include "tree.h"
 #include "number.h"
-#include "enemyUi.h"
-#include "messageWindow.h"
 #include "time.h"
 #include "result.h"
 #include "ui.h"
@@ -36,6 +33,7 @@
 #include "wall.h"
 #include "speed.h"
 #include "GuideSign.h"
+#include "puzzle.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -71,7 +69,7 @@ HRESULT CGame::Init(void)
 {
 	// エフェクトの生成
 	CEffect::Create();
-
+	m_bRate = false;
 	// プレイヤーの生成
 	m_pPlayer = CPlayer::Create();
 
@@ -93,9 +91,6 @@ HRESULT CGame::Init(void)
 		pEnemy->SetTarget(TARGETTYPE_PLAYER);				// 攻撃対象の設定
 	}
 
-	// メッセージウィンドウの作成
-	CMessageWindow::Create(CMessageWindow::MESSAGETYPE_START);
-
 	// 時間のクリエイト処理
 	CTime::Create();
 
@@ -108,8 +103,25 @@ HRESULT CGame::Init(void)
 	// 壁情報の読み込み
 	CMeshWall::LoadWall("data/text/wall.txt", false);
 
-	// 案内矢印の生成
-	CGuideSign::Create();
+	int nCntPiece = CPuzzle::GetPieceNum();
+
+	for (int nCnt = 0; nCnt < nCntPiece; nCnt++)
+	{
+		m_bGuideSign[nCnt] = false;
+	}
+	for (int nCnt = 0; nCnt < nCntPiece; nCnt++)
+	{
+		m_bGuideSign[nCnt] = CPuzzle::GetRoute(nCnt);
+		if (m_bGuideSign[nCnt] == true)
+		{
+			m_bRate = true;
+		}
+	}
+	if (m_bRate == true)
+	{
+		// 案内矢印の生成
+		CGuideSign::Create();
+	}
 
 	// ネットワークでのゲーム時初期化処理
 	CManager::GetNetwork()->InitGame();
@@ -138,6 +150,14 @@ void CGame::Draw(void)
 //=============================================================================
 void CGame::Uninit(void)
 {
+	CNetwork *pNetwork = CManager::GetNetwork();
+
+	if (pNetwork != NULL)
+	{// ネットワークが存在していたとき
+		pNetwork->StopUpdate();				// 更新停止予約
+		pNetwork->CloseTCP();				// サーバーとの窓口を閉める
+	}
+
 	CObject::Unload();
 
 	// ポリゴンの開放
@@ -157,10 +177,7 @@ void CGame::LoadAsset(void)
 	CEnemy::Load();
 	CObject::Load();
 	CMeshSphere::Load();
-	CGauge2D::Load();
 	CEffect::Load();
 	CNumber::Load();
-	CEnemyUi::Load();
-	CMessageWindow::Load();
 	CGuideSign::Load();
 }

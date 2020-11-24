@@ -152,11 +152,6 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 	CGame::LoadAsset();
 	CResult::LoadAsset();
 
-	Load("data/model/akazukin/clothes.jpg");
-	Load("data/model/akazukin/hair.jpg");
-	Load("data/model/akazukin/skin.jpg");
-	Load("data/model/akazukin/skirt.png");
-
 	SetMode(MODE_TITLE);																		//モードセレクト
 
 	return S_OK;
@@ -826,6 +821,21 @@ D3DXVECTOR3 * CManager::calcReflectVector(D3DXVECTOR3 * out, const D3DXVECTOR3 &
 	D3DXVECTOR3 normal_n;
 	D3DXVec3Normalize(&normal_n, &normal);
 	return D3DXVec3Normalize(out, &(front - 2.0f * D3DXVec3Dot(&front, &normal_n) * normal_n));
+}
+
+//=============================================================================
+// 数字の桁数を求める処理
+//=============================================================================
+int CManager::LengthCalculation(int nValue)
+{
+	int nLength = 1;
+
+	while (nValue /= 10)
+	{
+		nLength++;
+	}
+
+	return nLength;
 }
 
 //=============================================================================

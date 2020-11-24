@@ -290,6 +290,26 @@ void CScene2D::SpriteAnimation(D3DXVECTOR2 patternNo, int nPatternAnim, int nHei
 }
 
 //=============================================================================
+// 数字の設定
+//=============================================================================
+void CScene2D::SetNumber(int nNum)
+{
+	VERTEX_2D *pVtx;
+
+	// 頂点データの範囲をロックし、頂点バッファへのポインタを取得
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	//テクスチャ描写の位置
+	pVtx[0].tex = D3DXVECTOR2(nNum * 0.1f, 0.0f);
+	pVtx[1].tex = D3DXVECTOR2(nNum * 0.1f + 0.1f, 0.0f);
+	pVtx[2].tex = D3DXVECTOR2(nNum * 0.1f, 1.0f);
+	pVtx[3].tex = D3DXVECTOR2(nNum * 0.1f + 0.1f, 1.0f);
+
+	// 頂点データをアンロックする
+	m_pVtxBuff->Unlock();
+}
+
+//=============================================================================
 // テクスチャーの頂点カラーの適応
 //=============================================================================
 void CScene2D::SetColor(D3DXCOLOR col)

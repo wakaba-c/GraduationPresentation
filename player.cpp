@@ -24,8 +24,6 @@
 #include "sound.h"
 #include "scene2D.h"
 #include "effect.h"
-#include "gauge2D.h"
-#include "messageWindow.h"
 #include "result.h"
 #include "fade.h"
 #include "takaseiLibrary.h"
@@ -34,6 +32,11 @@
 #include "wall.h"
 #include "object.h"
 #include "puzzle.h"
+
+#include "number.h"
+#include "network.h"
+#include "distanceNext.h"
+#include "ui.h"
 
 //=============================================================================
 // マクロ定義
@@ -66,6 +69,7 @@ CPlayer::CPlayer(CScene::PRIORITY obj = CScene::PRIORITY_PLAYER) : CCharacter(ob
 	m_vectorOld = ZeroVector3;							// 前回のベクトル向き
 	m_cameraRot = D3DXVECTOR3(0, D3DX_PI, 0);			// カメラの回転情報初期化
 	m_pColPlayerSphere = NULL;							// プレイヤー当たり判定ポインタの初期化
+	m_pDistanceNext = NULL;								// 次のプレイヤーとの距離のUI
 	m_bHit = false;										// 当たり判定フラグの初期亜化
 	m_bJump = false;									// ジャンプフラグの初期化
 	m_nActionCount = 0;									// アクションカウンタの初期化
@@ -75,9 +79,12 @@ CPlayer::CPlayer(CScene::PRIORITY obj = CScene::PRIORITY_PLAYER) : CCharacter(ob
 	m_bEvent = false;									// イベント発生フラグの初期化
 	m_bDrift = false;									// ドリフトフラグ判定
 	m_bMove = false;									// 現在動いているかのフラグ
-	m_bColliderWithWall = true;						// 壁の当たり判定
+	m_bColliderWithWall = true;							// 壁の当たり判定
 
-	m_pPlayerUi = NULL;
+	m_pRank = NULL;
+	m_pRankUi = NULL;
+
+	m_nRound = 0;			// 現在の周回回数
 }
 
 //=============================================================================
@@ -154,6 +161,35 @@ HRESULT CPlayer::Init(void)
 	{
 		m_fPuzzleMax = NORMAL_SPEED;
 	}
+
+	m_pRank = CNumber::Create();
+
+	if (m_pRank != NULL)
+	{
+		m_pRank->BindTexture("data/tex/number_rank.png");
+		m_pRank->SetPosition(D3DXVECTOR3(1110.0f, 75.0f, 0.0f));
+		m_pRank->SetSize(D3DXVECTOR3(100.0f, 100.0f, 0.0f));
+		m_pRank->SetTransform();
+	}
+
+	m_pDistanceNext = CDistanceNext::Create();
+
+	if (m_pDistanceNext != NULL)
+	{
+		m_pDistanceNext->SetPosition(D3DXVECTOR3(200.0f, 80.0f, 0.0f));
+		m_pDistanceNext->SetDistance(D3DXVECTOR3(-10.0f, -8.0f, 0.0f));
+		m_pDistanceNext->SetIntervalNum(D3DXVECTOR3(45.0f, 0.0f, 0.0f));
+		m_pDistanceNext->SetNumber(256);
+	}
+
+	m_pRankUi = CUi::Create();
+
+	if (m_pRankUi != NULL)
+	{
+		m_pRankUi->LoadScript("data/text/ui/NowRank.txt");
+		m_pRankUi->SetPosition(D3DXVECTOR3(1150.0f, 100.0f, 0.0f));
+	}
+
 	return S_OK;
 }
 
@@ -167,6 +203,20 @@ void CPlayer::Uninit(void)
 		m_pColPlayerSphere->Release();
 	}
 
+	if (m_pDistanceNext != NULL)
+	{
+		m_pDistanceNext->Uninit();
+		delete m_pDistanceNext;
+		m_pDistanceNext = NULL;
+	}
+
+	if (m_pRankUi != NULL)
+	{
+		m_pRankUi->Uninit();
+		delete m_pRankUi;
+		m_pRankUi = NULL;
+	}
+
 	CCharacter::Uninit();
 }
 
@@ -177,6 +227,7 @@ void CPlayer::Update(void)
 {
 	D3DXVECTOR3 pos;
 	CSound *pSound = CManager::GetSound();
+	CNetwork *pNetwork = CManager::GetNetwork();
 	float fHeight = 0.0f;
 	CModel *pModel = GetModel();
 
@@ -324,6 +375,16 @@ void CPlayer::Update(void)
 	// キャラクターの更新処理
 	CCharacter::Update();
 
+	if (m_pRank != NULL)
+	{
+		m_pRank->SetNumber(pNetwork->GetRank(pNetwork->GetId()));
+	}
+
+	if (m_pDistanceNext != NULL)
+	{
+		m_pDistanceNext->Update();
+	}
+
 #ifdef _DEBUG
 	Debug();
 #endif
@@ -393,7 +454,7 @@ void CPlayer::OnTriggerEnter(CCollider *col)
 			if (m_nLife < 0)
 			{
 				CResult::SetIdxKill(CEnemy::GetEnemyKill());			// Kill数をリザルトに渡す
-				CFade::SetFade(CManager::MODE_RESULT);					// リザルトに遷移
+				CFade::SetFade(CManager::MODE_RESULT, CFade::FADETYPE_SLIDE);					// リザルトに遷移
 			}
 		}
 	}
@@ -403,9 +464,12 @@ void CPlayer::OnTriggerEnter(CCollider *col)
 	}
 	if (sTag == "goal")
 	{
+		CNetwork *pNetwork = CManager::GetNetwork();
+		pNetwork->SendTCP("GOAL", sizeof("GOAL"));
+
 		//if (CFade::GetFade() == CFade::FADE_NONE)
 		//{//フェードが処理をしていないとき
-		//	CFade::SetFade(CManager::MODE_PUZZLE_CUSTOM);					//フェードを入れる
+		//	CFade::SetFade(CManager::MODE_RESULT, CFade::FADETYPE_NORMAL);					//フェードを入れる
 		//}
 	}
 }

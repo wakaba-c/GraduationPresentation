@@ -79,8 +79,9 @@ private:
 	static void CreateParticle(void);						// パーティクル作成
 	static void DebugFloorCreate(const int &nWide, const int &nDepth, D3DXVECTOR3 &createPos);
 	static void ShowInspector(void);
-	static void SelectAssetWithModel(void);						// モデル選択処理
+	static void SelectAssetWithModel(void);					// モデル選択処理
 	static void SelectAssetWithTexture(void);				// テクスチャ選択処理
+	static void SelectAssetWithUI(void);					// UI選択処理
 
 	LPD3DXFONT	m_pFont;									// フォントへのポインタ
 	static char m_aStr[1024];								// 文字列
@@ -102,8 +103,11 @@ private:
 	static CMeshField *m_apMeshField[FLOOR_LIMIT * FLOOR_LIMIT];
 	static D3DXVECTOR3 m_createPos;
 	static float m_fSliderPow;
-	static std::string m_currentModel;						// アセットのアドレス
+
+	static std::string m_currentModel;						// モデルのアドレス
 	static std::string m_currentTexture;					// テクスチャアドレス
+	static std::string m_currentUi;							// UIアドレス
+
 	static HWND m_hWnd;										// ウィンドウハンドル
 	static bool m_bMouseCursorPosition;						// マウスカーソル座標の使用フラグ
 
@@ -122,7 +126,9 @@ private:
 	static bool m_bRandomSpeed;								// スピードランダム化の有無
 
 	// UI生成関連
+	static void LoadAddWithUI(void);			// UIアドレスの読み込み
 	static char m_CreateName[NAME_SIZE];		// 生成名
-	static CUi *m_pCreateUi;			// UI
+	static CUi *m_pCreateUi;					// UI
+	static std::vector<std::string> m_AddUi;					// Uiアドレスの配列
 };
 #endif
