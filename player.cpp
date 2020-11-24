@@ -66,6 +66,7 @@ CPlayer::CPlayer(CScene::PRIORITY obj = CScene::PRIORITY_PLAYER) : CCharacter(ob
 	m_move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// 移動量の初期化
 	m_dest = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// 移動先の初期化
 	m_difference = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 差の初期化
+	m_vectorOld = ZeroVector3;							// 前回のベクトル向き
 	m_cameraRot = D3DXVECTOR3(0, D3DX_PI, 0);			// カメラの回転情報初期化
 	m_pColPlayerSphere = NULL;							// プレイヤー当たり判定ポインタの初期化
 	m_pDistanceNext = NULL;								// 次のプレイヤーとの距離のUI
@@ -262,7 +263,22 @@ void CPlayer::Update(void)
 	//		pos.y -= 10.0f;
 	//	}
 	//}
-	CCollider::RayBlockCollision(pos, &pModel[0].GetMtxWorld(), 70, 150.0f);
+
+	VERTEX_PLANE plane = {};
+
+	CCollider::RayBlockCollision(pos, &pModel[0].GetMtxWorld(), 100, 150.0f, plane);
+
+	D3DXVECTOR3 AB = plane.a - plane.b;
+	D3DXVECTOR3 BC = plane.b - plane.c;
+
+	D3DXVECTOR3 norwork;
+
+	D3DXVec3Cross(&norwork, &BC, &AB);
+	D3DXVec3Normalize(&norwork, &norwork);
+
+	CDebugProc::Log("a地点 : %f, %f, %f\n", plane.a.x, plane.a.y, plane.a.z);
+	CDebugProc::Log("b地点 : %f, %f, %f\n", plane.b.x, plane.b.y, plane.b.z);
+	CDebugProc::Log("c地点 : %f, %f, %f\n", plane.c.x, plane.c.y, plane.c.z);
 
 	//床の高さを取得する
 	CScene *pSceneNext = NULL;														// 初期化
@@ -353,6 +369,8 @@ void CPlayer::Update(void)
 
 	//	D3DXVECTOR3 move = CManager::Slip(playerPos + m_move, vNormal);// 滑りベクトルを計算
 
+	//// 坂でのプレイヤー処理
+	//SlopeMove();
 
 	// キャラクターの更新処理
 	CCharacter::Update();
@@ -935,6 +953,52 @@ bool CPlayer::CollisionWallWithRay(void)
 	return false;
 }
 
+//=============================================================================
+// 坂の処理
+//=============================================================================
+void CPlayer::SlopeMove(void)
+{
+	// カメラの取得
+	CCamera *pCamera = CManager::GetCamera();
+	// ワールドマトリックス取得
+	D3DXMATRIX mtx = CCharacter::GetMtxWorld();
+
+	//D3DXVECTOR3 vector;				// 過去位置から現在の位置のベクトル
+	//D3DXVECTOR3 dest;				// 回転の目標地点格納
+	//D3DXVECTOR3 Diff;				// 計算用変数
+	//D3DXVECTOR3 rot = GetRotation();// 回転取得
+
+	//// ベクトル算出
+	//vector = CTakaseiLibrary::OutputVector(GetPosOld(), GetPosition());
+
+	//// ベクトルの内積
+	//dest.x = CTakaseiLibrary::OutputInnerProduct(D3DXVECTOR3(0.0f, 0.0f, 1.0f), vector);
+
+	//CDebugProc::Log("目標回転座標：%f\n", dest.x);
+	//CDebugProc::Log("最初のベクトル：%f, %f, %f\n", vector.x, vector.y, vector.z);
+
+	//// 現在のベクトルを過去のベクトルにする
+	//m_vectorOld = vector;
+
+	//// モデルの回転と目標地点の差を格納
+	//Diff.x = rot.x - dest.x;
+
+	//// 回転の補正
+	//CTakaseiLibrary::RotRevision(&Diff);
+
+	//// モデルを徐々に回転させていく
+	//rot.x -= Diff.x * ROT_AMOUNT;
+
+	//// 回転設定
+	//SetRotation(rot);
+
+	// キャラクター姿勢行列算出
+	//CTakaseiLibrary::CalcLookAtMatrix(&mtx, &GetPosition(), &pCamera->GetPosR(), &D3DXVECTOR3(0.0f, 1.0f, 0.0f));
+
+	// ワールドマトリックス設定
+	SetMatrix(*CTakaseiLibrary::CalcLookAtMatrix(&mtx, &GetPosition(), &pCamera->GetPosR(), &D3DXVECTOR3(0.0f, 1.0f, 0.0f)));
+}
+
 #ifdef _DEBUG
 //=============================================================================
 // デバッグ処理
@@ -949,6 +1013,7 @@ void CPlayer::Debug(void)
 	{
 		ImGui::Text("pos = %.2f, %.2f, %.2f", pos.x, pos.y, pos.z);								// プレイヤーの現在位置を表示
 		ImGui::Text("posOld = %.2f, %.2f, %.2f", posOld.x, posOld.y, posOld.z);								// プレイヤーの現在位置を表示
+		ImGui::Text("rot = %.2f, %.2f, %.2f", m_rot.x, m_rot.y, m_rot.z);								// プレイヤーの回転を表示
 		ImGui::Text("move = %.2f, %.2f, %.2f", m_move.x, m_move.y, m_move.z);								// プレイヤーの現在位置を表示
 		ImGui::Text("HP = %d", m_nLife);				// プレイヤーの体力を表示
 

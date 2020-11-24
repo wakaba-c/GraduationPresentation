@@ -26,7 +26,7 @@
 #define ROT_SHRINK 0.1f				// 回転の縮める速度
 #define posV_Height 200.0f			// 視点の高さ
 #define posR_Height 50.0f			// 注視点の高さ
-#define posR_Length 100.0f			// モデルと注視点の位置
+#define posR_Length 50.0f			// モデルと注視点の位置
 #define ROT_COUNT 6					// 回転を始めるカウント
 #define DISTANCE 500				// 視点と注視点の距離
 
@@ -423,9 +423,9 @@ void CCamera::CameraMove(void)
 	m_posVDest.y = playerPos.y + sinf(D3DX_PI + m_rot.x) + posV_Height;
 	m_posVDest.z = playerPos.z + cosf(D3DX_PI + m_rot.y) * cosf(D3DX_PI + m_rot.x) * m_fDistance;
 
-	m_posRDest.x = playerPos.x + cosf(D3DX_PI + m_rot.y) * cosf(D3DX_PI + m_rot.x);
+	m_posRDest.x = playerPos.x + sinf(D3DX_PI + m_rot.y) * cosf(D3DX_PI + m_rot.x) * posR_Length;
 	m_posRDest.y = playerPos.y + sinf(D3DX_PI + m_rot.x) + posR_Height;
-	m_posRDest.z = playerPos.z + sinf(D3DX_PI + m_rot.y) * cosf(D3DX_PI + m_rot.x);
+	m_posRDest.z = playerPos.z + cosf(D3DX_PI + m_rot.y) * cosf(D3DX_PI + m_rot.x) * posR_Length;
 
 	// カメラの位置適応
 	m_posV.x += (m_posVDest.x - m_posV.x) * 1.0f;
