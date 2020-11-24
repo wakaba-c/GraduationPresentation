@@ -1,7 +1,7 @@
 //=============================================================================
 //
-//	ƒ‰ƒCƒuƒ‰ƒŠˆ— [ takaseiLibrary.cpp ]
-// Author : KANAN NAGANAWA
+// ƒ‰ƒCƒuƒ‰ƒŠˆ— [ takaseiLibrary.cpp ]
+// Author : Seiya Takahashi
 //
 //=============================================================================
 #include "takaseiLibrary.h"
@@ -102,7 +102,7 @@ void CTakaseiLibrary::RotRevision(D3DXVECTOR3 * rot)
 //=============================================================================
 float CTakaseiLibrary::OutputSqrt(D3DXVECTOR3 difpos)
 {
-	float fSqrt = sqrt(difpos.x * difpos.x + difpos.y * difpos.y + difpos.z * difpos.z);
+	float fSqrt = sqrtf(difpos.x * difpos.x + difpos.y * difpos.y + difpos.z * difpos.z);
 	return fSqrt;
 }
 
@@ -156,6 +156,47 @@ float CTakaseiLibrary::OutputDistance(const D3DXVECTOR3 & onePoint, const D3DXVE
 float CTakaseiLibrary::OutputAcceleration(const float & fVelocity, const float & fRadius)
 {
 	return (fVelocity * fVelocity) / fRadius;
+}
+
+//=============================================================================
+// ƒxƒNƒgƒ‹‚Ì“àÏŒvZ
+//=============================================================================
+float CTakaseiLibrary::OutputInnerProduct(const D3DXVECTOR3 & vecA, const D3DXVECTOR3 & vecB)
+{
+	// Šp“x
+	float fAngle = 0.0f;
+
+	fAngle = (vecA.x * vecB.x + vecA.y * vecB.y + vecA.z * vecB.z) / (OutputSqrt(vecA) * OutputSqrt(vecB));
+
+	return fAngle;
+}
+
+//=============================================================================
+// ƒLƒƒƒ‰ƒNƒ^[p¨s—ñZoŠÖ”
+//=============================================================================
+D3DXMATRIX * CTakaseiLibrary::CalcLookAtMatrix(D3DXMATRIX* pout, D3DXVECTOR3* pPos, D3DXVECTOR3* pLook, D3DXVECTOR3* pUp)
+{
+	D3DXVECTOR3 X, Y, Z;
+
+	// “ñ“_ŠÔ‚Ì‹——£‚©‚çƒxƒNƒgƒ‹Zo
+	Z = CTakaseiLibrary::OutputVector(*pPos, *pLook);
+
+	// ³‹K‰»
+	D3DXVec3Normalize(&Z, &Z);
+	// ’¼ŒğƒxƒNƒgƒ‹ŒvZ
+	D3DXVec3Cross(&X, D3DXVec3Normalize(&Y, pUp), &Z);
+	// ³‹K‰»
+	D3DXVec3Normalize(&X, &X);
+	// ³‹K‰»
+	D3DXVec3Normalize(&Y, D3DXVec3Cross(&Y, &Z, &X));
+
+	// ‰ñ“]s—ñ
+	pout->_11 = X.x; pout->_12 = X.y; pout->_13 = X.z; pout->_14 = 0;
+	pout->_21 = Y.x; pout->_22 = Y.y; pout->_23 = Y.z; pout->_24 = 0;
+	pout->_31 = Z.x; pout->_32 = Z.y; pout->_33 = Z.z; pout->_34 = 0;
+	pout->_41 = 0.0f; pout->_42 = 0.0f; pout->_43 = 0.0f; pout->_44 = 1.0f;
+
+	return pout;
 }
 
 //=============================================================================

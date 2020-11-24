@@ -9,6 +9,8 @@
 #include "colliderBox.h"
 #include "debug.h"
 #include "object.h"
+#include "manager.h"
+#include "renderer.h"
 
 //==============================================================================
 // 静的メンバ変数
@@ -1265,7 +1267,7 @@ void CCollider::Delete(void)
 //======================================================================================================================
 // レイの判定
 //======================================================================================================================
-bool CCollider::RayBlockCollision(D3DXVECTOR3 &pos, D3DXMATRIX *pMat, float fOffset, float fLength)
+bool CCollider::RayBlockCollision(D3DXVECTOR3 &pos, D3DXMATRIX *pMat, float fOffset, float fLength, VERTEX_PLANE &plane)
 {
 	// 地形判定 変数宣言
 	BOOL				bHitFlag = false;	// 判定が出たかのフラグ
@@ -1278,6 +1280,7 @@ bool CCollider::RayBlockCollision(D3DXVECTOR3 &pos, D3DXMATRIX *pMat, float fOff
 	D3DXVECTOR3			m_posAfter;						// 逆行列で出した終点情報を格納する
 	D3DXVECTOR3			m_posBefore;					// 終点情報を格納する
 	D3DXVECTOR3			direction;						// 変換後の位置、方向を格納する変数：
+	std::vector<VERTEX_PLANE>	vPlane;
 	std::vector<float>	vDistance;						// 長さの配列保存
 	float				fData = 0.0f;		// データ
 	float				fDistanceMin = 100000.0f;		// 最も近かったもの
@@ -1309,6 +1312,46 @@ bool CCollider::RayBlockCollision(D3DXVECTOR3 &pos, D3DXMATRIX *pMat, float fOff
 		{
 			//長さの保存追加
 			vDistance.emplace_back(fLandDistance);
+
+			CObject *pObj = (CObject*)pSceneNow;
+
+			pos.y = pos.y - fData - fOffset + fLength;
+			DWORD num = pObj->GetMesh()->GetNumVertices();
+
+			LPD3DXMESH pMesh = pObj->GetMesh();
+
+			VERTEX_3D *pVtx;										//頂点情報へのポインタ
+			WORD *pIdx;									//インデックスデータへポインタ
+
+			pMesh->LockIndexBuffer(D3DLOCK_READONLY, (void**)&pIdx);
+			pMesh->LockVertexBuffer(D3DLOCK_READONLY, (void**)&pVtx);
+
+			D3DXVECTOR3 p0, p1, p2;
+			int IndexBuff = pIdx[dwHitIndex];
+			IndexBuff *= 3;
+
+			p0 = pVtx[IndexBuff].pos;
+			p1 = pVtx[IndexBuff + 1].pos;
+			p2 = pVtx[IndexBuff + 2].pos;
+
+			D3DXVECTOR3 AB = p0 - p1;
+			D3DXVECTOR3 BC = p1 - p2;
+
+			D3DXVECTOR3 norwork;
+
+			D3DXVec3Cross(&norwork, &BC, &AB);
+			D3DXVec3Normalize(&norwork, &norwork);
+
+			CDebugProc::Log("法線 : %.2f, %.2f, %.2f\n", norwork.x, norwork.y, norwork.z);
+
+			pMesh->UnlockVertexBuffer();
+			pMesh->UnlockIndexBuffer();
+
+			VERTEX_PLANE planeWork;
+			planeWork.a = p0;
+			planeWork.b = p1;
+			planeWork.c = p2;
+			vPlane.emplace_back(planeWork);
 		}
 
 		pSceneNow = pSceneNext;													//次回アップデート対象を格納
@@ -1319,17 +1362,20 @@ bool CCollider::RayBlockCollision(D3DXVECTOR3 &pos, D3DXMATRIX *pMat, float fOff
 	{
 		//最初の比較対象
 		fData = vDistance[0];
+		VERTEX_PLANE planeAns = vPlane[0];
 		for (unsigned int nCnt = 0; vDistance.size() > nCnt; nCnt++)
 		{
 			if (vDistance[nCnt] < fData)
 			{
 				//比較対象が小さかったら代入
+				planeAns = vPlane[nCnt];
 				fData = vDistance[nCnt];
 			}
 		}
 		if (fData < 30000)//Rayの長さの指定条件
 		{
 			pos.y = pos.y - fData - fOffset+ fLength;
+			plane = planeAns;
 		}
 	}
 	//Rayに判定がなかったらジャンプできない

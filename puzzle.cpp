@@ -78,7 +78,7 @@ void CPuzzle::Update(void)
 			{// 指定のキーが押されたとき
 				if (pNetwork != NULL)
 				{
-					if (pNetwork->Connect() == S_OK)
+					//if (pNetwork->Connect() == S_OK)
 					{
 						CFade::SetFade(CManager::MODE_GAME);					//フェードを入れる
 					}

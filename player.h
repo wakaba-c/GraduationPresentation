@@ -88,6 +88,7 @@ private:
 	void Input(void);																// キー入力情報関数
 	bool CollisionWall(void);														// 壁の当たり判定
 	bool CollisionWallWithRay(void);												// レイによる壁の当たり判定
+	void SlopeMove(void);															// 坂の処理
 
 	/*================= プレイヤー関連 =================*/
 	D3DXVECTOR3						m_dest;											// モデルの最終到達点
@@ -97,6 +98,7 @@ private:
 	D3DXVECTOR3						m_rot;											// 回転量
 	D3DXVECTOR3						m_cameraRot;									// カメラの回転情報
 	D3DXCOLOR						m_color;										// 色
+	D3DXVECTOR3						m_vectorOld;									// 前回の方向ベクトル
 	float							m_fSpeed;										// スピード
 	float							m_fPuzzleSpeed[Piece_Num];						// パズルのスピード
 	float							m_fPuzzleMax;									// パズルのスピード

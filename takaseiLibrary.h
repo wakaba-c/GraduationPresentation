@@ -49,6 +49,16 @@ typedef enum
 	MOVE_JUMP  = DIK_SPACE,	// ジャンプ入力
 } PLAYER_MOVE_KEY;
 
+/* 3頂点を格納する構造体 */
+typedef struct
+{
+	D3DXVECTOR3 a;
+	D3DXVECTOR3 b;
+	D3DXVECTOR3 c;
+} VERTEX_PLANE;
+
+/*  */
+
 //=============================================================================
 // クラス定義
 //=============================================================================
@@ -91,6 +101,18 @@ public:
 	// [fVelocity] 速さ
 	// [fRadius] 半径
 	static float OutputAcceleration(const float & fVelocity, const float & fRadius);
+
+	// 処理：ベクトルの内積計算
+	// [vecA] 一つ目のベクトル
+	// [vecB] 二つ目のベクトル
+	static float OutputInnerProduct(const D3DXVECTOR3 & vecA, const D3DXVECTOR3 & vecB);
+
+	// キャラクター姿勢行列算出関数
+	// [pout]  出力変数
+	// [pPos]  自分の位置
+	// [pLook] 注視点
+	// [pUp]   空方向ベクトル
+	static D3DXMATRIX* CalcLookAtMatrix(D3DXMATRIX* pout, D3DXVECTOR3* pPos, D3DXVECTOR3* pLook, D3DXVECTOR3* pUp);
 
 	static HRESULT Up(CInputKeyboard	*Key, CInputController *pGamepad);	// 上入力
 	static HRESULT Down(CInputKeyboard	*Key, CInputController *pGamepad);	// 下入力
