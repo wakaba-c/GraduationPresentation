@@ -10,23 +10,23 @@ SCRIPT
 // UIピース配置
 // ----------------------------------------------------------------------------
 PIECESET
-	POS = 1100.0 150.0 0.0
+	POS = 1020.0 350.0 0.0
 	TYPE = 1
-	SIZE = 150.0 150.0 0.0
+	SIZE = 130.0 130.0 0.0
 	TEX = data/tex/core/core_00.png
 END_PIECESET
 
 PIECESET
-	POS = 1100.0 300.0 0.0
+	POS = 1095.0 470.0 0.0
 	TYPE = 2
-	SIZE = 150.0 150.0 0.0
+	SIZE = 130.0 130.0 0.0
 	TEX = data/tex/core/core_01.png
 END_PIECESET
 
 PIECESET
-	POS = 1100.0 450.0 0.0
+	POS = 1180.0 350.0 0.0
 	TYPE = 3
-	SIZE = 150.0 150.0 0.0
+	SIZE = 130.0 130.0 0.0
 	TEX = data/tex/core/core_02.png
 END_PIECESET
 
