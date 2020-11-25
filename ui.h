@@ -46,7 +46,22 @@ public:
 	D3DXVECTOR3 GetPosition(void) { return m_pos; }
 
 private:
+	typedef enum
+	{
+		OPERATIONTYPE_NONE = -1,
+		OPERATIONTYPE_MOVE,
+		OPERATIONTYPE_MAX
+	} OPERATIONTYPE;
+
+	typedef struct
+	{
+		D3DXVECTOR3 pos;
+		D3DXCOLOR col;
+	} MOVEPOINT;
+
 	D3DXVECTOR3 m_pos;
-	std::vector<CScene2D*> m_Asset;
+	std::vector<OPERATIONTYPE> m_OpType;		// 動作タイプ
+	std::vector<MOVEPOINT> m_point;				// 移動先
+	std::vector<CScene2D*> m_Asset;				// アセット
 };
 #endif

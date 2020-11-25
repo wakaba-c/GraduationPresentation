@@ -131,6 +131,9 @@ void CDistanceNext::Update(void)
 		//
 		//	}
 		//}
+
+		if(nFlag < 0) { return; }
+
 		if (pNetwork->GetFlag(pNetwork->GetId()) != nFlag)
 		{
 			if (pointNum < pointObj.size() - 1)

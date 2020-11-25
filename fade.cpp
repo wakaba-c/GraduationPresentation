@@ -10,7 +10,7 @@
 //=============================================================================
 // マクロ定義
 //=============================================================================
-#define TEX_FADE "data/tex/fade.jpg"
+#define TEX_FADE "data/tex/fade.png"
 #define ACTION_COUNT (20)
 
 //=============================================================================
@@ -249,12 +249,12 @@ void CFade::SlideFade(void)
 		break;
 	case FADE_OUT:	// フェードアウトだったとき
 		m_move.y += 0.5f;			// 画面を暗くしていく
-		if (m_pos.y > SCREEN_HEIGHT / 2)
+		if (m_pos.y >= SCREEN_HEIGHT / 2)
 		{// 位置が640以上だったとき
 			if (m_bReflection)
 			{
 				//フェードイン処理に切り替え
-				m_pos.y = SCREEN_HEIGHT / 2;		// 位置を640にする
+				m_pos.y = SCREEN_HEIGHT / 2;		// 位置を360にする
 				m_move = D3DXVECTOR3_ZERO;			// 移動量を0にする
 				m_fade = FADE_IN;					// フェード状態を変更
 
@@ -263,7 +263,7 @@ void CFade::SlideFade(void)
 			}
 			else
 			{
-				m_pos.y = SCREEN_HEIGHT / 2;		// 位置を640にする
+				m_pos.y = SCREEN_HEIGHT / 2;		// 位置を360にする
 
 				m_bReflection = true;
 				m_move *= -0.5f;

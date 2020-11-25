@@ -71,6 +71,7 @@ HRESULT CGame::Init(void)
 	CEffect::Create();
 	m_bRate = false;
 	// ƒvƒŒƒCƒ„[‚Ì¶¬
+	m_pPlayer = NULL;
 	m_pPlayer = CPlayer::Create();
 
 	// ‹ó‚Ìì¬

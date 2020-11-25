@@ -411,8 +411,6 @@ HRESULT CNetwork::Connect(void)
 	sprintf(debug, "SEED = %d\n", nStartTime);
 	OutputDebugString(debug);
 #endif // _DEBUG
-
-	StartUpdate();
 	return S_OK;
 }
 
@@ -606,6 +604,8 @@ void CNetwork::InitGame(void)
 	{
 		m_pEnemy[nCount] = CEnemy::Create();
 	}
+
+	StartUpdate();
 }
 
 //=============================================================================
@@ -663,9 +663,11 @@ void CNetwork::ConvertStringToFloat(char* text, const char* delimiter, float* pR
 bool CNetwork::UpdateUDP(void)
 {
 	char aData[1024];
-	float fData[RECVDATA_MAX];
+	float fData[RECVDATA_MAX + 1];
 	char cPlayerData[MAX_PLAYER][128];		//î‰är
 	char cDie[32];
+
+	memset(&aData, 0, sizeof(aData));
 
 	int nError = -1;
 	nError = recv(m_sockServerToClient, aData, sizeof(aData), 0);
@@ -800,7 +802,6 @@ bool CNetwork::UpdateTCP(void)
 	}
 	else if (strcmp(cHeadText, "GAME_END") == 0)
 	{
-		char aDie[64];
 		int nRank[MAX_PLAYER] = {};
 
 		if (CFade::GetFade() == CFade::FADE_NONE)
