@@ -845,7 +845,7 @@ void CPlayer::Input(void)
 		}
 
 		// プレイヤーが動いていないとき
-		if (fabs(m_move.x) <= 2 && fabs(m_move.z) <= 2)
+		//if (fabs(m_move.x) <= 0.01f && fabs(m_move.z) <= 0.01f)
 		{
 			// 移動不可
 			m_bMove = false;
