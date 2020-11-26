@@ -34,6 +34,7 @@ typedef enum
 	DEBUGMODE_DELETE,
 	DEBUGMODE_PAINT,
 	DEBUGMODE_ENEMY,
+	DEBUGMODE_PARTICLE,
 	DEBUGMODE_UI,
 	DEBUGMODE_MAX
 } DEBUGMODE;
@@ -69,6 +70,9 @@ public:
 
 private:
 	static void Debug(void);								// デバッグ処理
+	static void MenuBar(void);								// メニューバー処理
+	static void TabBar(D3DXVECTOR3 &worldPos);								// タブ処理
+
 	static void LandScape(D3DXVECTOR3 &worldPos);			// ランドスケープ処理
 	static void EditWallVertex(void);						// 壁の頂点編集処理
 	static void Paint(D3DXVECTOR3 &worldPos);				// ペイント処理

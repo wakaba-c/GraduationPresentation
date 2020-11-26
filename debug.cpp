@@ -22,6 +22,7 @@
 #include "player.h"
 #include "wall.h"
 #include "ui.h"
+#include "effect.h"
 
 //=============================================================================
 // マクロ定義
@@ -392,222 +393,14 @@ void CDebugProc::Debug(void)
 
 		if (ImGui::BeginMenuBar())
 		{// メニューバーの生成
-			if (ImGui::BeginMenu("File"))
-			{// ファイルタブの生成
-				if (ImGui::BeginMenu("Load"))
-				{// セーブタブの生成
-					if (ImGui::MenuItem("Rand"))
-					{// ロード
-					 // 床情報の読み込み
-						CMeshField::LoadRand("data/stage/rand.txt", false);
-					}
-					if (ImGui::MenuItem("Model"))
-					{// ロード
-					 // モデル情報の読み込み
-						CObject::LoadModelTest("data/text/model.txt");
-					}
-					if (ImGui::MenuItem("wall"))
-					{// ロード
-					 // モデル情報の読み込み
-						CMeshWall::LoadWall("data/text/wall.txt", false);
-					}
-					if (ImGui::MenuItem("All"))
-					{// セーブ
-					 // 床情報の読み込み
-						CMeshField::LoadRand("data/stage/rand.txt", false);
-
-						// モデル情報の読み込み
-						CObject::LoadModelTest("data/text/model.txt");
-					}
-					ImGui::EndMenu();			// メニューの更新終了
-				}
-
-				if (ImGui::BeginMenu("Save"))
-				{// セーブタブの生成
-					if (ImGui::MenuItem("Rand"))
-					{// ロード
-					 // 床情報の書き込み
-						CScene::SaveRand();
-					}
-					if (ImGui::MenuItem("Model"))
-					{// ロード
-					 // モデル情報の書き込み
-						CScene::SaveModel();
-					}
-					if (ImGui::MenuItem("wall"))
-					{// ロード
-					 // モデル情報の書き込み
-						CScene::SaveWall();
-					}
-					if (ImGui::MenuItem("All"))
-					{// セーブ
-					 // 床情報の書き込み
-						CScene::SaveRand();
-
-						// モデル情報の書き込み
-						CScene::SaveModel();
-					}
-					ImGui::EndMenu();			// メニューの更新終了
-				}
-
-				ImGui::EndMenu();			// メニューの更新終了
-			}
+			MenuBar();					// メニューバー処理
 			ImGui::EndMenuBar();		// メニューバーの更新終了
 		}
+
 		ImGui::Text("[R]Press is Create");			// デバッグモードテキスト表示
 
 		ImGui::BeginTabBar("General");
-
-		if (ImGui::BeginTabItem(u8"ランドスケープ"))
-		{// ランドスケープモード
-			if (m_nMode != DEBUGMODE_RAND)
-			{
-				m_nMode = DEBUGMODE_RAND;
-			}
-
-			LandScape(worldPos);
-			ImGui::Text(u8"ランドスケープ");				// 現在のデバッグモードの表示
-			ImGui::EndTabItem();
-		}
-		if (ImGui::BeginTabItem(u8"壁の頂点編集"))
-		{// 壁の頂点編集モード
-			if (m_nMode != DEBUGMODE_WALL)
-			{
-				m_nMode = DEBUGMODE_WALL;
-			}
-
-			EditWallVertex();
-			ImGui::Text(u8"壁の頂点編集");				// 現在のデバッグモードの表示
-			ImGui::EndTabItem();
-		}
-		if (ImGui::BeginTabItem(u8"フォリッジ"))
-		{// フォリッジモード
-			if (m_nMode != DEBUGMODE_MANY)
-			{
-				m_nMode = DEBUGMODE_MANY;
-			}
-
-			ImGui::SliderInt("Generation", &m_nCntGeneration, 0, 50);
-			CreateObject(worldPos);					// 多数配置モードの実行
-			ImGui::Text("Many Debug");
-			ImGui::EndTabItem();
-		}
-		if (ImGui::BeginTabItem(u8"個々配置"))
-		{// 個々配置モード
-			if (m_nMode != DEBUGMODE_INDIVIDUAL)
-			{
-				m_nMode = DEBUGMODE_INDIVIDUAL;
-			}
-
-			CreateIndividual(worldPos);				// 個々配置モードの実行
-
-			if (m_pSample == NULL)
-			{
-				m_pSample = CObject::Create();						// 見本用オブジェクトを作成
-
-				if (m_pSample != NULL)
-				{
-					m_pSample->BindModel(m_currentModel);
-					m_pSample->SetPosition(worldPos);								// 位置をマウスのワールド座標に設定
-					m_pSample->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f));			// 色の変更
-				}
-			}
-			ImGui::SameLine();															// 改行回避
-			ImGui::RadioButton("delete", &m_nMode, DEBUGMODE_DELETE);					// 選択肢 範囲内多数生成モード を追加
-
-			// 現在のデバッグタイプを表示
-			ImGui::Text("individual Debug");
-			ImGui::EndTabItem();
-		}
-		if (ImGui::BeginTabItem(u8"UI作成モード"))
-		{// UI作成モード
-			if (m_nMode != DEBUGMODE_UI)
-			{
-				m_nMode = DEBUGMODE_UI;
-			}
-
-			if (m_pCreateUi != NULL)
-			{
-				D3DXVECTOR3 pos = m_pCreateUi->GetPosition();
-				ImGui::DragFloat3("pos_ui", (float*)&pos);
-				m_pCreateUi->SetPosition(pos);
-
-				if (ImGui::Button("Open"))
-				{// 開く
-					m_pCreateUi->LoadScript(m_currentUi);				// スクリプトの読み込み
-				}
-
-				if (ImGui::Button("AssetCreate"))
-				{// アセット作成
-					m_pCreateUi->CreateTexture(m_currentTexture);		// アセットの作成
-				}
-
-				m_pCreateUi->SceneDebug();
-				ImGui::InputText("default", m_CreateName, NAME_SIZE);
-
-				if (ImGui::Button("Export"))
-				{// 出力ボタン
-					m_pCreateUi->SaveScript(m_CreateName);		// スクリプトに書き込み処理
-				}
-
-				if (ImGui::Button("End"))
-				{// 終了ボタン
-					m_pCreateUi->Uninit();				// 表示中のアセットを開放
-				}
-			}
-			else
-			{
-				m_pCreateUi = CUi::Create();
-			}
-
-			// 現在のデバッグタイプを表示
-			ImGui::Text("individual Debug");
-			ImGui::EndTabItem();
-		}
-		if (ImGui::BeginTabItem("delete"))
-		{// オブジェクト削除モード
-			if (m_nMode != DEBUGMODE_DELETE)
-			{
-				m_nMode = DEBUGMODE_DELETE;
-			}
-
-			DeleteObject(worldPos);					// 削除モードの実行
-			// 現在のデバッグタイプを表示
-			ImGui::Text("individual Debug");
-			ImGui::EndTabItem();
-		}
-		if (ImGui::BeginTabItem("Randpaint"))
-		{// 頂点カラーの変更モード
-			if (m_nMode != DEBUGMODE_PAINT)
-			{
-				m_nMode = DEBUGMODE_PAINT;
-			}
-
-			Paint(worldPos);
-			ImGui::Text("Paint Debug");				// 現在のデバッグモードの表示
-			ImGui::EndTabItem();
-		}
-		if (ImGui::BeginTabItem("Enemy"))
-		{// 頂点カラーの変更モード
-			if (m_nMode != DEBUGMODE_ENEMY)
-			{
-				m_nMode = DEBUGMODE_ENEMY;
-			}
-
-			if (m_pEnemy == NULL)
-			{
-				m_pEnemy = CEnemy::Create();			// 見本用オブジェクトを作成
-
-				if (m_pEnemy != NULL)
-				{
-					m_pEnemy->SetPosition(worldPos);								// 位置をマウスのワールド座標に設定
-				}
-			}
-
-			CreateEnemy(worldPos);
-			ImGui::EndTabItem();
-		}
-
+		TabBar(worldPos);				// タブ処理
 		ImGui::EndTabBar();				// タブの終了処理
 
 		if (pKeyboard->GetTriggerKeyboard(DIK_RCONTROL))
@@ -634,8 +427,6 @@ void CDebugProc::Debug(void)
 
 		if (m_nMode == DEBUGMODE_UI)
 		{// UI作成モードのとき
-			SelectAssetWithUI();
-			SelectAssetWithTexture();
 		}
 
 		if (m_nMode != DEBUGMODE_INDIVIDUAL)
@@ -718,6 +509,261 @@ void CDebugProc::Debug(void)
 		}
 		// 更新終了
 		ImGui::End();
+	}
+}
+
+//=============================================================================
+// メニューバー処理
+//=============================================================================
+void CDebugProc::MenuBar(void)
+{
+	if (ImGui::BeginMenu("File"))
+	{// ファイルタブの生成
+		if (ImGui::BeginMenu("Load"))
+		{// セーブタブの生成
+			if (ImGui::MenuItem("Rand"))
+			{// ロード
+			 // 床情報の読み込み
+				CMeshField::LoadRand("data/stage/rand.txt", false);
+			}
+			if (ImGui::MenuItem("Model"))
+			{// ロード
+			 // モデル情報の読み込み
+				CObject::LoadModelTest("data/text/model.txt");
+			}
+			if (ImGui::MenuItem("wall"))
+			{// ロード
+			 // モデル情報の読み込み
+				CMeshWall::LoadWall("data/text/wall.txt", false);
+			}
+			if (ImGui::MenuItem("All"))
+			{// セーブ
+			 // 床情報の読み込み
+				CMeshField::LoadRand("data/stage/rand.txt", false);
+
+				// モデル情報の読み込み
+				CObject::LoadModelTest("data/text/model.txt");
+			}
+			ImGui::EndMenu();			// メニューの更新終了
+		}
+
+		if (ImGui::BeginMenu("Save"))
+		{// セーブタブの生成
+			if (ImGui::MenuItem("Rand"))
+			{// ロード
+			 // 床情報の書き込み
+				CScene::SaveRand();
+			}
+			if (ImGui::MenuItem("Model"))
+			{// ロード
+			 // モデル情報の書き込み
+				CScene::SaveModel();
+			}
+			if (ImGui::MenuItem("wall"))
+			{// ロード
+			 // モデル情報の書き込み
+				CScene::SaveWall();
+			}
+			if (ImGui::MenuItem("All"))
+			{// セーブ
+			 // 床情報の書き込み
+				CScene::SaveRand();
+
+				// モデル情報の書き込み
+				CScene::SaveModel();
+			}
+			ImGui::EndMenu();			// メニューの更新終了
+		}
+
+		ImGui::EndMenu();			// メニューの更新終了
+	}
+}
+
+//=============================================================================
+// タブ処理
+//=============================================================================
+void CDebugProc::TabBar(D3DXVECTOR3 &worldPos)
+{
+	if (ImGui::BeginTabItem(u8"ランドスケープ"))
+	{// ランドスケープモード
+		if (m_nMode != DEBUGMODE_RAND)
+		{
+			m_nMode = DEBUGMODE_RAND;
+		}
+
+		LandScape(worldPos);
+		ImGui::Text(u8"ランドスケープ");				// 現在のデバッグモードの表示
+		ImGui::EndTabItem();
+	}
+	if (ImGui::BeginTabItem(u8"壁の頂点編集"))
+	{// 壁の頂点編集モード
+		if (m_nMode != DEBUGMODE_WALL)
+		{
+			m_nMode = DEBUGMODE_WALL;
+		}
+
+		EditWallVertex();
+		ImGui::Text(u8"壁の頂点編集");				// 現在のデバッグモードの表示
+		ImGui::EndTabItem();
+	}
+	if (ImGui::BeginTabItem(u8"フォリッジ"))
+	{// フォリッジモード
+		if (m_nMode != DEBUGMODE_MANY)
+		{
+			m_nMode = DEBUGMODE_MANY;
+		}
+
+		ImGui::SliderInt("Generation", &m_nCntGeneration, 0, 50);
+		CreateObject(worldPos);					// 多数配置モードの実行
+		ImGui::Text("Many Debug");
+		ImGui::EndTabItem();
+	}
+	if (ImGui::BeginTabItem(u8"個々配置"))
+	{// 個々配置モード
+		if (m_nMode != DEBUGMODE_INDIVIDUAL)
+		{
+			m_nMode = DEBUGMODE_INDIVIDUAL;
+		}
+
+		CreateIndividual(worldPos);				// 個々配置モードの実行
+
+		if (m_pSample == NULL)
+		{
+			m_pSample = CObject::Create();						// 見本用オブジェクトを作成
+
+			if (m_pSample != NULL)
+			{
+				m_pSample->BindModel(m_currentModel);
+				m_pSample->SetPosition(worldPos);								// 位置をマウスのワールド座標に設定
+				m_pSample->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f));			// 色の変更
+			}
+		}
+		ImGui::SameLine();															// 改行回避
+		ImGui::RadioButton("delete", &m_nMode, DEBUGMODE_DELETE);					// 選択肢 範囲内多数生成モード を追加
+
+		// 現在のデバッグタイプを表示
+		ImGui::Text("individual Debug");
+		ImGui::EndTabItem();
+	}
+	if (ImGui::BeginTabItem(u8"UI作成モード"))
+	{// UI作成モード
+		if (m_nMode != DEBUGMODE_UI)
+		{
+			m_nMode = DEBUGMODE_UI;
+		}
+
+		if (m_pCreateUi != NULL)
+		{
+			D3DXVECTOR3 pos = m_pCreateUi->GetPosition();
+			ImGui::DragFloat3("pos_ui", (float*)&pos);
+			m_pCreateUi->SetPosition(pos);
+
+			if (ImGui::CollapsingHeader("OpenFile"))
+			{// UIを開く
+			 // UIのスクリプト選択
+				SelectAssetWithUI();
+
+				if (ImGui::Button("Open"))
+				{// 開く
+					m_pCreateUi->LoadScript(m_currentUi);				// スクリプトの読み込み
+				}
+			}
+
+			if (ImGui::CollapsingHeader("CreateTexture"))
+			{// テクスチャ生成
+				// UIのスクリプト選択
+				SelectAssetWithTexture();
+
+				if (ImGui::Button("AssetCreate"))
+				{// アセット作成
+					m_pCreateUi->CreateTexture(m_currentTexture);		// アセットの作成
+				}
+			}
+
+			m_pCreateUi->SceneDebug();
+
+			// 書き出し処理
+			if (ImGui::CollapsingHeader("System"))
+			{// テクスチャ生成
+				ImGui::Text(u8"書き出し処理");
+				ImGui::InputText("default", m_CreateName, NAME_SIZE);
+
+				if (ImGui::Button("Export"))
+				{// 出力ボタン
+					m_pCreateUi->SaveScript(m_CreateName);		// スクリプトに書き込み処理
+				}
+
+				ImGui::Text(u8"終了処理");
+				if (ImGui::Button("End"))
+				{// 終了ボタン
+					m_pCreateUi->Uninit();				// 表示中のアセットを開放
+					m_pCreateUi->Release();
+					m_pCreateUi = NULL;
+				}
+			}
+		}
+		else
+		{
+			m_pCreateUi = CUi::Create();
+		}
+
+		// 現在のデバッグタイプを表示
+		ImGui::Text("individual Debug");
+		ImGui::EndTabItem();
+	}
+	if (ImGui::BeginTabItem("delete"))
+	{// オブジェクト削除モード
+		if (m_nMode != DEBUGMODE_DELETE)
+		{
+			m_nMode = DEBUGMODE_DELETE;
+		}
+
+		DeleteObject(worldPos);					// 削除モードの実行
+		// 現在のデバッグタイプを表示
+		ImGui::Text("individual Debug");
+		ImGui::EndTabItem();
+	}
+	if (ImGui::BeginTabItem("Randpaint"))
+	{// 頂点カラーの変更モード
+		if (m_nMode != DEBUGMODE_PAINT)
+		{
+			m_nMode = DEBUGMODE_PAINT;
+		}
+
+		Paint(worldPos);
+		ImGui::Text("Paint Debug");				// 現在のデバッグモードの表示
+		ImGui::EndTabItem();
+	}
+	if (ImGui::BeginTabItem("Enemy"))
+	{// 頂点カラーの変更モード
+		if (m_nMode != DEBUGMODE_ENEMY)
+		{
+			m_nMode = DEBUGMODE_ENEMY;
+		}
+
+		if (m_pEnemy == NULL)
+		{
+			m_pEnemy = CEnemy::Create();			// 見本用オブジェクトを作成
+
+			if (m_pEnemy != NULL)
+			{
+				m_pEnemy->SetPosition(worldPos);								// 位置をマウスのワールド座標に設定
+			}
+		}
+
+		CreateEnemy(worldPos);
+		ImGui::EndTabItem();
+	}
+	if (ImGui::BeginTabItem("Particle"))
+	{// 頂点カラーの変更モード
+		if (m_nMode != DEBUGMODE_PARTICLE)
+		{
+			m_nMode = DEBUGMODE_PARTICLE;
+		}
+
+
+
+		ImGui::EndTabItem();
 	}
 }
 
