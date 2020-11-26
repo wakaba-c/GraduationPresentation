@@ -35,6 +35,7 @@
 #include "GuideSign.h"
 #include "puzzle.h"
 #include "network.h"
+#include "startSignal.h"
 
 //=============================================================================
 // Ã“Iƒƒ“ƒo•Ï”
@@ -145,6 +146,16 @@ void CGame::Update(void)
 	{
 		pNetwork->Create();
 	}
+
+#ifdef _DEBUG
+	CInputKeyboard *pKeyboard = CManager::GetInputKeyboard();
+
+	if (pKeyboard->GetTriggerKeyboard(DIK_0))
+	{
+		CStartSignal::Create();
+	}
+#endif
+
 }
 
 //=============================================================================
