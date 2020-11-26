@@ -76,13 +76,12 @@ CPlayer::CPlayer(CScene::PRIORITY obj = CScene::PRIORITY_PLAYER) : CCharacter(ob
 	m_nParticleCount = 0;								// パーティクルカウンタの初期化
 	m_nPointNum = 0;									// ポイント番号初期化
 	m_fDeathblow = 0.0f;								// 必殺技ポイントの初期化
-	m_bEvent = false;									// イベント発生フラグの初期化
+	m_bEvent = true;									// イベント発生フラグの初期化
 	m_bDrift = false;									// ドリフトフラグ判定
 	m_bMove = false;									// 現在動いているかのフラグ
 	m_bColliderWithWall = true;							// 壁の当たり判定
 
 	m_pRank = NULL;
-	m_pRankUi = NULL;
 
 	m_nRound = 0;			// 現在の周回回数
 }
@@ -182,12 +181,12 @@ HRESULT CPlayer::Init(void)
 		m_pDistanceNext->SetNumber(256);
 	}
 
-	m_pRankUi = CUi::Create();
+	CUi *pRankUi = CUi::Create();
 
-	if (m_pRankUi != NULL)
+	if (pRankUi != NULL)
 	{
-		m_pRankUi->LoadScript("data/text/ui/NowRank.txt");
-		m_pRankUi->SetPosition(D3DXVECTOR3(1150.0f, 100.0f, 0.0f));
+		pRankUi->LoadScript("data/text/ui/NowRank.txt");
+		pRankUi->SetPosition(D3DXVECTOR3(1150.0f, 100.0f, 0.0f));
 	}
 
 	return S_OK;
@@ -208,13 +207,6 @@ void CPlayer::Uninit(void)
 		m_pDistanceNext->Uninit();
 		delete m_pDistanceNext;
 		m_pDistanceNext = NULL;
-	}
-
-	if (m_pRankUi != NULL)
-	{
-		m_pRankUi->Uninit();
-		delete m_pRankUi;
-		m_pRankUi = NULL;
 	}
 
 	CCharacter::Uninit();
@@ -251,22 +243,9 @@ void CPlayer::Update(void)
 
 	CInputKeyboard *pKeyboard = CManager::GetInputKeyboard();
 
-	//if (pKeyboard != NULL)
-	//{
-	//	if (pKeyboard->GetTriggerKeyboard(DIK_ADD))
-	//	{
-	//		pos.y += 10.0f;
-	//		f();
-	//	}
-	//	if (pKeyboard->GetTriggerKeyboard(DIK_SUBTRACT))
-	//	{
-	//		pos.y -= 10.0f;
-	//	}
-	//}
-
 	VERTEX_PLANE plane = {};
 
-	CCollider::RayBlockCollision(pos, &pModel[0].GetMtxWorld(), 100, 150.0f, plane);
+	CCollider::RayBlockCollision(pos, &pModel[0].GetMtxWorld(), 110, 150.0f, plane);
 
 	D3DXVECTOR3 AB = plane.a - plane.b;
 	D3DXVECTOR3 BC = plane.b - plane.c;
@@ -426,6 +405,14 @@ void CPlayer::SetDeathblow(float nValue)
 }
 
 //=============================================================================
+// イベントフラグの設定
+//=============================================================================
+void CPlayer::SetEvent(bool bValue)
+{
+	m_bEvent = bValue;
+}
+
+//=============================================================================
 // 当たり判定(trigger)
 //=============================================================================
 void CPlayer::OnTriggerEnter(CCollider *col)
@@ -466,6 +453,7 @@ void CPlayer::OnTriggerEnter(CCollider *col)
 	{
 		CNetwork *pNetwork = CManager::GetNetwork();
 		pNetwork->SendTCP("GOAL", sizeof("GOAL"));
+		m_bEvent = true;
 
 		//if (CFade::GetFade() == CFade::FADE_NONE)
 		//{//フェードが処理をしていないとき
@@ -845,7 +833,7 @@ void CPlayer::Input(void)
 		}
 
 		// プレイヤーが動いていないとき
-		if (fabs(m_move.x) <= 2 && fabs(m_move.z) <= 2)
+		//if (fabs(m_move.x) <= 0.01f && fabs(m_move.z) <= 0.01f)
 		{
 			// 移動不可
 			m_bMove = false;

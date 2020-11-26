@@ -62,7 +62,7 @@ public:
 	static void SetShadow(LPDIRECT3DDEVICE9 pDevice, D3DXMATRIX mtxWorld, LPD3DXBUFFER pBuffMat, DWORD nNumMat, LPD3DXMESH pMesh, D3DXVECTOR3 pos);		// 影の設定												// 影の生成
 	static CScene *NowFloor(D3DXVECTOR3 pos);	// 現在立っている場所の床を取得
 	static void ResetFloor(void);				// 床の高さと色をリセットする処理
-	void SetPosition(D3DXVECTOR3 pos);			// 位置の設定
+	virtual void SetPosition(D3DXVECTOR3 pos);	// 位置の設定
 	void SetPosOld(D3DXVECTOR3 pos);			// 前の位置を設定
 
 	static CScene *GetScene(PRIORITY obj);							// シーンを取得

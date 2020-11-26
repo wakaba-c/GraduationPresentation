@@ -32,7 +32,6 @@ int CPuzzle::m_nPieceNum = 0;
 CPuzzle::CPuzzle()
 {
 	m_pPieceSelect = NULL;
-	m_pUi = NULL;
 }
 
 //=============================================================================
@@ -50,11 +49,11 @@ HRESULT CPuzzle::Init(void)
 {
 	LoadAsset();
 
-	m_pUi = CUi::Create();
+	CUi *pUi = CUi::Create();
 
-	if (m_pUi != NULL)
+	if (pUi != NULL)
 	{
-		m_pUi->LoadScript("data/text/ui/puzzleUI.txt");
+		pUi->LoadScript("data/text/ui/puzzleUI.txt");
 	}
 
 	CBox::Create();
@@ -101,7 +100,7 @@ void CPuzzle::Update(void)
 			{// 指定のキーが押されたとき
 				if (pNetwork != NULL)
 				{
-					//if (pNetwork->Connect() == S_OK)
+					if (pNetwork->Connect() == S_OK)
 					{
 						CFade::SetFade(CManager::MODE_GAME, CFade::FADETYPE_SLIDE);					//フェードを入れる
 					}
@@ -138,12 +137,6 @@ void CPuzzle::Uninit(void)
 		m_pPieceSelect->Uninit();
 		m_pPieceSelect->Release();
 		m_pPieceSelect = NULL;
-	}
-
-	if (m_pUi != NULL)
-	{
-		m_pUi->Uninit();
-		delete m_pUi;
 	}
 
 	// ポリゴンの開放

@@ -160,6 +160,7 @@
     <ClCompile Include="collider.cpp" />
     <ClCompile Include="colliderBox.cpp" />
     <ClCompile Include="colliderSphere.cpp" />
+    <ClCompile Include="counter.cpp" />
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="distanceNext.cpp" />
     <ClCompile Include="effect.cpp" />
@@ -205,6 +206,7 @@
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="speed.cpp" />
     <ClCompile Include="stage.cpp" />
+    <ClCompile Include="startSignal.cpp" />
     <ClCompile Include="takaseiLibrary.cpp" />
     <ClCompile Include="time.cpp" />
     <ClCompile Include="title.cpp" />
@@ -223,6 +225,7 @@
     <ClInclude Include="collider.h" />
     <ClInclude Include="colliderBox.h" />
     <ClInclude Include="colliderSphere.h" />
+    <ClInclude Include="counter.h" />
     <ClInclude Include="debug.h" />
     <ClInclude Include="distanceNext.h" />
     <ClInclude Include="effect.h" />
@@ -274,6 +277,7 @@
     <ClInclude Include="sound.h" />
     <ClInclude Include="speed.h" />
     <ClInclude Include="stage.h" />
+    <ClInclude Include="startSignal.h" />
     <ClInclude Include="takaseiLibrary.h" />
     <ClInclude Include="time.h" />
     <ClInclude Include="title.h" />
