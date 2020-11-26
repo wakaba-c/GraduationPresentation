@@ -31,7 +31,7 @@ int CPuzzle::m_nPieceNum = 0;
 //=============================================================================
 CPuzzle::CPuzzle()
 {
-	m_pBox = NULL;
+	m_pPieceSelect = NULL;
 }
 
 //=============================================================================
@@ -56,9 +56,9 @@ HRESULT CPuzzle::Init(void)
 		pUi->LoadScript("data/text/ui/puzzleUI.txt");
 	}
 
-	m_pBox = CBox::Create();
+	CBox::Create();
 
-	CPieceSelect::Create();
+	m_pPieceSelect = CPieceSelect::Create();
 
 	// 各種アセットの生成＆設置
 	//CMeshField::LoadRand("data/stage/rand.csv", false);				// 床情報の読込
@@ -77,18 +77,18 @@ void CPuzzle::Update(void)
 	CInputController *pInputController = CManager::GetInputController();
 	CNetwork *pNetwork = CManager::GetNetwork();
 
-	m_nPieceNum = m_pBox->GetPieceNum();
+	m_nPieceNum = m_pPieceSelect->GetPieceNum();
 
-	if (m_pBox != NULL)
+	if (m_pPieceSelect != NULL)
 	{
 		for ( int nCnt = 0;nCnt < m_nPieceNum; nCnt++)
 		{
-			m_fSpeed[nCnt] = m_pBox->GetSpeed(nCnt);
-			m_fRate[nCnt] = m_pBox->GetRate(nCnt);
-			m_fTurning[nCnt] = m_pBox->GetTurning(nCnt);
-			m_fDecay[nCnt] = m_pBox->GetDecay(nCnt);
-			m_nPower[nCnt] = m_pBox->GetPower(nCnt);
-			m_bRoute[nCnt] = m_pBox->GetRoute(nCnt);
+			m_fSpeed[nCnt] = m_pPieceSelect->GetSpeed(nCnt);
+			m_fRate[nCnt] = m_pPieceSelect->GetRate(nCnt);
+			m_fTurning[nCnt] = m_pPieceSelect->GetTurning(nCnt);
+			m_fDecay[nCnt] = m_pPieceSelect->GetDecay(nCnt);
+			m_nPower[nCnt] = m_pPieceSelect->GetPower(nCnt);
+			m_bRoute[nCnt] = m_pPieceSelect->GetRoute(nCnt);
 		}
 	}
 
@@ -113,7 +113,7 @@ void CPuzzle::Update(void)
 			if (pInputController->GetControllerTrigger(0, JOYPADKEY_A) ||			// ゲームパッドのAボダンが押されたとき
 				pInputController->GetControllerTrigger(0, JOYPADKEY_START))			// ゲームパッドのSTARTボタンが押されたとき
 			{
-				CFade::SetFade(CManager::MODE_GAME, CFade::FADETYPE_SLIDE);					//フェードを入れる
+				CFade::SetFade(CManager::MODE_GAME, CFade::FADETYPE_SLIDE);			//フェードを入れる
 			}
 		}
 	}
@@ -132,11 +132,11 @@ void CPuzzle::Draw(void)
 //=============================================================================
 void CPuzzle::Uninit(void)
 {
-	if (m_pBox != NULL)
+	if (m_pPieceSelect != NULL)
 	{
-		m_pBox->Uninit();
-		m_pBox->Release();
-		m_pBox = NULL;
+		m_pPieceSelect->Uninit();
+		m_pPieceSelect->Release();
+		m_pPieceSelect = NULL;
 	}
 
 	// ポリゴンの開放

@@ -100,7 +100,8 @@ public:
 	float GetDecay(void) { return m_fDecay; }														// 減衰率取得
 	int GetPower(void) { return m_nPower; }															// パワー取得
 
-	void SetPieceType(PieceType type);																// タイプ設定
+	void SetPieceType(PieceType type) { m_PieceType = type; }										// タイプ設定
+	void SetStatusType(StatusType statusType) { m_StatusType = statusType; }						// ステータスタイプ
 	void SetStatus(void);																			// ステータス設定
 	void SetPiece(void);																			// ピース設定
 	void SetMove(bool bMove) { m_bMove = bMove; }													// 移動
