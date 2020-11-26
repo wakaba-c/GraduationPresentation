@@ -13,6 +13,7 @@
 #include "inputController.h"
 #include "enemy.h"
 #include "object.h"
+#include "startSignal.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -33,8 +34,7 @@ CNetwork::CNetwork()
 	m_selectBalloon.nType = -1;
 
 	// 生成フラグの初期化
-	m_thunderEvent.bCreate = false;
-	m_pointcircleEvent.bCreate = false;
+	m_StartSignal.bCreate = false;
 
 	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
 	{
@@ -535,11 +535,10 @@ bool CNetwork::CheckCharacterReady(int nIndex)
 //=============================================================================
 void CNetwork::Create(void)
 {
-	if (m_thunderEvent.bCreate)
-	{// 雷サークル作成処理
-	}
-	if (m_pointcircleEvent.bCreate)
-	{// ポイントサークル作成処理
+	if (m_StartSignal.bCreate)
+	{
+		CStartSignal::Create();
+		m_StartSignal.bCreate = false;
 	}
 }
 
@@ -606,6 +605,8 @@ void CNetwork::InitGame(void)
 	}
 
 	StartUpdate();
+
+	SendTCP("READY 1", sizeof("READY 1"));
 }
 
 //=============================================================================
@@ -812,18 +813,7 @@ bool CNetwork::UpdateTCP(void)
 	}
 	else if (strcmp(cHeadText, "GAME_START") == 0)
 	{
-		if (CFade::GetFade() == CFade::FADE_NONE)
-		{// フェードしていないとき
-			// 初期化
-			for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
-			{
-				m_selectState[nCount].bReady = false;
-				m_selectState[nCount].nType = -1;
-			}
-
-			// チュートリアルへ
-			CFade::SetFade(CManager::MODE_GAME, CFade::FADETYPE_SLIDE);
-		}
+		m_StartSignal.bCreate = true;
 	}
 	else if (strcmp(cHeadText, "CHARACTER_SELECT") == 0)
 	{
@@ -845,27 +835,6 @@ bool CNetwork::UpdateTCP(void)
 	{
 
 	}
-	else if (strcmp(cHeadText, "THUNDER") == 0)
-	{
-		char aDie[64];
-		D3DXVECTOR3 pos;
-
-		// 雷生成
-		sscanf(aFunc, "%s %f %f %f", &aDie, &pos.x, &pos.y, &pos.z);
-		m_thunderEvent.pos = pos;
-		m_thunderEvent.bCreate = true;
-	}
-	else if (strcmp(cHeadText, "POINTCIRCLE") == 0)
-	{
-		char aDie[64];
-		D3DXVECTOR3 pos;
-
-		// ポイントサークル生成
-		sscanf(aFunc, "%s %f %f %f", &aDie, &pos.x, &pos.y, &pos.z);
-		m_pointcircleEvent.pos = pos;
-		m_pointcircleEvent.bCreate = true;
-	}
-
 	return true;
 }
 
@@ -878,7 +847,7 @@ void CNetwork::StartUpdate(void)
 	{// 更新フラグが折れていたとき
 		// マルチスレッドにて更新開始
 		m_bUpdate = true;								// 更新フラグを立てる
-		std::thread th1 (&CNetwork::Update, this);	// スレッドの作成
+		std::thread th1(&CNetwork::Update, this);	// スレッドの作成
 		th1.detach();									// スレッドの管理を切り離す
 	}
 }

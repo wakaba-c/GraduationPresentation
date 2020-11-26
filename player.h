@@ -64,6 +64,7 @@ public:
 	static CPlayer *Create(void);				// プレイヤー生成
 	static HRESULT Load(void);					// 素材データの取得
 	void SetDeathblow(float nValue);			// 必殺技ポイント数の設定
+	void SetEvent(bool bValue);					// イベントフラグの設定
 
 	void OnTriggerEnter(CCollider *col);
 	void OnCollisionEnter(CCollider *col);
@@ -79,6 +80,7 @@ public:
 	D3DXVECTOR3 GetCameraRot(void) { return m_cameraRot; }			// カメラの回転情報
 	void SetCameraRot(D3DXVECTOR3 cameraRot) { m_cameraRot = cameraRot; }
 	int GetNumRound(void) { return m_nRound; }
+	bool GetEvent(void ) { return m_bEvent; }
 
 private:
 #ifdef _DEBUG
@@ -117,7 +119,6 @@ private:
 	bool							m_bMove;										// 現在動いているかのフラグ
 	CNumber							*m_pRank;										// ランキング用UI
 	CDistanceNext					*m_pDistanceNext;								// 次のプレイヤーとの距離のUI
-	CUi								*m_pRankUi;											// 現在順位Uiのポインタ
 
 	// レースゲーム関連
 	int								m_nRound;										// 現在の周回回数

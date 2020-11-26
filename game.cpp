@@ -34,6 +34,7 @@
 #include "speed.h"
 #include "GuideSign.h"
 #include "puzzle.h"
+#include "network.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -45,6 +46,9 @@ CEnemy		*CGame::m_pEnemy = NULL;			// 敵のポインタ
 CSky		*CGame::m_pSky = NULL;				// 空のポインタ
 CHouse		*CGame::m_pHouse = NULL;			// 家のポインタ
 CSpeed		*CGame::m_pSpeed = NULL;			// 時速のポインタ
+
+CUi			*CGame::m_pUi = NULL;				// UIのポインタ
+CTime		*CGame::m_pTime = NULL;				// カウンタのポインタ
 
 //=============================================================================
 // コンストラクタ
@@ -135,7 +139,12 @@ HRESULT CGame::Init(void)
 //=============================================================================
 void CGame::Update(void)
 {
+	CNetwork *pNetwork = CManager::GetNetwork();
 
+	if (pNetwork != NULL)
+	{
+		pNetwork->Create();
+	}
 }
 
 //=============================================================================

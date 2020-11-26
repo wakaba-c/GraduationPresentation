@@ -60,11 +60,11 @@ HRESULT CPiece::Init(void)
 	// 初期化
 	m_nCntMove_X = 0;
 	m_nCntMove_Y = 0;
-	m_fSpeed = 0;																			
-	m_fRate = 0;																			
-	m_fTurning = 0;																			
-	m_fDecay = 0;																			
-	m_nPower = 0;																			
+	m_fSpeed = 0;
+	m_fRate = 0;
+	m_fTurning = 0;
+	m_fDecay = 0;
+	m_nPower = 0;
 	m_bPlacement = false;
 	m_bRelease = false;
 	m_bMove = false;
@@ -761,7 +761,7 @@ void CPiece::SetPiece(void)
 				{
 					// テクスチャ変更
 					m_pBlock[nDepth][nWide]->BindTexture("data/tex/grass.jpg");
-					m_pBlock[nDepth][nWide]->SpriteAnimation(D3DXVECTOR2(3.0f, 5.0f), 1.0f, 1.0f);
+					m_pBlock[nDepth][nWide]->SpriteAnimation(D3DXVECTOR2(3.0f, 5.0f), 1, 1);
 					// 配置しているかどうか
 					if (m_bPlacement == false)
 					{

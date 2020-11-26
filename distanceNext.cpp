@@ -24,7 +24,6 @@
 //==============================================================================
 CDistanceNext::CDistanceNext()
 {
-	m_pUi = NULL;
 	m_pos = D3DXVECTOR3_ZERO;
 	m_distance = D3DXVECTOR3_ZERO;
 	m_IntervalNum = D3DXVECTOR3_ZERO;
@@ -44,11 +43,12 @@ CDistanceNext::~CDistanceNext()
 HRESULT CDistanceNext::Init(void)
 {
 	// ‰Šú‰»
-	m_pUi = CUi::Create();
+	CUi *pUi = CUi::Create();
 
-	if (m_pUi != NULL)
+	if (pUi != NULL)
 	{
-		m_pUi->LoadScript("data/text/ui/TargetDistance.txt");
+		pUi->LoadScript("data/text/ui/TargetDistance.txt");
+		pUi->SetPosition(D3DXVECTOR3(200.0f, 80.0f, 0.0f));
 	}
 
 	for (int nCount = 0; nCount < DISTANCE_MAXNUM; nCount++)
@@ -79,11 +79,7 @@ HRESULT CDistanceNext::Init(void)
 //=============================================================================
 void CDistanceNext::Uninit(void)
 {
-	if (m_pUi != NULL)
-	{
-		m_pUi->Uninit();
-		delete m_pUi;
-	}
+
 }
 
 //=============================================================================
@@ -237,11 +233,6 @@ void CDistanceNext::SetIntervalNum(D3DXVECTOR3 & interval)
 //=============================================================================
 void CDistanceNext::SetTransform(void)
 {
-	if (m_pUi != NULL)
-	{
-		m_pUi->SetPosition(m_pos);
-	}
-
 	for (int nCount = 0; nCount < DISTANCE_MAXNUM; nCount++)
 	{
 		if (m_apNumber[nCount] != NULL)
