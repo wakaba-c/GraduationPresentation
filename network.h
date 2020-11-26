@@ -185,8 +185,7 @@ private:
 	// マルチスレッド関連
 	std::thread m_th;					// スレッド
 	bool m_bUpdate;						// 更新フラグ
-	WAITEVENT m_thunderEvent;			// 雷待機
-	WAITEVENT m_pointcircleEvent;		// ポイントサークル待機
+	WAITEVENT m_StartSignal;			// スタートの合図
 	WAITEVENT_SELECT m_selectBalloon;	// キャラクタ選択UI
 
 	CHARACTERSELECT m_selectState[MAX_PLAYER];		// 選択状況

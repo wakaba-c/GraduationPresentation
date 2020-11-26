@@ -50,7 +50,6 @@ private:
 
 	CNumber *m_apNumber[MAX_DIGIT];// 数字ポインタ
 	DWORD m_dTimeFrame;			// フレーム数
-	CUi *m_pSpeedUi;
 
 	static float m_fDigit;			// 時速
 };

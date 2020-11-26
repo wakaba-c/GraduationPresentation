@@ -43,7 +43,6 @@ public:
 
 private:
 	CBox *m_pBox;								// ボックスのポインタ
-	CUi *m_pUi;									// UIのポインタ
 
 	static float m_fSpeed[Piece_Num];			// スピード
 	static float m_fRate[Piece_Num];			// スピード上昇率

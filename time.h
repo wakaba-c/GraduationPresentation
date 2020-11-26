@@ -24,6 +24,13 @@
 class CTime : public CScene
 {
 public:
+	typedef enum
+	{
+		OPERATIONTYPE_TIMER = 0,
+		OPERATIONTYPE_STOPWATCH,
+		OPERATIONTYPE_MAX
+	} OPERATIONTYPE;
+
 	CTime(PRIORITY obj);							// コンストラクタ
 	~CTime();										// デストラクタ
 	HRESULT Init(void);								// 初期化処理
@@ -33,16 +40,21 @@ public:
 
 	static CTime *Create(void);						// クリエイト処理
 
+	void SetTime(int nTime);	// 時間設定
+	void SetSeconds(int nTime);	// 時間設定
+	void SetOpType(OPERATIONTYPE type);	// タイマーの動作方法設定
+	void SetUpdateTimer(bool bValue);		// タイマーの動作フラグ
+
 	int GetMinutes(void) { return m_nMinutes; }		// 分数の取得
 	int GetSeconds(void) { return m_nSeconds; }		// 秒数の取得
+	bool GetUpdateTimer(void) { return m_bStart; }	// タイマーの動作状況取得
 
 	void OnTriggerEnter(CCollider *col) {};
 	void OnCollisionEnter(CCollider *col) {};
 	void ShowInspector(void) {};
 
 private:
-	void SetTime(int nTime);	// 時間設定
-	void SetSeconds(int nTime);	// 時間設定
+	OPERATIONTYPE m_type;
 
 	int m_nMinutes;				// 分
 	int m_nSeconds;				// 秒

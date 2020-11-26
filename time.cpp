@@ -19,10 +19,13 @@ CTime::CTime(CScene::PRIORITY obj = CScene::PRIORITY_UI) : CScene(obj)
 	SetObjType(PRIORITY_UI);	//オブジェクトタイプ
 
 	//値の初期化
+	m_type = OPERATIONTYPE_TIMER;
 	m_dTimeFrame = 0;			// フレーム数の初期化
 	m_nSeconds = 0;				// 秒数の初期化
 	m_nMinutes = 0;				// 分数の初期化
-	m_bStart = true;			// タイマーの動作
+
+	SetTime(m_dTimeFrame);
+	m_bStart = false;			// タイマーの動作
 }
 
 //=============================================================================
@@ -56,18 +59,39 @@ void CTime::Uninit(void)
 //=============================================================================
 void CTime::Update(void)
 {
-	m_dTimeFrame++;					// カウンターに1加算する
+	if (m_bStart)
+	{
+		switch (m_type)
+		{
+		case OPERATIONTYPE_TIMER:
+			m_dTimeFrame--;					// カウンターに1加算する
 
-	if (m_dTimeFrame >= 0)
-	{// カウンターが0より大きいとき
-		SetTime(m_dTimeFrame);		// タイムの更新
-	}
+			if (m_dTimeFrame >= 0)
+			{// カウンターが0より大きいとき
+				SetTime(m_dTimeFrame);		// タイムの更新
+			}
 
-	if (m_nSeconds >= 60)
-	{// 秒数が60を超えたとき
-		m_nMinutes++;				// 分数に1加算する
-		m_dTimeFrame = 0;			// フレーム数のリセット
-		m_nSeconds = 0;				// 秒数のリセット
+			if (m_nSeconds == 0)
+			{// 秒数が60を超えたとき
+				m_bStart = false;
+			}
+			break;
+		case OPERATIONTYPE_STOPWATCH:
+			m_dTimeFrame++;					// カウンターに1加算する
+
+			if (m_dTimeFrame >= 0)
+			{// カウンターが0より大きいとき
+				SetTime(m_dTimeFrame);		// タイムの更新
+			}
+
+			if (m_nSeconds >= 60)
+			{// 秒数が60を超えたとき
+				m_nMinutes++;				// 分数に1加算する
+				m_dTimeFrame = 0;			// フレーム数のリセット
+				m_nSeconds = 0;				// 秒数のリセット
+			}
+			break;
+		}
 	}
 }
 
@@ -83,7 +107,8 @@ void CTime::Draw(void)
 // クリエイト処理
 //=============================================================================
 CTime *CTime::Create(void)
-{	CTime *pTime;
+{
+	CTime *pTime;
 
 	pTime = new CTime(CScene::PRIORITY_UI);
 	pTime->Init();
@@ -106,4 +131,22 @@ void CTime::SetSeconds(int nTime)
 {
 	m_dTimeFrame += nTime * 60;
 	m_nMaxSeconds = m_dTimeFrame / 60;
+
+	SetTime(m_dTimeFrame);
+}
+
+//=============================================================================
+// タイマーの動作方法設定
+//=============================================================================
+void CTime::SetOpType(OPERATIONTYPE type)
+{
+	m_type = type;
+}
+
+//=============================================================================
+// タイマーの動作フラグ
+//=============================================================================
+void CTime::SetUpdateTimer(bool bValue)
+{
+	m_bStart = bValue;
 }

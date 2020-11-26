@@ -53,7 +53,6 @@ public:
 	void SetTransform(void);
 	void SetNumber(int nValue);	// ”’l‚Ìİ’è
 
-	CUi *m_pUi;
 	CNumber	*m_apNumber[DISTANCE_MAXNUM];
 
 	D3DXVECTOR3 m_pos;				// ˆÊ’u
