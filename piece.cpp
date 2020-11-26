@@ -14,6 +14,7 @@
 #include "takaseiLibrary.h"
 #include "debug.h"
 #include "box.h"
+#include "pieceSelect.h"
 
 //==================================================================================================================
 // マクロ定義
@@ -229,14 +230,6 @@ void CPiece::Unload(void)
 }
 
 //==================================================================================================================
-// タイプ設定
-//==================================================================================================================
-void CPiece::SetPieceType(PieceType type)
-{
-	m_PieceType = type;
-}
-
-//==================================================================================================================
 // ステータスの設定
 //==================================================================================================================
 void CPiece::SetStatus(void)
@@ -250,23 +243,23 @@ void CPiece::SetStatus(void)
 			// ■■
 			// ■■
 		case PieceType_Square:
-		/*	switch (m_StatusType)
+			switch (m_StatusType)
 			{
 			case StatusType_MiniMap:
 				m_fRate = MediumUp;
 				m_bMap = true;
 				break;
 
-			case StatusType_Route:*/
+			case StatusType_Route:
 				m_fTurning = MediumUp;
 				m_bRoute = true;
-				/*break;
+				break;
 
 			case StatusType_Ranking:
 				m_fSpeed = MediumUp;
 				m_bRanking = true;
 				break;
-			}*/
+			}
 			break;
 
 			// ■■
@@ -385,7 +378,7 @@ void CPiece::SetPiece(void)
 		// 横をカウント
 		for (int nWide = 0; nWide < Piece_Width; nWide++)
 		{
-			m_bBox[nDepth][nWide] = CBox::GetPuzzle(nDepth, nWide);
+			m_bBox[nDepth][nWide] = CPieceSelect::GetPuzzle(nDepth, nWide);
 			// 形を変える
 			switch (m_PieceType)
 			{

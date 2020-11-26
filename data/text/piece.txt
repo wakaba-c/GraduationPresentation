@@ -9,6 +9,8 @@ SCRIPT
 // ----------------------------------------------------------------------------
 // UIピース配置
 // ----------------------------------------------------------------------------
+// ■■
+// ■■
 PIECESET
 	POS = 1020.0 350.0 0.0
 	TYPE = 1
@@ -17,23 +19,28 @@ PIECESET
 END_PIECESET
 
 PIECESET
-	POS = 1095.0 470.0 0.0
+	POS = 1180.0 350.0 0.0
 	TYPE = 2
 	SIZE = 130.0 130.0 0.0
-	TEX = data/tex/core/core_01.png
+	TEX = data/tex/core/core_02.png
 END_PIECESET
 
 PIECESET
-	POS = 1180.0 350.0 0.0
+	POS = 1095.0 470.0 0.0
 	TYPE = 3
 	SIZE = 130.0 130.0 0.0
-	TEX = data/tex/core/core_02.png
+	TEX = data/tex/core/core_01.png
 END_PIECESET
 
 // ----------------------------------------------------------------------------
 // 性能ピース配置
 // ----------------------------------------------------------------------------
 
+// ■■
+// ■■
+// ■■
+// ■■
+// ■■
 PIECESET
 	POS = 100.0 600.0 0.0
 	TYPE = 4
@@ -41,6 +48,8 @@ PIECESET
 	TEX = data/tex/core/core_03.png
 END_PIECESET
 
+// ■
+// ■
 PIECESET
 	POS = 200.0 600.0 0.0
 	TYPE = 0
@@ -48,6 +57,9 @@ PIECESET
 	TEX = data/tex/core/core.png
 END_PIECESET
 
+// ■■
+// ■■■
+// 　　■■
 PIECESET
 	POS = 300.0 600.0 0.0
 	TYPE = 5
@@ -55,6 +67,10 @@ PIECESET
 	TEX = data/tex/core/core_04.png
 END_PIECESET
 
+// ■
+// ■
+// ■
+// ■
 PIECESET
 	POS = 400.0 600.0 0.0
 	TYPE = 8
@@ -62,6 +78,10 @@ PIECESET
 	TEX = data/tex/core/core_07.png
 END_PIECESET
 
+// ■
+// ■
+// ■
+// ■■
 PIECESET
 	POS = 500.0 600.0 0.0
 	TYPE = 14
@@ -69,6 +89,11 @@ PIECESET
 	TEX = data/tex/core/core_13.png
 END_PIECESET
 
+// ■■
+// 　■
+// 　■
+// ■■
+// ■
 PIECESET
 	POS = 600.0 600.0 0.0
 	TYPE = 15
@@ -76,6 +101,7 @@ PIECESET
 	TEX = data/tex/core/core_14.png
 END_PIECESET
 
+// ■
 PIECESET
 	POS = 400.0 680.0 0.0
 	TYPE = 9
@@ -83,6 +109,7 @@ PIECESET
 	TEX = data/tex/core/core_08.png
 END_PIECESET
 
+// ■
 PIECESET
 	POS = 300.0 680.0 0.0
 	TYPE = 10
@@ -90,6 +117,7 @@ PIECESET
 	TEX = data/tex/core/core_09.png
 END_PIECESET
 
+// ■
 PIECESET
 	POS = 200.0 680.0 0.0
 	TYPE = 11
@@ -97,6 +125,7 @@ PIECESET
 	TEX = data/tex/core/core_10.png
 END_PIECESET
 
+// ■
 PIECESET
 	POS = 100.0 680.0 0.0
 	TYPE = 12
@@ -104,6 +133,10 @@ PIECESET
 	TEX = data/tex/core/core_11.png
 END_PIECESET
 
+// ■
+// ■
+// ■
+// ■
 PIECESET
 	POS = 1000.0 600.0 0.0
 	TYPE = 13
@@ -111,6 +144,8 @@ PIECESET
 	TEX = data/tex/core/core_12.png
 END_PIECESET
 
+// ■
+// ■
 PIECESET
 	POS = 900.0 600.0 0.0
 	TYPE = 7
@@ -118,6 +153,8 @@ PIECESET
 	TEX = data/tex/core/core_06.png
 END_PIECESET
 
+// ■
+// ■
 PIECESET
 	POS = 800.0 600.0 0.0
 	TYPE = 6
@@ -125,6 +162,10 @@ PIECESET
 	TEX = data/tex/core/core_05.png
 END_PIECESET
 
+// 　　　■
+// 　　■
+// 　■
+// ■
 PIECESET
 	POS = 700.0 600.0 0.0
 	TYPE = 16

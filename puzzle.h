@@ -16,7 +16,7 @@
 //=============================================================================
 // 前方宣言
 //=============================================================================
-class CBox;
+class CPieceSelect;
 class CUi;
 
 //=============================================================================
@@ -42,7 +42,7 @@ public:
 	static bool GetRoute(int nPieceNum) { return m_bRoute[nPieceNum]; }			// ルート
 
 private:
-	CBox *m_pBox;								// ボックスのポインタ
+	CPieceSelect *m_pPieceSelect;				// ボックスのポインタ
 	CUi *m_pUi;									// UIのポインタ
 
 	static float m_fSpeed[Piece_Num];			// スピード
