@@ -54,6 +54,13 @@ public:
 		ANIMATIONTYPE_MAX						// アニメーションの最大数
 	} ANIMATIONTYPE;							// アニメーションタイプ
 
+	typedef enum
+	{
+		DRIFT_RIGHT = 0,		// ドリフト右
+		DRIFT_LEFT,				// ドリフト左
+		DRIFT_MAX				// ドリフト最大
+	} DRIFTTYPE;				// ドリフト種類
+
 	CPlayer(PRIORITY obj);						// プレイヤーのコンストラクタ(オブジェクトタイプ)
 	~CPlayer();									// プレイヤーのデストラクタ
 	HRESULT Init(void);							// 初期化処理
@@ -107,6 +114,7 @@ private:
 	float							m_fPuzzleSpeed[Piece_Num];						// パズルのスピード
 	float							m_fPuzzleMax;									// パズルのスピード
 	float							m_fDeathblow;									// 必殺技ポイント
+	float							m_fAcceleration;								// 加速度
 	int								m_nLife;										// 体力
 	int								m_nActionCount;									// 次のアクションまでのカウンタ
 	int								m_nParticleCount;								// パーティクル生成までのカウンタ
@@ -115,8 +123,9 @@ private:
 	bool							m_bEvent;										// イベント発生フラグ
 	bool							m_bColliderWithWall;							// 壁の当たり判定
 	bool							m_bHit;											// ヒット判定
-	bool							m_bDrift;										// プレイヤーのドリフトフラグ
+	bool							m_bDrift[DRIFT_MAX];							// プレイヤーのドリフトフラグ
 	bool							m_bMove;										// 現在動いているかのフラグ
+	bool							m_bAccel;										// アクセルを押しているかどうか
 	CNumber							*m_pRank;										// ランキング用UI
 	CDistanceNext					*m_pDistanceNext;								// 次のプレイヤーとの距離のUI
 
