@@ -84,6 +84,7 @@ public:
 
 private:
 	CScene2D *m_pPieceSelect[MAX_CORE];				// Scene2Dのポインタ
+	CScene2D *m_pPieceExplanation;					// Scene2Dのポインタ
 	CPiece *m_pPiece[Piece_Num];					// ピース
 
 	PIECETYPE m_type;								// ピースのタイプ
