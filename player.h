@@ -97,6 +97,8 @@ private:
 	void MoveNearEnemy(void);														// 近くにいる敵に移動する処理
 	void Collision(void);															// 当たり判定処理
 	void Input(void);																// キー入力情報関数
+	void InputKeyboard(float fTireRotSpeed, D3DXVECTOR3 aVec);						// キーボード入力処理
+	void InputGemepad(float nValueH, float nValueV, float fTireRotSpeed, D3DXVECTOR3 aVec);// ゲームパッド入力処理
 	bool CollisionWall(void);														// 壁の当たり判定
 	bool CollisionWallWithRay(void);												// レイによる壁の当たり判定
 	void SlopeMove(void);															// 坂の処理

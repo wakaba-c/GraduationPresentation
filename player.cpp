@@ -568,6 +568,16 @@ void CPlayer::Input(void)
 	float nValueH = 0;									//コントローラー
 	float nValueV = 0;									//コントローラー
 
+	D3DXVECTOR3 modelFrontDiff = D3DXVECTOR3(0, 0, 0);			// モデル前輪計算用マトリックス
+	D3DXVECTOR3 aVec = D3DXVECTOR3(0, 0, 0);					// プレイヤー加速度ベクトル
+	D3DXVECTOR3 cameraVec = D3DXVECTOR3(0, 0, 0);				// カメラの方向ベクトル
+	D3DXVECTOR3 moveVec = D3DXVECTOR3(0, 0, 0);					// プレイヤー運動ベクトル
+	D3DXVECTOR3 fModelRot = pModel[MODEL_FRONT].GetRotation();	// モデル前輪回転情報
+	D3DXVECTOR3 fModelRotRear = pModel[MODEL_REAR].GetRotation();// モデル後輪回転情報
+	float fDigit = CSpeed::GetDigit();							// 時速取得
+	float fTireRotSpeed = 0.0f;									// タイヤ回転速度
+	m_fSpeed = 0;
+
 	// ====================== コントローラー ====================== //
 
 	if (pGamepad != NULL)
@@ -576,9 +586,192 @@ void CPlayer::Input(void)
 		{// 使用可能だったとき
 			pGamepad->GetJoypadStickLeft(0, &nValueH, &nValueV);
 
-			//移動
-			m_move += D3DXVECTOR3(sinf(D3DX_PI * 1.0f + rot.y) * (m_fSpeed * nValueV), 0, cosf(D3DX_PI * 1.0f + rot.y) * (m_fSpeed * nValueV));
-			m_move += D3DXVECTOR3(sinf(D3DX_PI * 0.5f + rot.y) * (m_fSpeed * nValueH), 0, cosf(D3DX_PI * 0.5f + rot.y) * (m_fSpeed * nValueH));
+			//// ゲームパッド処理
+			//InputGemepad(nValueH, nValueV, fTireRotSpeed, aVec);
+
+			//上下操作
+			if (pGamepad->GetControllerPress(0, JOYPADKEY_A))
+			{
+				// 前輪モデルの最終目的座標
+				m_dest.y = 0.0f;
+
+				// 速度設定
+				m_fSpeed = -m_fPuzzleMax;
+
+				// タイヤ回転方向設定
+				fTireRotSpeed = TIRE_ROT_SPEED;
+
+				// 動いていい
+				m_bMove = true;
+
+				// アクセルボタンを押した
+				m_bAccel = true;
+			}
+			else if (pGamepad->GetControllerPress(0, JOYPADKEY_B))
+			{
+				// 前輪モデルの最終目的座標
+				m_dest.y = 0.0f;
+
+				// 速度設定
+				m_fSpeed = m_fPuzzleMax;
+
+				// タイヤ回転方向設定
+				fTireRotSpeed = -TIRE_ROT_SPEED;
+
+				// 動いていい
+				m_bMove = true;
+			}
+
+			// アクセルボタンを離したとき
+			if (!pGamepad->GetControllerPress(0, JOYPADKEY_A))
+			{
+				// アクセルボタンを離した
+				m_bAccel = false;
+			}
+
+			// ドリフトボタンを押していないとき
+			if (!pGamepad->GetControllerPress(0, JOYPADKEY_RIGHT_TRIGGER))
+			{
+				// 左にスティックが倒れたとき
+				if (nValueH <= JOY_MAX_RANGE && nValueH > 0)
+				{
+					// 前輪モデルの最終目的座標
+					m_dest.y = -ROT_SPEED;
+				}
+				else if (nValueH >= -JOY_MAX_RANGE && nValueH < 0)
+				{// 右にスティックが倒れたとき
+				 // 前輪モデルの最終目的座標
+					m_dest.y = ROT_SPEED;
+				}
+
+				// ブレーキボタンが押されたとき
+				if (pGamepad->GetControllerPress(0, JOYPADKEY_B))
+				{
+					// 左にスティックが倒れたとき
+					if (nValueH <= JOY_MAX_RANGE && nValueH > 0)
+					{
+						// 前輪モデルの最終目的座標
+						m_dest.y = ROT_SPEED;
+					}
+					else if (nValueH >= -JOY_MAX_RANGE && nValueH < 0)
+					{// 右にスティックが倒れたとき
+					 // 前輪モデルの最終目的座標
+						m_dest.y = -ROT_SPEED;
+					}
+				}
+			}
+
+			// アクセル状態のとき
+			if (m_bAccel)
+			{
+				// ドリフトしていないとき
+				if (!m_bDrift[DRIFT_RIGHT] && !m_bDrift[DRIFT_LEFT])
+				{
+					// ドリフトボタンを押したとき
+					if (pGamepad->GetControllerPress(0, JOYPADKEY_RIGHT_TRIGGER))
+					{
+						// 左にスティックが倒れたとき
+						if (nValueH <= JOY_MAX_RANGE && nValueH > 0)
+						{
+							// ドリフトしている状態にする
+							m_bDrift[DRIFT_LEFT] = true;
+						}
+						else if (nValueH >= -JOY_MAX_RANGE && nValueH < 0)
+						{// 右にスティックが倒れたとき
+							// ドリフトしている状態にする
+							m_bDrift[DRIFT_RIGHT] = true;
+						}
+					}
+				}
+
+				// 右ドリフトしているとき
+				if (m_bDrift[DRIFT_RIGHT])
+				{
+					// 前輪モデルの最終目的地座標
+					m_dest.y = DRIFT_DEST;
+
+					// 左にスティックが倒れたとき
+					if (nValueH <= JOY_MAX_RANGE && nValueH > 0)
+					{
+						// 前輪モデルの最終目的地座標
+						m_dest.y = 0.0f;
+
+						// 加速度
+						m_fAcceleration -= ACCEKERATION_ADDITION;
+					}
+					else if (nValueH >= -JOY_MAX_RANGE && nValueH < 0)
+					{// 右にスティックが倒れたとき
+					 // 前輪モデルの最終目的地座標
+						m_dest.y = ROT_SPEED_DRIFT;
+
+						// 加速度
+						m_fAcceleration += ACCEKERATION_ADDITION;
+					}
+
+					// 加速度ベクトル設定
+					aVec.x = sinf(m_rot.y + m_dest.y + D3DX_PI / 2) * m_fAcceleration;
+					aVec.z = cosf(m_rot.y + m_dest.y + D3DX_PI / 2) * m_fAcceleration;
+
+					// ドリフトボタンを離したとき
+					if (!pGamepad->GetControllerPress(0, JOYPADKEY_RIGHT_TRIGGER))
+					{
+						// ドリフト最大までカウント
+						for (int nCnt = 0; nCnt < DRIFT_MAX; nCnt++)
+						{
+							// ドリフトしていない状態にする
+							m_bDrift[nCnt] = false;
+
+							// 加速度初期化
+							m_fAcceleration = ACCEKERATION;
+						}
+					}
+				}
+				else if (m_bDrift[DRIFT_LEFT])
+				{// 左ドリフトのとき
+					// 前輪モデルの最終目的地座標
+					m_dest.y = -DRIFT_DEST;
+
+					// 左にスティックが倒れたとき
+					if (nValueH <= JOY_MAX_RANGE && nValueH > 0)
+					{
+						// 前輪モデルの最終目的地座標
+						m_dest.y = -ROT_SPEED_DRIFT;
+
+						// 加速度
+						m_fAcceleration += ACCEKERATION_ADDITION;
+					}
+					else if (nValueH >= -JOY_MAX_RANGE && nValueH < 0)
+					{// 右にスティックが倒れたとき
+						// 前輪モデルの最終目的地座標
+						m_dest.y = 0.0f;
+
+						// 加速度
+						m_fAcceleration -= ACCEKERATION_ADDITION;
+					}
+
+					// 加速度ベクトル設定
+					aVec.x = sinf(m_rot.y + m_dest.y - D3DX_PI / 2) * m_fAcceleration;
+					aVec.z = cosf(m_rot.y + m_dest.y - D3DX_PI / 2) * m_fAcceleration;
+
+					// ドリフトボタンを離したとき
+					if (!pGamepad->GetControllerPress(0, JOYPADKEY_RIGHT_TRIGGER))
+					{
+						// ドリフト最大までカウント
+						for (int nCnt = 0; nCnt < DRIFT_MAX; nCnt++)
+						{
+							// ドリフトしていない状態にする
+							m_bDrift[nCnt] = false;
+
+							// 加速度初期化
+							m_fAcceleration = ACCEKERATION;
+						}
+					}
+				}
+			}
+
+			////移動
+			//m_move += D3DXVECTOR3(sinf(D3DX_PI * 1.0f + rot.y) * (m_fSpeed * nValueV), 0, cosf(D3DX_PI * 1.0f + rot.y) * (m_fSpeed * nValueV));
+			//m_move += D3DXVECTOR3(sinf(D3DX_PI * 0.5f + rot.y) * (m_fSpeed * nValueH), 0, cosf(D3DX_PI * 0.5f + rot.y) * (m_fSpeed * nValueH));
 
 #ifdef _DEBUG
 			CDebugProc::Log("移動量 : %.2f %.2f %.2f", m_move.x, m_move.y, m_move.z);
@@ -641,24 +834,8 @@ void CPlayer::Input(void)
 	// モデルがあるとき
 	if (pModel != NULL)
 	{
-		D3DXVECTOR3 modelFrontDiff = D3DXVECTOR3(0, 0, 0);			// モデル前輪計算用マトリックス
-		D3DXVECTOR3 aVec = D3DXVECTOR3(0, 0, 0);					// プレイヤー加速度ベクトル
-		D3DXVECTOR3 cameraVec = D3DXVECTOR3(0, 0, 0);				// カメラの方向ベクトル
-		D3DXVECTOR3 moveVec = D3DXVECTOR3(0, 0, 0);					// プレイヤー運動ベクトル
-		D3DXVECTOR3 fModelRot = pModel[MODEL_FRONT].GetRotation();	// モデル前輪回転情報
-		D3DXVECTOR3 fModelRotRear = pModel[MODEL_REAR].GetRotation();// モデル後輪回転情報
-		float fDigit = CSpeed::GetDigit();							// 時速取得
-		float fTireRotSpeed = 0.0f;									// タイヤ回転速度
-		m_fSpeed = 0;
-
-		//if (pKeyboard->GetTriggerKeyboard(DIK_SPACE))
-		//{// スペースキーが押されたとき
-		//	if (!m_bJump)
-		//	{
-		//		AnimationSwitch(ANIMATIONTYPE_JUMP_1);		// ジャンプモーションに切り替え
-		//		m_bJump = true;			// ジャンプしている
-		//	}
-		//}
+		//// キーボード入力処理
+		//InputKeyboard(fTireRotSpeed, aVec);
 
 		//上下操作
 		if (pKeyboard->GetPressKeyboard(MOVE_ACCEL))
@@ -799,7 +976,7 @@ void CPlayer::Input(void)
 			}
 			else if (m_bDrift[DRIFT_LEFT])
 			{// 左ドリフトのとき
-				// 前輪モデルの最終目的地座標
+			 // 前輪モデルの最終目的地座標
 				m_dest.y = -DRIFT_DEST;
 
 				//左右操作
@@ -935,6 +1112,384 @@ void CPlayer::Input(void)
 	}
 
 #endif
+}
+
+//=============================================================================
+// キーボード入力処理
+//=============================================================================
+void CPlayer::InputKeyboard(float fTireRotSpeed, D3DXVECTOR3 aVec)
+{
+	// キーボードの取得
+	CInputKeyboard *pKeyboard = CManager::GetInputKeyboard();
+
+	//上下操作
+	if (pKeyboard->GetPressKeyboard(MOVE_ACCEL))
+	{
+		// 前輪モデルの最終目的座標
+		m_dest.y = 0.0f;
+
+		// 速度設定
+		m_fSpeed = -m_fPuzzleMax;
+
+		// タイヤ回転方向設定
+		fTireRotSpeed = TIRE_ROT_SPEED;
+
+		// 動いていい
+		m_bMove = true;
+
+		// アクセルボタンを押した
+		m_bAccel = true;
+	}
+	else if (pKeyboard->GetPressKeyboard(MOVE_BRAKE))
+	{
+		// 前輪モデルの最終目的座標
+		m_dest.y = 0.0f;
+
+		// 速度設定
+		m_fSpeed = m_fPuzzleMax;
+
+		// タイヤ回転方向設定
+		fTireRotSpeed = -TIRE_ROT_SPEED;
+
+		// 動いていい
+		m_bMove = true;
+	}
+
+	// アクセルボタンを離したとき
+	if (!pKeyboard->GetPressKeyboard(MOVE_ACCEL))
+	{
+		// アクセルボタンを離した
+		m_bAccel = false;
+	}
+
+	// ドリフトボタンを押していないとき
+	if (!pKeyboard->GetPressKeyboard(MOVE_DRIFT))
+	{
+		//左右操作
+		if (pKeyboard->GetPressKeyboard(MOVE_LEFT))
+		{
+			// 前輪モデルの最終目的座標
+			m_dest.y = -ROT_SPEED;
+		}
+		else if (pKeyboard->GetPressKeyboard(MOVE_RIGHT))
+		{
+			// 前輪モデルの最終目的座標
+			m_dest.y = ROT_SPEED;
+		}
+
+		// ブレーキボタンが押されたとき
+		if (pKeyboard->GetPressKeyboard(MOVE_BRAKE))
+		{
+			//左右操作
+			if (pKeyboard->GetPressKeyboard(MOVE_LEFT))
+			{
+				// 前輪モデルの最終目的座標
+				m_dest.y = ROT_SPEED;
+			}
+			else if (pKeyboard->GetPressKeyboard(MOVE_RIGHT))
+			{
+				// 前輪モデルの最終目的座標
+				m_dest.y = -ROT_SPEED;
+			}
+		}
+	}
+
+	// アクセル状態のとき
+	if (m_bAccel)
+	{
+		// ドリフトしていないとき
+		if (!m_bDrift[DRIFT_RIGHT] && !m_bDrift[DRIFT_LEFT])
+		{
+			// ドリフトボタンを押したとき
+			if (pKeyboard->GetPressKeyboard(MOVE_DRIFT))
+			{
+				//左右操作
+				if (pKeyboard->GetPressKeyboard(MOVE_LEFT))
+				{
+					// ドリフトしている状態にする
+					m_bDrift[DRIFT_LEFT] = true;
+				}
+				else if (pKeyboard->GetPressKeyboard(MOVE_RIGHT))
+				{
+					// ドリフトしている状態にする
+					m_bDrift[DRIFT_RIGHT] = true;
+				}
+			}
+		}
+
+		// 右ドリフトしているとき
+		if (m_bDrift[DRIFT_RIGHT])
+		{
+			// 前輪モデルの最終目的地座標
+			m_dest.y = DRIFT_DEST;
+
+			//左右操作
+			if (pKeyboard->GetPressKeyboard(MOVE_LEFT))
+			{
+				// 前輪モデルの最終目的地座標
+				m_dest.y = 0.0f;
+
+				// 加速度
+				m_fAcceleration -= ACCEKERATION_ADDITION;
+			}
+			else if (pKeyboard->GetPressKeyboard(MOVE_RIGHT))
+			{
+				// 前輪モデルの最終目的地座標
+				m_dest.y = ROT_SPEED_DRIFT;
+
+				// 加速度
+				m_fAcceleration += ACCEKERATION_ADDITION;
+			}
+
+			// 加速度ベクトル設定
+			aVec.x = sinf(m_rot.y + m_dest.y + D3DX_PI / 2) * m_fAcceleration;
+			aVec.z = cosf(m_rot.y + m_dest.y + D3DX_PI / 2) * m_fAcceleration;
+
+			// ドリフトボタンを離したとき
+			if (!pKeyboard->GetPressKeyboard(MOVE_DRIFT))
+			{
+				// ドリフト最大までカウント
+				for (int nCnt = 0; nCnt < DRIFT_MAX; nCnt++)
+				{
+					// ドリフトしていない状態にする
+					m_bDrift[nCnt] = false;
+
+					// 加速度初期化
+					m_fAcceleration = ACCEKERATION;
+				}
+			}
+		}
+		else if (m_bDrift[DRIFT_LEFT])
+		{// 左ドリフトのとき
+			// 前輪モデルの最終目的地座標
+			m_dest.y = -DRIFT_DEST;
+
+			//左右操作
+			if (pKeyboard->GetPressKeyboard(MOVE_LEFT))
+			{
+				// 前輪モデルの最終目的地座標
+				m_dest.y = -ROT_SPEED_DRIFT;
+
+				// 加速度
+				m_fAcceleration += ACCEKERATION_ADDITION;
+			}
+			else if (pKeyboard->GetPressKeyboard(MOVE_RIGHT))
+			{
+				// 前輪モデルの最終目的地座標
+				m_dest.y = 0.0f;
+
+				// 加速度
+				m_fAcceleration -= ACCEKERATION_ADDITION;
+			}
+
+			// 加速度ベクトル設定
+			aVec.x = sinf(m_rot.y + m_dest.y - D3DX_PI / 2) * m_fAcceleration;
+			aVec.z = cosf(m_rot.y + m_dest.y - D3DX_PI / 2) * m_fAcceleration;
+
+			// ドリフトボタンを離したとき
+			if (!pKeyboard->GetPressKeyboard(MOVE_DRIFT))
+			{
+				// ドリフト最大までカウント
+				for (int nCnt = 0; nCnt < DRIFT_MAX; nCnt++)
+				{
+					// ドリフトしていない状態にする
+					m_bDrift[nCnt] = false;
+
+					// 加速度初期化
+					m_fAcceleration = ACCEKERATION;
+				}
+			}
+		}
+	}
+}
+
+//=============================================================================
+// ゲームパッド入力処理
+//=============================================================================
+void CPlayer::InputGemepad(float nValueH, float nValueV, float fTireRotSpeed, D3DXVECTOR3 aVec)
+{
+	// ゲームパッドの取得
+	CInputController *pGamepad = CManager::GetInputController();
+
+	//上下操作
+	if (pGamepad->GetControllerPress(0, JOYPADKEY_A))
+	{
+		// 前輪モデルの最終目的座標
+		m_dest.y = 0.0f;
+
+		// 速度設定
+		m_fSpeed = -m_fPuzzleMax;
+
+		// タイヤ回転方向設定
+		fTireRotSpeed = TIRE_ROT_SPEED;
+
+		// 動いていい
+		m_bMove = true;
+
+		// アクセルボタンを押した
+		m_bAccel = true;
+	}
+	else if (pGamepad->GetControllerPress(0, JOYPADKEY_B))
+	{
+		// 前輪モデルの最終目的座標
+		m_dest.y = 0.0f;
+
+		// 速度設定
+		m_fSpeed = m_fPuzzleMax;
+
+		// タイヤ回転方向設定
+		fTireRotSpeed = -TIRE_ROT_SPEED;
+
+		// 動いていい
+		m_bMove = true;
+	}
+
+	// アクセルボタンを離したとき
+	if (!pGamepad->GetControllerPress(0, JOYPADKEY_A))
+	{
+		// アクセルボタンを離した
+		m_bAccel = false;
+	}
+
+	// ドリフトボタンを押していないとき
+	if (!pGamepad->GetControllerPress(0, JOYPADKEY_RIGHT_TRIGGER))
+	{
+		// 左にスティックが倒れたとき
+		if (nValueH <= JOY_MAX_RANGE && nValueH > 0)
+		{
+			// 前輪モデルの最終目的座標
+			m_dest.y = -ROT_SPEED;
+		}
+		else if (nValueH >= -JOY_MAX_RANGE && nValueH < 0)
+		{// 右にスティックが倒れたとき
+			// 前輪モデルの最終目的座標
+			m_dest.y = ROT_SPEED;
+		}
+
+		// ブレーキボタンが押されたとき
+		if (pGamepad->GetControllerPress(0, JOYPADKEY_B))
+		{
+			// 左にスティックが倒れたとき
+			if (nValueH <= JOY_MAX_RANGE && nValueH > 0)
+			{
+				// 前輪モデルの最終目的座標
+				m_dest.y = ROT_SPEED;
+			}
+			else if (nValueH >= -JOY_MAX_RANGE && nValueH < 0)
+			{// 右にスティックが倒れたとき
+			 // 前輪モデルの最終目的座標
+				m_dest.y = -ROT_SPEED;
+			}
+		}
+	}
+
+	// アクセル状態のとき
+	if (m_bAccel)
+	{
+		// ドリフトしていないとき
+		if (!m_bDrift[DRIFT_RIGHT] && !m_bDrift[DRIFT_LEFT])
+		{
+			// ドリフトボタンを押したとき
+			if (pGamepad->GetControllerPress(0, JOYPADKEY_RIGHT_TRIGGER))
+			{
+				// 左にスティックが倒れたとき
+				if (nValueH <= JOY_MAX_RANGE && nValueH > 0)
+				{
+					// ドリフトしている状態にする
+					m_bDrift[DRIFT_LEFT] = true;
+				}
+				else if (nValueH >= -JOY_MAX_RANGE && nValueH < 0)
+				{// 右にスティックが倒れたとき
+					// ドリフトしている状態にする
+					m_bDrift[DRIFT_RIGHT] = true;
+				}
+			}
+		}
+
+		// 右ドリフトしているとき
+		if (m_bDrift[DRIFT_RIGHT])
+		{
+			// 前輪モデルの最終目的地座標
+			m_dest.y = DRIFT_DEST;
+
+			// 左にスティックが倒れたとき
+			if (nValueH <= JOY_MAX_RANGE && nValueH > 0)
+			{
+				// 前輪モデルの最終目的地座標
+				m_dest.y = 0.0f;
+
+				// 加速度
+				m_fAcceleration -= ACCEKERATION_ADDITION;
+			}
+			else if (nValueH >= -JOY_MAX_RANGE && nValueH < 0)
+			{// 右にスティックが倒れたとき
+				// 前輪モデルの最終目的地座標
+				m_dest.y = ROT_SPEED_DRIFT;
+
+				// 加速度
+				m_fAcceleration += ACCEKERATION_ADDITION;
+			}
+
+			// 加速度ベクトル設定
+			aVec.x = sinf(m_rot.y + m_dest.y + D3DX_PI / 2) * m_fAcceleration;
+			aVec.z = cosf(m_rot.y + m_dest.y + D3DX_PI / 2) * m_fAcceleration;
+
+			// ドリフトボタンを離したとき
+			if (!pGamepad->GetControllerPress(0, JOYPADKEY_RIGHT_TRIGGER))
+			{
+				// ドリフト最大までカウント
+				for (int nCnt = 0; nCnt < DRIFT_MAX; nCnt++)
+				{
+					// ドリフトしていない状態にする
+					m_bDrift[nCnt] = false;
+
+					// 加速度初期化
+					m_fAcceleration = ACCEKERATION;
+				}
+			}
+		}
+		else if (m_bDrift[DRIFT_LEFT])
+		{// 左ドリフトのとき
+			// 前輪モデルの最終目的地座標
+			m_dest.y = -DRIFT_DEST;
+
+			// 左にスティックが倒れたとき
+			if (nValueV <= JOY_MAX_RANGE && nValueV > 0)
+			{
+				// 前輪モデルの最終目的地座標
+				m_dest.y = -ROT_SPEED_DRIFT;
+
+				// 加速度
+				m_fAcceleration += ACCEKERATION_ADDITION;
+			}
+			else if (nValueV >= -JOY_MAX_RANGE && nValueV < 0)
+			{// 右にスティックが倒れたとき
+				// 前輪モデルの最終目的地座標
+				m_dest.y = 0.0f;
+
+				// 加速度
+				m_fAcceleration -= ACCEKERATION_ADDITION;
+			}
+
+			// 加速度ベクトル設定
+			aVec.x = sinf(m_rot.y + m_dest.y - D3DX_PI / 2) * m_fAcceleration;
+			aVec.z = cosf(m_rot.y + m_dest.y - D3DX_PI / 2) * m_fAcceleration;
+
+			// ドリフトボタンを離したとき
+			if (!pGamepad->GetControllerPress(0, JOYPADKEY_RIGHT_TRIGGER))
+			{
+				// ドリフト最大までカウント
+				for (int nCnt = 0; nCnt < DRIFT_MAX; nCnt++)
+				{
+					// ドリフトしていない状態にする
+					m_bDrift[nCnt] = false;
+
+					// 加速度初期化
+					m_fAcceleration = ACCEKERATION;
+				}
+			}
+		}
+	}
 }
 
 //=============================================================================
