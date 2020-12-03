@@ -293,11 +293,11 @@ void CPlayer::Update(void)
 				{
 					if (Type == RANDTYPE_GRASS)
 					{
-						pSound->PlaySoundA((SOUND_LABEL)(CManager::GetRand(3) + (int)SOUND_LABEL_SE_GRASS_1));
+					//	pSound->PlaySoundA((SOUND_LABEL)(CManager::GetRand(3) + (int)SOUND_LABEL_SE_GRASS_1));
 					}
 					else if (Type == RANDTYPE_SAND)
 					{
-						pSound->PlaySoundA((SOUND_LABEL)(CManager::GetRand(3) + (int)SOUND_LABEL_SE_SAND_1));
+					//	pSound->PlaySoundA((SOUND_LABEL)(CManager::GetRand(3) + (int)SOUND_LABEL_SE_SAND_1));
 					}
 				}
 			}
@@ -439,7 +439,7 @@ void CPlayer::OnTriggerEnter(CCollider *col)
 		if (sTag == "weapon")
 		{
 			CSound *pSound = CManager::GetSound();				// サウンドの取得
-			pSound->PlaySoundA(SOUND_LABEL_SE_PUNCH);			// ダメージ音の再生
+		//	pSound->PlaySoundA(SOUND_LABEL_SE_PUNCH);			// ダメージ音の再生
 			m_nLife -= 5;										// 体力を削る
 			AnimationSwitch(ANIMATIONTYPE_DAMAGE);				// アニメーションを変更
 
