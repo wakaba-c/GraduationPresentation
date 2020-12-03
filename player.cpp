@@ -36,6 +36,7 @@
 #include "network.h"
 #include "distanceNext.h"
 #include "ui.h"
+#include "shadow.h"
 
 //=============================================================================
 // ƒ}ƒNƒ’è‹`
@@ -189,6 +190,9 @@ HRESULT CPlayer::Init(void)
 		m_pDistanceNext->SetIntervalNum(D3DXVECTOR3(45.0f, 0.0f, 0.0f));
 		m_pDistanceNext->SetNumber(256);
 	}
+
+	// ‰e‚Ì¶¬
+	m_pShadow = CShadow::Create();
 
 	CUi *pRankUi = CUi::Create();
 

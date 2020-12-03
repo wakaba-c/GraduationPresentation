@@ -36,6 +36,7 @@
 #include "puzzle.h"
 #include "network.h"
 #include "startSignal.h"
+#include "shadow.h"
 
 //=============================================================================
 // Ã“Iƒƒ“ƒo•Ï”
@@ -201,4 +202,5 @@ void CGame::LoadAsset(void)
 	CEffect::Load();
 	CNumber::Load();
 	CGuideSign::Load();
+	CShadow::Load();
 }
