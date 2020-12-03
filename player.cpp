@@ -810,16 +810,18 @@ void CPlayer::Input(void)
 			D3DXVECTOR3 rot;
 			rot = D3DXVECTOR3(sinf(fAngle) * 10, cosf(fAngle) * 10, 0.0f);
 
-			CEffect::SetEffect(EFFECTTYPE_ROSE,										// パーティクルのタイプ
+			CEffect::SetEffect("data/tex/effect/rose_01.png",			// パーティクルのタイプ
 				GetPosition(),											// 発生位置
 				D3DXVECTOR3(8.0f, 8.0f, 0.0f),							// サイズ
 				particlePos * 5.0f,										// 方向ベクトル
 				D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+				D3DXVECTOR3(0.02f, 0.02f, 0.0f),						// 回転の変化量
+				D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f),						// 色の変化量
 				EASINGTYPE_NONE,
 				rot,													// テクスチャの回転
 				D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),						// カラー
 				200,													// パーティクルの生存カウント数
-				true,													// 重力
+				-0.98f,													// 重力
 				0,														// 抵抗
 				true,													// ビルボード
 				0,														// 表示する箇所(横)
@@ -827,9 +829,25 @@ void CPlayer::Input(void)
 				D3DXVECTOR3(0.0f, 0.0f, 0.0f),
 				0,
 				0,
-				0);
+				0,
+				D3DXVECTOR2(1.0f, 1.0f),								// 画像の分割数
+				false,													// 加算合成の有無
+				false,													// Zバッファの比較有無
+				false													// フェード
+			);
 		}
+
 	}
+
+	if (pKeyboard->GetTriggerKeyboard(DIK_2))
+	{
+		CEffect::PetalCluster(GetPosition(), D3DXVECTOR3(D3DX_PI / 2, m_rot.y, m_rot.z));
+	}
+
+	//static int nCntAura = 0;
+	//nCntAura++;
+
+	//CEffect::Aura(nCntAura, false, GetPosition());
 
 	// モデルがあるとき
 	if (pModel != NULL)

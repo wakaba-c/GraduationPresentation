@@ -87,11 +87,12 @@ public:
 	void SetMove(D3DXVECTOR3 move);													// 移動量の設定
 	void SetUse(bool bValue);														// 使用中設定
 	void SpriteAnimation(D3DXVECTOR2 patternNo, int nPatternAnim, int nHeight);		// スプライトアニメーション処理
-	static void SetEffect(EFFECTTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 size,		// エフェクトの発生処理
-		D3DXVECTOR3 move, D3DXVECTOR3 moveSize, EASINGTYPE easingType,
-		D3DXVECTOR3 rot, D3DXCOLOR col, int nLife, bool bGravity, float fResistance,
+	static void SetEffect(const std::string Add, D3DXVECTOR3 pos, D3DXVECTOR3 size,		// エフェクトの発生処理
+		D3DXVECTOR3 move, D3DXVECTOR3 moveSize, D3DXVECTOR3 moveRot, D3DXCOLOR moveCol, EASINGTYPE easingType,
+		D3DXVECTOR3 rot, D3DXCOLOR col, int nLife, float fGravity, float fResistance,
 		bool bBillboard, int nPatternAnim, int nHeight, D3DXVECTOR3 centerPos,
-		float fAngle, float fDistance, float fRotationSpeed);
+		float fAngle, float fDistance, float fRotationSpeed, D3DXVECTOR2 sprite,
+		bool bAlpha, bool bZBuffer, bool bFadeOut);
 
 	static void FallingPetals(bool bGravity, D3DXVECTOR3 pos, int nLife);			// 舞い散る花びらのエフェクト
 	static void PetalsGather(D3DXVECTOR3 pos);										// 集まる花びらのエフェクト
@@ -117,16 +118,13 @@ public:
 	void OnCollisionEnter(CCollider *col) {};
 	void ShowInspector(void) {};
 
+	static D3DXVECTOR3 GetRandomPosWithSphere(void);			// 位置のランダム取得
+	static D3DXVECTOR3 GetRandomPosWithCone(float &fRadius);			// 位置のランダム取得
+	static float GetRandomAngle(void);			// 角度のランダム取得
+
 private:
 #ifdef _DEBUG
 	void Debug(void);
-
-	/* ===============当たり判定可視化=============== */
-	CMeshCapsule					*m_pCapsule;									// カプセルのポインタ
-	CMeshSphere						*m_pSphere;										// 球体のポインタ
-	CMeshCube						*m_pCube;										// 四角形のポインタ
-	ImVec4							debug_size;										// コライダーサイズ
-	ImVec4							debug_pos;										// コライダーポジションオフセット値
 #endif
 
 	void MakeVertex(void);															// 頂点情報の作成
@@ -135,7 +133,7 @@ private:
 	static CEffect *m_pEffect[MAX_EFFECT];											// 生成されたエフェクトポインタ
 
 	/* ================ ステータス ================ */
-	static LPDIRECT3DTEXTURE9		m_pTexture[EFFECTTYPE_MAX];						// テクスチャへのポインタ
+	LPDIRECT3DTEXTURE9				m_pTexture;										// テクスチャへのポインタ
 	D3DXVECTOR3						m_pos;											// ポジション
 
 	D3DXVECTOR3						m_centerPos;									// 回転中心
@@ -144,27 +142,33 @@ private:
 	float							m_fDistance;
 
 	D3DXVECTOR3						m_rot;											// 回転量
+	D3DXVECTOR3						m_moveRot;										// 回転の変化量
 	D3DXVECTOR3						m_move;											// 移動量
 	D3DXVECTOR3						m_posOld;										// 前のポジション
 	D3DXVECTOR3						m_size;											// 大きさ
-	D3DXVECTOR3						m_moveSize;
+	D3DXVECTOR3						m_moveSize;										// 大きさの変化量
+	D3DXVECTOR3						m_maxSize;										// 大きさの最大値
 	D3DXCOLOR						m_col;											// 色
+	D3DXCOLOR						m_moveCol;										// 色の変化量
 	D3DXMATRIX						m_mtxWorld;										// ワールドマトリックス
 	EASINGTYPE						m_easingType;									// イージングタイプ
 	float							m_fRadius;										// 半径
 	float							m_fResistance;									// 抵抗
 	int								m_nLife;										// ライフ
 	int								m_nMaxLife;										// ライフの最大値
-	bool							m_bGravity;										// 重力
 	bool							m_bUse;											// 使用しているかどうか
 	bool							m_bBillboard;									// ビルボードの使用
 
 	/* ================ パーティクル ================ */
 	static EFFECT					m_aEffect[EFFECTTYPE_MAX];						// エフェクト
-	EFFECTTYPE						m_type;											// パーティクルタイプ
 	int								m_AnimPage;										// 現在のページ数
 	int								m_AnimCount;									// 次のページカウント
 	int								m_nInterval;									// 次のページまでの間隔
+	D3DXVECTOR2						m_sprite;										// 分割数
+	bool							m_bAlpha;										// 加算合成の有無
+	bool							m_bZBuffer;										// Zバッファの有無
+	bool							m_bFadeOut;										// フェードアウトの有無
+	float							m_fGravity;
 
 	/*===============3Dレンダリング関連===============*/
 	LPDIRECT3DVERTEXBUFFER9			m_pVtxBuff;										// 頂点バッファへのポインタ
