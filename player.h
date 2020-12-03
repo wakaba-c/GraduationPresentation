@@ -34,6 +34,7 @@ class CModel;
 class CNumber;
 class CDistanceNext;
 class CUi;
+class CShadow;
 
 //=============================================================================
 // クラス定義
@@ -130,6 +131,7 @@ private:
 	bool							m_bAccel;										// アクセルを押しているかどうか
 	CNumber							*m_pRank;										// ランキング用UI
 	CDistanceNext					*m_pDistanceNext;								// 次のプレイヤーとの距離のUI
+	CShadow							*m_pShadow;										// 影の情報ポインタ
 
 	// レースゲーム関連
 	int								m_nRound;										// 現在の周回回数

@@ -7,12 +7,10 @@
 #include "manager.h"
 #include "renderer.h"
 #include "shadow.h"
-
-//==================================================================================================================
-// マクロ定義
-//==================================================================================================================
-#define SHADOW_SIZE 40.0f		// 影サイズ
-#define SIZE_DOWN 3				// 影サイズの減少割合
+#include "player.h"
+#include "game.h"
+#include "takaseiLibrary.h"
+#include "debug.h"
 
 //==================================================================================================================
 // 静的メンバ変数の初期化
@@ -45,8 +43,7 @@ HRESULT CShadow::Init(void)
 
 	// 変数の初期化
 	m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// 位置
-	m_move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// 移動量
-	m_size = D3DXVECTOR3(1.0f, 1.0f, 1.0f);				// 大きさ
+	m_size = D3DXVECTOR3(1.0f, 1.0f, 2.0f);				// 大きさ
 	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// 回転
 
 	// オブジェクトの頂点バッファを生成
@@ -123,8 +120,25 @@ void CShadow::Uninit(void)
 //==================================================================================================================
 void CShadow::Update(void)
 {
-	// 大きさ取得
-	m_size = D3DXVECTOR3(SHADOW_SIZE, 1.0f, SHADOW_SIZE);
+	CPlayer *pPlayer = CGame::GetPlayer();
+	D3DXVECTOR3 PlayerPos = ZeroVector3;
+	D3DXVECTOR3 PlayerRot = ZeroVector3;
+
+	// プレイヤーがいるとき
+	if (pPlayer != NULL)
+	{
+		PlayerPos = pPlayer->GetPosition();		// プレイヤー位置取得
+		PlayerRot = pPlayer->GetRotation();		// プレイヤー回転取得
+	}
+
+	// 位置設定
+	m_pos = D3DXVECTOR3(PlayerPos.x, PlayerPos.y + 4.0f, PlayerPos.z);
+
+	// 回転設定
+	m_rot = PlayerRot;
+
+	// 大きさ設定
+	m_size = D3DXVECTOR3(150.0f, 1.0f, 150.0f);
 }
 
 //==================================================================================================================
@@ -204,46 +218,13 @@ CShadow *CShadow::Create(void)
 //==================================================================================================================
 HRESULT CShadow::Load(void)
 {
-	CRenderer *pRenderer = CManager::GetRenderer();						// レンダラー情報取得
-	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();					// デバイスの取得
+	CRenderer *pRenderer = CManager::GetRenderer();
+	LPDIRECT3DDEVICE9 pDevice;
 
-	// テクスチャの読み込み
-	D3DXCreateTextureFromFile(pDevice, SHADOW_TEX, &m_pTexture);
+	//デバイスを取得する
+	pDevice = pRenderer->GetDevice();
 
-	// 値を返す
+	m_pTexture = CManager::GetResource(SHADOW_TEX);
+
 	return S_OK;
 }
-
-//==================================================================================================================
-// テクスチャ破棄
-//==================================================================================================================
-void CShadow::Unload(void)
-{
-	// テクスチャがあるとき
-	if (m_pTexture != NULL)
-	{
-		m_pTexture->Release();					// テクスチャ解放
-		m_pTexture = NULL;						// NULLにする
-	}
-}
-
-//==================================================================================================================
-// 位置設定
-//==================================================================================================================
-void CShadow::SetPos(D3DXVECTOR3 &pos, D3DXVECTOR3 &move, bool &bJump)
-{
-	// 位置設定
-	m_pos = pos;
-
-	// 移動量設定
-	m_move = move;
-}
-
-//==================================================================================================================
-// 影の削除
-//==================================================================================================================
-void CShadow::ReleaseShadow(void)
-{
-	Release();
-}
-
