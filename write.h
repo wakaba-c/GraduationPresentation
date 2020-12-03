@@ -24,6 +24,7 @@ public:
 	bool Write(const char* frm, ...);
 	bool TitleWrite(const char* frm, ...);
 	bool IndexWrite(const char* frm, ...);
+	void NewLine(void);
 	bool End(void);
 
 private:

@@ -495,6 +495,8 @@ float CManager::GetDistance(D3DXVECTOR3 FirstTarget, D3DXVECTOR3 SecondTarget)
 //=============================================================================
 int CManager::GetRand(int nValue)
 {
+	if(nValue <= 0) { return 0; }
+
 	for (int nCount = 0; nCount < 5; nCount++)
 	{
 		rand();						//rand‚Ì‹óŽÀs
