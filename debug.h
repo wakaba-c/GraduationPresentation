@@ -86,6 +86,7 @@ private:
 	static void SelectAssetWithModel(void);					// モデル選択処理
 	static void SelectAssetWithTexture(void);				// テクスチャ選択処理
 	static void SelectAssetWithUI(void);					// UI選択処理
+	static void SaveParticle(void);							// パーティクルパラメータの書き込み
 
 	LPD3DXFONT	m_pFont;									// フォントへのポインタ
 	static char m_aStr[1024];								// 文字列
@@ -116,18 +117,41 @@ private:
 	static bool m_bMouseCursorPosition;						// マウスカーソル座標の使用フラグ
 
 	// エフェクト作成関連
-	static int m_nParticleShape;							// パーティクル形状
-	static int m_particleLife;								// パーティクルの生存時間
-	static int m_nCreate;									// 生成数
-	static int m_nInterval;									// インターバル
-	static float m_fStartRadius;							// 始まりの
-	static float m_fRadius;									// 半径
-	static float m_fMinSpeed;								// 最低スピード
-	static float m_fSpeed;									// スピード
+	static int m_nParticleShape;				// パーティクル形状
+	static int m_particleLife;					// パーティクルの生存時間
+	static int m_nCreate;						// 生成数
+	static int m_nInterval;						// インターバル
+	static int m_nEmissionType;					// 放出タイプ
+	static float m_fStartRadius;				// 始まりの
+	static float m_fRadius;						// 半径
+	static float m_fMinSpeed;					// 最低スピード
+	static float m_fSpeed;						// スピード
+	static float m_fResistance;					// 抵抗値
 
-	static bool m_bLoop;									// 生成を繰り返す
-	static bool m_bGravity;									// 重力の有無
-	static bool m_bRandomSpeed;								// スピードランダム化の有無
+	static D3DXVECTOR3 m_createRot;					// 回転
+	static D3DXVECTOR3 m_size;					// 大きさ
+	static D3DXVECTOR3 m_moveSize;				// 大きさの変化量
+	static D3DXVECTOR3 m_moveRot;				// 回転の変化量
+	static D3DXVECTOR3 m_centerPos;				// 中心位置 1.0f, 1.0f, 1.0f
+	static D3DXVECTOR2 m_sprite;				// 分割数 1.0f, 1.0f
+	static D3DXCOLOR m_col;						// 色
+	static D3DXCOLOR m_moveCol;					// 色の変化量
+
+	static float m_fAngle;						// 角度
+	static float m_fDistance;					// 距離
+	static float m_fRotationSpeed;				// 回転速度
+	static float m_fGravity;					// 重力加速度
+	static float m_fMaxSpeed;					// スピードの最大値
+
+	static bool m_bLoop;						// 生成を繰り返す
+	static bool m_bRandomSpeed;					// スピードランダム化の有無
+	static bool m_bAlpha;						// アルファブレンディング false
+	static bool m_bZBuffer;						// Zバッファ false
+	static bool m_bFadeOut;						// フェード false
+	static bool m_bBillboard;					// ビルボード true
+	static bool m_bRandAngle;					// 角度のランダム化
+
+	static char m_effectTag[NAME_SIZE];			// タグ
 
 	// UI生成関連
 	static void LoadAddWithUI(void);			// UIアドレスの読み込み
