@@ -28,7 +28,7 @@
 //=============================================================================
 // マクロ定義
 //=============================================================================
-#define UIMANAGER_SCRIPT "data/text/manager_ui.txt"
+#define UIMANAGER_SCRIPT "data/text/manager/manager_ui.txt"
 #define CONTINUE_MAX 10													// 再計算回数
 
 //=============================================================================
@@ -864,7 +864,7 @@ void CDebugProc::TabBar(D3DXVECTOR3 &worldPos)
 
 					// 位置の計算
 					particlePos.x = sinf(D3DX_PI * fAngle) * (fRadius);
-					particlePos.y = m_fSpeed;
+					particlePos.y = m_fMaxSpeed;
 					particlePos.z = cosf(D3DX_PI * fAngle) * (fRadius);
 					break;
 				case PARTICLESHAPE_SPHERE:
@@ -1537,6 +1537,7 @@ void CDebugProc::SaveParticle(void)
 
 		pWrite->Write("	GRAVITY = %.2f\n", m_fGravity);		// 重力
 		pWrite->Write("	RESISTANCE = %.2f\n", m_fResistance);		// 生存カウント
+		pWrite->Write("	SPEED = %.2f\n", m_fMaxSpeed);
 
 		pWrite->Write("	CENTER_POS = %.2f %.2f %.2f\n", m_centerPos.x, m_centerPos.y, m_centerPos.z);		// 中心位置
 		pWrite->Write("	ANGLE = %.2f\n", m_fAngle);		// 角度

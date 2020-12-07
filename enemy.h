@@ -87,8 +87,6 @@ private:
 
 	/*=============== 当たり判定 ===============*/
 	CColliderSphere					*m_pSphere;							// 当たり判定(体)のポインタ
-	CColliderSphere					*m_pAttack;							// 当たり判定(攻撃)のポインタ
-	CColliderBox					*m_pBox;							// 当たり判定(キューブ)のポインタ
 
 	/*=============== ステータス ===============*/
 	static int						m_nKill;							// 倒した数
