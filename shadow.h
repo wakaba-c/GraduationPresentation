@@ -36,11 +36,8 @@ public:
 
 	static CShadow *Create(void);				// 生成処理
 	static HRESULT Load(void);					// テクスチャ情報ロード
-	static void Unload(void);					// テクスチャ情報アンロード
 
-	inline D3DXVECTOR3 &GetPos(void) { return m_pos; }		// 位置取得
-	void SetPos(D3DXVECTOR3 &pos, D3DXVECTOR3 &move, bool &bJump);// 位置設定
-	void ReleaseShadow(void);								// 影の削除
+	inline D3DXVECTOR3 &GetPos(void) { return m_pos; }// 位置取得
 	void OnTriggerEnter(CCollider *col) {};
 	void OnCollisionEnter(CCollider *col) {};
 
@@ -53,7 +50,6 @@ private:
 	D3DXMATRIX m_mtxWorld;						// ワールドマトリックス
 
 	D3DXVECTOR3 m_pos;							// 位置
-	D3DXVECTOR3 m_move;							// 移動
 	D3DXVECTOR3 m_size;							// 大きさ
 	D3DXVECTOR3 m_rot;							// 回転
 };

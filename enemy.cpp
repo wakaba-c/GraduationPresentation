@@ -227,7 +227,7 @@ void CEnemy::OnTriggerEnter(CCollider *col)
 					CPlayer *pPlayer = CGame::GetPlayer();				// プレイヤーの取得
 					CSound *pSound = CManager::GetSound();				// サウンドの取得
 
-					pSound->PlaySoundA(SOUND_LABEL_SE_PUNCH);			// ダメージ音の再生
+					//pSound->PlaySoundA(SOUND_LABEL_SE_PUNCH);			// ダメージ音の再生
 
 					if (m_target != TARGETTYPE_PLAYER)
 					{// 攻撃対象がプレイヤー以外だったとき
