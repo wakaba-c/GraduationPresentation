@@ -22,6 +22,12 @@
 #include "sceneX.h"
 #include "puzzle.h"
 #include "network.h"
+#include "effect.h"
+
+//=============================================================================
+// マクロ定義
+//=============================================================================
+#define MANAGER_TEX "data/text/manager/manager_texture.txt"
 
 //=============================================================================
 // 静的メンバ変数
@@ -134,6 +140,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 	}
 
 	CSceneX::Load();
+	LoadTexScript();
 
 	LPDIRECT3DDEVICE9 pDevice;
 	pDevice = m_pRenderer->GetDevice();
@@ -153,6 +160,8 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 	CResult::LoadAsset();
 
 	SetMode(MODE_TITLE);																		//モードセレクト
+
+	CEffect::LoadParticleScript();
 
 	return S_OK;
 }
@@ -825,7 +834,7 @@ D3DXVECTOR3 *CManager::calcWallScratchVector(D3DXVECTOR3 *out, const D3DXVECTOR3
 //=============================================================================
 // 反射ベクトル
 //=============================================================================
-D3DXVECTOR3 * CManager::calcReflectVector(D3DXVECTOR3 * out, const D3DXVECTOR3 & front, const D3DXVECTOR3 & normal)
+D3DXVECTOR3 *CManager::calcReflectVector(D3DXVECTOR3 *out, const D3DXVECTOR3 &front, const D3DXVECTOR3 &normal)
 {
 	D3DXVECTOR3 normal_n;
 	D3DXVec3Normalize(&normal_n, &normal);
@@ -911,10 +920,10 @@ void CManager::LoadSystemFile(void)
 				sscanf(cReadText, "%s", &cHeadText);
 			}
 
-			//スクリプトだったら
+			// スクリプトだったら
 			if (strcmp(cHeadText, "SCRIPT") == 0)
 			{
-				//エンドスクリプトが来るまで
+				// エンドスクリプトが来るまで
 				while (strcmp(cHeadText, "END_SCRIPT") != 0)
 				{
 					fgets(cReadText, sizeof(cReadText), pFile);
@@ -931,7 +940,7 @@ void CManager::LoadSystemFile(void)
 					}
 				}
 			}
-			fclose(pFile);																// ファイルを閉じる
+			fclose(pFile);				// ファイルを閉じる
 
 			MessageBox(NULL, "モデル情報の読込に成功！", "SUCCESS", MB_ICONASTERISK);		// メッセージボックスの生成
 		}
@@ -1024,4 +1033,69 @@ std::vector<std::string> CManager::split(
 	}
 	// 確保した文字列分返す
 	return vec_Result;
+}
+
+//=============================================================================
+// テクスチャアセットのロード処理
+//=============================================================================
+void CManager::LoadTexScript(void)
+{
+	FILE *pFile;
+	char cReadText[128];		//文字
+	char cHeadText[128];		//比較
+	char cDie[128];
+	int nCntPointer = 0;		//ポインターの数値
+
+	char sAdd[64];				//モデルのアドレス
+	std::string Add;
+
+	int nCntMotion = 0;			//参照するポインタの値を初期化
+	int nCntKey = 0;
+
+	int nMaxModel = 0;
+
+	//テキストデータロード
+	pFile = fopen(MANAGER_TEX, "r");
+
+	if (pFile != NULL)
+	{
+		//ポインターのリセット
+		nCntPointer = 0;
+
+		//スクリプトが来るまでループ
+		while (strcmp(cHeadText, "SCRIPT") != 0)
+		{
+			fgets(cReadText, sizeof(cReadText), pFile);
+			sscanf(cReadText, "%s", &cHeadText);
+		}
+
+		//スクリプトだったら
+		if (strcmp(cHeadText, "SCRIPT") == 0)
+		{
+			//エンドスクリプトが来るまで
+			while (strcmp(cHeadText, "END_SCRIPT") != 0)
+			{
+				fgets(cReadText, sizeof(cReadText), pFile);
+				sscanf(cReadText, "%s", &cHeadText);
+
+				//改行
+				if (strcmp(cReadText, "\n") != 0)
+				{
+					if (strcmp(cHeadText, "MODEL_FILENAME") == 0)
+					{//パーツモデルのアドレス情報のとき
+						sscanf(cReadText, "%s %s %s", &cDie, &cDie, &sAdd[0]);						//アドレスの取得
+						Add = sAdd;
+						CManager::Load(Add);
+					}
+				}
+			}
+		}
+
+		//ファイル閉
+		fclose(pFile);
+	}
+	else
+	{
+		MessageBox(NULL, "テクスチャマネージャが開けませんでした！", "WARNING", MB_ICONWARNING);	// メッセージボックスの生成
+	}
 }

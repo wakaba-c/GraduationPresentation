@@ -135,6 +135,7 @@ private:
 	static void TexRelease(void);						// テクスチャの開放
 	static void ModelRelease(void);						// モデルデータの開放
 	static void ShaderRelease(void);					// シェーダーデータの開放
+	static void LoadTexScript(void);					// テクスチャロード処理
 
 	static MODE m_mode;									// モード
 	static CRenderer *m_pRenderer;						// レンダラーのポインタ

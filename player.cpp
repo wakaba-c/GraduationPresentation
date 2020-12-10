@@ -481,6 +481,15 @@ void CPlayer::OnTriggerEnter(CCollider *col)
 void CPlayer::OnCollisionEnter(CCollider *col)
 {
 	std::string sTag = col->GetTag();
+
+	if (sTag == "enemy")
+	{
+		// パーティクルの再現
+		for (int nCount = 0; nCount < 5; nCount++)
+		{
+			CEffect::CreateEffect("star", GetPosition(), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+		}
+	}
 }
 
 //========================================================================================

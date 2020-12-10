@@ -55,9 +55,30 @@ typedef enum
 
 typedef struct
 {
-	LPDIRECT3DTEXTURE9		pTexture;				// テクスチャ情報のポインタ
-	D3DXVECTOR2				sprite;					// 画像の分割数
+	std::string				texAdd;					// テクスチャアドレス
+	bool					bBillboard;				// ビルボードの有無
 	bool					bAlpha;					// アルファブレンディングの有無
+	bool					bZBuffer;				// Zバッファの有無
+	bool					bFadeOut;				// フェードアウト
+
+	D3DXVECTOR3				size;					// 大きさ
+	D3DXCOLOR				col;					// 色
+
+	D3DXVECTOR3				moveSize;				// サイズの変化量
+	D3DXVECTOR3				moveRot;				// 回転の変化量
+	D3DXVECTOR3				centerPos;				// 中心位置
+	D3DXCOLOR				moveCol;				// 色の変化量
+
+	int						nLife;					// 生存カウント
+
+	float					fGravity;				// 重力
+	float					fResistance;			// 抵抗
+	float					fAngle;					// 角度
+	float					fDistance;				// 距離
+	float					fSpeedRot;				// 回転速度
+	float					fMaxSpeed;					// スピード
+
+	D3DXVECTOR2				sprite;					// 画像の分割数
 } EFFECT;
 
 //=============================================================================
@@ -122,6 +143,11 @@ public:
 	static D3DXVECTOR3 GetRandomPosWithCone(float &fRadius);			// 位置のランダム取得
 	static float GetRandomAngle(void);			// 角度のランダム取得
 
+	static void LoadScript(std::string Add);		// エフェクト情報の読み込み
+	static EFFECT GetEffectData(std::string Tag);		// エフェクトの取得
+	static void CreateEffect(std::string Tag, D3DXVECTOR3 pos, D3DXVECTOR3 rot);		// エフェクトの生成
+	static void LoadParticleScript(void);			// パーティクルスクリプトのロード
+
 private:
 #ifdef _DEBUG
 	void Debug(void);
@@ -160,7 +186,6 @@ private:
 	bool							m_bBillboard;									// ビルボードの使用
 
 	/* ================ パーティクル ================ */
-	static EFFECT					m_aEffect[EFFECTTYPE_MAX];						// エフェクト
 	int								m_AnimPage;										// 現在のページ数
 	int								m_AnimCount;									// 次のページカウント
 	int								m_nInterval;									// 次のページまでの間隔
@@ -168,12 +193,14 @@ private:
 	bool							m_bAlpha;										// 加算合成の有無
 	bool							m_bZBuffer;										// Zバッファの有無
 	bool							m_bFadeOut;										// フェードアウトの有無
-	float							m_fGravity;
+	float							m_fGravity;										// 重力加速度
 
 	/*===============3Dレンダリング関連===============*/
 	LPDIRECT3DVERTEXBUFFER9			m_pVtxBuff;										// 頂点バッファへのポインタ
 	LPD3DXMESH						m_pMesh;										// メッシュ情報へのポインタ
 	DWORD							m_nNumMat;										// マテリアル情報の数
 	LPD3DXBUFFER					m_pBuffMat;										// マテリアル情報へのポインタ
+
+	static std::map<std::string, EFFECT> m_effectMap;								// エフェクトマップ
 };
 #endif
