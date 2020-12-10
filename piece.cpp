@@ -15,6 +15,7 @@
 #include "debug.h"
 #include "box.h"
 #include "pieceSelect.h"
+#include "inputController.h"
 
 //==================================================================================================================
 // マクロ定義
@@ -114,12 +115,78 @@ void CPiece::Update(void)
 {
 	// キーボード取得
 	CInputKeyboard *pKeyboard = CManager::GetInputKeyboard();
+	// ゲームパッドの取得
+	CInputController *pGamepad = CManager::GetInputController();
+
+	float nValueH = 0;									//コントローラー
+	float nValueV = 0;									//コントローラー
 
 	// ピースの設定
 	SetPiece();
 
 	SetStatus();
 
+	// ====================== コントローラー ====================== //
+
+	if (pGamepad != NULL)
+	{// ゲームパッドが存在したとき
+		if (pGamepad->GetJoypadUse(0))
+		{// 使用可能だったとき
+			pGamepad->GetJoypadStickLeft(0, &nValueH, &nValueV);
+
+			//// ゲームパッド処理
+			//InputGemepad(nValueH, nValueV, fTireRotSpeed, aVec);
+
+			if (pGamepad->GetControllerPress(0, JOYPADKEY_B))
+			{
+				if (m_bPut == true)
+				{
+					m_bPlacement = true;
+					m_bMove = true;
+				}
+			}	// 配置していなかったら
+			if (m_bPlacement == false)
+			{
+
+				// 左にスティックが倒れたとき
+				if (pGamepad->GetControllerTrigger(0, JOYPADKEY_LEFT))
+				{
+					m_nCntMove_X--;
+				}
+				else if (pGamepad->GetControllerTrigger(0, JOYPADKEY_RIGHT))
+				{// 右にスティックが倒れたとき
+					m_nCntMove_X++;
+				}
+				// 下にスティックが倒れたとき
+				if (pGamepad->GetControllerTrigger(0, JOYPADKEY_UP))
+				{
+					m_nCntMove_Y--;
+				}
+				else if (pGamepad->GetControllerTrigger(0, JOYPADKEY_DOWN))
+				{// 上にスティックが倒れたとき
+					m_nCntMove_Y++;
+				}
+			}
+			else
+			{
+				// 縦をカウント
+				for (int nDepth = 0; nDepth < Piece_Depth; nDepth++)
+				{
+					// 横をカウント
+					for (int nWide = 0; nWide < Piece_Width; nWide++)
+					{
+						// 状態確認
+						if (m_bPuzzle[nDepth][nWide] == true)
+						{
+							// 色の変更
+							m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(m_col));
+						}
+					}
+				}
+
+			}
+		}
+	}
 	// 配置決定
 	if (pKeyboard->GetTriggerKeyboard(MOVE_JUMP))
 	{

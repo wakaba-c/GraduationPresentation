@@ -432,12 +432,14 @@ void CManager::SetMode(MODE mode)
 	case MODE_TITLE:
 		m_pTitle = new CTitle;
 		m_pTitle->Init();
+		m_pSound->PlaySoundA(SOUND_LABEL_BGM_TiTle);
 		break;
 
 	case MODE_DEMO_PLAY:
 
 		break;
 	case MODE_CHARACTER_SELECT:
+		m_pSound->PlaySoundA(SOUND_LABEL_BGM_Character_Select);
 
 		break;
 	case MODE_STAGE_SELECT:
@@ -446,14 +448,19 @@ void CManager::SetMode(MODE mode)
 	case MODE_PUZZLE_CUSTOM:
 		m_pPuzzle = new CPuzzle;
 		m_pPuzzle->Init();
+		m_pSound->PlaySoundA(SOUND_LABEL_BGM_Puzzle);
 		break;
 	case MODE_GAME:
 		m_pGame = new CGame;
 		m_pGame->Init();
+		m_pSound->PlaySoundA(SOUND_LABEL_BGM_Race);
+
 		break;
 	case MODE_RESULT:
 		m_pResult = new CResult;
 		m_pResult->Init();
+		m_pSound->PlaySoundA(SOUND_LABEL_BGM_Result);
+
 		break;
 	case MODE_RANKING:
 		m_pRanking = new CRanking;
