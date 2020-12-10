@@ -11,6 +11,7 @@
 #include "number.h"
 #include "player.h"
 #include "takaseiLibrary.h"
+#include "ui.h"
 
 //=============================================================================
 // マクロ定義
@@ -31,17 +32,6 @@ CSpeed::CSpeed(CScene::PRIORITY obj = CScene::PRIORITY_UI) : CScene(obj)
 
 	//値の初期化
 	m_dTimeFrame = 0;			// フレーム数の初期化
-
-	// 最大桁数までカウント
-	for (int nCnt = 0; nCnt < MAX_DIGIT; nCnt++)
-	{
-		// 生成処理
-		m_apNumber[nCnt] = CNumber::Create();
-
-		m_apNumber[nCnt]->SetPosition(D3DXVECTOR3(50 + INTERVAL * nCnt, 700.0f, 0));	// 位置設定
-		m_apNumber[nCnt]->SetSize(D3DXVECTOR3(INTERVAL, 60, 0));						// 大きさ設定
-		m_apNumber[nCnt]->Init();														// 初期化処理
-	}
 }
 
 //=============================================================================
@@ -57,6 +47,29 @@ CSpeed::~CSpeed()
 //=============================================================================
 HRESULT CSpeed::Init(void)
 {
+	// 最大桁数までカウント
+	for (int nCnt = 0; nCnt < MAX_DIGIT; nCnt++)
+	{
+		// 生成処理
+		m_apNumber[nCnt] = CNumber::Create();
+
+		if (m_apNumber[nCnt] != NULL)
+		{
+			m_apNumber[nCnt]->BindTexture("data/tex/number_speed.png");
+			m_apNumber[nCnt]->SetPosition(D3DXVECTOR3(55 + INTERVAL * nCnt, 687.0f, 0));	// 位置設定
+			m_apNumber[nCnt]->SetSize(D3DXVECTOR3(INTERVAL, 60, 0));						// 大きさ設定
+			m_apNumber[nCnt]->SetTransform();
+		}
+	}
+
+	CUi *pSpeedUi = CUi::Create();
+
+	if (pSpeedUi != NULL)
+	{
+		pSpeedUi->LoadScript("data/text/ui/SpeedMeter.txt");
+		pSpeedUi->SetPosition(D3DXVECTOR3(201.0f, 692.0f, 0.0f));
+	}
+
 	return S_OK;
 }
 
@@ -92,7 +105,7 @@ void CSpeed::Update(void)
 
 	// 現在と前回との距離計算
 	fDistance = CTakaseiLibrary::OutputDistance(posOld, pos);
-	
+
 	// 距離÷時間	fDigit = fDistance / m_dTimeFrame;
 	m_fDigit = fDistance;
 
@@ -111,16 +124,7 @@ void CSpeed::Update(void)
 //=============================================================================
 void CSpeed::Draw(void)
 {
-	// 最大桁数までカウント
-	for (int nCntScore = 0; nCntScore < MAX_DIGIT; nCntScore++)
-	{
-		// 数字があるとき
-		if (m_apNumber[nCntScore] != NULL)
-		{
-			// 描画処理
-			m_apNumber[nCntScore]->Draw();
-		}
-	}
+
 }
 
 //=============================================================================
@@ -141,6 +145,7 @@ CSpeed *CSpeed::Create(void)
 void CSpeed::SetTime(int nTime)
 {
 	int nNumber;
+	int nLength = CManager::LengthCalculation(nTime);
 
 	// タイムをフレームで割る
 	nTime = (int)(nTime / 1.0f);
@@ -153,5 +158,20 @@ void CSpeed::SetTime(int nTime)
 
 		// 数字設定
 		m_apNumber[nCount]->SetNumber(nNumber);
+
+		if (MAX_DIGIT - nCount <= nLength)
+		{// 最大桁数より小さい桁だったとき
+			if (!m_apNumber[nCount]->GetActive())
+			{
+				m_apNumber[nCount]->SetActive(true);
+			}
+		}
+		else
+		{// 最大桁数より大きい桁だったとき
+			if (m_apNumber[nCount]->GetActive())
+			{
+				m_apNumber[nCount]->SetActive(false);
+			}
+		}
 	}
 }

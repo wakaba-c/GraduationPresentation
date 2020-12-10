@@ -22,10 +22,13 @@
 #include "player.h"
 #include "wall.h"
 #include "ui.h"
+#include "effect.h"
+#include "write.h"
 
 //=============================================================================
 // マクロ定義
 //=============================================================================
+#define UIMANAGER_SCRIPT "data/text/manager/manager_ui.txt"
 #define CONTINUE_MAX 10													// 再計算回数
 
 //=============================================================================
@@ -51,26 +54,55 @@ D3DXVECTOR2 CDebugProc::m_CreateRandOld = D3DXVECTOR2(0.0f, 0.0f);		// 床の量
 CMeshField *CDebugProc::m_apMeshField[FLOOR_LIMIT * FLOOR_LIMIT] = {};
 D3DXVECTOR3 CDebugProc::m_createPos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 float CDebugProc::m_fSliderPow = 1.0f;
-std::string CDebugProc::m_currentModel = {};
-std::string CDebugProc::m_currentTexture = {};
+
+std::string CDebugProc::m_currentModel = {};		// モデルのアドレス
+std::string CDebugProc::m_currentTexture = {};		// テクスチャのアドレス
+std::string CDebugProc::m_currentUi = {};			// UIのアドレス
+
 bool CDebugProc::m_bHeightCalculation = false;
-HWND CDebugProc::m_hWnd = NULL;											// ウィンドウハンドル
+HWND CDebugProc::m_hWnd = NULL;								// ウィンドウハンドル
 
 // エフェクト作成関連
-int CDebugProc::m_particleLife = 0;										// パーティクルの生存時間
-int CDebugProc::m_nCreate = 0;											// 生成数
-int CDebugProc::m_nInterval = 0;										// インターバル
-float CDebugProc::m_fStartRadius = 0.0f;								// 始まりの
-float CDebugProc::m_fRadius = 0.0f;										// 半径
-float CDebugProc::m_fMinSpeed = 0.0f;									// 最低スピード
-float CDebugProc::m_fSpeed = 0.0f;										// スピード
+int CDebugProc::m_particleLife = 0;							// パーティクルの生存時間
+int CDebugProc::m_nCreate = 0;								// 生成数
+int CDebugProc::m_nInterval = 0;							// インターバル
+int CDebugProc::m_nEmissionType = 0;
 
-bool CDebugProc::m_bLoop = false;										// 生成を繰り返す
-bool CDebugProc::m_bGravity = false;									// 重力の有無
-bool CDebugProc::m_bRandomSpeed = false;								// スピードランダム化の有無
+float CDebugProc::m_fStartRadius = 0.0f;					// 始まりの
+float CDebugProc::m_fRadius = 0.0f;							// 半径
+float CDebugProc::m_fMinSpeed = 0.0f;						// 最低スピード
+float CDebugProc::m_fSpeed = 0.0f;							// スピード
+float CDebugProc::m_fResistance = 0.0f;						// 抵抗値
+float CDebugProc::m_fGravity = 0.0f;
 
-CUi *CDebugProc::m_pCreateUi = NULL;										// UIの初期化
+D3DXVECTOR3	CDebugProc::m_createRot = D3DXVECTOR3_ZERO;		// 回転量
+D3DXVECTOR3 CDebugProc::m_size = D3DXVECTOR3_ZERO;			// サイズ
+D3DXVECTOR3 CDebugProc::m_moveSize = D3DXVECTOR3_ZERO;		// 大きさの変化量
+D3DXVECTOR3 CDebugProc::m_moveRot = D3DXVECTOR3_ZERO;		// 回転の変化量
+D3DXVECTOR3 CDebugProc::m_centerPos = D3DXVECTOR3(1.0f, 1.0f, 1.0f);	// 中心位置
+D3DXVECTOR2 CDebugProc::m_sprite = D3DXVECTOR2(1.0f, 1.0f);	// 分割数
+D3DXCOLOR	CDebugProc::m_col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+D3DXCOLOR	CDebugProc::m_moveCol = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);
+
+float CDebugProc::m_fAngle = 0.0f;							// 角度
+float CDebugProc::m_fDistance = 0.0f;						// 距離
+float CDebugProc::m_fRotationSpeed = 0.0f;					// 回転速度
+float CDebugProc::m_fMaxSpeed = 0.0;						// スピードの最大値
+
+bool CDebugProc::m_bLoop = false;							// 生成を繰り返す
+bool CDebugProc::m_bRandomSpeed = false;					// スピードランダム化の有無
+bool CDebugProc::m_bAlpha = false;							// アルファブレンディングの有無
+bool CDebugProc::m_bZBuffer = false;						// Zバッファの有無
+bool CDebugProc::m_bFadeOut = false;						// フェードアウトの有無
+bool CDebugProc::m_bBillboard = true;						// ビルボードの有無
+bool CDebugProc::m_bRandAngle = false;						// 角度のランダム
+
+char CDebugProc::m_effectTag[NAME_SIZE] = {};				// タグの初期化
+
+CUi *CDebugProc::m_pCreateUi = NULL;						// UIの初期化
 char CDebugProc::m_CreateName[NAME_SIZE] = {};				// 生成名
+std::vector<std::string> CDebugProc::m_AddUi = {};			// アドレスの配列(UI)
+
 
 //=============================================================================
 // コンストラクタ
@@ -127,6 +159,8 @@ HRESULT CDebugProc::Init(HWND hWnd)
 
 	// 円の作成
 	m_pCircle = CCircle::Create();
+
+	LoadAddWithUI();
 	return S_OK;
 }
 
@@ -385,208 +419,14 @@ void CDebugProc::Debug(void)
 
 		if (ImGui::BeginMenuBar())
 		{// メニューバーの生成
-			if (ImGui::BeginMenu("File"))
-			{// ファイルタブの生成
-				if (ImGui::BeginMenu("Load"))
-				{// セーブタブの生成
-					if (ImGui::MenuItem("Rand"))
-					{// ロード
-					 // 床情報の読み込み
-						CMeshField::LoadRand("data/stage/rand.txt", false);
-					}
-					if (ImGui::MenuItem("Model"))
-					{// ロード
-					 // モデル情報の読み込み
-						CObject::LoadModelTest("data/text/model.txt");
-					}
-					if (ImGui::MenuItem("wall"))
-					{// ロード
-					 // モデル情報の読み込み
-						CMeshWall::LoadWall("data/text/wall.txt", false);
-					}
-					if (ImGui::MenuItem("All"))
-					{// セーブ
-					 // 床情報の読み込み
-						CMeshField::LoadRand("data/stage/rand.txt", false);
-
-						// モデル情報の読み込み
-						CObject::LoadModelTest("data/text/model.txt");
-					}
-					ImGui::EndMenu();			// メニューの更新終了
-				}
-
-				if (ImGui::BeginMenu("Save"))
-				{// セーブタブの生成
-					if (ImGui::MenuItem("Rand"))
-					{// ロード
-					 // 床情報の書き込み
-						CScene::SaveRand();
-					}
-					if (ImGui::MenuItem("Model"))
-					{// ロード
-					 // モデル情報の書き込み
-						CScene::SaveModel();
-					}
-					if (ImGui::MenuItem("wall"))
-					{// ロード
-					 // モデル情報の書き込み
-						CScene::SaveWall();
-					}
-					if (ImGui::MenuItem("All"))
-					{// セーブ
-					 // 床情報の書き込み
-						CScene::SaveRand();
-
-						// モデル情報の書き込み
-						CScene::SaveModel();
-					}
-					ImGui::EndMenu();			// メニューの更新終了
-				}
-
-				ImGui::EndMenu();			// メニューの更新終了
-			}
+			MenuBar();					// メニューバー処理
 			ImGui::EndMenuBar();		// メニューバーの更新終了
 		}
+
 		ImGui::Text("[R]Press is Create");			// デバッグモードテキスト表示
 
 		ImGui::BeginTabBar("General");
-
-		if (ImGui::BeginTabItem(u8"ランドスケープ"))
-		{// ランドスケープモード
-			if (m_nMode != DEBUGMODE_RAND)
-			{
-				m_nMode = DEBUGMODE_RAND;
-			}
-
-			LandScape(worldPos);
-			ImGui::Text(u8"ランドスケープ");				// 現在のデバッグモードの表示
-			ImGui::EndTabItem();
-		}
-		if (ImGui::BeginTabItem(u8"壁の頂点編集"))
-		{// 壁の頂点編集モード
-			if (m_nMode != DEBUGMODE_WALL)
-			{
-				m_nMode = DEBUGMODE_WALL;
-			}
-
-			EditWallVertex();
-			ImGui::Text(u8"壁の頂点編集");				// 現在のデバッグモードの表示
-			ImGui::EndTabItem();
-		}
-		if (ImGui::BeginTabItem(u8"フォリッジ"))
-		{// フォリッジモード
-			if (m_nMode != DEBUGMODE_MANY)
-			{
-				m_nMode = DEBUGMODE_MANY;
-			}
-
-			ImGui::SliderInt("Generation", &m_nCntGeneration, 0, 50);
-			CreateObject(worldPos);					// 多数配置モードの実行
-			ImGui::Text("Many Debug");
-			ImGui::EndTabItem();
-		}
-		if (ImGui::BeginTabItem(u8"個々配置"))
-		{// 個々配置モード
-			if (m_nMode != DEBUGMODE_INDIVIDUAL)
-			{
-				m_nMode = DEBUGMODE_INDIVIDUAL;
-			}
-
-			CreateIndividual(worldPos);				// 個々配置モードの実行
-
-			if (m_pSample == NULL)
-			{
-				m_pSample = CObject::Create();						// 見本用オブジェクトを作成
-
-				if (m_pSample != NULL)
-				{
-					m_pSample->BindModel(m_currentModel);
-					m_pSample->SetPosition(worldPos);								// 位置をマウスのワールド座標に設定
-					m_pSample->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f));			// 色の変更
-				}
-			}
-			ImGui::SameLine();															// 改行回避
-			ImGui::RadioButton("delete", &m_nMode, DEBUGMODE_DELETE);					// 選択肢 範囲内多数生成モード を追加
-
-			// 現在のデバッグタイプを表示
-			ImGui::Text("individual Debug");
-			ImGui::EndTabItem();
-		}
-		if (ImGui::BeginTabItem(u8"UI作成モード"))
-		{// UI作成モード
-			if (m_nMode != DEBUGMODE_UI)
-			{
-				m_nMode = DEBUGMODE_UI;
-			}
-
-			if (m_pCreateUi != NULL)
-			{
-				if (ImGui::Button("create"))
-				{
-					m_pCreateUi->CreateTexture(m_currentTexture);
-				}
-
-				m_pCreateUi->SceneDebug();
-				ImGui::InputText("default", m_CreateName, NAME_SIZE);
-
-				if (ImGui::Button("Export"))
-				{
-					m_pCreateUi->SaveScript(m_CreateName);
-				}
-			}
-			else
-			{
-				m_pCreateUi = CUi::Create();
-			}
-
-			// 現在のデバッグタイプを表示
-			ImGui::Text("individual Debug");
-			ImGui::EndTabItem();
-		}
-		if (ImGui::BeginTabItem("delete"))
-		{// オブジェクト削除モード
-			if (m_nMode != DEBUGMODE_DELETE)
-			{
-				m_nMode = DEBUGMODE_DELETE;
-			}
-
-			DeleteObject(worldPos);					// 削除モードの実行
-			// 現在のデバッグタイプを表示
-			ImGui::Text("individual Debug");
-			ImGui::EndTabItem();
-		}
-		if (ImGui::BeginTabItem("Randpaint"))
-		{// 頂点カラーの変更モード
-			if (m_nMode != DEBUGMODE_PAINT)
-			{
-				m_nMode = DEBUGMODE_PAINT;
-			}
-
-			Paint(worldPos);
-			ImGui::Text("Paint Debug");				// 現在のデバッグモードの表示
-			ImGui::EndTabItem();
-		}
-		if (ImGui::BeginTabItem("Enemy"))
-		{// 頂点カラーの変更モード
-			if (m_nMode != DEBUGMODE_ENEMY)
-			{
-				m_nMode = DEBUGMODE_ENEMY;
-			}
-
-			if (m_pEnemy == NULL)
-			{
-				m_pEnemy = CEnemy::Create();			// 見本用オブジェクトを作成
-
-				if (m_pEnemy != NULL)
-				{
-					m_pEnemy->SetPosition(worldPos);								// 位置をマウスのワールド座標に設定
-				}
-			}
-
-			CreateEnemy(worldPos);
-			ImGui::EndTabItem();
-		}
-
+		TabBar(worldPos);				// タブ処理
 		ImGui::EndTabBar();				// タブの終了処理
 
 		if (pKeyboard->GetTriggerKeyboard(DIK_RCONTROL))
@@ -613,7 +453,6 @@ void CDebugProc::Debug(void)
 
 		if (m_nMode == DEBUGMODE_UI)
 		{// UI作成モードのとき
-			SelectAssetWithTexture();
 		}
 
 		if (m_nMode != DEBUGMODE_INDIVIDUAL)
@@ -696,6 +535,420 @@ void CDebugProc::Debug(void)
 		}
 		// 更新終了
 		ImGui::End();
+	}
+}
+
+//=============================================================================
+// メニューバー処理
+//=============================================================================
+void CDebugProc::MenuBar(void)
+{
+	if (ImGui::BeginMenu("File"))
+	{// ファイルタブの生成
+		if (ImGui::BeginMenu("Load"))
+		{// セーブタブの生成
+			if (ImGui::MenuItem("Rand"))
+			{// ロード
+			 // 床情報の読み込み
+				CMeshField::LoadRand("data/stage/rand.txt", false);
+			}
+			if (ImGui::MenuItem("Model"))
+			{// ロード
+			 // モデル情報の読み込み
+				CObject::LoadModelTest("data/text/model.txt");
+			}
+			if (ImGui::MenuItem("wall"))
+			{// ロード
+			 // モデル情報の読み込み
+				CMeshWall::LoadWall("data/text/wall.txt", false);
+			}
+			if (ImGui::MenuItem("All"))
+			{// セーブ
+			 // 床情報の読み込み
+				CMeshField::LoadRand("data/stage/rand.txt", false);
+
+				// モデル情報の読み込み
+				CObject::LoadModelTest("data/text/model.txt");
+			}
+			ImGui::EndMenu();			// メニューの更新終了
+		}
+
+		if (ImGui::BeginMenu("Save"))
+		{// セーブタブの生成
+			if (ImGui::MenuItem("Rand"))
+			{// ロード
+			 // 床情報の書き込み
+				CScene::SaveRand();
+			}
+			if (ImGui::MenuItem("Model"))
+			{// ロード
+			 // モデル情報の書き込み
+				CScene::SaveModel();
+			}
+			if (ImGui::MenuItem("wall"))
+			{// ロード
+			 // モデル情報の書き込み
+				CScene::SaveWall();
+			}
+			if (ImGui::MenuItem("All"))
+			{// セーブ
+			 // 床情報の書き込み
+				CScene::SaveRand();
+
+				// モデル情報の書き込み
+				CScene::SaveModel();
+			}
+			ImGui::EndMenu();			// メニューの更新終了
+		}
+
+		ImGui::EndMenu();			// メニューの更新終了
+	}
+}
+
+//=============================================================================
+// タブ処理
+//=============================================================================
+void CDebugProc::TabBar(D3DXVECTOR3 &worldPos)
+{
+	if (ImGui::BeginTabItem(u8"ランドスケープ"))
+	{// ランドスケープモード
+		if (m_nMode != DEBUGMODE_RAND)
+		{
+			m_nMode = DEBUGMODE_RAND;
+		}
+
+		LandScape(worldPos);
+		ImGui::Text(u8"ランドスケープ");				// 現在のデバッグモードの表示
+		ImGui::EndTabItem();
+	}
+	if (ImGui::BeginTabItem(u8"壁の頂点編集"))
+	{// 壁の頂点編集モード
+		if (m_nMode != DEBUGMODE_WALL)
+		{
+			m_nMode = DEBUGMODE_WALL;
+		}
+
+		EditWallVertex();
+		ImGui::Text(u8"壁の頂点編集");				// 現在のデバッグモードの表示
+		ImGui::EndTabItem();
+	}
+	if (ImGui::BeginTabItem(u8"フォリッジ"))
+	{// フォリッジモード
+		if (m_nMode != DEBUGMODE_MANY)
+		{
+			m_nMode = DEBUGMODE_MANY;
+		}
+
+		ImGui::SliderInt("Generation", &m_nCntGeneration, 0, 50);
+		CreateObject(worldPos);					// 多数配置モードの実行
+		ImGui::Text("Many Debug");
+		ImGui::EndTabItem();
+	}
+	if (ImGui::BeginTabItem(u8"個々配置"))
+	{// 個々配置モード
+		if (m_nMode != DEBUGMODE_INDIVIDUAL)
+		{
+			m_nMode = DEBUGMODE_INDIVIDUAL;
+		}
+
+		CreateIndividual(worldPos);				// 個々配置モードの実行
+
+		if (m_pSample == NULL)
+		{
+			m_pSample = CObject::Create();						// 見本用オブジェクトを作成
+
+			if (m_pSample != NULL)
+			{
+				m_pSample->BindModel(m_currentModel);
+				m_pSample->SetPosition(worldPos);								// 位置をマウスのワールド座標に設定
+				m_pSample->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f));			// 色の変更
+			}
+		}
+		ImGui::SameLine();															// 改行回避
+		ImGui::RadioButton("delete", &m_nMode, DEBUGMODE_DELETE);					// 選択肢 範囲内多数生成モード を追加
+
+		// 現在のデバッグタイプを表示
+		ImGui::Text("individual Debug");
+		ImGui::EndTabItem();
+	}
+	if (ImGui::BeginTabItem(u8"UI作成モード"))
+	{// UI作成モード
+		if (m_nMode != DEBUGMODE_UI)
+		{
+			m_nMode = DEBUGMODE_UI;
+		}
+
+		if (m_pCreateUi != NULL)
+		{
+			D3DXVECTOR3 pos = m_pCreateUi->GetPosition();
+			ImGui::DragFloat3("pos_ui", (float*)&pos);
+			m_pCreateUi->SetPosition(pos);
+
+			if (ImGui::CollapsingHeader("OpenFile"))
+			{// UIを開く
+			 // UIのスクリプト選択
+				SelectAssetWithUI();
+
+				if (ImGui::Button("Open"))
+				{// 開く
+					m_pCreateUi->LoadScript(m_currentUi);				// スクリプトの読み込み
+				}
+			}
+
+			if (ImGui::CollapsingHeader("CreateTexture"))
+			{// テクスチャ生成
+				// UIのスクリプト選択
+				SelectAssetWithTexture();
+
+				if (ImGui::Button("AssetCreate"))
+				{// アセット作成
+					m_pCreateUi->CreateTexture(m_currentTexture);		// アセットの作成
+				}
+			}
+
+			m_pCreateUi->SceneDebug();
+
+			// 書き出し処理
+			if (ImGui::CollapsingHeader("System"))
+			{// テクスチャ生成
+				ImGui::Text(u8"書き出し処理");
+				ImGui::InputText("name", m_CreateName, NAME_SIZE);
+
+				if (ImGui::Button("Export"))
+				{// 出力ボタン
+					m_pCreateUi->SaveScript(m_CreateName);		// スクリプトに書き込み処理
+				}
+
+				ImGui::Text(u8"終了処理");
+				if (ImGui::Button("End"))
+				{// 終了ボタン
+					m_pCreateUi->Uninit();				// 表示中のアセットを開放
+					m_pCreateUi->Release();
+					m_pCreateUi = NULL;
+				}
+			}
+		}
+		else
+		{
+			m_pCreateUi = CUi::Create();
+		}
+
+		// 現在のデバッグタイプを表示
+		ImGui::Text("individual Debug");
+		ImGui::EndTabItem();
+	}
+	if (ImGui::BeginTabItem("delete"))
+	{// オブジェクト削除モード
+		if (m_nMode != DEBUGMODE_DELETE)
+		{
+			m_nMode = DEBUGMODE_DELETE;
+		}
+
+		DeleteObject(worldPos);					// 削除モードの実行
+		// 現在のデバッグタイプを表示
+		ImGui::Text("individual Debug");
+		ImGui::EndTabItem();
+	}
+	if (ImGui::BeginTabItem("Randpaint"))
+	{// 頂点カラーの変更モード
+		if (m_nMode != DEBUGMODE_PAINT)
+		{
+			m_nMode = DEBUGMODE_PAINT;
+		}
+
+		Paint(worldPos);
+		ImGui::Text("Paint Debug");				// 現在のデバッグモードの表示
+		ImGui::EndTabItem();
+	}
+	if (ImGui::BeginTabItem("Enemy"))
+	{// 頂点カラーの変更モード
+		if (m_nMode != DEBUGMODE_ENEMY)
+		{
+			m_nMode = DEBUGMODE_ENEMY;
+		}
+
+		if (m_pEnemy == NULL)
+		{
+			m_pEnemy = CEnemy::Create();			// 見本用オブジェクトを作成
+
+			if (m_pEnemy != NULL)
+			{
+				m_pEnemy->SetPosition(worldPos);	// 位置をマウスのワールド座標に設定
+			}
+		}
+
+		CreateEnemy(worldPos);
+		ImGui::EndTabItem();
+	}
+	if (ImGui::BeginTabItem("Particle"))
+	{// 頂点カラーの変更モード
+		if (m_nMode != DEBUGMODE_PARTICLE)
+		{
+			m_nMode = DEBUGMODE_PARTICLE;
+		}
+
+		// タグの設定
+		ImGui::InputText("Tag", m_effectTag, NAME_SIZE);
+
+		// UIのスクリプト選択
+		SelectAssetWithTexture();
+
+		// エフェクトの放出タイプ選択
+		ImGui::Combo("ParticleType", &m_nEmissionType, "Cone\0Sphere\0Box\0");
+
+		ImGui::DragInt(u8"生成数", &m_nCreate);		// 生成数
+		ImGui::DragFloat3(u8"位置", (float*)&m_createPos);
+		ImGui::DragFloat3(u8"回転量", (float*)&m_createRot);
+		ImGui::DragFloat3(u8"大きさ", (float*)m_size);
+		ImGui::DragFloat3(u8"大きさの変化量", (float*)&m_moveSize);
+		ImGui::DragFloat3(u8"回転の変化量", (float*)&m_moveRot);
+		ImGui::DragFloat4(u8"カラー", (float*)&m_col);
+		ImGui::DragFloat4(u8"色の変化量", (float*)&m_moveCol);
+		ImGui::DragFloat2(u8"画像分割数", (float*)&m_sprite);
+
+		ImGui::DragInt(u8"生存時間", &m_particleLife);
+		ImGui::DragInt(u8"形状", &m_nParticleShape);
+
+		ImGui::Checkbox(u8"角度のランダム", &m_bRandAngle);
+
+		ImGui::DragFloat(u8"スピードの最大値", &m_fMaxSpeed);
+
+		if (m_bRandAngle)
+		{
+			// 角度
+			m_fAngle = CEffect::GetRandomAngle();		// ランダムに取得
+		}
+		else { ImGui::DragFloat(u8"角度", &m_fAngle); }
+
+		float fSpeed = 0.0f;
+		if (!m_bRandomSpeed)
+		{// スピードがランダムじゃなかったとき
+			fSpeed = m_fMaxSpeed;
+		}
+
+		ImGui::DragFloat(u8"距離", &m_fDistance);
+		ImGui::DragFloat(u8"回転速度", &m_fRotationSpeed);
+		ImGui::DragFloat(u8"重力加速度", &m_fGravity);
+
+		ImGui::Checkbox(u8"繰り返す", &m_bLoop);
+		ImGui::Checkbox(u8"ランダムスピード", &m_bRandomSpeed);
+		ImGui::Checkbox(u8"フェードアウト", &m_bFadeOut);
+
+		switch ((PARTICLESHAPE)m_nEmissionType)
+		{
+		case PARTICLESHAPE_CONE:
+			ImGui::DragFloat(u8"半径", &m_fRadius);
+			break;
+		case PARTICLESHAPE_SPHERE:
+			break;
+		case PARTICLESHAPE_BOX:
+			break;
+		}
+
+		if (ImGui::Button(u8"生成"))
+		{
+			for (int nCount = 0; nCount < m_nCreate; nCount++)
+			{
+				float fAngle = float(CManager::GetRand(314)) - float(CManager::GetRand(314));
+				float fAngle_x = float(CManager::GetRand(314)) - float(CManager::GetRand(314));
+
+				D3DXVECTOR3 particlePos;
+				float fRadius;
+
+				switch ((PARTICLESHAPE)m_nEmissionType)
+				{
+				case PARTICLESHAPE_CONE:
+					fRadius = float(CManager::GetRand(10 * 100)) / 100.0f - float(CManager::GetRand(10 * 100)) / 100.0f;
+
+					particlePos = CEffect::GetRandomPosWithCone(m_fRadius);
+
+					// 位置の計算
+					particlePos.x = sinf(D3DX_PI * fAngle) * (fRadius);
+					particlePos.y = m_fMaxSpeed;
+					particlePos.z = cosf(D3DX_PI * fAngle) * (fRadius);
+					break;
+				case PARTICLESHAPE_SPHERE:
+					particlePos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
+					particlePos.x = cosf(D3DX_PI + fAngle) * cosf(D3DX_PI + fAngle_x);
+					particlePos.y = sinf(D3DX_PI + fAngle_x);
+					particlePos.z = sinf(D3DX_PI + fAngle) * cosf(D3DX_PI + fAngle_x);
+
+					fAngle = float(CManager::GetRand(314)) / 100.0f - float(CManager::GetRand(314)) / 100.0f;
+					break;
+				case PARTICLESHAPE_BOX:
+					break;
+				}
+
+				D3DXVECTOR3 rot = D3DXVECTOR3_ZERO;
+				//rot = D3DXVECTOR3(sinf(fAngle) * 10, cosf(fAngle) * 10, 0.0f);
+
+				// パーティクル全体の位置計算
+				D3DXVECTOR3 vecPos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+				D3DXMATRIX mtxMeshRot, mtxMeshTrans;				// 計算用マトリックス
+				D3DXMATRIX mtx;										// 武器のマトリックス
+				D3DXMATRIX mtxPlayer;
+
+				// ワールドマトリックスの初期化
+				D3DXMatrixIdentity(&mtx);
+
+				// ワールドマトリックスの初期化
+				D3DXMatrixIdentity(&mtxPlayer);
+
+				// 回転を反映
+				D3DXMatrixRotationYawPitchRoll(&mtxMeshRot, rot.y, rot.x, rot.z);
+				D3DXMatrixMultiply(&mtxPlayer, &mtxPlayer, &mtxMeshRot);
+
+				// 位置を反映
+				D3DXMatrixTranslation(&mtxMeshTrans, vecPos.x, vecPos.y, vecPos.z);
+				D3DXMatrixMultiply(&mtxPlayer, &mtxPlayer, &mtxMeshTrans);
+
+				// 回転を反映
+				D3DXMatrixRotationYawPitchRoll(&mtxMeshRot, 0.0f, 0.0f, 0.0f);
+				D3DXMatrixMultiply(&mtx, &mtx, &mtxMeshRot);
+
+				// 位置を反映
+				D3DXMatrixTranslation(&mtxMeshTrans, particlePos.x, particlePos.y, particlePos.z);
+				D3DXMatrixMultiply(&mtx, &mtx, &mtxMeshTrans);
+
+				D3DXMatrixMultiply(&mtx, &mtx, &mtxPlayer);
+
+				CEffect::SetEffect
+				(
+					m_currentTexture,		// パーティクルのタイプ
+					m_createPos,			// 発生位置
+					m_size,					// サイズ
+					D3DXVECTOR3(mtx._41, mtx._42, mtx._43) * fSpeed,	// 方向ベクトル
+					m_moveSize,				// 大きさの変化量
+					m_moveRot,				// 回転の変化量
+					m_moveCol,				// 色の変化量
+					EASINGTYPE_NONE,
+					rot,					// テクスチャの回転
+					m_col,					// カラー
+					m_particleLife,			// パーティクルの生存カウント数
+					m_fGravity,				// 重力
+					m_fResistance,			// 抵抗
+					m_bBillboard,			// ビルボード
+					0,						// 表示する箇所(横)
+					0,						// 表示する箇所(縦)
+					m_centerPos,			// 中心位置
+					m_fAngle,				// 角度
+					m_fDistance,			// 距離
+					m_fRotationSpeed,		// 回転速度
+					m_sprite,				// 画像の分割数
+					m_bAlpha,				// 加算合成の有無
+					m_bZBuffer,				// Zバッファの比較有無
+					m_bFadeOut				// フェード
+				);
+			}
+		}
+
+		if (ImGui::Button("Export"))
+		{
+			SaveParticle();
+		}
+
+		ImGui::EndTabItem();
 	}
 }
 
@@ -1111,43 +1364,7 @@ void CDebugProc::DeleteObject(D3DXVECTOR3 &worldPos)
 //=============================================================================
 void CDebugProc::CreateParticle(void)
 {
-	// ====================== パーティクル系 ======================//
-	ImGui::Begin("Particle");													// パーティクル
 
-	ImGui::RadioButton("CONE", &m_nParticleShape, PARTICLESHAPE_CONE);							// 範囲
-	ImGui::SameLine();															// 改行回避
-	ImGui::RadioButton("SPHERE", &m_nParticleShape, PARTICLESHAPE_SPHERE);						// 球体
-	ImGui::SameLine();															// 改行回避
-	ImGui::RadioButton("BOX", &m_nParticleShape, PARTICLESHAPE_BOX);							// 箱
-
-	ImGui::Checkbox("Loop", &m_bLoop);											// 無限発生
-	ImGui::SameLine();															// 改行回避
-	ImGui::Checkbox("Gravity", &m_bGravity);									// 重力
-	ImGui::SameLine();															// 改行回避
-	ImGui::Checkbox("Speed is Random", &m_bRandomSpeed);						// スピードの値のランダム化
-
-	ImGui::InputInt("Life", &m_particleLife);
-	ImGui::InputInt("create", &m_nCreate);
-	ImGui::InputInt("Interval", &m_nInterval);
-	ImGui::DragFloat("StartRadius", &m_fStartRadius, 0.5f);
-	ImGui::DragFloat("Radius", &m_fRadius, 0.5f);
-
-	if (m_bRandomSpeed)
-	{
-		ImGui::DragFloat("MinSpeed", &m_fMinSpeed, 0.25f);
-		ImGui::DragFloat("MaxSpeed", &m_fSpeed, 0.25f);
-	}
-	else
-	{
-		ImGui::DragFloat("speed", &m_fSpeed, 0.25f);
-	}
-
-	//ImGui::DragFloat3("move", (float*)&g_move);											// コライダーの大きさを設定
-	//ImGui::DragFloat3("pos", (float*)&m_ParticlePos);
-	//ImGui::DragFloat3("rot", (float*)&m_particleRot, 0.001f);
-	//ImGui::DragFloat3("size", (float*)&m_particleSize);
-
-	//if (ImGui::Button("Play"))
 }
 
 //=============================================================================
@@ -1252,5 +1469,150 @@ void CDebugProc::SelectAssetWithTexture(void)
 		}
 
 		ImGui::EndCombo();
+	}
+}
+
+//=============================================================================
+// UI選択処理
+//=============================================================================
+void CDebugProc::SelectAssetWithUI(void)
+{
+	if (ImGui::BeginCombo(u8"UIの種類", m_currentUi.c_str()))
+	{
+		for (auto itr = m_AddUi.begin(); itr != m_AddUi.end(); itr++)
+		{
+			bool is_selected = (m_currentUi == itr->c_str());
+			if (ImGui::Selectable(itr->c_str()))
+			{
+				m_currentUi = itr->c_str();
+			}
+		}
+
+		ImGui::EndCombo();
+	}
+}
+
+//=============================================================================
+// パーティクルパラメータの書き込み
+//=============================================================================
+void CDebugProc::SaveParticle(void)
+{
+	CWrite *pWrite = new CWrite;
+	if (pWrite == NULL) return;
+
+	//変数宣言
+	int nCntLoad = 0;			//ロードカウント
+	char text[64];				// テキスト
+	char cEqual[8] = { "=" };	//イコール用
+	CScene *pSceneNext = NULL;	//次回アップデート対象
+	CScene *pSceneNow = NULL;
+
+
+	//開けた
+	if (pWrite->Open("data/text/particle_Export.txt"))
+	{
+		strcpy(text, "# シーンデータスクリプト\n");
+		strcat(text, "# Author : masayasu wakita\n");
+
+		pWrite->TitleWrite(text);				// タイトルの形式で書き込む
+		pWrite->Write("SCRIPT\n");				// スクリプトの終了宣言
+
+		pWrite->IndexWrite(" エフェクトの設定");				// タイトルの形式で書き込む
+		pWrite->Write("EFFECTSET\n");			// 頂点情報の書き込み開始宣言
+		pWrite->Write("	TAG = %s\n", m_effectTag);		// タグの書き込み
+		pWrite->Write("	EFFECT_FILENAME = %s\n", m_currentTexture.c_str());		// アドレス情報を書き込む
+
+		if (m_bBillboard) { pWrite->Write("	BILLBOARD\n"); }			// ビルボードの有無
+		if (m_bAlpha) { pWrite->Write("	ALPHABLENDING\n"); }			// アルファブレンディングの有無
+		if (m_bZBuffer) { pWrite->Write("	ZBUFFER\n"); }			// Zバッファの有無
+		if (m_bFadeOut) { pWrite->Write("	FADE_OUT\n"); }			// フェードアウトの有無
+
+		pWrite->Write("	SIZE = %.2f %.2f %.2f\n", m_size.x, m_size.y, m_size.z);		// 中心位置の書き込み
+		pWrite->Write("	COL = %.2f %.2f %.2f %.2f\n", m_col.r, m_col.g, m_col.b, m_col.a);		// 色の変化量
+
+		pWrite->Write("	MOVE_SIZE = %.2f %.2f %.2f\n", m_moveSize.x, m_moveSize.y, m_moveSize.z);		// サイズの変化量
+		pWrite->Write("	MOVE_ROT = %.2f %.2f %.2f\n", m_moveSize.x, m_moveSize.y, m_moveSize.z);		// 回転の変化量
+		pWrite->Write("	MOVE_COL = %.2f %.2f %.2f %.2f\n", m_moveCol.r, m_moveCol.g, m_moveCol.b, m_moveCol.a);		// 色の変化量
+		pWrite->Write("	LIFE = %d\n", m_particleLife);		// 生存カウント
+
+		pWrite->Write("	GRAVITY = %.2f\n", m_fGravity);		// 重力
+		pWrite->Write("	RESISTANCE = %.2f\n", m_fResistance);		// 生存カウント
+		pWrite->Write("	SPEED = %.2f\n", m_fMaxSpeed);
+
+		pWrite->Write("	CENTER_POS = %.2f %.2f %.2f\n", m_centerPos.x, m_centerPos.y, m_centerPos.z);		// 中心位置
+		pWrite->Write("	ANGLE = %.2f\n", m_fAngle);		// 角度
+		pWrite->Write("	DISTANCE = %.2f\n", m_fDistance);		// 距離
+		pWrite->Write("	ROTATION_SPEED = %.2f\n", m_fRotationSpeed);		// 回転速度
+		pWrite->Write("	SPRITE = %.2f %.2f %.2f\n", m_sprite.x, m_sprite.y);		// テクスチャ分割数
+
+		pWrite->Write("END_EFFECTSET\n");			// 頂点情報の書き込み終了宣言
+
+		pWrite->Write("END_SCRIPT\n");			// スクリプトの終了宣言
+		pWrite->End();
+	}
+}
+
+//=============================================================================
+// Uiのアドレス読み込み
+//=============================================================================
+void CDebugProc::LoadAddWithUI(void)
+{
+	FILE *pFile;
+	char cReadText[128];		//文字
+	char cHeadText[128];		//比較
+	char cDie[128];
+	int nCntPointer = 0;		//ポインターの数値
+
+	char sAdd[64];				//モデルのアドレス
+	std::string Add;
+
+	int nCntMotion = 0;			//参照するポインタの値を初期化
+	int nCntKey = 0;
+
+	int nMaxModel = 0;
+
+	//テキストデータロード
+	pFile = fopen(UIMANAGER_SCRIPT, "r");
+
+	if (pFile != NULL)
+	{
+		//ポインターのリセット
+		nCntPointer = 0;
+
+		//スクリプトが来るまでループ
+		while (strcmp(cHeadText, "SCRIPT") != 0)
+		{
+			fgets(cReadText, sizeof(cReadText), pFile);
+			sscanf(cReadText, "%s", &cHeadText);
+		}
+
+		//スクリプトだったら
+		if (strcmp(cHeadText, "SCRIPT") == 0)
+		{
+			//エンドスクリプトが来るまで
+			while (strcmp(cHeadText, "END_SCRIPT") != 0)
+			{
+				fgets(cReadText, sizeof(cReadText), pFile);
+				sscanf(cReadText, "%s", &cHeadText);
+
+				//改行
+				if (strcmp(cReadText, "\n") != 0)
+				{
+					if (strcmp(cHeadText, "UI_FILENAME") == 0)
+					{//パーツモデルのアドレス情報のとき
+						sscanf(cReadText, "%s %s %s", &cDie, &cDie, &sAdd[0]);						//アドレスの取得
+						Add = sAdd;
+						m_AddUi.push_back(Add);
+					}
+				}
+			}
+		}
+
+		//ファイル閉
+		fclose(pFile);
+	}
+	else
+	{
+
 	}
 }

@@ -702,13 +702,13 @@ void CScene::SaveRand(void)
 				pWrite->Write("	POS = %.2f %.2f %.2f\n", pos.x, pos.y, pos.z);		// 中心位置の書き込み
 
 				pWrite->Write("	VERTEXINFO\n");					// 頂点情報の書き込み開始宣言
-				pMeshField->SaveRand(pWrite);							// 頂点情報の書き込み
+				pMeshField->SaveRand(pWrite);					// 頂点情報の書き込み
 				pWrite->Write("	END_VERTEXINFO\n");				// 頂点情報の書き込み終了宣言
-				pWrite->Write("END_FIELDSET\n");					// 頂点情報の書き込み開始宣言
+				pWrite->Write("END_FIELDSET\n");				// 頂点情報の書き込み開始宣言
 				pWrite->Write("\n");							// 改行
 			}
 
-			pSceneNow = pSceneNext;													// 次回アップデート対象を格納
+			pSceneNow = pSceneNext;				// 次回アップデート対象を格納
 		}
 		pWrite->Write("END_SCRIPT\n");			// スクリプトの終了宣言
 		pWrite->End();

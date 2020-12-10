@@ -24,12 +24,9 @@
 #include "stage.h"
 #include "house.h"
 #include "phase.h"
-#include "enemyUi.h"
 #include "effect.h"
-#include "messageWindow.h"
 #include "result.h"
 #include "sound.h"
-#include "gauge2D.h"
 
 //=============================================================================
 // マクロ定義
@@ -59,8 +56,6 @@ CEnemy::CEnemy(CScene::PRIORITY obj = CScene::PRIORITY_ENEMY) : CCharacter(obj)
 	m_bJump = false;									// ジャンプの初期化
 	m_nLife = MAX_LIFE;									// 体力の初期化
 	m_pSphere = NULL;									// 当たり判定(体)の初期化
-	m_pAttack = NULL;									// 当たり判定(攻撃)の初期化
-	m_pBox = NULL;										// 当たり判定の初期化
 	m_pLife = NULL;										// ライフバーポインタの初期化
 }
 
@@ -88,6 +83,17 @@ HRESULT CEnemy::Init(void)
 
 	// 位置の設定
 	SetPosition(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
+	// プレイヤーの当たり判定を生成
+	m_pSphere = CColliderSphere::Create(false, 50.0f);
+
+	if (m_pSphere != NULL)
+	{ //球体のポインタがNULLではないとき
+		m_pSphere->SetScene(this);
+		m_pSphere->SetTag("enemy");										// タグ の設定
+		m_pSphere->SetPosition(GetPosition());										// 位置 の設定
+		m_pSphere->SetOffset(D3DXVECTOR3(0.0f, 20.0f, 0.0f));
+	}
 
 	return S_OK;
 }
@@ -221,7 +227,7 @@ void CEnemy::OnTriggerEnter(CCollider *col)
 					CPlayer *pPlayer = CGame::GetPlayer();				// プレイヤーの取得
 					CSound *pSound = CManager::GetSound();				// サウンドの取得
 
-					pSound->PlaySoundA(SOUND_LABEL_SE_PUNCH);			// ダメージ音の再生
+					//pSound->PlaySoundA(SOUND_LABEL_SE_PUNCH);			// ダメージ音の再生
 
 					if (m_target != TARGETTYPE_PLAYER)
 					{// 攻撃対象がプレイヤー以外だったとき
@@ -238,31 +244,6 @@ void CEnemy::OnTriggerEnter(CCollider *col)
 						m_pLife->SetLifeBar((float)m_nLife / MAX_LIFE);
 					}
 
-					if (pPlayer != NULL)
-					{// プレイヤーが存在していたとき
-						CPlayerUi *pPlayerUi = pPlayer->GetPlayerUi();				// プレイヤーUIの取得
-
-						if (pPlayerUi != NULL)
-						{// プレイヤーUIが存在していたとき
-							float fDeathblow = pPlayer->GetDeathblow();				// 現在の必殺技ポイントを取得
-
-							if (fDeathblow < 50.0f)
-							{// 必殺技ポイントが5より小さかったとき
-							}
-						}
-
-						if (pPlayer->GetAnimType() == CPlayer::ANIMATIONTYPE_ATTACK_1)
-						{// ノックバック処理
-							D3DXVECTOR3 vec;
-
-							vec = GetPosition() - pPlayer->GetPosition();		//差分を求める(方向を求めるため)
-							D3DXVec3Normalize(&vec, &vec);			//正規化する
-
-							m_move.x = vec.x * 10;
-							m_move.z = vec.z * 10;
-						}
-					}
-
 					if (m_nLife < 1)
 					{// 体力が 1 を下回ったとき
 						D3DXVECTOR3 vec;
@@ -275,13 +256,6 @@ void CEnemy::OnTriggerEnter(CCollider *col)
 						{// 体の当たり判定が存在していたとき
 							m_pSphere->Release();
 							m_pSphere = NULL;
-						}
-
-						// 拳の当たり判定の開放
-						if (m_pAttack != NULL)
-						{// 拳の当たり判定が存在していたとき
-							m_pAttack->Release();
-							m_pAttack = NULL;
 						}
 
 						// 体力ゲージの開放
@@ -457,25 +431,8 @@ void CEnemy::Collider(void)
 	switch (animType)
 	{
 	case ANIMATIONTYPE_NEUTRAL:					// 待機モーションのとき
-		if (m_pAttack != NULL)
-		{// 当たり判定が存在していたとき
-			if (m_pAttack->GetUse())
-			{// 当たり判定の対象だったとき
-				m_pAttack->SetUse(false);		// 対象から外す
-			}
-		}
 		break;
 	case ANIMATIONTYPE_ATTACK:				// 攻撃モーションのとき
-		if (m_pAttack != NULL)
-		{
-			if (currentKey >= 1)
-			{
-				if (!m_pAttack->GetUse())
-				{// 当たり判定の対象外だったとき
-					m_pAttack->SetUse(true);		// 対象にする
-				}
-			}
-		}
 		break;
 	}
 }

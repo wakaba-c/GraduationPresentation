@@ -25,7 +25,7 @@
 // 静的メンバ変数の初期化
 //==================================================================================================================
 LPDIRECT3DTEXTURE9 CBox::m_pTexture = NULL;			// テクスチャ変数
-bool CBox::m_bPuzzle[Box_Depth][Box_Width] = {};
+bool CBox::m_bPiece = false;
 
 //==================================================================================================================
 // グローバル変数
@@ -54,23 +54,15 @@ HRESULT CBox::Init(void)
 {
 	// 初期化
 	m_nCntChange = 0;
-	m_nPieceNum = 0;
-	m_nSelect = 0;
-	m_fSpeed = 0;
-	m_bPlacement = false;
-	m_bRelease = false;
 	m_bCreate = false;
 	m_bMove = false;
+
 
 	// ブロックの初期化
 	for (int nCntDepth = 0; nCntDepth < Box_Depth; nCntDepth++)
 	{
 		for (int nCntWidth = 0; nCntWidth < Box_Width; nCntWidth++)
 		{
-			// パズル初期化
-			m_bPuzzle[nCntDepth][nCntWidth] = false;
-			// 格納用
-			m_bPuzzleStorage[nCntDepth][nCntWidth] = false;
 			// 生成
 			m_pBlock[nCntDepth][nCntWidth] = CScene2D::Create(PRIORITY_UI);
 
@@ -90,10 +82,6 @@ HRESULT CBox::Init(void)
 		}
 	}
 
-	// 最初のピース生成
-	m_pPiece[m_nPieceNum] = CPiece::Create();
-	m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Square);
-
 	return S_OK;
 }
 
@@ -112,251 +100,6 @@ void CBox::Update(void)
 {
 	// キーボード取得
 	CInputKeyboard *pKeyboard = CManager::GetInputKeyboard();
-
-	if (m_pPiece[m_nPieceNum] != NULL)
-	{
-		// 配置情報取得
-		m_bPiece = m_pPiece[m_nPieceNum]->GetMove();
-	}
-
-	if (m_bPiece == true)
-	{
-		// 生成
-		if (pKeyboard->GetTriggerKeyboard(DIK_C))
-		{
-			// ピース数加算
-			m_nPieceNum++;
-			// ピース生成
-			m_pPiece[m_nPieceNum] = CPiece::Create();
-			// ピースタイプ設定
-			m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Square);
-			// 配置情報
-			m_pPiece[m_nPieceNum]->SetMove(false);
-		}
-
-		// 生成
-		if (pKeyboard->GetTriggerKeyboard(DIK_V))
-		{
-			// ピース数加算
-			m_nPieceNum++;
-			// ピース生成
-			m_pPiece[m_nPieceNum] = CPiece::Create();
-			// ピースタイプ設定
-			m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Rectangle);
-			// 配置情報
-			m_pPiece[m_nPieceNum]->SetMove(false);
-		}
-		// 生成
-		if (pKeyboard->GetTriggerKeyboard(DIK_B))
-		{
-			// ピース数加算
-			m_nPieceNum++;
-			// ピース生成
-			m_pPiece[m_nPieceNum] = CPiece::Create();
-			// ピースタイプ設定
-			m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_T_Type);
-			// 配置情報
-			m_pPiece[m_nPieceNum]->SetMove(false);
-		}
-		// 生成
-		if (pKeyboard->GetTriggerKeyboard(DIK_X))
-		{
-			// ピース数加算
-			m_nPieceNum++;
-			// ピース生成
-			m_pPiece[m_nPieceNum] = CPiece::Create();
-			// ピースタイプ設定
-			m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Square_1);
-			// 配置情報
-			m_pPiece[m_nPieceNum]->SetMove(false);
-		}
-		// 生成
-		if (pKeyboard->GetTriggerKeyboard(DIK_N))
-		{
-			// ピース数加算
-			m_nPieceNum++;
-			// ピース生成
-			m_pPiece[m_nPieceNum] = CPiece::Create();
-			// ピースタイプ設定
-			m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Rectangle_1);
-			// 配置情報
-			m_pPiece[m_nPieceNum]->SetMove(false);
-		}
-
-		// 上下操作
-		if (pKeyboard->GetTriggerKeyboard(MOVE_ACCEL))
-		{
-			// セレクトカウント加算
-			m_nSelect++;
-		}
-		else if (pKeyboard->GetTriggerKeyboard(MOVE_BRAKE))
-		{
-			// セレクトカウント減算
-			m_nSelect--;
-		}
-
-		// セレクトカウント制限
-		if (m_nSelect >= m_nPieceNum)
-		{
-			m_nSelect = m_nPieceNum;
-		}
-		else if (m_nSelect <= 0)
-		{
-			m_nSelect = 0;
-		}
-
-		for (int nCntDepth = 0; nCntDepth < Box_Depth; nCntDepth++)
-		{
-			for (int nCntWidth = 0; nCntWidth < Box_Width; nCntWidth++)
-			{
-				// 選択されているときの色
-				m_pPiece[m_nSelect]->SetCol(D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
-
-				if (m_nSelect != m_nPieceNum)
-				{
-					m_pPiece[m_nSelect + 1]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-				}
-				if (m_nSelect != 0)
-				{
-					m_pPiece[m_nSelect - 1]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-				}
-
-				// Qを押されたら
-				if (pKeyboard->GetTriggerKeyboard(DIK_Q))
-				{
-					if (m_pPiece[m_nSelect] != NULL)
-					{
-						// 選ばれてるピースの情報格納
-						m_bPuzzleStorage[nCntDepth][nCntWidth] = m_pPiece[m_nSelect]->GetPuzzle(nCntDepth, nCntWidth);
-						// 状態比較
-						if (m_bPuzzle[nCntDepth][nCntWidth] == true && m_bPuzzleStorage[nCntDepth][nCntWidth] == true)
-						{
-							// 状態初期化
-							m_bPuzzle[nCntDepth][nCntWidth] = false;
-						}
-						// ピース状態変更
-						m_pPiece[m_nSelect]->SetRelease(true);
-						// 状態変更
-						m_bRelease = true;
-					}
-				}
-			}
-		}
-		if (m_bRelease == true)
-		{
-			m_nSelect = 0;
-			m_bRelease = false;
-		}
-
-		for (int nCnt = 0; nCnt < m_nPieceNum; nCnt++)
-		{
-			m_fSpeed = m_pPiece[nCnt]->GetSpeed();
-		}
-		// ピース生成
-
-		//m_pPiece[m_nPieceNum]->SetPlaacement(false);
-	}
-	else
-	{
-		// Zを押されたら
-		if (pKeyboard->GetTriggerKeyboard(DIK_Z))
-		{
-			// チェンジ
-			if (m_nCntChange == 0)
-			{
-				// タイプ変更
-				m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Square);
-				// カウント加算
-				m_nCntChange++;
-			}
-			else if (m_nCntChange == 1)
-			{
-				// タイプ変更
-				m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Rectangle);
-				// カウント加算
-				m_nCntChange++;
-			}
-			else if (m_nCntChange == 2)
-			{
-				// タイプ変更
-				m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_T_Type);
-				// カウント加算
-				m_nCntChange++;
-			}
-			else if (m_nCntChange == 3)
-			{
-				// タイプ変更
-				m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Square_1);
-				// カウント初期化
-				m_nCntChange++;
-			}
-			else if (m_nCntChange == 4)
-			{
-				// タイプ変更
-				m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Rectangle_1);
-				// カウント初期化
-				m_nCntChange++;
-			}
-			else if (m_nCntChange == 5)
-			{
-				// タイプ変更
-				m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Speed);
-				// カウント初期化
-				m_nCntChange++;
-			}
-			else if (m_nCntChange == 6)
-			{
-				// タイプ変更
-				m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Rectangle_2);
-				// カウント初期化
-				m_nCntChange++;
-			}
-			else if (m_nCntChange == 7)
-			{
-				// タイプ変更
-				m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_L_Type);
-				// カウント初期化
-				m_nCntChange++;
-			}
-			else if (m_nCntChange == 8)
-			{
-				// タイプ変更
-				m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Speed_1);
-				// カウント初期化
-				m_nCntChange++;
-			}
-			else if (m_nCntChange == 9)
-			{
-				// タイプ変更
-				m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Diagonal);
-				// カウント初期化
-				m_nCntChange = 0;
-			}
-		}
-	}
-
-	for (int nCntDepth = 0; nCntDepth < Box_Depth; nCntDepth++)
-	{
-		for (int nCntWidth = 0; nCntWidth < Box_Width; nCntWidth++)
-		{
-			if (m_pPiece[m_nPieceNum] != NULL)
-			{
-				// 配置情報取得
-				m_bPlacement = m_pPiece[m_nPieceNum]->GetPlaacement();
-				// 設置されてたら
-				if (m_bPlacement == true)
-				{
-					// 情報格納
-					m_bPuzzleStorage[nCntDepth][nCntWidth] = m_pPiece[m_nPieceNum]->GetPuzzle(nCntDepth, nCntWidth);
-				}
-			}
-			if (m_bPuzzle[nCntDepth][nCntWidth] == false && m_bPuzzleStorage[nCntDepth][nCntWidth] == true)
-			{
-				// 配置
-				m_bPuzzle[nCntDepth][nCntWidth] = true;
-			}
-		}
-	}
 }
 
 //==================================================================================================================

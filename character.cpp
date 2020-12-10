@@ -24,10 +24,9 @@
 #include "sound.h"
 #include "scene2D.h"
 #include "effect.h"
-#include "gauge2D.h"
-#include "messageWindow.h"
 #include "result.h"
 #include "fade.h"
+#include "takaseiLibrary.h"
 
 //=============================================================================
 // コンストラクタ
@@ -134,6 +133,9 @@ void CCharacter::Update(void)
 //=============================================================================
 void CCharacter::Draw(void)
 {
+	// カメラの取得
+	//CCamera *pCamera = CManager::GetCamera();
+
 	D3DXVECTOR3 pos = GetPosition();
 	D3DXVECTOR3 rot = GetRotation();
 	D3DXMATRIX		mtxRot, mtxTrans;				//計算用マトリックス
@@ -141,8 +143,13 @@ void CCharacter::Draw(void)
 	// ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&m_mtxWorld);
 
+	// キャラクター姿勢行列算出
+	//CTakaseiLibrary::CalcLookAtMatrix(&m_mtxWorld, &GetPosition(), &pCamera->GetPosR(), &D3DXVECTOR3(0.0f, 1.0f, 0.0f));
+
 	// 回転を反映
 	D3DXMatrixRotationYawPitchRoll(&mtxRot, rot.y, rot.x, rot.z);
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, rot.y, rot.x, rot.z);
+
 	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
 
 	// 移動を反映

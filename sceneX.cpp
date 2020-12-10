@@ -153,8 +153,8 @@ void CSceneX::Draw(void)
 			pShader->SetMatrix("mView", &mtxView);
 			pShader->SetMatrix("mWorld", &m_mtxWorld);
 
-			pShader->SetTexture("ShadeTexture", CManager::GetResource("Shade.bmp"));
-			pShader->SetTexture("LineTexture", CManager::GetResource("Outline.bmp"));
+			pShader->SetTexture("ShadeTexture", CManager::GetResource("data/tex/ToonShader/Shade.bmp"));
+			pShader->SetTexture("LineTexture", CManager::GetResource("data/tex/ToonShader/Outline.bmp"));
 
 			CCamera *pCamera = CManager::GetCamera();
 			CLight *pLight = CManager::GetLight();

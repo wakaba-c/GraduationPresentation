@@ -29,13 +29,8 @@ public:
 	static CNumber *Create(void);			// クリエイト処理
 	static HRESULT Load(void);				// ロード処理
 
-	void SetNumber(int nNumber);			// 数字の設定
-	void MakeVertex(void);					// 頂点情報の作成
-
 	void ShowInspector(void) {};
 
 private:
-	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;		// 頂点バッファへのポインタ
-	int m_nNumOld;							// 前までの数字
 };
 #endif

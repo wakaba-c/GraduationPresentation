@@ -42,6 +42,7 @@ public:
 	void SetSize(D3DXVECTOR3 size);													// 大きさを設定
 	void SetDrawPos(D3DXVECTOR2 tex);												// テクスチャの描画位置を設定
 	void SpriteAnimation(D3DXVECTOR2 patternNo, int nPatternAnim, int nHeight);		// スプライトアニメーション
+	void SetNumber(int nNumber);													// 数字の設定
 	void SetColor(D3DXCOLOR col);													// 色の設定
 	void SetCenter(TEXTUREVTX vtx);													// 中心の設定
 	void SetRotation(D3DXVECTOR3 rot);												// 回転量の設定

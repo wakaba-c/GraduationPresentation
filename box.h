@@ -49,10 +49,9 @@ public:
 	static CBox *Create(void);														// 生成処理
 	static HRESULT Load(void);														// テクスチャ情報ロード
 	static void Unload(void);														// テクスチャ情報アンロード
-	static bool GetPuzzle(int nDepth, int nWidth) { return m_bPuzzle[nDepth][nWidth]; }	// パズル情報取得
 
 	bool GetPlaacement(void){ return m_bCreate; }									// 配置情報取得
-	float GetSpeed(void) { return m_fSpeed; }										// スピード取得
+	static bool GetPiece(void) {return m_bPiece;}
 
 protected:
 
@@ -62,17 +61,9 @@ private:
 	CPiece *m_pPiece[Piece_Num];													// ピース
 
 	int m_nCntChange;																// 変えるカウント
-	int m_nPieceNum;																// ピース数
-	int m_nSelect;																	// 選択カウント
 
-	float m_fSpeed;																	// スピード
-
-	static bool m_bPuzzle[Box_Depth][Box_Width];									// 使用しているかどうか
-	bool m_bPuzzleStorage[Box_Depth][Box_Width];									// 保管
-	bool m_bPlacement;																// 配置しているかどうか
 	bool m_bCreate;																	// 生成するかどうか
 	bool m_bMove;																	// 動くかどうか
-	bool m_bPiece;
-	bool m_bRelease;
+	static bool m_bPiece;
 };
 #endif

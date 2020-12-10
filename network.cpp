@@ -9,10 +9,11 @@
 #include "camera.h"
 #include "player.h"
 #include "game.h"
-#include "score.h"
 #include "fade.h"
 #include "inputController.h"
 #include "enemy.h"
+#include "object.h"
+#include "startSignal.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -33,14 +34,14 @@ CNetwork::CNetwork()
 	m_selectBalloon.nType = -1;
 
 	// 生成フラグの初期化
-	m_thunderEvent.bCreate = false;
-	m_pointcircleEvent.bCreate = false;
+	m_StartSignal.bCreate = false;
 
 	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
 	{
 		m_selectState[nCount].bReady = false;
 		m_selectState[nCount].nType = -1;
 		m_selectState[nCount].pBalloonNum = NULL;
+		m_nRank[nCount] = 0;
 	}
 }
 
@@ -410,8 +411,6 @@ HRESULT CNetwork::Connect(void)
 	sprintf(debug, "SEED = %d\n", nStartTime);
 	OutputDebugString(debug);
 #endif // _DEBUG
-
-	StartUpdate();
 	return S_OK;
 }
 
@@ -452,6 +451,8 @@ bool CNetwork::KeyData(void)
 	}
 
 	D3DXVECTOR3 pos = pPlayer->GetPosition();
+	int nNumFlag = CObject::GetPointNum();
+	int nNumRound = pPlayer->GetNumRound();
 
 	if (pNetwork != NULL)
 	{
@@ -478,12 +479,16 @@ bool CNetwork::KeyData(void)
 		}
 
 		// ID, Wキー, Aキー, Sキー, Dキー, SPACEキー, スティックH, スティックV, 回転情報, 位置X, 位置Y, 位置Z, スコア
-		sprintf(data, "SAVE_KEY %d %d %d %d %d %d %f %f %f %f %f %f", m_nId, pKeyboard->GetPressKeyboard(DIK_W), pKeyboard->GetPressKeyboard(DIK_A),
+		sprintf(data, "SAVE_KEY %d %d %d %d %d %d %f %f %f %f %f %f %d %d",
+			m_nId,
+			pKeyboard->GetPressKeyboard(DIK_W), pKeyboard->GetPressKeyboard(DIK_A),
 			pKeyboard->GetPressKeyboard(DIK_S), pKeyboard->GetPressKeyboard(DIK_D), aKeyState[NUM_KEY_SPACE],		// キー入力情報
 			stick_H,					// スティックH
 			stick_V,					// スティックV
 			rot.y,						// 回転
-			pos.x, pos.y, pos.z			// 位置
+			pos.x, pos.y, pos.z,		// 位置
+			nNumFlag,					// 次のチェックポイント
+			nNumRound					// 現在の周回回数
 		);
 		pNetwork->SendUDP(data, sizeof("SAVE_KEY") + 1024);
 	}
@@ -530,11 +535,10 @@ bool CNetwork::CheckCharacterReady(int nIndex)
 //=============================================================================
 void CNetwork::Create(void)
 {
-	if (m_thunderEvent.bCreate)
-	{// 雷サークル作成処理
-	}
-	if (m_pointcircleEvent.bCreate)
-	{// ポイントサークル作成処理
+	if (m_StartSignal.bCreate)
+	{
+		CStartSignal::Create();
+		m_StartSignal.bCreate = false;
 	}
 }
 
@@ -599,6 +603,10 @@ void CNetwork::InitGame(void)
 	{
 		m_pEnemy[nCount] = CEnemy::Create();
 	}
+
+	StartUpdate();
+
+	SendTCP("READY 1", sizeof("READY 1"));
 }
 
 //=============================================================================
@@ -656,9 +664,11 @@ void CNetwork::ConvertStringToFloat(char* text, const char* delimiter, float* pR
 bool CNetwork::UpdateUDP(void)
 {
 	char aData[1024];
-	float fData[RECVDATA_MAX];
+	float fData[RECVDATA_MAX + 1];
 	char cPlayerData[MAX_PLAYER][128];		//比較
 	char cDie[32];
+
+	memset(&aData, 0, sizeof(aData));
 
 	int nError = -1;
 	nError = recv(m_sockServerToClient, aData, sizeof(aData), 0);
@@ -701,6 +711,12 @@ bool CNetwork::UpdateUDP(void)
 
 			// ランクの代入
 			m_nRank[nCount] = (int)fData[RECVDATA_RANK];
+
+			// チェックポイント
+			m_nNumFlag[nCount] = (int)fData[RECVDATA_FLAG];
+
+			// 周回回数
+			m_nNumRound[nCount] = (int)fData[RECVDATA_ROUND];
 
 			m_nStick[STICKTYPE_H] = (int)fData[RECVDATA_STICK_H];
 			m_nStick[STICKTYPE_V] = (int)fData[RECVDATA_STICK_V];
@@ -787,31 +803,17 @@ bool CNetwork::UpdateTCP(void)
 	}
 	else if (strcmp(cHeadText, "GAME_END") == 0)
 	{
-		char aDie[64];
 		int nRank[MAX_PLAYER] = {};
 
 		if (CFade::GetFade() == CFade::FADE_NONE)
 		{// フェードしていないとき
-			sscanf(aFunc, "%s %d %d %d %d", &aDie, &nRank[0], &nRank[1], &nRank[2], &nRank[3]);
-
 			// チュートリアルへ
-			CFade::SetFade(CManager::MODE_RESULT);
+			CFade::SetFade(CManager::MODE_RESULT, CFade::FADETYPE_NORMAL);
 		}
 	}
 	else if (strcmp(cHeadText, "GAME_START") == 0)
 	{
-		if (CFade::GetFade() == CFade::FADE_NONE)
-		{// フェードしていないとき
-			// 初期化
-			for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
-			{
-				m_selectState[nCount].bReady = false;
-				m_selectState[nCount].nType = -1;
-			}
-
-			// チュートリアルへ
-			CFade::SetFade(CManager::MODE_GAME);
-		}
+		m_StartSignal.bCreate = true;
 	}
 	else if (strcmp(cHeadText, "CHARACTER_SELECT") == 0)
 	{
@@ -833,27 +835,6 @@ bool CNetwork::UpdateTCP(void)
 	{
 
 	}
-	else if (strcmp(cHeadText, "THUNDER") == 0)
-	{
-		char aDie[64];
-		D3DXVECTOR3 pos;
-
-		// 雷生成
-		sscanf(aFunc, "%s %f %f %f", &aDie, &pos.x, &pos.y, &pos.z);
-		m_thunderEvent.pos = pos;
-		m_thunderEvent.bCreate = true;
-	}
-	else if (strcmp(cHeadText, "POINTCIRCLE") == 0)
-	{
-		char aDie[64];
-		D3DXVECTOR3 pos;
-
-		// ポイントサークル生成
-		sscanf(aFunc, "%s %f %f %f", &aDie, &pos.x, &pos.y, &pos.z);
-		m_pointcircleEvent.pos = pos;
-		m_pointcircleEvent.bCreate = true;
-	}
-
 	return true;
 }
 
@@ -866,7 +847,7 @@ void CNetwork::StartUpdate(void)
 	{// 更新フラグが折れていたとき
 		// マルチスレッドにて更新開始
 		m_bUpdate = true;								// 更新フラグを立てる
-		std::thread th1 (&CNetwork::Update, this);	// スレッドの作成
+		std::thread th1(&CNetwork::Update, this);	// スレッドの作成
 		th1.detach();									// スレッドの管理を切り離す
 	}
 }

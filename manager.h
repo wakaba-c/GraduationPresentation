@@ -122,7 +122,9 @@ public:
 	static D3DXVECTOR3* calcWallScratchVector(D3DXVECTOR3* out, const D3DXVECTOR3& front, const D3DXVECTOR3& normal);		// 壁ずりベクトル
 	static D3DXVECTOR3* calcReflectVector(D3DXVECTOR3* out, const D3DXVECTOR3& front, const D3DXVECTOR3& normal);			// 反射ベクトル
 
-	static D3DXVECTOR3 GetCursorPosWithCenter(void);
+	static int LengthCalculation(int nValue);			// 数字の桁数を求める処理
+
+	static D3DXVECTOR3 GetCursorPosWithCenter(void);			// カーソル
 
 	static D3DXVECTOR3 Slip(D3DXVECTOR3 L, D3DXVECTOR3 N);
 
@@ -134,6 +136,7 @@ private:
 	static void TexRelease(void);						// テクスチャの開放
 	static void ModelRelease(void);						// モデルデータの開放
 	static void ShaderRelease(void);					// シェーダーデータの開放
+	static void LoadTexScript(void);					// テクスチャロード処理
 
 	static MODE m_mode;									// モード
 	static CRenderer *m_pRenderer;						// レンダラーのポインタ

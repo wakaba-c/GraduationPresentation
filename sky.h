@@ -45,7 +45,6 @@ private:
 #ifdef _DEBUG
 	void Debug(void);
 #endif
-	static LPDIRECT3DTEXTURE9	m_pTexture;				// テクスチャへのポインタ
 	D3DXVECTOR3 m_size;									// 大きさ
 	D3DXVECTOR3 m_rot;									// 回転量
 	D3DXCOLOR	m_color;								// 色

@@ -12,6 +12,7 @@
 //=============================================================================
 #include "main.h"
 #include "character.h"
+#include "box.h"
 
 //=============================================================================
 // マクロ定義
@@ -30,7 +31,10 @@ class CColliderSphere;
 class CColliderBox;
 class CScene2D;
 class CModel;
-class CPlayerUi;
+class CNumber;
+class CDistanceNext;
+class CUi;
+class CShadow;
 
 //=============================================================================
 // クラス定義
@@ -51,6 +55,13 @@ public:
 		ANIMATIONTYPE_MAX						// アニメーションの最大数
 	} ANIMATIONTYPE;							// アニメーションタイプ
 
+	typedef enum
+	{
+		DRIFT_RIGHT = 0,		// ドリフト右
+		DRIFT_LEFT,				// ドリフト左
+		DRIFT_MAX				// ドリフト最大
+	} DRIFTTYPE;				// ドリフト種類
+
 	CPlayer(PRIORITY obj);						// プレイヤーのコンストラクタ(オブジェクトタイプ)
 	~CPlayer();									// プレイヤーのデストラクタ
 	HRESULT Init(void);							// 初期化処理
@@ -61,6 +72,7 @@ public:
 	static CPlayer *Create(void);				// プレイヤー生成
 	static HRESULT Load(void);					// 素材データの取得
 	void SetDeathblow(float nValue);			// 必殺技ポイント数の設定
+	void SetEvent(bool bValue);					// イベントフラグの設定
 
 	void OnTriggerEnter(CCollider *col);
 	void OnCollisionEnter(CCollider *col);
@@ -70,12 +82,13 @@ public:
 	void BehaviorForMaxKey(void);				// 最大キー数に到達したときの処理
 
 	float GetDeathblow(void) { return m_fDeathblow; }				// 必殺技ポイント数の取得
-	CPlayerUi *GetPlayerUi(void) { return m_pPlayerUi; }			// プレイヤーUIの取得
 	D3DXVECTOR3 GetMove(void) { return m_move; }					// 移動量の取得
 	D3DXMATRIX GetMtxWorld(void) { return m_mtxWorld; }				// ワールドマトリックスの取得
 	D3DXVECTOR3 GetRotDest(void) { return m_dest; }					// 回転最終到達地点
 	D3DXVECTOR3 GetCameraRot(void) { return m_cameraRot; }			// カメラの回転情報
 	void SetCameraRot(D3DXVECTOR3 cameraRot) { m_cameraRot = cameraRot; }
+	int GetNumRound(void) { return m_nRound; }
+	bool GetEvent(void ) { return m_bEvent; }
 
 private:
 #ifdef _DEBUG
@@ -85,8 +98,11 @@ private:
 	void MoveNearEnemy(void);														// 近くにいる敵に移動する処理
 	void Collision(void);															// 当たり判定処理
 	void Input(void);																// キー入力情報関数
+	void InputKeyboard(float fTireRotSpeed, D3DXVECTOR3 aVec);						// キーボード入力処理
+	void InputGemepad(float nValueH, float nValueV, float fTireRotSpeed, D3DXVECTOR3 aVec);// ゲームパッド入力処理
 	bool CollisionWall(void);														// 壁の当たり判定
 	bool CollisionWallWithRay(void);												// レイによる壁の当たり判定
+	void SlopeMove(void);															// 坂の処理
 
 	/*================= プレイヤー関連 =================*/
 	D3DXVECTOR3						m_dest;											// モデルの最終到達点
@@ -96,19 +112,29 @@ private:
 	D3DXVECTOR3						m_rot;											// 回転量
 	D3DXVECTOR3						m_cameraRot;									// カメラの回転情報
 	D3DXCOLOR						m_color;										// 色
+	D3DXVECTOR3						m_vectorOld;									// 前回の方向ベクトル
 	float							m_fSpeed;										// スピード
-	float							m_fPuzzleSpeed;									// パズルのスピード
+	float							m_fPuzzleSpeed[Piece_Num];						// パズルのスピード
+	float							m_fPuzzleMax;									// パズルのスピード
 	float							m_fDeathblow;									// 必殺技ポイント
+	float							m_fAcceleration;								// 加速度
 	int								m_nLife;										// 体力
 	int								m_nActionCount;									// 次のアクションまでのカウンタ
 	int								m_nParticleCount;								// パーティクル生成までのカウンタ
+	int								m_nPointNum;									// ポイント番号
 	bool							m_bJump;										// ジャンプ
 	bool							m_bEvent;										// イベント発生フラグ
 	bool							m_bColliderWithWall;							// 壁の当たり判定
 	bool							m_bHit;											// ヒット判定
-	bool							m_bDrift;										// プレイヤーのドリフトフラグ
+	bool							m_bDrift[DRIFT_MAX];							// プレイヤーのドリフトフラグ
 	bool							m_bMove;										// 現在動いているかのフラグ
-	CPlayerUi						*m_pPlayerUi;									// キャラクター情報のUI
+	bool							m_bAccel;										// アクセルを押しているかどうか
+	CNumber							*m_pRank;										// ランキング用UI
+	CDistanceNext					*m_pDistanceNext;								// 次のプレイヤーとの距離のUI
+	CShadow							*m_pShadow;										// 影の情報ポインタ
+
+	// レースゲーム関連
+	int								m_nRound;										// 現在の周回回数
 
 	/*=============== 3Dレンダリング関連 ===============*/
 	LPDIRECT3DVERTEXBUFFER9			m_pVtxBuff;										// 頂点バッファへのポインタ

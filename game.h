@@ -11,6 +11,7 @@
 // インクルードファイル
 //=============================================================================
 #include "main.h"
+#include "box.h"
 
 //=============================================================================
 // 前方宣言
@@ -24,6 +25,7 @@ class CSky;
 class CHouse;
 class CHouseUi;
 class CSpeed;
+class CTime;
 
 //=============================================================================
 // クラス定義
@@ -55,5 +57,11 @@ private:
 	static CSky			*m_pSky;											// 空のポインタ
 	static CHouse		*m_pHouse;											// 家のポインタ
 	static CSpeed		*m_pSpeed;											// 時速のポインタ
+
+	static CUi			*m_pUi;
+	static CTime		*m_pTime;
+
+	bool m_bGuideSign[Piece_Num];
+	bool m_bRate;
 };
 #endif

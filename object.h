@@ -23,6 +23,7 @@
 // 前方宣言
 //=============================================================================
 class CColliderBox;
+class CColliderSphere;
 
 //=============================================================================
 // クラス定義
@@ -50,7 +51,7 @@ public:
 	void Update(void);								// 更新処理
 	void Draw(void);								// 描画処理
 
-	static CObject *Create(void);			// クリエイト処理
+	static CObject *Create(void);					// クリエイト処理
 	static HRESULT Load(void);						// ロード処理
 	static void Unload(void);						// テクスチャの開放処理
 	static void LoadScript(void);					// オブジェクトアセットのロード処理
@@ -63,8 +64,10 @@ public:
 	std::string GetAdd(void) { return m_Add; }
 	LPD3DXMESH GetMesh(void) { return m_pMesh; }	// メッシュ情報の取得
 	static std::vector<CObject*> GetPointObj(void) { return m_vPointObj; }
+	static void SetPointNum(unsigned int pointNum) { m_pointNum = pointNum; }
+	static unsigned int GetPointNum(void) { return m_pointNum; }
 
-	void OnTriggerEnter(CCollider *col) {};
+	void OnTriggerEnter(CCollider *col);
 	void OnCollisionEnter(CCollider *col) {};
 	void ShowInspector(void);
 
@@ -80,9 +83,10 @@ private:
 	LPD3DXMESH		m_pMesh;							// メッシュ情報へのポインタ
 	DWORD			m_nNumMat;							// マテリアル情報の数
 	LPD3DXBUFFER		m_pBuffMat;						// マテリアル情報へのポインタ
-	CColliderBox *m_pBox;					// 当たり判定ボックス
+	CColliderBox *m_pBox;								// 当たり判定ボックス
 
-	int m_pointNum;						// ポイントの数
+	static CColliderSphere *m_pSphere;					// 当たり判定スフィア
+	static unsigned int m_pointNum;						// ポイントの数
 	static std::vector<CObject*> m_vPointObj;
 
 	std::string m_Add;														// モデルのアドレス

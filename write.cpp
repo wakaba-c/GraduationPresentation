@@ -120,10 +120,12 @@ bool CWrite::IndexWrite(const char* frm, ...)
 
 	va_start(args, frm);		// リストの先頭を取得
 	vsprintf(text, frm, args);
-	va_end(args);						// リストを開放する
+	va_end(args);				// リストを開放する
 
 	// 内容書き込み
+	write += "# ";
 	write += text;
+	write += "\n";
 
 	//コメントブロック//
 	write += COMMENT_BLOCK;
@@ -132,6 +134,15 @@ bool CWrite::IndexWrite(const char* frm, ...)
 	fputs(write.c_str(), m_pFile);
 
 	return true;
+}
+
+//=============================================================================
+// 改行
+//=============================================================================
+void CWrite::NewLine(void)
+{
+	// 書き込み
+	fputs("\n", m_pFile);
 }
 
 //=============================================================================
