@@ -1,18 +1,20 @@
+#pragma once
 //=============================================================================
 //
-// タイトル処理 [title.h]
-// Author : masayasu wakita
+// キャラ選択処理 [characterSelect.h]
+// Author : Noriyuki Hanzawa
 //
 //=============================================================================
-#ifndef _TITLE_H_
-#define _TITLE_H_
+#ifndef _CHARACTERSELECT_H_
+#define _CHARACTERSELECT_H_
 
-#define MAX_UI (4)
 //=============================================================================
 // インクルードファイル
 //=============================================================================
 #include "main.h"
 #include "scene2D.h"
+
+#define MAX_UI (8)
 //=============================================================================
 // 前方宣言
 //=============================================================================
@@ -21,20 +23,23 @@ class CTitlelogo;
 //=============================================================================
 // クラス定義
 //=============================================================================
-class CTitle
+class CCharacterSelect
 {
 public:
-	CTitle();							// コンストラクタ
-	~CTitle();							// デストラクタ
-	HRESULT Init(void);					// 初期化処理
-	void Uninit(void);					// 開放処理
-	void Update(void);					// 更新処理
-	void Draw(void);					// 描画処理
-
-	static void LoadAsset(void);		// アセットの読み込み処理
+	CCharacterSelect();									// コンストラクタ
+	~CCharacterSelect();								// デストラクタ
+	HRESULT Init(void);									// 初期化処理
+	void Uninit(void);									// 開放処理
+	void Update(void);									// 更新処理
+	void Draw(void);									// 描画処理
+	void SetCarType(int type)	 { m_nCarType = type; };// セット
+	int GetCarType(void)		 {return m_nCarType; };	// 車の種類取得
+	static void LoadAsset(void);						// アセットの読み込み処理
 
 private:
 	static CTitlelogo *m_pTitleLogo;			// タイトルロゴのポインタ
-	CScene2D *pBack[MAX_UI];
+	CScene2D *pBack[MAX_UI];					// UI
+	int m_nCarType;								// 車の種類
+
 };
 #endif

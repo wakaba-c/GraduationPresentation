@@ -52,18 +52,41 @@ HRESULT CTitle::Init(void)
 	//}
 
 	//m_pTitleLogo = CTitlelogo::Create();		// タイトルロゴの生成
-
-	CScene2D *pBack = CScene2D::Create(CScene::PRIORITY_UI);
-	if (pBack != NULL)
+	for (int nCnt = 0; nCnt < MAX_UI; nCnt++)
 	{
-		pBack->BindTexture("data/tex/status_back.jpg");
-		pBack->SetPosition(D3DXVECTOR3(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 0.0f));
-		pBack->SetSize(D3DXVECTOR3(SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f));
-		pBack->SetTransform();
+		pBack[nCnt] = CScene2D::Create(CScene::PRIORITY_UI);
 	}
+		if (pBack[0] != NULL)
+		{
+			pBack[0]->BindTexture("data/tex/title.png");
+			pBack[0]->SetPosition(D3DXVECTOR3(300, 300, 0.0f));
+			pBack[0]->SetSize(D3DXVECTOR3(600, 330, 0.0f));
+			pBack[0]->SetTransform();
+		}
+		if (pBack[1] != NULL)
+		{
+			pBack[1]->BindTexture("data/tex/Press.png");
+			pBack[1]->SetPosition(D3DXVECTOR3(1050, 600, 0.0f));
+			pBack[1]->SetSize(D3DXVECTOR3(100, 45, 0.0f));
+			pBack[1]->SetTransform();
+		}
+		if (pBack[2] != NULL)
+		{
+			pBack[2]->BindTexture("data/tex/PressLR.png");
+			pBack[2]->SetPosition(D3DXVECTOR3(1050, 670, 0.0f));
+			pBack[2]->SetSize(D3DXVECTOR3(200, 45, 0.0f));
+			pBack[2]->SetTransform();
+		}
+		if (pBack[3] != NULL)
+		{
+			pBack[3]->BindTexture("data/tex/TeamName.png");
+			pBack[3]->SetPosition(D3DXVECTOR3(190, 670, 0.0f));
+			pBack[3]->SetSize(D3DXVECTOR3(250, 45, 0.0f));
+			pBack[3]->SetTransform();
+		}
 
 	//// 空の作成
-	//CSky::Create();
+	CSky::Create();
 
 	//// 各種アセットの生成＆設置
 	//CMeshField::LoadRand("data/stage/rand.csv", false);				// 床情報の読込
@@ -102,16 +125,16 @@ void CTitle::Update(void)
 		{// キーボードが存在していたとき
 			if (pInputKeyboard->GetTriggerKeyboard(DIK_RETURN))
 			{// 指定のキーが押されたとき
-				CFade::SetFade(CManager::MODE_PUZZLE_CUSTOM);					//フェードを入れる
+				CFade::SetFade(CManager::MODE_CHARACTER_SELECT);					//フェードを入れる
 			}
 		}
 		if (pInputController->GetJoypadUse(0))
 		{// コントローラーが生成されているとき
 			//ゲームの遷移
-			if (pInputController->GetControllerTrigger(0, JOYPADKEY_A) ||			// ゲームパッドのAボダンが押されたとき
-				pInputController->GetControllerTrigger(0, JOYPADKEY_START))			// ゲームパッドのSTARTボタンが押されたとき
+			if (pInputController->GetControllerTrigger(0, JOYPADKEY_LEFT_SHOULDER) &&			// ゲームパッドのLボダンが押されたとき
+				pInputController->GetControllerTrigger(0, JOYPADKEY_RIGHT_SHOULDER))			// ゲームパッドのRボタンが押されたとき
 			{
-				CFade::SetFade(CManager::MODE_GAME);					//フェードを入れる
+				CFade::SetFade(CManager::MODE_CHARACTER_SELECT);					//フェードを入れる
 			}
 		}
 	}

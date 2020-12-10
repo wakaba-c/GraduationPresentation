@@ -50,6 +50,7 @@ class CInputController;
 class CGame;
 class CTitle;
 class CPuzzle;
+class CCharacterSelect;
 class CCamera;
 class CLight;
 class CResult;
@@ -149,7 +150,7 @@ private:
 	static CPuzzle *m_pPuzzle;							// パズルのポインタ
 	static CResult *m_pResult;							// リザルトのポインタ
 	static CRanking *m_pRanking;						// ランキングのポインタ
-
+	static CCharacterSelect *m_pCharacterSelect;		// キャラ選択のポインタ
 	static CSound *m_pSound;							// サウンドのポインタ
 
 	static std::map<std::string, LPDIRECT3DTEXTURE9> m_TexMap;			// テクスチャマップ

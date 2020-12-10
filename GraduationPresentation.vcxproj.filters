@@ -225,6 +225,9 @@
     <ClCompile Include="GuideSign.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="characterSelect.cpp">
+      <Filter>mode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bg.h">
@@ -442,6 +445,9 @@
     </ClInclude>
     <ClInclude Include="GuideSign.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="characterSelect.h">
+      <Filter>mode</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

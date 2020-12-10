@@ -156,6 +156,7 @@
     <ClCompile Include="box.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="character.cpp" />
+    <ClCompile Include="characterSelect.cpp" />
     <ClCompile Include="circle.cpp" />
     <ClCompile Include="clearTime.cpp" />
     <ClCompile Include="collider.cpp" />
@@ -223,6 +224,7 @@
     <ClInclude Include="box.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="character.h" />
+    <ClInclude Include="characterSelect.h" />
     <ClInclude Include="circle.h" />
     <ClInclude Include="clearTime.h" />
     <ClInclude Include="collider.h" />

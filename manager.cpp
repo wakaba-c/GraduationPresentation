@@ -11,6 +11,7 @@
 #include "title.h"
 #include "result.h"
 #include "ranking.h"
+#include "characterSelect.h"
 #include "inputKeyboard.h"
 #include "inputMouse.h"
 #include "inputController.h"
@@ -41,6 +42,7 @@ CTitle *CManager::m_pTitle = NULL;													// タイトル ポインタを初期化
 CPuzzle *CManager::m_pPuzzle = NULL;												// パズル　ポインタを初期化
 CResult *CManager::m_pResult = NULL;												// リザルト ポインタを初期化
 CRanking *CManager::m_pRanking = NULL;												// ランキング ポインタを初期化
+CCharacterSelect *CManager::m_pCharacterSelect = NULL;								// キャラクター選択 ポインタを初期化
 
 CSound *CManager::m_pSound = NULL;													// サウンド ポインタを初期化
 
@@ -151,7 +153,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 	CPuzzle::LoadAsset();
 	CGame::LoadAsset();
 	CResult::LoadAsset();
-
+	CCharacterSelect::LoadAsset();
 	Load("data/model/akazukin/clothes.jpg");
 	Load("data/model/akazukin/hair.jpg");
 	Load("data/model/akazukin/skin.jpg");
@@ -264,6 +266,14 @@ void CManager::Uninit(void)
 		m_pRanking = NULL;																			// ポインタをNULLにする
 	}
 
+	// キャラクター選択の開放処理
+	if (m_pCharacterSelect != NULL)
+	{
+		m_pCharacterSelect->Uninit();																// キャラクダー選択の終了処理
+		delete m_pCharacterSelect;																	// キャラクダー選択のメモリ解放
+		m_pCharacterSelect = NULL;																	// ポインタをNULLにする
+	}
+
 	// Sceneの解放処理
 	CScene::ReleaseAll();
 
@@ -315,7 +325,10 @@ void CManager::Update(void)
 
 		break;
 	case CManager::MODE_CHARACTER_SELECT:
-
+		if (m_pCharacterSelect != NULL)
+		{
+			m_pCharacterSelect->Update();
+		}
 		break;
 	case CManager::MODE_STAGE_SELECT:
 
@@ -390,7 +403,12 @@ void CManager::SetMode(MODE mode)
 
 		break;
 	case MODE_CHARACTER_SELECT:
-
+		if (m_pCharacterSelect != NULL)
+		{
+			m_pCharacterSelect->Uninit();
+			delete m_pCharacterSelect;
+			m_pCharacterSelect = NULL;
+		}
 		break;
 	case MODE_STAGE_SELECT:
 
@@ -443,7 +461,8 @@ void CManager::SetMode(MODE mode)
 
 		break;
 	case MODE_CHARACTER_SELECT:
-
+		m_pCharacterSelect = new CCharacterSelect;
+		m_pCharacterSelect->Init();
 		break;
 	case MODE_STAGE_SELECT:
 
