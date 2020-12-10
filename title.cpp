@@ -1,6 +1,6 @@
 //=============================================================================
 //
-// ƒ^ƒCƒgƒ‹ˆ— [title.cpp]
+// ã‚¿ã‚¤ãƒˆãƒ«å‡¦ç† [title.cpp]
 // Author : masayasu wakita
 //
 //=============================================================================
@@ -18,7 +18,7 @@
 #include "sky.h"
 
 //=============================================================================
-// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 //=============================================================================
 CTitle::CTitle()
 {
@@ -26,7 +26,7 @@ CTitle::CTitle()
 }
 
 //=============================================================================
-// ƒfƒXƒgƒ‰ƒNƒ^
+// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 //=============================================================================
 CTitle::~CTitle()
 {
@@ -34,48 +34,71 @@ CTitle::~CTitle()
 }
 
 //=============================================================================
-// ‰Šú‰»ˆ—
+// åˆæœŸåŒ–å‡¦ç†
 //=============================================================================
 HRESULT CTitle::Init(void)
 {
-	//CCamera *pCamera = CManager::GetCamera();		// ƒJƒƒ‰‚Ìæ“¾
+	//CCamera *pCamera = CManager::GetCamera();		// ã‚«ãƒ¡ãƒ©ã®å–å¾—
 
 	//if (pCamera != NULL)
-	//{// ƒJƒƒ‰‚ª‘¶İ‚µ‚Ä‚¢‚½‚Æ‚«
-	//	pCamera->SetPosCamera(D3DXVECTOR3(7099.40f, 187.26f, 7523.8f), D3DXVECTOR3(0.1f, -2.33f, 0.0f));		// ˆÊ’u‚Ìİ’è
+	//{// ã‚«ãƒ¡ãƒ©ãŒå­˜åœ¨ã—ã¦ã„ãŸã¨ã
+	//	pCamera->SetPosCamera(D3DXVECTOR3(7099.40f, 187.26f, 7523.8f), D3DXVECTOR3(0.1f, -2.33f, 0.0f));		// ä½ç½®ã®è¨­å®š
 	//}
 
-	//m_pTitleLogo = CTitlelogo::Create();		// ƒ^ƒCƒgƒ‹ƒƒS‚Ì¶¬
-
-	CScene2D *pBack = CScene2D::Create(CScene::PRIORITY_UI);
-	if (pBack != NULL)
+	//m_pTitleLogo = CTitlelogo::Create();		// ã‚¿ã‚¤ãƒˆãƒ«ãƒ­ã‚´ã®ç”Ÿæˆ
+	for (int nCnt = 0; nCnt < MAX_UI; nCnt++)
 	{
-		pBack->BindTexture("data/tex/status_back.jpg");
-		pBack->SetPosition(D3DXVECTOR3(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 0.0f));
-		pBack->SetSize(D3DXVECTOR3(SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f));
-		pBack->SetTransform();
+		pBack[nCnt] = CScene2D::Create(CScene::PRIORITY_UI);
 	}
+		if (pBack[0] != NULL)
+		{
+			pBack[0]->BindTexture("data/tex/title.png");
+			pBack[0]->SetPosition(D3DXVECTOR3(300, 300, 0.0f));
+			pBack[0]->SetSize(D3DXVECTOR3(600, 330, 0.0f));
+			pBack[0]->SetTransform();
+		}
+		if (pBack[1] != NULL)
+		{
+			pBack[1]->BindTexture("data/tex/Press.png");
+			pBack[1]->SetPosition(D3DXVECTOR3(1050, 600, 0.0f));
+			pBack[1]->SetSize(D3DXVECTOR3(100, 45, 0.0f));
+			pBack[1]->SetTransform();
+		}
+		if (pBack[2] != NULL)
+		{
+			pBack[2]->BindTexture("data/tex/PressLR.png");
+			pBack[2]->SetPosition(D3DXVECTOR3(1050, 670, 0.0f));
+			pBack[2]->SetSize(D3DXVECTOR3(200, 45, 0.0f));
+			pBack[2]->SetTransform();
+		}
+		if (pBack[3] != NULL)
+		{
+			pBack[3]->BindTexture("data/tex/TeamName.png");
+			pBack[3]->SetPosition(D3DXVECTOR3(190, 670, 0.0f));
+			pBack[3]->SetSize(D3DXVECTOR3(250, 45, 0.0f));
+			pBack[3]->SetTransform();
+		}
 
-	//// ‹ó‚Ìì¬
-	//CSky::Create();
+	//// ç©ºã®ä½œæˆ
+	CSky::Create();
 
-	//// ŠeíƒAƒZƒbƒg‚Ì¶¬•İ’u
-	//CMeshField::LoadRand("data/stage/rand.csv", false);				// °î•ñ‚Ì“Ç
-	//CObject::LoadModel("data/stage/object.csv");					// ƒ‚ƒfƒ‹î•ñ‚Ì“Ç
+	//// å„ç¨®ã‚¢ã‚»ãƒƒãƒˆã®ç”Ÿæˆï¼†è¨­ç½®
+	//CMeshField::LoadRand("data/stage/rand.csv", false);				// åºŠæƒ…å ±ã®èª­è¾¼
+	//CObject::LoadModel("data/stage/object.csv");					// ãƒ¢ãƒ‡ãƒ«æƒ…å ±ã®èª­è¾¼
 	return S_OK;
 }
 
 //=============================================================================
-// ŠJ•úˆ—
+// é–‹æ”¾å‡¦ç†
 //=============================================================================
 void CTitle::Uninit(void)
 {
-	//ƒ|ƒŠƒSƒ“‚ÌŠJ•ú
+	//ãƒãƒªã‚´ãƒ³ã®é–‹æ”¾
 	CScene::ReleaseAll();
 }
 
 //=============================================================================
-// XVˆ—
+// æ›´æ–°å‡¦ç†
 //=============================================================================
 void CTitle::Update(void)
 {
@@ -83,28 +106,28 @@ void CTitle::Update(void)
 	CInputController *pInputController = CManager::GetInputController();
 
 	if (CFade::GetFade() == CFade::FADE_NONE)
-	{//ƒtƒF[ƒh‚ªˆ—‚ğ‚µ‚Ä‚¢‚È‚¢‚Æ‚«
+	{//ãƒ•ã‚§ãƒ¼ãƒ‰ãŒå‡¦ç†ã‚’ã—ã¦ã„ãªã„ã¨ã
 		if (pInputKeyboard != NULL)
-		{// ƒL[ƒ{[ƒh‚ª‘¶İ‚µ‚Ä‚¢‚½‚Æ‚«
+		{// ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ãŒå­˜åœ¨ã—ã¦ã„ãŸã¨ã
 			if (pInputKeyboard->GetTriggerKeyboard(DIK_RETURN))
-			{// w’è‚ÌƒL[‚ª‰Ÿ‚³‚ê‚½‚Æ‚«
-				CFade::SetFade(CManager::MODE_PUZZLE_CUSTOM, CFade::FADETYPE_SLIDE);					//ƒtƒF[ƒh‚ğ“ü‚ê‚é
+			{// æŒ‡å®šã®ã‚­ãƒ¼ãŒæŠ¼ã•ã‚ŒãŸã¨ã
+				CFade::SetFade(CManager::MODE_CHARACTER_SELECT, CFade::FADETYPE_SLIDE);					//ãƒ•ã‚§ãƒ¼ãƒ‰ã‚’å…¥ã‚Œã‚‹
 			}
 		}
 		if (pInputController->GetJoypadUse(0))
-		{// ƒRƒ“ƒgƒ[ƒ‰[‚ª¶¬‚³‚ê‚Ä‚¢‚é‚Æ‚«
-			//ƒQ[ƒ€‚Ì‘JˆÚ
-			if (pInputController->GetControllerTrigger(0, JOYPADKEY_A) ||			// ƒQ[ƒ€ƒpƒbƒh‚ÌAƒ{ƒ_ƒ“‚ª‰Ÿ‚³‚ê‚½‚Æ‚«
-				pInputController->GetControllerTrigger(0, JOYPADKEY_START))			// ƒQ[ƒ€ƒpƒbƒh‚ÌSTARTƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚Æ‚«
+		{// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ãŒç”Ÿæˆã•ã‚Œã¦ã„ã‚‹ã¨ã
+			//ã‚²ãƒ¼ãƒ ã®é·ç§»
+			if (pInputController->GetControllerTrigger(0, JOYPADKEY_LEFT_SHOULDER) &&			// ã‚²ãƒ¼ãƒ ãƒ‘ãƒƒãƒ‰ã®Lãƒœãƒ€ãƒ³ãŒæŠ¼ã•ã‚ŒãŸã¨ã
+				pInputController->GetControllerTrigger(0, JOYPADKEY_RIGHT_SHOULDER))			// ã‚²ãƒ¼ãƒ ãƒ‘ãƒƒãƒ‰ã®Rãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚ŒãŸã¨ã
 			{
-				CFade::SetFade(CManager::MODE_PUZZLE_CUSTOM, CFade::FADETYPE_SLIDE);					//ƒtƒF[ƒh‚ğ“ü‚ê‚é
+				CFade::SetFade(CManager::MODE_CHARACTER_SELECT, CFade::FADETYPE_SLIDE);					//ãƒ•ã‚§ãƒ¼ãƒ‰ã‚’å…¥ã‚Œã‚‹
 			}
 		}
 	}
 }
 
 //=============================================================================
-// •`‰æˆ—
+// æç”»å‡¦ç†
 //=============================================================================
 void CTitle::Draw(void)
 {
@@ -112,7 +135,7 @@ void CTitle::Draw(void)
 }
 
 //=============================================================================
-// ƒAƒZƒbƒg‚Ì“Ç‚İ‚İ
+// ã‚¢ã‚»ãƒƒãƒˆã®èª­ã¿è¾¼ã¿
 //=============================================================================
 void CTitle::LoadAsset(void)
 {
