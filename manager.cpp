@@ -11,6 +11,7 @@
 #include "title.h"
 #include "result.h"
 #include "ranking.h"
+#include "characterSelect.h"
 #include "inputKeyboard.h"
 #include "inputMouse.h"
 #include "inputController.h"
@@ -47,6 +48,7 @@ CTitle *CManager::m_pTitle = NULL;													// タイトル ポインタを初期化
 CPuzzle *CManager::m_pPuzzle = NULL;												// パズル　ポインタを初期化
 CResult *CManager::m_pResult = NULL;												// リザルト ポインタを初期化
 CRanking *CManager::m_pRanking = NULL;												// ランキング ポインタを初期化
+CCharacterSelect *CManager::m_pCharacterSelect = NULL;								// キャラクター選択 ポインタを初期化
 
 CSound *CManager::m_pSound = NULL;													// サウンド ポインタを初期化
 
@@ -105,7 +107,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 
 	if (m_pInputMouse != NULL)
 	{// マウスが存在していたとき
-		// マウスの初期化
+	 	// マウスの初期化
 		if (FAILED(m_pInputMouse->Init(hInstance, hWnd)))
 		{
 			MessageBox(hWnd, "マウスの初期化に失敗", "警告", MB_ICONWARNING);
@@ -117,7 +119,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 
 	if (m_pInputController != NULL)
 	{// コントローラーが存在していたとき
-		// コントローラーの初期化
+	 	// コントローラーの初期化
 		if (FAILED(m_pInputController->Init(hInstance, hWnd)))
 		{
 			MessageBox(hWnd, "コントローラーの初期化に失敗", "警告", MB_ICONWARNING);
@@ -158,6 +160,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 	CPuzzle::LoadAsset();
 	CGame::LoadAsset();
 	CResult::LoadAsset();
+	CCharacterSelect::LoadAsset();
 
 	SetMode(MODE_TITLE);																		//モードセレクト
 
@@ -268,6 +271,14 @@ void CManager::Uninit(void)
 		m_pRanking = NULL;																			// ポインタをNULLにする
 	}
 
+	// キャラクター選択の開放処理
+	if (m_pCharacterSelect != NULL)
+	{
+		m_pCharacterSelect->Uninit();																// キャラクダー選択の終了処理
+		delete m_pCharacterSelect;																	// キャラクダー選択のメモリ解放
+		m_pCharacterSelect = NULL;																	// ポインタをNULLにする
+	}
+
 	// Sceneの解放処理
 	CScene::ReleaseAll();
 
@@ -319,7 +330,10 @@ void CManager::Update(void)
 
 		break;
 	case CManager::MODE_CHARACTER_SELECT:
-
+		if (m_pCharacterSelect != NULL)
+		{
+			m_pCharacterSelect->Update();
+		}
 		break;
 	case CManager::MODE_STAGE_SELECT:
 
@@ -394,7 +408,12 @@ void CManager::SetMode(MODE mode)
 
 		break;
 	case MODE_CHARACTER_SELECT:
-
+		if (m_pCharacterSelect != NULL)
+		{
+			m_pCharacterSelect->Uninit();
+			delete m_pCharacterSelect;
+			m_pCharacterSelect = NULL;
+		}
 		break;
 	case MODE_STAGE_SELECT:
 
@@ -448,8 +467,9 @@ void CManager::SetMode(MODE mode)
 
 		break;
 	case MODE_CHARACTER_SELECT:
+		m_pCharacterSelect = new CCharacterSelect;
+		m_pCharacterSelect->Init();
 		m_pSound->PlaySoundA(SOUND_LABEL_BGM_Character_Select);
-
 		break;
 	case MODE_STAGE_SELECT:
 
