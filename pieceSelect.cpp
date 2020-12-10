@@ -8,6 +8,7 @@
 #include "manager.h"
 #include "renderer.h"
 #include "inputKeyboard.h"
+#include "inputController.h"
 #include "takaseiLibrary.h"
 #include "box.h"
 #include "piece.h"
@@ -106,6 +107,11 @@ void CPieceSelect::Update(void)
 {
 	// キーボード取得
 	CInputKeyboard *pKeyboard = CManager::GetInputKeyboard();
+	// ゲームパッドの取得
+	CInputController *pGamepad = CManager::GetInputController();
+
+	float nValueH = 0;									//コントローラー
+	float nValueV = 0;									//コントローラー
 
 	m_bPiece = CBox::GetPiece();
 
@@ -115,6 +121,46 @@ void CPieceSelect::Update(void)
 		m_bPiece = m_pPiece[m_nPieceNum]->GetMove();
 	}
 
+	// ====================== コントローラー ====================== //
+
+	if (pGamepad != NULL)
+	{// ゲームパッドが存在したとき
+		if (pGamepad->GetJoypadUse(0))
+		{// 使用可能だったとき
+			pGamepad->GetJoypadStickLeft(0, &nValueH, &nValueV);
+
+			//// ゲームパッド処理
+			//InputGemepad(nValueH, nValueV, fTireRotSpeed, aVec);
+
+			if (m_bPiece == true)
+			{
+				if (pGamepad->GetControllerTrigger(0, JOYPADKEY_Y))
+				{
+					// ピース数加算
+					m_nPieceNum++;
+					// ピース生成
+					m_pPiece[m_nPieceNum] = CPiece::Create();
+					// ピースタイプ設定
+					m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Square);
+					// 配置情報
+					m_pPiece[m_nPieceNum]->SetMove(false);
+				}
+
+
+				// 下にスティックが倒れたとき
+				if (nValueV <= JOY_MAX_RANGE && nValueV > 0)
+				{
+					// セレクトカウント減算
+					m_nSelect--;
+				}
+				else if (nValueV >= -JOY_MAX_RANGE && nValueV < 0)
+				{// 上にスティックが倒れたとき
+				 // セレクトカウント加算
+					m_nSelect++;
+				}
+			}
+		}
+	}
 	if (m_bPiece == true)
 	{
 		// 生成
@@ -213,7 +259,7 @@ void CPieceSelect::Update(void)
 	if (m_bPiece == false)
 	{
 		// Zを押されたら
-		if (pKeyboard->GetTriggerKeyboard(DIK_Z))
+		if (pKeyboard->GetTriggerKeyboard(DIK_Z) || pGamepad->GetControllerTrigger(0, JOYPADKEY_RIGHT_SHOULDER))
 		{
 			switch (m_nSelectCnt)
 			{
@@ -404,8 +450,6 @@ void CPieceSelect::Update(void)
 			}
 		}
 	}
-
-
 }
 
 //=============================================================================
