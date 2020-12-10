@@ -42,6 +42,7 @@ CUi::~CUi()
 //==============================================================================
 HRESULT CUi::Init(void)
 {
+	SetPosition(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	return S_OK;
 }
 
@@ -461,17 +462,17 @@ void CUi::SaveScript(std::string Add)
 		// モデルの情報 //
 		pWrite->IndexWrite("UIの情報\n");
 
-		D3DXVECTOR3 pos, rot, size;
+		D3DXVECTOR3 assetPos, rot, size;
 
 		for (unsigned int nCount = 0; nCount < m_vAsset.size(); nCount++)
 		{
-			pos = m_vAsset[nCount]->GetPosition() - pos;
+			assetPos = m_vAsset[nCount]->GetPosition() - pos;
 			rot = m_vAsset[nCount]->GetRotation();
 			size = m_vAsset[nCount]->GetSize();
 
 			pWrite->Write("UISET\n");					// 頂点情報の書き込み開始宣言
 			pWrite->Write("	TEXTURE_FILENAME = %s\n", m_vAsset[nCount]->GetAdd().c_str());
-			pWrite->Write("	POS = %.2f %.2f %.2f\n", pos.x, pos.y, pos.z);		// 中心位置の書き込み
+			pWrite->Write("	POS = %.2f %.2f %.2f\n", assetPos.x, assetPos.y, assetPos.z);		// 中心位置の書き込み
 			pWrite->Write("	ROT = %.2f %.2f %.2f\n", rot.x, rot.y, rot.z);		// 中心位置の書き込み
 			pWrite->Write("	SIZE = %.2f %.2f %.2f\n", size.x, size.y, size.z);		// 中心位置の書き込み
 			pWrite->Write("END_UISET\n");				// 頂点情報の書き込み開始宣言

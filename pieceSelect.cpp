@@ -159,6 +159,166 @@ void CPieceSelect::Update(void)
 					m_nSelect++;
 				}
 			}
+
+			if (m_bPiece == false)
+			{
+				// Zを押されたら
+				if (pGamepad->GetControllerTrigger(0, JOYPADKEY_RIGHT_SHOULDER))
+				{
+					switch (m_nSelectCnt)
+					{
+					case 0:
+						m_bSelect[PIECETYPE_CORE_09] = false;
+						m_bSelect[PIECETYPE_CORE_01] = true;
+						// タイプ変更
+						m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Square);
+						m_pPiece[m_nPieceNum]->SetStatusType(CPiece::StatusType_Route);
+						m_pPieceExplanation->SpriteAnimation(D3DXVECTOR2(1, 17), 0, 0);
+						m_nSelectCnt++;
+						break;
+					case 1:
+						m_bSelect[PIECETYPE_CORE_01] = false;
+						m_bSelect[PIECETYPE_CORE_02] = true;
+						// タイプ変更
+						m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Square);
+						m_pPiece[m_nPieceNum]->SetStatusType(CPiece::StatusType_Ranking);
+						m_pPieceExplanation->SpriteAnimation(D3DXVECTOR2(1, 17), 0, 1);
+						m_nSelectCnt++;
+						break;
+					case 2:
+						m_bSelect[PIECETYPE_CORE_02] = false;
+						m_bSelect[PIECETYPE_CORE_03] = true;
+						// タイプ変更
+						m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Square);
+						m_pPiece[m_nPieceNum]->SetStatusType(CPiece::StatusType_MiniMap);
+						m_pPieceExplanation->SpriteAnimation(D3DXVECTOR2(1, 17), 0, 2);
+						m_nSelectCnt++;
+						break;
+					case 3:
+						m_bSelect[PIECETYPE_CORE_03] = false;
+						m_bSelect[PIECETYPE_CORE_04] = true;
+						// タイプ変更
+						m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Rectangle);
+						m_pPieceExplanation->SpriteAnimation(D3DXVECTOR2(1, 17), 0, 3);
+						m_nSelectCnt++;
+						break;
+					case 4:
+						m_bSelect[PIECETYPE_CORE_04] = false;
+						m_bSelect[PIECETYPE_CORE_00] = true;
+						// タイプ変更
+						m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Rectangle_1);
+						m_pPiece[m_nPieceNum]->SetStatusType(CPiece::StatusType_Rate_MediumUp);
+						m_pPieceExplanation->SpriteAnimation(D3DXVECTOR2(1, 17), 0, 4);
+						m_nSelectCnt++;
+						break;
+					case 5:
+						m_bSelect[PIECETYPE_CORE_00] = false;
+						m_bSelect[PIECETYPE_CORE_05] = true;
+						// タイプ変更
+						m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Speed);
+						m_pPieceExplanation->SpriteAnimation(D3DXVECTOR2(1, 17), 0, 5);
+						m_nSelectCnt++;
+						break;
+					case 6:
+						m_bSelect[PIECETYPE_CORE_05] = false;
+						m_bSelect[PIECETYPE_CORE_08] = true;
+						// タイプ変更
+						m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Rectangle_2);
+						m_pPiece[m_nPieceNum]->SetStatusType(CPiece::StatusType_Power_MediumUp);
+						m_pPieceExplanation->SpriteAnimation(D3DXVECTOR2(1, 17), 0, 6);
+						m_nSelectCnt++;
+						break;
+					case 7:
+						m_bSelect[PIECETYPE_CORE_08] = false;
+						m_bSelect[PIECETYPE_CORE_14] = true;
+						// タイプ変更
+						m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_L_Type);
+						m_pPieceExplanation->SpriteAnimation(D3DXVECTOR2(1, 17), 0, 7);
+						m_nSelectCnt++;
+						break;
+					case 8:
+						m_bSelect[PIECETYPE_CORE_14] = false;
+						m_bSelect[PIECETYPE_CORE_15] = true;
+						// タイプ変更
+						m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Speed_1);
+						m_pPieceExplanation->SpriteAnimation(D3DXVECTOR2(1, 17), 0, 8);
+						m_nSelectCnt++;
+						break;
+					case 9:
+						m_bSelect[PIECETYPE_CORE_15] = false;
+						m_bSelect[PIECETYPE_CORE_16] = true;
+						// タイプ変更
+						m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Diagonal);
+						m_pPieceExplanation->SpriteAnimation(D3DXVECTOR2(1, 17), 0, 9);
+						m_nSelectCnt++;
+						break;
+					case 10:
+						m_bSelect[PIECETYPE_CORE_16] = false;
+						m_bSelect[PIECETYPE_CORE_06] = true;
+						// タイプ変更
+						m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Rectangle_1);
+						m_pPiece[m_nPieceNum]->SetStatusType(CPiece::StatusType_MaxSpeed_MediumUp);
+						m_pPieceExplanation->SpriteAnimation(D3DXVECTOR2(1, 17), 0, 10);
+						m_nSelectCnt++;
+						break;
+					case 11:
+						m_bSelect[PIECETYPE_CORE_06] = false;
+						m_bSelect[PIECETYPE_CORE_07] = true;
+						// タイプ変更
+						m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Rectangle_1);
+						m_pPiece[m_nPieceNum]->SetStatusType(CPiece::StatusType_Turning_MediumUp);
+						m_pPieceExplanation->SpriteAnimation(D3DXVECTOR2(1, 17), 0, 11);
+						m_nSelectCnt++;
+						break;
+					case 12:
+						m_bSelect[PIECETYPE_CORE_07] = false;
+						m_bSelect[PIECETYPE_CORE_13] = true;
+						// タイプ変更
+						m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Rectangle_2);
+						m_pPiece[m_nPieceNum]->SetStatusType(CPiece::StatusType_Decay_Down);
+						m_pPieceExplanation->SpriteAnimation(D3DXVECTOR2(1, 17), 0, 12);
+						m_nSelectCnt++;
+						break;
+					case 13:
+						m_bSelect[PIECETYPE_CORE_13] = false;
+						m_bSelect[PIECETYPE_CORE_12] = true;
+						// タイプ変更
+						m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Square_1);
+						m_pPiece[m_nPieceNum]->SetStatusType(CPiece::StatusType_Power_SmallUp);
+						m_pPieceExplanation->SpriteAnimation(D3DXVECTOR2(1, 17), 0, 13);
+						m_nSelectCnt++;
+						break;
+					case 14:
+						m_bSelect[PIECETYPE_CORE_12] = false;
+						m_bSelect[PIECETYPE_CORE_11] = true;
+						// タイプ変更
+						m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Square_1);
+						m_pPiece[m_nPieceNum]->SetStatusType(CPiece::StatusType_Turning_SmallUp);
+						m_pPieceExplanation->SpriteAnimation(D3DXVECTOR2(1, 17), 0, 14);
+						m_nSelectCnt++;
+						break;
+					case 15:
+						m_bSelect[PIECETYPE_CORE_11] = false;
+						m_bSelect[PIECETYPE_CORE_10] = true;
+						// タイプ変更
+						m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Square_1);
+						m_pPiece[m_nPieceNum]->SetStatusType(CPiece::StatusType_MaxSpeed_SmallUp);
+						m_pPieceExplanation->SpriteAnimation(D3DXVECTOR2(1, 17), 0, 15);
+						m_nSelectCnt++;
+						break;
+					case 16:
+						m_bSelect[PIECETYPE_CORE_10] = false;
+						m_bSelect[PIECETYPE_CORE_09] = true;
+						// タイプ変更
+						m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Square_1);
+						m_pPiece[m_nPieceNum]->SetStatusType(CPiece::StatusType_Rate_SmallUp);
+						m_pPieceExplanation->SpriteAnimation(D3DXVECTOR2(1, 17), 0, 16);
+						m_nSelectCnt = 0;
+						break;
+					}
+				}
+			}
+
 		}
 	}
 	if (m_bPiece == true)
@@ -259,7 +419,7 @@ void CPieceSelect::Update(void)
 	if (m_bPiece == false)
 	{
 		// Zを押されたら
-		if (pKeyboard->GetTriggerKeyboard(DIK_Z) || pGamepad->GetControllerTrigger(0, JOYPADKEY_RIGHT_SHOULDER))
+		if (pKeyboard->GetTriggerKeyboard(DIK_Z))
 		{
 			switch (m_nSelectCnt)
 			{
