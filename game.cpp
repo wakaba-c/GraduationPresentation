@@ -104,11 +104,14 @@ HRESULT CGame::Init(void)
 	// ‘¬‚Ì¶¬
 	CSpeed::Create();
 
+	//// ƒ‚ƒfƒ‹î•ñ‚Ì“Ç‚İ‚İ
+	//CObject::LoadModelTest("data/text/stage/stage_1.txt");
+
 	// ƒ‚ƒfƒ‹î•ñ‚Ì“Ç‚İ‚İ
 	CObject::LoadModelTest("data/text/model.txt");
 
-	// •Çî•ñ‚Ì“Ç‚İ‚İ
-	CMeshWall::LoadWall("data/text/wall.txt", false);
+	//// •Çî•ñ‚Ì“Ç‚İ‚İ
+	//CMeshWall::LoadWall("data/text/stage/wall.txt", false);
 
 	int nCntPiece = CPuzzle::GetPieceNum();
 

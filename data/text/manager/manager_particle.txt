@@ -10,5 +10,6 @@ SCRIPT			# この行は絶対消さないこと！
 # モデルファイル名
 #------------------------------------------------------------------------------
 MODEL_FILENAME = data/text/particle/star.txt					# [0]星
+MODEL_FILENAME = data/text/particle/spark.txt					# [1]火花
 
 END_SCRIPT		# この行は絶対消さないこと！

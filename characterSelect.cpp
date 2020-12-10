@@ -15,11 +15,6 @@
 #include "object.h"
 #include "camera.h"
 #include "sky.h"
-#include "titleLogo.h"
-//=============================================================================
-// 静的メンバ変数
-//=============================================================================
-CTitlelogo	*CCharacterSelect::m_pTitleLogo = NULL;		// タイトルロゴのポインタ
 
 //=============================================================================
 // コンストラクタ
@@ -74,7 +69,7 @@ HRESULT CCharacterSelect::Init(void)
 		pBack[3]->SetPosition(D3DXVECTOR3(SCREEN_WIDTH / 2 - 80 , 520, 0.0f));
 		pBack[3]->SetSize(D3DXVECTOR3(150, 130, 0.0f));
 		pBack[3]->SetTransform();
-	}	
+	}
 	if (pBack[4] != NULL)
 	{
 		//pBack[4]->BindTexture("data/tex/Decide.png");
@@ -115,14 +110,6 @@ HRESULT CCharacterSelect::Init(void)
 //=============================================================================
 void CCharacterSelect::Uninit(void)
 {
-	// タイトルロゴの開放
-	if (m_pTitleLogo != NULL)
-	{// 存在していたとき
-		m_pTitleLogo->Uninit();			// 開放処理
-		delete m_pTitleLogo;			// 削除
-		m_pTitleLogo = NULL;			// NULLの代入
-	}
-
 	//ポリゴンの開放
 	CScene::ReleaseAll();
 }
@@ -141,7 +128,7 @@ void CCharacterSelect::Update(void)
 		{// キーボードが存在していたとき
 			if (pInputKeyboard->GetTriggerKeyboard(DIK_RETURN))
 			{// 指定のキーが押されたとき
-				CFade::SetFade(CManager::MODE_PUZZLE_CUSTOM);					//フェードを入れる
+				CFade::SetFade(CManager::MODE_PUZZLE_CUSTOM, CFade::FADETYPE_SLIDE);					//フェードを入れる
 			}
 			if (pInputKeyboard->GetTriggerKeyboard(DIK_RIGHT)&&m_nCarType< 3)
 			{
@@ -164,7 +151,7 @@ void CCharacterSelect::Update(void)
 			if (pInputController->GetControllerTrigger(0, JOYPADKEY_A) ||			// ゲームパッドのAボダンが押されたとき
 				pInputController->GetControllerTrigger(0, JOYPADKEY_START))			// ゲームパッドのSTARTボタンが押されたとき
 			{
-				CFade::SetFade(CManager::MODE_PUZZLE_CUSTOM);					//フェードを入れる
+				CFade::SetFade(CManager::MODE_PUZZLE_CUSTOM, CFade::FADETYPE_SLIDE);					//フェードを入れる
 			}
 		}
 	}
@@ -183,5 +170,4 @@ void CCharacterSelect::Draw(void)
 //=============================================================================
 void CCharacterSelect::LoadAsset(void)
 {
-	CTitlelogo::Load();
 }

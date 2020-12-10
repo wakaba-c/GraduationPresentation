@@ -135,8 +135,8 @@ void CSceneX::Draw(void)
 			// 環境光を渡す
 			pShader->SetVector("Ambient", &D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
 
-			pShader->Begin(NULL, 0);
-			pShader->BeginPass(0);
+			//pShader->Begin(NULL, 0);
+			//pShader->BeginPass(0);
 		}
 		break;
 	case SHADERTYPE_TOON:
@@ -239,8 +239,8 @@ void CSceneX::Draw(void)
 		switch (m_ShaderType)
 		{
 		case SHADERTYPE_LAMBERT:
-			pShader->EndPass();
-			pShader->End();
+			//pShader->EndPass();
+			//pShader->End();
 			break;
 		case SHADERTYPE_TOON:
 			// テクスチャの設定
@@ -249,6 +249,8 @@ void CSceneX::Draw(void)
 			break;
 		}
 	}
+
+	pDevice->SetTexture(0, NULL);
 
 	// マテリアルをデフォルトに戻す
 	pDevice->SetMaterial(&matDef);

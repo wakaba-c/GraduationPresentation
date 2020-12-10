@@ -1,6 +1,6 @@
 //=============================================================================
 //
-// ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼å‡¦ç† [manager.cpp]
+// ƒ}ƒl[ƒWƒƒ[ˆ— [manager.cpp]
 // Author : masayasu wakita
 //
 //=============================================================================
@@ -26,38 +26,38 @@
 #include "effect.h"
 
 //=============================================================================
-// ãƒã‚¯ãƒ­å®šç¾©
+// ƒ}ƒNƒ’è‹`
 //=============================================================================
 #define MANAGER_TEX "data/text/manager/manager_texture.txt"
 
 //=============================================================================
-// é™çš„ãƒ¡ãƒ³ãƒå¤‰æ•°
+// Ã“Iƒƒ“ƒo•Ï”
 //=============================================================================
-CRenderer *CManager::m_pRenderer = NULL;											// ãƒ¬ãƒ³ãƒ€ãƒ©ãƒ¼ ãƒã‚¤ãƒ³ã‚¿ã‚’åˆæœŸåŒ–
-CInputKeyboard *CManager::m_pInputKeyboard = NULL;									// ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ ãƒã‚¤ãƒ³ã‚¿ã‚’åˆæœŸåŒ–
-CInputMouse *CManager::m_pInputMouse = NULL;										// ãƒã‚¦ã‚¹ ãƒã‚¤ãƒ³ã‚¿ã‚’åˆæœŸåŒ–
-CInputController *CManager::m_pInputController = NULL;								// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ ãƒã‚¤ãƒ³ã‚¿ã‚’åˆæœŸåŒ–
-CManager::MODE CManager::m_mode = CManager::MODE_NONE;								// ãƒ¢ãƒ¼ãƒ‰ å¤‰æ•°ã®åˆæœŸåŒ–
+CRenderer *CManager::m_pRenderer = NULL;											// ƒŒƒ“ƒ_ƒ‰[ ƒ|ƒCƒ“ƒ^‚ğ‰Šú‰»
+CInputKeyboard *CManager::m_pInputKeyboard = NULL;									// ƒL[ƒ{[ƒh ƒ|ƒCƒ“ƒ^‚ğ‰Šú‰»
+CInputMouse *CManager::m_pInputMouse = NULL;										// ƒ}ƒEƒX ƒ|ƒCƒ“ƒ^‚ğ‰Šú‰»
+CInputController *CManager::m_pInputController = NULL;								// ƒRƒ“ƒgƒ[ƒ‰[ ƒ|ƒCƒ“ƒ^‚ğ‰Šú‰»
+CManager::MODE CManager::m_mode = CManager::MODE_NONE;								// ƒ‚[ƒh •Ï”‚Ì‰Šú‰»
 
-CCamera *CManager::m_pCamera = NULL;												// ã‚«ãƒ¡ãƒ© ãƒã‚¤ãƒ³ã‚¿ã‚’åˆæœŸåŒ–
-CLight *CManager::m_pLight = NULL;													// ãƒ©ã‚¤ãƒˆ ãƒã‚¤ãƒ³ã‚¿ã‚’åˆæœŸåŒ–
-CNetwork *CManager::m_pNetwork = NULL;												// ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ ãƒã‚¤ãƒ³ã‚¿ã‚’åˆæœŸåŒ–
+CCamera *CManager::m_pCamera = NULL;												// ƒJƒƒ‰ ƒ|ƒCƒ“ƒ^‚ğ‰Šú‰»
+CLight *CManager::m_pLight = NULL;													// ƒ‰ƒCƒg ƒ|ƒCƒ“ƒ^‚ğ‰Šú‰»
+CNetwork *CManager::m_pNetwork = NULL;												// ƒlƒbƒgƒ[ƒN ƒ|ƒCƒ“ƒ^‚ğ‰Šú‰»
 
-CGame *CManager::m_pGame = NULL;													// ã‚²ãƒ¼ãƒ  ãƒã‚¤ãƒ³ã‚¿ã‚’åˆæœŸåŒ–
-CTitle *CManager::m_pTitle = NULL;													// ã‚¿ã‚¤ãƒˆãƒ« ãƒã‚¤ãƒ³ã‚¿ã‚’åˆæœŸåŒ–
-CPuzzle *CManager::m_pPuzzle = NULL;												// ãƒ‘ã‚ºãƒ«ã€€ãƒã‚¤ãƒ³ã‚¿ã‚’åˆæœŸåŒ–
-CResult *CManager::m_pResult = NULL;												// ãƒªã‚¶ãƒ«ãƒˆ ãƒã‚¤ãƒ³ã‚¿ã‚’åˆæœŸåŒ–
-CRanking *CManager::m_pRanking = NULL;												// ãƒ©ãƒ³ã‚­ãƒ³ã‚° ãƒã‚¤ãƒ³ã‚¿ã‚’åˆæœŸåŒ–
-CCharacterSelect *CManager::m_pCharacterSelect = NULL;								// ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼é¸æŠ ãƒã‚¤ãƒ³ã‚¿ã‚’åˆæœŸåŒ–
+CGame *CManager::m_pGame = NULL;													// ƒQ[ƒ€ ƒ|ƒCƒ“ƒ^‚ğ‰Šú‰»
+CTitle *CManager::m_pTitle = NULL;													// ƒ^ƒCƒgƒ‹ ƒ|ƒCƒ“ƒ^‚ğ‰Šú‰»
+CPuzzle *CManager::m_pPuzzle = NULL;												// ƒpƒYƒ‹@ƒ|ƒCƒ“ƒ^‚ğ‰Šú‰»
+CResult *CManager::m_pResult = NULL;												// ƒŠƒUƒ‹ƒg ƒ|ƒCƒ“ƒ^‚ğ‰Šú‰»
+CRanking *CManager::m_pRanking = NULL;												// ƒ‰ƒ“ƒLƒ“ƒO ƒ|ƒCƒ“ƒ^‚ğ‰Šú‰»
+CCharacterSelect *CManager::m_pCharacterSelect = NULL;								// ƒLƒƒƒ‰ƒNƒ^[‘I‘ğ ƒ|ƒCƒ“ƒ^‚ğ‰Šú‰»
 
-CSound *CManager::m_pSound = NULL;													// ã‚µã‚¦ãƒ³ãƒ‰ ãƒã‚¤ãƒ³ã‚¿ã‚’åˆæœŸåŒ–
+CSound *CManager::m_pSound = NULL;													// ƒTƒEƒ“ƒh ƒ|ƒCƒ“ƒ^‚ğ‰Šú‰»
 
-std::map<std::string, LPDIRECT3DTEXTURE9> CManager::m_TexMap = {};					// ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒãƒƒãƒ—ã®åˆæœŸåŒ–
-std::map<std::string, MODEL_INFO> CManager::m_ModelMap = {};						// ãƒ¢ãƒ‡ãƒ«æƒ…å ±ãƒãƒƒãƒ—ã®åˆæœŸåŒ–
-std::map<std::string, LPD3DXEFFECT> CManager::m_ShaderMap = {};						// ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ãƒãƒƒãƒ—ã®åˆæœŸåŒ–
+std::map<std::string, LPDIRECT3DTEXTURE9> CManager::m_TexMap = {};					// ƒeƒNƒXƒ`ƒƒƒ}ƒbƒv‚Ì‰Šú‰»
+std::map<std::string, MODEL_INFO> CManager::m_ModelMap = {};						// ƒ‚ƒfƒ‹î•ñƒ}ƒbƒv‚Ì‰Šú‰»
+std::map<std::string, LPD3DXEFFECT> CManager::m_ShaderMap = {};						// ƒVƒF[ƒ_[ƒ}ƒbƒv‚Ì‰Šú‰»
 
 //=============================================================================
-// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 //=============================================================================
 CManager::CManager()
 {
@@ -65,7 +65,7 @@ CManager::CManager()
 }
 
 //=============================================================================
-// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+// ƒfƒXƒgƒ‰ƒNƒ^
 //=============================================================================
 CManager::~CManager()
 {
@@ -73,66 +73,66 @@ CManager::~CManager()
 }
 
 //=============================================================================
-// åˆæœŸåŒ–å‡¦ç†
+// ‰Šú‰»ˆ—
 //=============================================================================
 HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 {
-	// å€¤ãƒªã‚»ãƒƒãƒˆ
+	// ’lƒŠƒZƒbƒg
 	srand((unsigned int)time(NULL));
 
-	m_pRenderer = new CRenderer;																//ãƒ¬ãƒ³ãƒ€ãƒ©ãƒ¼ã®ã‚¯ãƒªã‚¨ã‚¤ãƒˆ
+	m_pRenderer = new CRenderer;																//ƒŒƒ“ƒ_ƒ‰[‚ÌƒNƒŠƒGƒCƒg
 	if (m_pRenderer != NULL)
-	{// ãƒ¬ãƒ³ãƒ€ãƒ©ãƒ¼ãŒå­˜åœ¨ã—ã¦ã„ãŸã¨ã
-	 // ãƒ¬ãƒ³ãƒ€ãƒ©ãƒ¼ã®åˆæœŸåŒ–
+	{// ƒŒƒ“ƒ_ƒ‰[‚ª‘¶İ‚µ‚Ä‚¢‚½‚Æ‚«
+	 // ƒŒƒ“ƒ_ƒ‰[‚Ì‰Šú‰»
 		if (FAILED(m_pRenderer->Init(hInstance, hWnd, bWindow)))
 		{
-			MessageBox(hWnd, "ãƒ¬ãƒ³ãƒ€ãƒ©ãƒ¼ã®åˆæœŸåŒ–ã«å¤±æ•—", "è­¦å‘Š", MB_ICONWARNING);
+			MessageBox(hWnd, "ƒŒƒ“ƒ_ƒ‰[‚Ì‰Šú‰»‚É¸”s", "Œx", MB_ICONWARNING);
 			return E_FAIL;
 		}
 	}
 
-	m_pInputKeyboard = new CInputKeyboard;														//ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®ã‚¯ãƒªã‚¨ã‚¤ãƒˆ
+	m_pInputKeyboard = new CInputKeyboard;														//ƒL[ƒ{[ƒh‚ÌƒNƒŠƒGƒCƒg
 
 	if (m_pInputKeyboard != NULL)
-	{// ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ãŒå­˜åœ¨ã—ã¦ã„ãŸã¨ã
-	 // ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®åˆæœŸåŒ–
+	{// ƒL[ƒ{[ƒh‚ª‘¶İ‚µ‚Ä‚¢‚½‚Æ‚«
+	 // ƒL[ƒ{[ƒh‚Ì‰Šú‰»
 		if (FAILED(m_pInputKeyboard->Init(hInstance, hWnd)))
 		{
-			MessageBox(hWnd, "ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®åˆæœŸåŒ–ã«å¤±æ•—", "è­¦å‘Š", MB_ICONWARNING);
+			MessageBox(hWnd, "ƒL[ƒ{[ƒh‚Ì‰Šú‰»‚É¸”s", "Œx", MB_ICONWARNING);
 			return E_FAIL;
 		}
 	}
 
-	m_pInputMouse = new CInputMouse;															//ãƒã‚¦ã‚¹ã®ã‚¯ãƒªã‚¨ã‚¤ãƒˆ
+	m_pInputMouse = new CInputMouse;															//ƒ}ƒEƒX‚ÌƒNƒŠƒGƒCƒg
 
 	if (m_pInputMouse != NULL)
-	{// ãƒã‚¦ã‚¹ãŒå­˜åœ¨ã—ã¦ã„ãŸã¨ã
-		// ãƒã‚¦ã‚¹ã®åˆæœŸåŒ–
+	{// ƒ}ƒEƒX‚ª‘¶İ‚µ‚Ä‚¢‚½‚Æ‚«
+	 	// ƒ}ƒEƒX‚Ì‰Šú‰»
 		if (FAILED(m_pInputMouse->Init(hInstance, hWnd)))
 		{
-			MessageBox(hWnd, "ãƒã‚¦ã‚¹ã®åˆæœŸåŒ–ã«å¤±æ•—", "è­¦å‘Š", MB_ICONWARNING);
+			MessageBox(hWnd, "ƒ}ƒEƒX‚Ì‰Šú‰»‚É¸”s", "Œx", MB_ICONWARNING);
 			return E_FAIL;
 		}
 	}
 
-	m_pInputController = new CInputController;													// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®ç”Ÿæˆ
+	m_pInputController = new CInputController;													// ƒRƒ“ƒgƒ[ƒ‰[‚Ì¶¬
 
 	if (m_pInputController != NULL)
-	{// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ãŒå­˜åœ¨ã—ã¦ã„ãŸã¨ã
-		// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®åˆæœŸåŒ–
+	{// ƒRƒ“ƒgƒ[ƒ‰[‚ª‘¶İ‚µ‚Ä‚¢‚½‚Æ‚«
+	 	// ƒRƒ“ƒgƒ[ƒ‰[‚Ì‰Šú‰»
 		if (FAILED(m_pInputController->Init(hInstance, hWnd)))
 		{
-			MessageBox(hWnd, "ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®åˆæœŸåŒ–ã«å¤±æ•—", "è­¦å‘Š", MB_ICONWARNING);
+			MessageBox(hWnd, "ƒRƒ“ƒgƒ[ƒ‰[‚Ì‰Šú‰»‚É¸”s", "Œx", MB_ICONWARNING);
 			return E_FAIL;
 		}
 	}
 
-	// ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ã®è¨­å®šãƒ‡ãƒ¼ã‚¿èª­ã¿è¾¼ã¿
+	// ƒlƒbƒgƒ[ƒN‚Ìİ’èƒf[ƒ^“Ç‚İ‚İ
 	CNetwork::LoadConfiguration();
 
 	m_pNetwork = new CNetwork;
 
-	// ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯
+	// ƒlƒbƒgƒ[ƒN
 	if (!m_pNetwork->Init() == S_OK)
 	{
 		m_pNetwork->Uninit();
@@ -150,7 +150,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 	m_pCamera = new CCamera;
 	m_pCamera->Init();
 
-	m_pLight = new CLight;																		//ãƒ©ã‚¤ãƒˆã®ã‚¯ãƒªã‚¨ã‚¤ãƒˆ
+	m_pLight = new CLight;																		//ƒ‰ƒCƒg‚ÌƒNƒŠƒGƒCƒg
 	m_pLight->Init();
 
 	m_pSound = new CSound;
@@ -162,7 +162,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 	CResult::LoadAsset();
 	CCharacterSelect::LoadAsset();
 
-	SetMode(MODE_TITLE);																		//ãƒ¢ãƒ¼ãƒ‰ã‚»ãƒ¬ã‚¯ãƒˆ
+	SetMode(MODE_TITLE);																		//ƒ‚[ƒhƒZƒŒƒNƒg
 
 	CEffect::LoadParticleScript();
 
@@ -170,126 +170,126 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 }
 
 //=============================================================================
-// é–‹æ”¾å‡¦ç†
+// ŠJ•úˆ—
 //=============================================================================
 void CManager::Uninit(void)
 {
-	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®é–‹æ”¾
+	// ƒeƒNƒXƒ`ƒƒ‚ÌŠJ•ú
 	TexRelease();
 
-	// ãƒ¢ãƒ‡ãƒ«ãƒ‡ãƒ¼ã‚¿ã®é–‹æ”¾
+	// ƒ‚ƒfƒ‹ƒf[ƒ^‚ÌŠJ•ú
 	ModelRelease();
 
-	// ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ãƒ‡ãƒ¼ã‚¿ã®é–‹æ”¾
+	// ƒVƒF[ƒ_[ƒf[ƒ^‚ÌŠJ•ú
 	ShaderRelease();
 
-	// ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®é–‹æ”¾å‡¦ç†
+	// ƒL[ƒ{[ƒh‚ÌŠJ•úˆ—
 	if (m_pInputKeyboard != NULL)
 	{
-		m_pInputKeyboard->Uninit();																	// ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®çµ‚äº†å‡¦ç†
-		delete m_pInputKeyboard;																	// ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®ãƒ¡ãƒ¢ãƒªè§£æ”¾
-		m_pInputKeyboard = NULL;																	// ãƒã‚¤ãƒ³ã‚¿ã‚’NULLã«ã™ã‚‹
+		m_pInputKeyboard->Uninit();																	// ƒL[ƒ{[ƒh‚ÌI—¹ˆ—
+		delete m_pInputKeyboard;																	// ƒL[ƒ{[ƒh‚Ìƒƒ‚ƒŠ‰ğ•ú
+		m_pInputKeyboard = NULL;																	// ƒ|ƒCƒ“ƒ^‚ğNULL‚É‚·‚é
 	}
 
-	// ãƒã‚¦ã‚¹ã®é–‹æ”¾å‡¦ç†
+	// ƒ}ƒEƒX‚ÌŠJ•úˆ—
 	if (m_pInputMouse != NULL)
 	{
-		m_pInputMouse->Uninit();																	// ãƒã‚¦ã‚¹ã®çµ‚äº†å‡¦ç†
-		delete m_pInputMouse;																		// ãƒã‚¦ã‚¹ã®ãƒ¡ãƒ¢ãƒªè§£æ”¾
-		m_pInputMouse = NULL;																		// ãƒã‚¤ãƒ³ã‚¿ã‚’NULLã«ã™ã‚‹
+		m_pInputMouse->Uninit();																	// ƒ}ƒEƒX‚ÌI—¹ˆ—
+		delete m_pInputMouse;																		// ƒ}ƒEƒX‚Ìƒƒ‚ƒŠ‰ğ•ú
+		m_pInputMouse = NULL;																		// ƒ|ƒCƒ“ƒ^‚ğNULL‚É‚·‚é
 	}
 
-	// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®é–‹æ”¾å‡¦ç†
+	// ƒRƒ“ƒgƒ[ƒ‰[‚ÌŠJ•úˆ—
 	if (m_pInputController != NULL)
 	{
-		m_pInputController->Uninit();																// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®çµ‚äº†å‡¦ç†
-		delete m_pInputController;																	// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®ãƒ¡ãƒ¢ãƒªè§£æ”¾
-		m_pInputController = NULL;																	// ãƒã‚¤ãƒ³ã‚¿ã‚’NULLã«ã™ã‚‹
+		m_pInputController->Uninit();																// ƒRƒ“ƒgƒ[ƒ‰[‚ÌI—¹ˆ—
+		delete m_pInputController;																	// ƒRƒ“ƒgƒ[ƒ‰[‚Ìƒƒ‚ƒŠ‰ğ•ú
+		m_pInputController = NULL;																	// ƒ|ƒCƒ“ƒ^‚ğNULL‚É‚·‚é
 	}
 
-	// ã‚µã‚¦ãƒ³ãƒ‰ã®é–‹æ”¾å‡¦ç†
+	// ƒTƒEƒ“ƒh‚ÌŠJ•úˆ—
 	if (m_pSound != NULL)
 	{
-		m_pSound->Uninit();																			// Soundã®çµ‚äº†å‡¦ç†
-		delete m_pSound;																			// Soundã®ãƒ¡ãƒ¢ãƒªè§£æ”¾
-		m_pSound = NULL;																			// ãƒã‚¤ãƒ³ã‚¿ã‚’NULLã«ã™ã‚‹
+		m_pSound->Uninit();																			// Sound‚ÌI—¹ˆ—
+		delete m_pSound;																			// Sound‚Ìƒƒ‚ƒŠ‰ğ•ú
+		m_pSound = NULL;																			// ƒ|ƒCƒ“ƒ^‚ğNULL‚É‚·‚é
 	}
 
-	// ã‚«ãƒ¡ãƒ©ã®é–‹æ”¾å‡¦ç†
+	// ƒJƒƒ‰‚ÌŠJ•úˆ—
 	if (m_pCamera != NULL)
 	{
-		m_pCamera->Uninit();																		// ã‚«ãƒ¡ãƒ©ã®çµ‚äº†å‡¦ç†
-		delete m_pCamera;																			// ã‚«ãƒ¡ãƒ©ã®ãƒ¡ãƒ¢ãƒªè§£æ”¾
-		m_pCamera = NULL;																			// ãƒã‚¤ãƒ³ã‚¿ã‚’NULLã«ã™ã‚‹
+		m_pCamera->Uninit();																		// ƒJƒƒ‰‚ÌI—¹ˆ—
+		delete m_pCamera;																			// ƒJƒƒ‰‚Ìƒƒ‚ƒŠ‰ğ•ú
+		m_pCamera = NULL;																			// ƒ|ƒCƒ“ƒ^‚ğNULL‚É‚·‚é
 	}
 
-	// ãƒ©ã‚¤ãƒˆã®é–‹æ”¾å‡¦ç†
+	// ƒ‰ƒCƒg‚ÌŠJ•úˆ—
 	if (m_pLight != NULL)
 	{
-		m_pLight->Uninit();																			// ãƒ©ã‚¤ãƒˆã®çµ‚äº†å‡¦ç†
-		delete m_pLight;																			// ãƒ©ã‚¤ãƒˆã®ãƒ¡ãƒ¢ãƒªè§£æ”¾
-		m_pLight = NULL;																			// ãƒã‚¤ãƒ³ã‚¿ã‚’NULLã«ã™ã‚‹
+		m_pLight->Uninit();																			// ƒ‰ƒCƒg‚ÌI—¹ˆ—
+		delete m_pLight;																			// ƒ‰ƒCƒg‚Ìƒƒ‚ƒŠ‰ğ•ú
+		m_pLight = NULL;																			// ƒ|ƒCƒ“ƒ^‚ğNULL‚É‚·‚é
 	}
 
-	// ã‚¿ã‚¤ãƒˆãƒ«ã®é–‹æ”¾å‡¦ç†
+	// ƒ^ƒCƒgƒ‹‚ÌŠJ•úˆ—
 	if (m_pTitle != NULL)
 	{
-		m_pTitle->Uninit();																			// ã‚¿ã‚¤ãƒˆãƒ«ã®çµ‚äº†å‡¦ç†
-		delete m_pTitle;																			// ã‚¿ã‚¤ãƒˆãƒ«ã®ãƒ¡ãƒ¢ãƒªè§£æ”¾
-		m_pTitle = NULL;																			// ãƒã‚¤ãƒ³ã‚¿ã‚’NULLã«ã™ã‚‹
+		m_pTitle->Uninit();																			// ƒ^ƒCƒgƒ‹‚ÌI—¹ˆ—
+		delete m_pTitle;																			// ƒ^ƒCƒgƒ‹‚Ìƒƒ‚ƒŠ‰ğ•ú
+		m_pTitle = NULL;																			// ƒ|ƒCƒ“ƒ^‚ğNULL‚É‚·‚é
 	}
 
-	// ãƒ‘ã‚ºãƒ«ã®é–‹æ”¾å‡¦ç†
+	// ƒpƒYƒ‹‚ÌŠJ•úˆ—
 	if (m_pPuzzle != NULL)
 	{
-		m_pPuzzle->Uninit();																		// ãƒ‘ã‚ºãƒ«ã®çµ‚äº†å‡¦ç†
-		delete m_pPuzzle;																			// ãƒ‘ã‚ºãƒ«ã®ãƒ¡ãƒ¢ãƒªè§£æ”¾
-		m_pPuzzle = NULL;																			// ãƒã‚¤ãƒ³ã‚¿ã‚’NULLã«ã™ã‚‹
+		m_pPuzzle->Uninit();																		// ƒpƒYƒ‹‚ÌI—¹ˆ—
+		delete m_pPuzzle;																			// ƒpƒYƒ‹‚Ìƒƒ‚ƒŠ‰ğ•ú
+		m_pPuzzle = NULL;																			// ƒ|ƒCƒ“ƒ^‚ğNULL‚É‚·‚é
 	}
 
-	// ã‚²ãƒ¼ãƒ ã®é–‹æ”¾å‡¦ç†
+	// ƒQ[ƒ€‚ÌŠJ•úˆ—
 	if (m_pGame != NULL)
 	{
-		m_pGame->Uninit();																			// ã‚²ãƒ¼ãƒ ã®çµ‚äº†å‡¦ç†
-		delete m_pGame;																				// ã‚²ãƒ¼ãƒ ã®ãƒ¡ãƒ¢ãƒªè§£æ”¾
-		m_pGame = NULL;																				// ãƒã‚¤ãƒ³ã‚¿ã‚’NULLã«ã™ã‚‹
+		m_pGame->Uninit();																			// ƒQ[ƒ€‚ÌI—¹ˆ—
+		delete m_pGame;																				// ƒQ[ƒ€‚Ìƒƒ‚ƒŠ‰ğ•ú
+		m_pGame = NULL;																				// ƒ|ƒCƒ“ƒ^‚ğNULL‚É‚·‚é
 	}
 
-	// ãƒªã‚¶ãƒ«ãƒˆã®é–‹æ”¾å‡¦ç†
+	// ƒŠƒUƒ‹ƒg‚ÌŠJ•úˆ—
 	if (m_pResult != NULL)
 	{
-		m_pResult->Uninit();																		// ãƒªã‚¶ãƒ«ãƒˆã®çµ‚äº†å‡¦ç†
-		delete m_pResult;																			// ãƒªã‚¶ãƒ«ãƒˆã®ãƒ¡ãƒ¢ãƒªè§£æ”¾
-		m_pResult = NULL;																			// ãƒã‚¤ãƒ³ã‚¿ã‚’NULLã«ã™ã‚‹
+		m_pResult->Uninit();																		// ƒŠƒUƒ‹ƒg‚ÌI—¹ˆ—
+		delete m_pResult;																			// ƒŠƒUƒ‹ƒg‚Ìƒƒ‚ƒŠ‰ğ•ú
+		m_pResult = NULL;																			// ƒ|ƒCƒ“ƒ^‚ğNULL‚É‚·‚é
 	}
 
-	// ãƒ©ãƒ³ã‚­ãƒ³ã‚°ã®é–‹æ”¾å‡¦ç†
+	// ƒ‰ƒ“ƒLƒ“ƒO‚ÌŠJ•úˆ—
 	if (m_pRanking != NULL)
 	{
-		m_pRanking->Uninit();																		// ãƒ©ãƒ³ã‚­ãƒ³ã‚°ã®çµ‚äº†å‡¦ç†
-		delete m_pRanking;																			// ãƒ©ãƒ³ã‚­ãƒ³ã‚°ã®ãƒ¡ãƒ¢ãƒªè§£æ”¾
-		m_pRanking = NULL;																			// ãƒã‚¤ãƒ³ã‚¿ã‚’NULLã«ã™ã‚‹
+		m_pRanking->Uninit();																		// ƒ‰ƒ“ƒLƒ“ƒO‚ÌI—¹ˆ—
+		delete m_pRanking;																			// ƒ‰ƒ“ƒLƒ“ƒO‚Ìƒƒ‚ƒŠ‰ğ•ú
+		m_pRanking = NULL;																			// ƒ|ƒCƒ“ƒ^‚ğNULL‚É‚·‚é
 	}
 
-	// ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼é¸æŠã®é–‹æ”¾å‡¦ç†
+	// ƒLƒƒƒ‰ƒNƒ^[‘I‘ğ‚ÌŠJ•úˆ—
 	if (m_pCharacterSelect != NULL)
 	{
-		m_pCharacterSelect->Uninit();																// ã‚­ãƒ£ãƒ©ã‚¯ãƒ€ãƒ¼é¸æŠã®çµ‚äº†å‡¦ç†
-		delete m_pCharacterSelect;																	// ã‚­ãƒ£ãƒ©ã‚¯ãƒ€ãƒ¼é¸æŠã®ãƒ¡ãƒ¢ãƒªè§£æ”¾
-		m_pCharacterSelect = NULL;																	// ãƒã‚¤ãƒ³ã‚¿ã‚’NULLã«ã™ã‚‹
+		m_pCharacterSelect->Uninit();																// ƒLƒƒƒ‰ƒNƒ_[‘I‘ğ‚ÌI—¹ˆ—
+		delete m_pCharacterSelect;																	// ƒLƒƒƒ‰ƒNƒ_[‘I‘ğ‚Ìƒƒ‚ƒŠ‰ğ•ú
+		m_pCharacterSelect = NULL;																	// ƒ|ƒCƒ“ƒ^‚ğNULL‚É‚·‚é
 	}
 
-	// Sceneã®è§£æ”¾å‡¦ç†
+	// Scene‚Ì‰ğ•úˆ—
 	CScene::ReleaseAll();
 
-	// ãƒ¬ãƒ³ãƒ€ãƒ©ãƒ¼ã®é–‹æ”¾å‡¦ç†
+	// ƒŒƒ“ƒ_ƒ‰[‚ÌŠJ•úˆ—
 	if (m_pRenderer != NULL)
 	{
-		m_pRenderer->Uninit();																		// Rendererã®çµ‚äº†å‡¦ç†
-		delete m_pRenderer;																			// Rendererã®ãƒ¡ãƒ¢ãƒªè§£æ”¾
-		m_pRenderer = NULL;																			// ãƒã‚¤ãƒ³ã‚¿ã‚’NULLã«ã™ã‚‹
+		m_pRenderer->Uninit();																		// Renderer‚ÌI—¹ˆ—
+		delete m_pRenderer;																			// Renderer‚Ìƒƒ‚ƒŠ‰ğ•ú
+		m_pRenderer = NULL;																			// ƒ|ƒCƒ“ƒ^‚ğNULL‚É‚·‚é
 	}
-	// ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ã®é–‹æ”¾å‡¦ç†
+	// ƒlƒbƒgƒ[ƒN‚ÌŠJ•úˆ—
 	if (m_pNetwork != NULL)
 	{
 		m_pNetwork->Uninit();
@@ -299,7 +299,7 @@ void CManager::Uninit(void)
 }
 
 //=============================================================================
-// æ›´æ–°å‡¦ç†
+// XVˆ—
 //=============================================================================
 void CManager::Update(void)
 {
@@ -376,7 +376,7 @@ void CManager::Update(void)
 }
 
 //=============================================================================
-// æç”»å‡¦ç†
+// •`‰æˆ—
 //=============================================================================
 void CManager::Draw(void)
 {
@@ -384,12 +384,12 @@ void CManager::Draw(void)
 	ImGui::EndFrame();
 #endif
 
-	// æç”»
+	// •`‰æ
 	m_pRenderer->Draw();
 }
 
 //========================================================================================
-// ãƒ¢ãƒ¼ãƒ‰ã®è¨­å®š
+// ƒ‚[ƒh‚Ìİ’è
 //========================================================================================
 void CManager::SetMode(MODE mode)
 {
@@ -452,7 +452,7 @@ void CManager::SetMode(MODE mode)
 		break;
 	}
 
-	//ç¾åœ¨ã®ãƒ¢ãƒ¼ãƒ‰ã‚’ä»£å…¥
+	//Œ»İ‚Ìƒ‚[ƒh‚ğ‘ã“ü
 	m_mode = mode;
 
 	switch (mode)
@@ -499,7 +499,7 @@ void CManager::SetMode(MODE mode)
 }
 
 //=============================================================================
-// å½¢å¼å¤‰æ›(float)é–¢æ•°
+// Œ`®•ÏŠ·(float)ŠÖ”
 //=============================================================================
 void CManager::ConvertStringToFloat(char* text, char* delimiter, float* pResult)
 {
@@ -517,7 +517,7 @@ void CManager::ConvertStringToFloat(char* text, char* delimiter, float* pResult)
 }
 
 //=============================================================================
-// 2ç‚¹é–“ã®è·é›¢ç®—å‡ºå‡¦ç†
+// 2“_ŠÔ‚Ì‹——£Zoˆ—
 //=============================================================================
 float CManager::GetDistance(D3DXVECTOR3 FirstTarget, D3DXVECTOR3 SecondTarget)
 {
@@ -527,7 +527,7 @@ float CManager::GetDistance(D3DXVECTOR3 FirstTarget, D3DXVECTOR3 SecondTarget)
 }
 
 //=============================================================================
-// Randé–¢æ•°
+// RandŠÖ”
 //=============================================================================
 int CManager::GetRand(int nValue)
 {
@@ -535,10 +535,10 @@ int CManager::GetRand(int nValue)
 
 	for (int nCount = 0; nCount < 5; nCount++)
 	{
-		rand();						//randã®ç©ºå®Ÿè¡Œ
+		rand();						//rand‚Ì‹óÀs
 	}
 
-	//ãƒ©ãƒ³ãƒ€ãƒ ãªå€¤ã‚’è¿”ã™
+	//ƒ‰ƒ“ƒ_ƒ€‚È’l‚ğ•Ô‚·
 	int nAnswer = rand() % (nValue);
 
 	int Wrok = ((int)rand() + 1) / ((int)RAND_MAX + 2);
@@ -551,20 +551,20 @@ int CManager::GetRand(int nValue)
 }
 
 //=============================================================================
-// ç‚¹ã¨å¹³é¢ã®è·é›¢ã‚’æ±‚ã‚ã‚‹
+// “_‚Æ•½–Ê‚Ì‹——£‚ğ‹‚ß‚é
 //=============================================================================
 float CManager::DistanceForDotAndPlane(const D3DXVECTOR3 &point, const D3DXVECTOR3 &planePoint, const D3DXVECTOR3 &planeNormal)
 {
-	// ç‚¹ã¨å¹³é¢çŠ¶ã®ç‚¹ã®ãƒ™ã‚¯ãƒˆãƒ«(ç‚¹ - å¹³é¢ä¸Šã®ç‚¹)
+	// “_‚Æ•½–Êó‚Ì“_‚ÌƒxƒNƒgƒ‹(“_ - •½–Êã‚Ì“_)
 	D3DXVECTOR3 pointVector;
 	pointVector = point - planePoint;
 
-	// æ³•ç·šã¨ç‚¹ã¨å¹³é¢ã®ç‚¹ã‚’å†…ç©ã§è¨ˆç®—
+	// –@ü‚Æ“_‚Æ•½–Ê‚Ì“_‚ğ“àÏ‚ÅŒvZ
 	return fabs(D3DXVec3Dot(&planeNormal, &pointVector));
 }
 
 //=============================================================================
-// ã‚¤ãƒ¼ã‚¸ãƒ³ã‚°(Out)
+// ƒC[ƒWƒ“ƒO(Out)
 //=============================================================================
 float CManager::easeOut(float fValue)
 {
@@ -572,7 +572,7 @@ float CManager::easeOut(float fValue)
 }
 
 //=============================================================================
-// ã‚¤ãƒ¼ã‚¸ãƒ³ã‚°(In)
+// ƒC[ƒWƒ“ƒO(In)
 //=============================================================================
 float CManager::easeIn(float fTime, float fStart, float fDifference, float fTotal)
 {
@@ -581,7 +581,7 @@ float CManager::easeIn(float fTime, float fStart, float fDifference, float fTota
 }
 
 //=============================================================================
-// ã‚¤ãƒ¼ã‚¸ãƒ³ã‚°(InAndOut)
+// ƒC[ƒWƒ“ƒO(InAndOut)
 //=============================================================================
 float CManager::easeInAndOut(float fTime, float fStart, float fDifference, float fTotal)
 {
@@ -597,70 +597,70 @@ float CManager::easeInAndOut(float fTime, float fStart, float fDifference, float
 }
 
 //=============================================================================
-// æŒ‡å®šã—ãŸãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’ä½¿ãˆã‚‹çŠ¶æ…‹ã«ã™ã‚‹å‡¦ç†
+// w’è‚µ‚½ƒeƒNƒXƒ`ƒƒ‚ğg‚¦‚éó‘Ô‚É‚·‚éˆ—
 //=============================================================================
 HRESULT CManager::Load(std::string Add)
 {
 	std::map<std::string, LPDIRECT3DTEXTURE9>::const_iterator it = m_TexMap.find(Add);
 
 	if (it == m_TexMap.end())
-	{// è¦‹ã¤ã‹ã‚‰ãªã‹ã£ãŸã¨ã
-	 // æ¤œç´¢ã—ãŸæ–‡å­—åˆ—ã‚’ã‚­ãƒ¼ã¨ã—ã¦
-	 // æ–°ã—ããƒãƒƒãƒ—ã«ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’è¿½åŠ ã™ã‚‹
+	{// Œ©‚Â‚©‚ç‚È‚©‚Á‚½‚Æ‚«
+	 // ŒŸõ‚µ‚½•¶š—ñ‚ğƒL[‚Æ‚µ‚Ä
+	 // V‚µ‚­ƒ}ƒbƒv‚ÉƒeƒNƒXƒ`ƒƒ‚ğ’Ç‰Á‚·‚é
 		CRenderer *pRenderer = m_pRenderer;
 		LPDIRECT3DDEVICE9 pDevice;
 		HRESULT hr;
 		LPDIRECT3DTEXTURE9 tex = NULL;
 
-		//ãƒ‡ãƒã‚¤ã‚¹ã‚’å–å¾—ã™ã‚‹
+		//ƒfƒoƒCƒX‚ğæ“¾‚·‚é
 		pDevice = pRenderer->GetDevice();
 
 		hr = D3DXCreateTextureFromFile(pDevice, Add.c_str(), &tex);
 
 
 		if (FAILED(hr))
-		{// ç”Ÿæˆã§ããªã‹ã£ãŸã¨ãã¯NULLã‚’è¿”ã™
+		{// ¶¬‚Å‚«‚È‚©‚Á‚½‚Æ‚«‚ÍNULL‚ğ•Ô‚·
 			MessageBox(NULL, Add.c_str(), "Load : LOAD ERROR", MB_OK);
-			return hr;			// çµæœã‚’è¿”ã™
+			return hr;			// Œ‹‰Ê‚ğ•Ô‚·
 		}
 
-		// ãƒãƒƒãƒ—ã¸æŒ¿å…¥ã™ã‚‹
+		// ƒ}ƒbƒv‚Ö‘}“ü‚·‚é
 		m_TexMap.insert(std::map<std::string, LPDIRECT3DTEXTURE9>::value_type(Add, tex));
-		return hr;				// çµæœã‚’è¿”ã™
+		return hr;				// Œ‹‰Ê‚ğ•Ô‚·
 	}
 
 	return E_FAIL;
 }
 
 //=============================================================================
-// æŒ‡å®šã—ãŸãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’ã‚‚ã‚‰ã†å‡¦ç†
+// w’è‚µ‚½ƒeƒNƒXƒ`ƒƒ‚ğ‚à‚ç‚¤ˆ—
 //=============================================================================
 LPDIRECT3DTEXTURE9 CManager::GetResource(std::string Add)
 {
 	std::map<std::string, LPDIRECT3DTEXTURE9>::const_iterator it = m_TexMap.find(Add);
 
 	if (it == m_TexMap.end())
-	{// è¦‹ã¤ã‹ã‚‰ãªã‹ã£ãŸã¨ã
-	 // æ¤œç´¢ã—ãŸæ–‡å­—åˆ—ã‚’ã‚­ãƒ¼ã¨ã—ã¦
-	 // æ–°ã—ããƒãƒƒãƒ—ã«ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’è¿½åŠ ã™ã‚‹
+	{// Œ©‚Â‚©‚ç‚È‚©‚Á‚½‚Æ‚«
+	 // ŒŸõ‚µ‚½•¶š—ñ‚ğƒL[‚Æ‚µ‚Ä
+	 // V‚µ‚­ƒ}ƒbƒv‚ÉƒeƒNƒXƒ`ƒƒ‚ğ’Ç‰Á‚·‚é
 		CRenderer *pRenderer = m_pRenderer;
 		LPDIRECT3DDEVICE9 pDevice;
 		HRESULT hr;
 		LPDIRECT3DTEXTURE9 tex = NULL;
 
-		//ãƒ‡ãƒã‚¤ã‚¹ã‚’å–å¾—ã™ã‚‹
+		//ƒfƒoƒCƒX‚ğæ“¾‚·‚é
 		pDevice = pRenderer->GetDevice();
 
 		hr = D3DXCreateTextureFromFile(pDevice, Add.c_str(), &tex);
 
 
 		if (FAILED(hr))
-		{// ç”Ÿæˆã§ããªã‹ã£ãŸã¨ãã¯NULLã‚’è¿”ã™
+		{// ¶¬‚Å‚«‚È‚©‚Á‚½‚Æ‚«‚ÍNULL‚ğ•Ô‚·
 			MessageBox(NULL, Add.c_str(), "GetResource : LOAD ERROR", MB_OK);
 			return NULL;
 		}
 
-		// ãƒãƒƒãƒ—ã¸æŒ¿å…¥ã™ã‚‹
+		// ƒ}ƒbƒv‚Ö‘}“ü‚·‚é
 		m_TexMap.insert(std::map<std::string, LPDIRECT3DTEXTURE9>::value_type(Add, tex));
 		return tex;
 	}
@@ -671,57 +671,57 @@ LPDIRECT3DTEXTURE9 CManager::GetResource(std::string Add)
 }
 
 //=============================================================================
-// æŒ‡å®šã—ãŸãƒ¢ãƒ‡ãƒ«æƒ…å ±ã‚’èª­ã¿è¾¼ã‚€å‡¦ç†
+// w’è‚µ‚½ƒ‚ƒfƒ‹î•ñ‚ğ“Ç‚İ‚Şˆ—
 //=============================================================================
 HRESULT CManager::LoadModel(std::string Add)
 {
 	std::map<std::string, MODEL_INFO>::const_iterator it = m_ModelMap.find(Add);
 
 	if (it == m_ModelMap.end())
-	{// è¦‹ã¤ã‹ã‚‰ãªã‹ã£ãŸã¨ã
-	 // æ¤œç´¢ã—ãŸæ–‡å­—åˆ—ã‚’ã‚­ãƒ¼ã¨ã—ã¦
-	 // æ–°ã—ããƒãƒƒãƒ—ã«ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’è¿½åŠ ã™ã‚‹
+	{// Œ©‚Â‚©‚ç‚È‚©‚Á‚½‚Æ‚«
+	 // ŒŸõ‚µ‚½•¶š—ñ‚ğƒL[‚Æ‚µ‚Ä
+	 // V‚µ‚­ƒ}ƒbƒv‚ÉƒeƒNƒXƒ`ƒƒ‚ğ’Ç‰Á‚·‚é
 		CRenderer *pRenderer = m_pRenderer;
 		LPDIRECT3DDEVICE9 pDevice;
 		HRESULT hr;
 		MODEL_INFO info = {};
 
-		//ãƒ‡ãƒã‚¤ã‚¹ã‚’å–å¾—ã™ã‚‹
+		//ƒfƒoƒCƒX‚ğæ“¾‚·‚é
 		pDevice = pRenderer->GetDevice();
 
 		hr = D3DXLoadMeshFromX(Add.c_str(), D3DXMESH_SYSTEMMEM, pDevice, NULL, &info.pBuffMat, NULL, &info.nNumMat, &info.pMesh);
 
 		if (FAILED(hr))
-		{// ç”Ÿæˆã§ããªã‹ã£ãŸã¨ãã¯NULLã‚’è¿”ã™
+		{// ¶¬‚Å‚«‚È‚©‚Á‚½‚Æ‚«‚ÍNULL‚ğ•Ô‚·
 			MessageBox(NULL, Add.c_str(), "LoadModel : LOAD ERROR", MB_OK);
-			return hr;			// çµæœã‚’è¿”ã™
+			return hr;			// Œ‹‰Ê‚ğ•Ô‚·
 		}
 
-		// ãƒãƒƒãƒ—ã¸æŒ¿å…¥ã™ã‚‹
+		// ƒ}ƒbƒv‚Ö‘}“ü‚·‚é
 		m_ModelMap.insert(std::map<std::string, MODEL_INFO>::value_type(Add, info));
-		return hr;				// çµæœã‚’è¿”ã™
+		return hr;				// Œ‹‰Ê‚ğ•Ô‚·
 	}
 
 	return S_OK;
 }
 
 //=============================================================================
-// æŒ‡å®šã—ãŸãƒ¢ãƒ‡ãƒ«ã‚’ã‚‚ã‚‰ã†å‡¦ç†
+// w’è‚µ‚½ƒ‚ƒfƒ‹‚ğ‚à‚ç‚¤ˆ—
 //=============================================================================
 bool CManager::GetModelResource(std::string Add, LPD3DXBUFFER &pBuffMat, DWORD &nNumMat, LPD3DXMESH &pMesh)
 {
 	std::map<std::string, MODEL_INFO>::const_iterator it = m_ModelMap.find(Add);
 
 	if (it == m_ModelMap.end())
-	{// è¦‹ã¤ã‹ã‚‰ãªã‹ã£ãŸã¨ã
-	 // æ¤œç´¢ã—ãŸæ–‡å­—åˆ—ã‚’ã‚­ãƒ¼ã¨ã—ã¦
-	 // æ–°ã—ããƒãƒƒãƒ—ã«ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’è¿½åŠ ã™ã‚‹
+	{// Œ©‚Â‚©‚ç‚È‚©‚Á‚½‚Æ‚«
+	 // ŒŸõ‚µ‚½•¶š—ñ‚ğƒL[‚Æ‚µ‚Ä
+	 // V‚µ‚­ƒ}ƒbƒv‚ÉƒeƒNƒXƒ`ƒƒ‚ğ’Ç‰Á‚·‚é
 		CRenderer *pRenderer = m_pRenderer;
 		LPDIRECT3DDEVICE9 pDevice;
 		HRESULT hr;
 		MODEL_INFO info = {};
 
-		//ãƒ‡ãƒã‚¤ã‚¹ã‚’å–å¾—ã™ã‚‹
+		//ƒfƒoƒCƒX‚ğæ“¾‚·‚é
 		pDevice = pRenderer->GetDevice();
 
 		const char* add = Add.c_str();
@@ -729,7 +729,7 @@ bool CManager::GetModelResource(std::string Add, LPD3DXBUFFER &pBuffMat, DWORD &
 		hr = D3DXLoadMeshFromX(Add.c_str(), D3DXMESH_SYSTEMMEM, pDevice, NULL, &info.pBuffMat, NULL, &info.nNumMat, &info.pMesh);
 
 		if (FAILED(hr))
-		{// ç”Ÿæˆã§ããªã‹ã£ãŸã¨ãã¯NULLã‚’è¿”ã™
+		{// ¶¬‚Å‚«‚È‚©‚Á‚½‚Æ‚«‚ÍNULL‚ğ•Ô‚·
 			MessageBox(NULL, Add.c_str(), "GetModelResource : LOAD ERROR", MB_OK);
 			pBuffMat = NULL;
 			nNumMat = NULL;
@@ -737,23 +737,23 @@ bool CManager::GetModelResource(std::string Add, LPD3DXBUFFER &pBuffMat, DWORD &
 			return false;
 		}
 
-		D3DXMATERIAL	*pMat;							//ç¾åœ¨ã®ãƒãƒ†ãƒªã‚¢ãƒ«ä¿å­˜ç”¨
-		// ãƒãƒ†ãƒªã‚¢ãƒ«æƒ…å ±ã«å¯¾ã™ã‚‹ãƒã‚¤ãƒ³ã‚¿ã‚’å–å¾—
+		D3DXMATERIAL	*pMat;							//Œ»İ‚Ìƒ}ƒeƒŠƒAƒ‹•Û‘¶—p
+		// ƒ}ƒeƒŠƒAƒ‹î•ñ‚É‘Î‚·‚éƒ|ƒCƒ“ƒ^‚ğæ“¾
 		pMat = (D3DXMATERIAL*)info.pBuffMat->GetBufferPointer();
 
-		// ãƒãƒ†ãƒªã‚¢ãƒ«ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£èª­ã¿è¾¼ã¿
+		// ƒ}ƒeƒŠƒAƒ‹‚ÌƒeƒNƒXƒ`ƒƒ“Ç‚İ‚İ
 		for (int nCntMat = 0; nCntMat < (int)info.nNumMat; nCntMat++)
 		{
 			if (pMat[nCntMat].pTextureFilename != NULL)
-			{// ãƒ†ã‚¯ã‚¹ãƒãƒ£ãŒã‚ã£ãŸã¨ã
+			{// ƒeƒNƒXƒ`ƒƒ‚ª‚ ‚Á‚½‚Æ‚«
 				char *pFileName = NULL;
-				pFileName = pMat[nCntMat].pTextureFilename;			// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ã‚¢ãƒ‰ãƒ¬ã‚¹ã‚’å–å¾—
-				CManager::Load(pFileName);		// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®èª­ã¿è¾¼ã¿
+				pFileName = pMat[nCntMat].pTextureFilename;			// ƒeƒNƒXƒ`ƒƒ‚ÌƒAƒhƒŒƒX‚ğæ“¾
+				CManager::Load(pFileName);		// ƒeƒNƒXƒ`ƒƒ‚Ì“Ç‚İ‚İ
 			}
 		}
 
 
-		// ãƒãƒƒãƒ—ã¸æŒ¿å…¥ã™ã‚‹
+		// ƒ}ƒbƒv‚Ö‘}“ü‚·‚é
 		m_ModelMap.insert(std::map<std::string, MODEL_INFO>::value_type(Add, info));
 		pBuffMat = info.pBuffMat;
 		nNumMat = info.nNumMat;
@@ -770,68 +770,68 @@ bool CManager::GetModelResource(std::string Add, LPD3DXBUFFER &pBuffMat, DWORD &
 }
 
 //=============================================================================
-// æŒ‡å®šã—ãŸãƒ¢ãƒ‡ãƒ«æƒ…å ±ã‚’èª­ã¿è¾¼ã‚€å‡¦ç†
+// w’è‚µ‚½ƒ‚ƒfƒ‹î•ñ‚ğ“Ç‚İ‚Şˆ—
 //=============================================================================
 HRESULT CManager::LoadShader(std::string Add)
 {
 	std::map<std::string, LPD3DXEFFECT>::const_iterator it = m_ShaderMap.find(Add);
 
 	if (it == m_ShaderMap.end())
-	{// è¦‹ã¤ã‹ã‚‰ãªã‹ã£ãŸã¨ã
-	 // æ¤œç´¢ã—ãŸæ–‡å­—åˆ—ã‚’ã‚­ãƒ¼ã¨ã—ã¦
-	 // æ–°ã—ããƒãƒƒãƒ—ã«ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã‚’è¿½åŠ ã™ã‚‹
+	{// Œ©‚Â‚©‚ç‚È‚©‚Á‚½‚Æ‚«
+	 // ŒŸõ‚µ‚½•¶š—ñ‚ğƒL[‚Æ‚µ‚Ä
+	 // V‚µ‚­ƒ}ƒbƒv‚ÉƒVƒF[ƒ_[‚ğ’Ç‰Á‚·‚é
 		CRenderer *pRenderer = m_pRenderer;
 		LPDIRECT3DDEVICE9 pDevice;
 		HRESULT hr;
 		LPD3DXEFFECT shader = NULL;
 
-		//ãƒ‡ãƒã‚¤ã‚¹ã‚’å–å¾—ã™ã‚‹
+		//ƒfƒoƒCƒX‚ğæ“¾‚·‚é
 		pDevice = pRenderer->GetDevice();
 
 		hr = D3DXCreateEffectFromFile(pDevice, Add.c_str(), NULL, NULL, 0, NULL, &shader, NULL);
 
 		if (FAILED(hr))
-		{// ç”Ÿæˆã§ããªã‹ã£ãŸã¨ãã¯NULLã‚’è¿”ã™
+		{// ¶¬‚Å‚«‚È‚©‚Á‚½‚Æ‚«‚ÍNULL‚ğ•Ô‚·
 			MessageBox(NULL, Add.c_str(), "LoadShader : LOAD ERROR", MB_OK);
-			return hr;			// çµæœã‚’è¿”ã™
+			return hr;			// Œ‹‰Ê‚ğ•Ô‚·
 		}
 
-		// ãƒãƒƒãƒ—ã¸æŒ¿å…¥ã™ã‚‹
+		// ƒ}ƒbƒv‚Ö‘}“ü‚·‚é
 		m_ShaderMap.insert(std::map<std::string, LPD3DXEFFECT>::value_type(Add, shader));
-		return hr;				// çµæœã‚’è¿”ã™
+		return hr;				// Œ‹‰Ê‚ğ•Ô‚·
 	}
 
 	return S_OK;
 }
 
 //=============================================================================
-// æŒ‡å®šã—ãŸãƒ¢ãƒ‡ãƒ«æƒ…å ±ã‚’å–å¾—ã™ã‚‹å‡¦ç†
+// w’è‚µ‚½ƒ‚ƒfƒ‹î•ñ‚ğæ“¾‚·‚éˆ—
 //=============================================================================
 LPD3DXEFFECT CManager::GetShaderResource(std::string Add)
 {
 	std::map<std::string, LPD3DXEFFECT>::const_iterator it = m_ShaderMap.find(Add);
 
 	if (it == m_ShaderMap.end())
-	{// è¦‹ã¤ã‹ã‚‰ãªã‹ã£ãŸã¨ã
-	 // æ¤œç´¢ã—ãŸæ–‡å­—åˆ—ã‚’ã‚­ãƒ¼ã¨ã—ã¦
-	 // æ–°ã—ããƒãƒƒãƒ—ã«ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’è¿½åŠ ã™ã‚‹
+	{// Œ©‚Â‚©‚ç‚È‚©‚Á‚½‚Æ‚«
+	 // ŒŸõ‚µ‚½•¶š—ñ‚ğƒL[‚Æ‚µ‚Ä
+	 // V‚µ‚­ƒ}ƒbƒv‚ÉƒeƒNƒXƒ`ƒƒ‚ğ’Ç‰Á‚·‚é
 		CRenderer *pRenderer = m_pRenderer;
 		LPDIRECT3DDEVICE9 pDevice;
 		HRESULT hr;
 		LPD3DXEFFECT shader = NULL;
 
-		//ãƒ‡ãƒã‚¤ã‚¹ã‚’å–å¾—ã™ã‚‹
+		//ƒfƒoƒCƒX‚ğæ“¾‚·‚é
 		pDevice = pRenderer->GetDevice();
 
 		hr = D3DXCreateEffectFromFile(pDevice, Add.c_str(), NULL, NULL, 0, NULL, &shader, NULL);
 
 		if (FAILED(hr))
-		{// ç”Ÿæˆã§ããªã‹ã£ãŸã¨ãã¯NULLã‚’è¿”ã™
+		{// ¶¬‚Å‚«‚È‚©‚Á‚½‚Æ‚«‚ÍNULL‚ğ•Ô‚·
 			MessageBox(NULL, Add.c_str(), "GetShaderResource : LOAD ERROR", MB_OK);
 			return NULL;
 		}
 
-		// ãƒãƒƒãƒ—ã¸æŒ¿å…¥ã™ã‚‹
+		// ƒ}ƒbƒv‚Ö‘}“ü‚·‚é
 		m_ShaderMap.insert(std::map<std::string, LPD3DXEFFECT>::value_type(Add, shader));
 		return shader;
 	}
@@ -842,7 +842,7 @@ LPD3DXEFFECT CManager::GetShaderResource(std::string Add)
 }
 
 //=============================================================================
-// å£ãšã‚Šãƒ™ã‚¯ãƒˆãƒ«
+// •Ç‚¸‚èƒxƒNƒgƒ‹
 //=============================================================================
 D3DXVECTOR3 *CManager::calcWallScratchVector(D3DXVECTOR3 *out, const D3DXVECTOR3 &front, const D3DXVECTOR3 &normal)
 {
@@ -852,7 +852,7 @@ D3DXVECTOR3 *CManager::calcWallScratchVector(D3DXVECTOR3 *out, const D3DXVECTOR3
 }
 
 //=============================================================================
-// åå°„ãƒ™ã‚¯ãƒˆãƒ«
+// ”½ËƒxƒNƒgƒ‹
 //=============================================================================
 D3DXVECTOR3 *CManager::calcReflectVector(D3DXVECTOR3 *out, const D3DXVECTOR3 &front, const D3DXVECTOR3 &normal)
 {
@@ -862,7 +862,7 @@ D3DXVECTOR3 *CManager::calcReflectVector(D3DXVECTOR3 *out, const D3DXVECTOR3 &fr
 }
 
 //=============================================================================
-// æ•°å­—ã®æ¡æ•°ã‚’æ±‚ã‚ã‚‹å‡¦ç†
+// ”š‚ÌŒ…”‚ğ‹‚ß‚éˆ—
 //=============================================================================
 int CManager::LengthCalculation(int nValue)
 {
@@ -877,27 +877,27 @@ int CManager::LengthCalculation(int nValue)
 }
 
 //=============================================================================
-// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ä¸­å¿ƒä½ç½®ã§ãƒã‚¦ã‚¹ã‚«ãƒ¼ã‚½ãƒ«ã®ä½ç½®ã‚’å–å¾—
+// ƒEƒBƒ“ƒhƒE‚Ì’†SˆÊ’u‚Åƒ}ƒEƒXƒJ[ƒ\ƒ‹‚ÌˆÊ’u‚ğæ“¾
 //=============================================================================
 D3DXVECTOR3 CManager::GetCursorPosWithCenter(void)
 {
-	//ãƒã‚¦ã‚¹åº§æ¨™ã‚’ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã®ä¸­å¿ƒãŒåŸç‚¹ã«ãªã‚‹ã‚ˆã†ã«è£œæ­£ï¼ˆæ­£è¦åŒ–ï¼‰
+	//ƒ}ƒEƒXÀ•W‚ğƒXƒNƒŠ[ƒ“‚Ì’†S‚ªŒ´“_‚É‚È‚é‚æ‚¤‚É•â³i³‹K‰»j
 	D3DXMATRIX mProj;
 	D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
 	CRenderer *pRenderer = CManager::GetRenderer();
 	LPDIRECT3DDEVICE9 pDevice;
 
-	// ãƒ¬ãƒ³ãƒ€ãƒ©ãƒ¼ãŒå­˜åœ¨ã—ã¦ã„ãªã„ã¨ã
+	// ƒŒƒ“ƒ_ƒ‰[‚ª‘¶İ‚µ‚Ä‚¢‚È‚¢‚Æ‚«
 	if(pRenderer == NULL) return pos;
 
-	// ãƒã‚¦ã‚¹ãŒå­˜åœ¨ã—ã¦ã„ãªã„ã¨ã
+	// ƒ}ƒEƒX‚ª‘¶İ‚µ‚Ä‚¢‚È‚¢‚Æ‚«
 	if(m_pInputMouse == NULL) return pos;
 
-	//ãƒ‡ãƒã‚¤ã‚¹ã‚’å–å¾—ã™ã‚‹
+	//ƒfƒoƒCƒX‚ğæ“¾‚·‚é
 	pDevice = pRenderer->GetDevice();
 
-	pDevice->GetTransform(D3DTS_PROJECTION, &mProj);					// ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³ãƒãƒˆãƒªãƒƒã‚¯ã‚¹ã®å–å¾—
+	pDevice->GetTransform(D3DTS_PROJECTION, &mProj);					// ƒvƒƒWƒFƒNƒVƒ‡ƒ“ƒ}ƒgƒŠƒbƒNƒX‚Ìæ“¾
 	pos.x = (((2.0f * m_pInputMouse->GetMouseX()) / (float)SCREEN_WIDTH) - 1) / mProj._11;
 	pos.y = -(((2.0f * m_pInputMouse->GetMouseY()) / (float)SCREEN_HEIGHT) - 1) / mProj._22;
 	pos.z = 1.0f;
@@ -907,78 +907,78 @@ D3DXVECTOR3 CManager::GetCursorPosWithCenter(void)
 
 //
 //D3DXVECTOR3 Slip(D3DXVECTOR3 L,D3DXVECTOR3 N)
-// L:å…¥å°„ãƒ™ã‚¯ãƒˆãƒ«ï¼ˆãƒ¬ã‚¤ï¼‰ N:ãƒãƒªã‚´ãƒ³ã®æ³•ç·š
+// L:“üËƒxƒNƒgƒ‹iƒŒƒCj N:ƒ|ƒŠƒSƒ“‚Ì–@ü
 D3DXVECTOR3 CManager::Slip(D3DXVECTOR3 L, D3DXVECTOR3 N)
 {
-	D3DXVECTOR3 S; //æ»‘ã‚Šãƒ™ã‚¯ãƒˆãƒ«ï¼ˆæ»‘ã‚‹æ–¹å‘ï¼‰
+	D3DXVECTOR3 S; //ŠŠ‚èƒxƒNƒgƒ‹iŠŠ‚é•ûŒüj
 
-	//æ»‘ã‚Šãƒ™ã‚¯ãƒˆãƒ« S=L-(N * L)/(|N|^2)*N
+	//ŠŠ‚èƒxƒNƒgƒ‹ S=L-(N * L)/(|N|^2)*N
 	S = L - ((D3DXVec3Dot(&N, &L)) / (pow(D3DXVec3Length(&N), 2))) * N;
 
 	return S;
 }
 
 //=============================================================================
-// ã‚·ã‚¹ãƒ†ãƒ è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«èª­è¾¼
+// ƒVƒXƒeƒ€İ’èƒtƒ@ƒCƒ‹“Ç
 //=============================================================================
 void CManager::LoadSystemFile(void)
 {
-	FILE *pFile;																	// ãƒ•ã‚¡ã‚¤ãƒ«
-	char cReadText[128];															// æ–‡å­—
-	char cHeadText[128];															// æ¯”è¼ƒ
+	FILE *pFile;																	// ƒtƒ@ƒCƒ‹
+	char cReadText[128];															// •¶š
+	char cHeadText[128];															// ”äŠr
 
-	pFile = fopen("data/system.ini", "r");											// ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é–‹ãã¾ãŸã¯ä½œã‚‹
+	pFile = fopen("data/system.ini", "r");											// ƒtƒ@ƒCƒ‹‚ğŠJ‚­‚Ü‚½‚Íì‚é
 
-	if (pFile != NULL)																// ãƒ•ã‚¡ã‚¤ãƒ«ãŒèª­ã¿è¾¼ã‚ãŸå ´åˆ
+	if (pFile != NULL)																// ƒtƒ@ƒCƒ‹‚ª“Ç‚İ‚ß‚½ê‡
 	{
 		if (pFile != NULL)
 		{
-			//ã‚¹ã‚¯ãƒªãƒ—ãƒˆãŒæ¥ã‚‹ã¾ã§ãƒ«ãƒ¼ãƒ—
+			//ƒXƒNƒŠƒvƒg‚ª—ˆ‚é‚Ü‚Åƒ‹[ƒv
 			while (strcmp(cHeadText, "SCRIPT") != 0)
 			{
 				fgets(cReadText, sizeof(cReadText), pFile);
 				sscanf(cReadText, "%s", &cHeadText);
 			}
 
-			// ã‚¹ã‚¯ãƒªãƒ—ãƒˆã ã£ãŸã‚‰
+			// ƒXƒNƒŠƒvƒg‚¾‚Á‚½‚ç
 			if (strcmp(cHeadText, "SCRIPT") == 0)
 			{
-				// ã‚¨ãƒ³ãƒ‰ã‚¹ã‚¯ãƒªãƒ—ãƒˆãŒæ¥ã‚‹ã¾ã§
+				// ƒGƒ“ƒhƒXƒNƒŠƒvƒg‚ª—ˆ‚é‚Ü‚Å
 				while (strcmp(cHeadText, "END_SCRIPT") != 0)
 				{
 					fgets(cReadText, sizeof(cReadText), pFile);
 					sscanf(cReadText, "%s", &cHeadText);
 
-					//æ”¹è¡Œ
+					//‰üs
 					if (strcmp(cReadText, "\n") != 0)
 					{
 
 					}
 					else if (strcmp(cHeadText, "CameraOffset") == 0)
-					{// è¿½è·¡ã™ã‚‹ã‚«ãƒ¡ãƒ©ã®ã‚ªãƒ•ã‚»ãƒƒãƒˆ
+					{// ’ÇÕ‚·‚éƒJƒƒ‰‚ÌƒIƒtƒZƒbƒg
 
 					}
 				}
 			}
-			fclose(pFile);				// ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é–‰ã˜ã‚‹
+			fclose(pFile);				// ƒtƒ@ƒCƒ‹‚ğ•Â‚¶‚é
 
-			MessageBox(NULL, "ãƒ¢ãƒ‡ãƒ«æƒ…å ±ã®èª­è¾¼ã«æˆåŠŸï¼", "SUCCESS", MB_ICONASTERISK);		// ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒœãƒƒã‚¯ã‚¹ã®ç”Ÿæˆ
+			MessageBox(NULL, "ƒ‚ƒfƒ‹î•ñ‚Ì“Ç‚É¬Œ÷I", "SUCCESS", MB_ICONASTERISK);		// ƒƒbƒZ[ƒWƒ{ƒbƒNƒX‚Ì¶¬
 		}
 		else
 		{
-			MessageBox(NULL, "ãƒ¢ãƒ‡ãƒ«æƒ…å ±ã®ã‚¢ã‚¯ã‚»ã‚¹å¤±æ•—ï¼", "WARNING", MB_ICONWARNING);	// ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒœãƒƒã‚¯ã‚¹ã®ç”Ÿæˆ
+			MessageBox(NULL, "ƒ‚ƒfƒ‹î•ñ‚ÌƒAƒNƒZƒX¸”sI", "WARNING", MB_ICONWARNING);	// ƒƒbƒZ[ƒWƒ{ƒbƒNƒX‚Ì¶¬
 		}
 	}
 }
 
 //=============================================================================
-// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®é–‹æ”¾
+// ƒeƒNƒXƒ`ƒƒ‚ÌŠJ•ú
 //=============================================================================
 void CManager::TexRelease(void)
 {
 	for (auto itr = m_TexMap.begin(); itr != m_TexMap.end(); itr++)
 	{
-		// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®é–‹æ”¾
+		// ƒeƒNƒXƒ`ƒƒ‚ÌŠJ•ú
 		if (itr->second != NULL)
 		{
 			itr->second->Release();
@@ -990,20 +990,20 @@ void CManager::TexRelease(void)
 }
 
 //=============================================================================
-// ãƒ¢ãƒ‡ãƒ«ãƒ‡ãƒ¼ã‚¿ã®é–‹æ”¾
+// ƒ‚ƒfƒ‹ƒf[ƒ^‚ÌŠJ•ú
 //=============================================================================
 void CManager::ModelRelease(void)
 {
 	for (auto itr = m_ModelMap.begin(); itr != m_ModelMap.end(); itr++)
 	{
-		// ãƒãƒ†ãƒªã‚¢ãƒ«ã®é–‹æ”¾
+		// ƒ}ƒeƒŠƒAƒ‹‚ÌŠJ•ú
 		if (itr->second.pBuffMat != NULL)
 		{
 			itr->second.pBuffMat->Release();
 			itr->second.pBuffMat = NULL;
 		}
 
-		// ãƒ¡ãƒƒã‚·ãƒ¥æƒ…å ±ã®é–‹æ”¾
+		// ƒƒbƒVƒ…î•ñ‚ÌŠJ•ú
 		if (itr->second.pMesh != NULL)
 		{
 			itr->second.pMesh->Release();
@@ -1015,13 +1015,13 @@ void CManager::ModelRelease(void)
 }
 
 //=============================================================================
-// ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã®é–‹æ”¾
+// ƒVƒF[ƒ_[‚ÌŠJ•ú
 //=============================================================================
 void CManager::ShaderRelease(void)
 {
 	for (auto itr = m_ShaderMap.begin(); itr != m_ShaderMap.end(); itr++)
 	{
-		// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®é–‹æ”¾
+		// ƒeƒNƒXƒ`ƒƒ‚ÌŠJ•ú
 		if (itr->second != NULL)
 		{
 			itr->second->Release();
@@ -1033,77 +1033,77 @@ void CManager::ShaderRelease(void)
 }
 
 //=============================================================================
-// æ–‡å­—ã‚’ç‰¹å®šã®åŒºåˆ‡ã‚Šã”ã¨ã«å–å¾—ã™ã‚‹(1è¡Œã”ã¨)
+// •¶š‚ğ“Á’è‚Ì‹æØ‚è‚²‚Æ‚Éæ“¾‚·‚é(1s‚²‚Æ)
 //=============================================================================
 std::vector<std::string> CManager::split(
-	std::string& input,		// 1è¡Œã®ã‚¹ãƒˆãƒªãƒ¼ãƒ 
-	char delimiter		// åŒºåˆ‡ã‚Šæ–‡å­—
+	std::string& input,		// 1s‚ÌƒXƒgƒŠ[ƒ€
+	char delimiter		// ‹æØ‚è•¶š
 )
 {
-	// å¤‰æ•°å®£è¨€
-	std::istringstream iss_Line(input);	// æ–‡å­—åˆ—ã‚¹ãƒˆãƒªãƒ¼ãƒ 
-	std::string sRead;					// æ–‡å­—åˆ—èª­ã¿è¾¼ã¿ç”¨
-	std::vector<std::string> vec_Result;		// 1è¡Œèª­ã¿è¾¼ã¿ç”¨
+	// •Ï”éŒ¾
+	std::istringstream iss_Line(input);	// •¶š—ñƒXƒgƒŠ[ƒ€
+	std::string sRead;					// •¶š—ñ“Ç‚İ‚İ—p
+	std::vector<std::string> vec_Result;		// 1s“Ç‚İ‚İ—p
 
-	// æŒ‡å®šã—ãŸåŒºåˆ‡ã‚ŠãŒæ¥ã‚‹é™ã‚Šãƒ«ãƒ¼ãƒ—ã™ã‚‹
+	// w’è‚µ‚½‹æØ‚è‚ª—ˆ‚éŒÀ‚èƒ‹[ƒv‚·‚é
 	while (std::getline(iss_Line, sRead, delimiter))
 	{
-		// èª­ã¿å–ã£ãŸæ–‡å­—åˆ—ã‚’æ ¼ç´ã™ã‚‹
+		// “Ç‚İæ‚Á‚½•¶š—ñ‚ğŠi”[‚·‚é
 		vec_Result.push_back(sRead);
 	}
-	// ç¢ºä¿ã—ãŸæ–‡å­—åˆ—åˆ†è¿”ã™
+	// Šm•Û‚µ‚½•¶š—ñ•ª•Ô‚·
 	return vec_Result;
 }
 
 //=============================================================================
-// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚¢ã‚»ãƒƒãƒˆã®ãƒ­ãƒ¼ãƒ‰å‡¦ç†
+// ƒeƒNƒXƒ`ƒƒƒAƒZƒbƒg‚Ìƒ[ƒhˆ—
 //=============================================================================
 void CManager::LoadTexScript(void)
 {
 	FILE *pFile;
-	char cReadText[128];		//æ–‡å­—
-	char cHeadText[128];		//æ¯”è¼ƒ
+	char cReadText[128];		//•¶š
+	char cHeadText[128];		//”äŠr
 	char cDie[128];
-	int nCntPointer = 0;		//ãƒã‚¤ãƒ³ã‚¿ãƒ¼ã®æ•°å€¤
+	int nCntPointer = 0;		//ƒ|ƒCƒ“ƒ^[‚Ì”’l
 
-	char sAdd[64];				//ãƒ¢ãƒ‡ãƒ«ã®ã‚¢ãƒ‰ãƒ¬ã‚¹
+	char sAdd[64];				//ƒ‚ƒfƒ‹‚ÌƒAƒhƒŒƒX
 	std::string Add;
 
-	int nCntMotion = 0;			//å‚ç…§ã™ã‚‹ãƒã‚¤ãƒ³ã‚¿ã®å€¤ã‚’åˆæœŸåŒ–
+	int nCntMotion = 0;			//QÆ‚·‚éƒ|ƒCƒ“ƒ^‚Ì’l‚ğ‰Šú‰»
 	int nCntKey = 0;
 
 	int nMaxModel = 0;
 
-	//ãƒ†ã‚­ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ãƒ­ãƒ¼ãƒ‰
+	//ƒeƒLƒXƒgƒf[ƒ^ƒ[ƒh
 	pFile = fopen(MANAGER_TEX, "r");
 
 	if (pFile != NULL)
 	{
-		//ãƒã‚¤ãƒ³ã‚¿ãƒ¼ã®ãƒªã‚»ãƒƒãƒˆ
+		//ƒ|ƒCƒ“ƒ^[‚ÌƒŠƒZƒbƒg
 		nCntPointer = 0;
 
-		//ã‚¹ã‚¯ãƒªãƒ—ãƒˆãŒæ¥ã‚‹ã¾ã§ãƒ«ãƒ¼ãƒ—
+		//ƒXƒNƒŠƒvƒg‚ª—ˆ‚é‚Ü‚Åƒ‹[ƒv
 		while (strcmp(cHeadText, "SCRIPT") != 0)
 		{
 			fgets(cReadText, sizeof(cReadText), pFile);
 			sscanf(cReadText, "%s", &cHeadText);
 		}
 
-		//ã‚¹ã‚¯ãƒªãƒ—ãƒˆã ã£ãŸã‚‰
+		//ƒXƒNƒŠƒvƒg‚¾‚Á‚½‚ç
 		if (strcmp(cHeadText, "SCRIPT") == 0)
 		{
-			//ã‚¨ãƒ³ãƒ‰ã‚¹ã‚¯ãƒªãƒ—ãƒˆãŒæ¥ã‚‹ã¾ã§
+			//ƒGƒ“ƒhƒXƒNƒŠƒvƒg‚ª—ˆ‚é‚Ü‚Å
 			while (strcmp(cHeadText, "END_SCRIPT") != 0)
 			{
 				fgets(cReadText, sizeof(cReadText), pFile);
 				sscanf(cReadText, "%s", &cHeadText);
 
-				//æ”¹è¡Œ
+				//‰üs
 				if (strcmp(cReadText, "\n") != 0)
 				{
 					if (strcmp(cHeadText, "MODEL_FILENAME") == 0)
-					{//ãƒ‘ãƒ¼ãƒ„ãƒ¢ãƒ‡ãƒ«ã®ã‚¢ãƒ‰ãƒ¬ã‚¹æƒ…å ±ã®ã¨ã
-						sscanf(cReadText, "%s %s %s", &cDie, &cDie, &sAdd[0]);						//ã‚¢ãƒ‰ãƒ¬ã‚¹ã®å–å¾—
+					{//ƒp[ƒcƒ‚ƒfƒ‹‚ÌƒAƒhƒŒƒXî•ñ‚Ì‚Æ‚«
+						sscanf(cReadText, "%s %s %s", &cDie, &cDie, &sAdd[0]);						//ƒAƒhƒŒƒX‚Ìæ“¾
 						Add = sAdd;
 						CManager::Load(Add);
 					}
@@ -1111,11 +1111,11 @@ void CManager::LoadTexScript(void)
 			}
 		}
 
-		//ãƒ•ã‚¡ã‚¤ãƒ«é–‰
+		//ƒtƒ@ƒCƒ‹•Â
 		fclose(pFile);
 	}
 	else
 	{
-		MessageBox(NULL, "ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒãƒãƒ¼ã‚¸ãƒ£ãŒé–‹ã‘ã¾ã›ã‚“ã§ã—ãŸï¼", "WARNING", MB_ICONWARNING);	// ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒœãƒƒã‚¯ã‚¹ã®ç”Ÿæˆ
+		MessageBox(NULL, "ƒeƒNƒXƒ`ƒƒƒ}ƒl[ƒWƒƒ‚ªŠJ‚¯‚Ü‚¹‚ñ‚Å‚µ‚½I", "WARNING", MB_ICONWARNING);	// ƒƒbƒZ[ƒWƒ{ƒbƒNƒX‚Ì¶¬
 	}
 }

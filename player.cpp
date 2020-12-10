@@ -118,7 +118,7 @@ HRESULT CPlayer::Init(void)
 	CCamera *pCamera = CManager::GetCamera();
 	D3DXVECTOR3 pos = GetPosition();				// プレイヤーの位置取得
 
-	pos = D3DXVECTOR3(0.0f, 50.0f, 0.0f);			// プレイヤーの位置設定
+	pos = D3DXVECTOR3(27027.727f, 0.0f, 34473.258f);			// プレイヤーの位置設定
 
 	if (pCamera != NULL)
 	{
@@ -258,7 +258,7 @@ void CPlayer::Update(void)
 
 	VERTEX_PLANE plane = {};
 
-	CCollider::RayBlockCollision(pos, &pModel[0].GetMtxWorld(), 110, 150.0f, plane);
+	CCollider::RayBlockCollision(pos, &pModel[0].GetMtxWorld(), 110, 1500.0f, plane);
 
 	D3DXVECTOR3 AB = plane.a - plane.b;
 	D3DXVECTOR3 BC = plane.b - plane.c;
@@ -293,11 +293,11 @@ void CPlayer::Update(void)
 				{
 					if (Type == RANDTYPE_GRASS)
 					{
-					//	pSound->PlaySoundA((SOUND_LABEL)(CManager::GetRand(3) + (int)SOUND_LABEL_SE_GRASS_1));
+						//	pSound->PlaySoundA((SOUND_LABEL)(CManager::GetRand(3) + (int)SOUND_LABEL_SE_GRASS_1));
 					}
 					else if (Type == RANDTYPE_SAND)
 					{
-					//	pSound->PlaySoundA((SOUND_LABEL)(CManager::GetRand(3) + (int)SOUND_LABEL_SE_SAND_1));
+						//	pSound->PlaySoundA((SOUND_LABEL)(CManager::GetRand(3) + (int)SOUND_LABEL_SE_SAND_1));
 					}
 				}
 			}
@@ -375,6 +375,77 @@ void CPlayer::Update(void)
 	if (m_pDistanceNext != NULL)
 	{
 		m_pDistanceNext->Update();
+	}
+
+	// ドリフトしていたとき
+	if (m_bDrift[DRIFT_LEFT] || m_bDrift[DRIFT_RIGHT])
+	{
+		// パーティクル全体の位置計算
+		D3DXVECTOR3 vecPos = D3DXVECTOR3(-25.0f, 0.0f, -5.0f);
+		D3DXMATRIX mtxMeshRot, mtxMeshTrans;				// 計算用マトリックス
+		D3DXMATRIX mtx;										// 武器のマトリックス
+		D3DXMATRIX mtxPlayer;
+
+		// ワールドマトリックスの初期化
+		D3DXMatrixIdentity(&mtx);
+
+		// ワールドマトリックスの初期化
+		D3DXMatrixIdentity(&mtxPlayer);
+
+		// 回転を反映
+		D3DXMatrixRotationYawPitchRoll(&mtxMeshRot, 0.0f, 0.0f, 0.0f);
+		D3DXMatrixMultiply(&mtxPlayer, &mtxPlayer, &mtxMeshRot);
+
+		// 位置を反映
+		D3DXMatrixTranslation(&mtxMeshTrans, vecPos.x, vecPos.y, vecPos.z);
+		D3DXMatrixMultiply(&mtxPlayer, &mtxPlayer, &mtxMeshTrans);
+
+		// 回転を反映
+		D3DXMatrixRotationYawPitchRoll(&mtxMeshRot, 0.0f, 0.0f, 0.0f);
+		D3DXMatrixMultiply(&mtx, &mtx, &mtxMeshRot);
+
+		// 位置を反映
+		D3DXMatrixTranslation(&mtxMeshTrans, pos.x, pos.y, pos.z);
+		D3DXMatrixMultiply(&mtx, &mtx, &mtxMeshTrans);
+
+		D3DXMatrixMultiply(&mtx, &mtx, &mtxPlayer);
+
+		for (int nCount = 0; nCount < 2; nCount++)
+		{
+			CEffect::CreateEffect("spark", D3DXVECTOR3(mtx._41, mtx._42, mtx._43), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+		}
+
+		// パーティクル全体の位置計算
+		vecPos = D3DXVECTOR3(25.0f, 0.0f, -5.0f);
+
+		// ワールドマトリックスの初期化
+		D3DXMatrixIdentity(&mtx);
+
+		// ワールドマトリックスの初期化
+		D3DXMatrixIdentity(&mtxPlayer);
+
+		// 回転を反映
+		D3DXMatrixRotationYawPitchRoll(&mtxMeshRot, 0.0f, 0.0f, 0.0f);
+		D3DXMatrixMultiply(&mtxPlayer, &mtxPlayer, &mtxMeshRot);
+
+		// 位置を反映
+		D3DXMatrixTranslation(&mtxMeshTrans, vecPos.x, vecPos.y, vecPos.z);
+		D3DXMatrixMultiply(&mtxPlayer, &mtxPlayer, &mtxMeshTrans);
+
+		// 回転を反映
+		D3DXMatrixRotationYawPitchRoll(&mtxMeshRot, 0.0f, 0.0f, 0.0f);
+		D3DXMatrixMultiply(&mtx, &mtx, &mtxMeshRot);
+
+		// 位置を反映
+		D3DXMatrixTranslation(&mtxMeshTrans, pos.x, pos.y, pos.z);
+		D3DXMatrixMultiply(&mtx, &mtx, &mtxMeshTrans);
+
+		D3DXMatrixMultiply(&mtx, &mtx, &mtxPlayer);
+
+		for (int nCount = 0; nCount < 2; nCount++)
+		{
+			CEffect::CreateEffect("spark", D3DXVECTOR3(mtx._41, mtx._42, mtx._43), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+		}
 	}
 
 #ifdef _DEBUG

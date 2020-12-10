@@ -833,6 +833,7 @@ void CDebugProc::TabBar(D3DXVECTOR3 &worldPos)
 		ImGui::Checkbox(u8"繰り返す", &m_bLoop);
 		ImGui::Checkbox(u8"ランダムスピード", &m_bRandomSpeed);
 		ImGui::Checkbox(u8"フェードアウト", &m_bFadeOut);
+		ImGui::Checkbox(u8"加算合成", &m_bAlpha);
 
 		switch ((PARTICLESHAPE)m_nEmissionType)
 		{
