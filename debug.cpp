@@ -734,7 +734,7 @@ void CDebugProc::TabBar(D3DXVECTOR3 &worldPos)
 		}
 
 		// 現在のデバッグタイプを表示
-		ImGui::Text("individual Debug");
+		ImGui::Text(u8"UI作成モード");
 		ImGui::EndTabItem();
 	}
 	if (ImGui::BeginTabItem("delete"))
@@ -746,7 +746,7 @@ void CDebugProc::TabBar(D3DXVECTOR3 &worldPos)
 
 		DeleteObject(worldPos);					// 削除モードの実行
 		// 現在のデバッグタイプを表示
-		ImGui::Text("individual Debug");
+		ImGui::Text(u8"削除モード");
 		ImGui::EndTabItem();
 	}
 	if (ImGui::BeginTabItem("Randpaint"))
@@ -1320,8 +1320,9 @@ void CDebugProc::CreateIndividual(D3DXVECTOR3 &worldPos)
 				if (pObject != NULL)
 				{
 					pObject->BindModel(m_currentModel);
-					pObject->SetPosition(pos);												// 見本の場所に設置
-					pObject->SetRotation(rot);
+					pObject->SetPosition(pos);									// 見本の場所に設置
+					pObject->SetRotation(rot);									// 回転量の設定
+					pObject->SetSize(size);										// サイズの設定
 				}
 			}
 		}

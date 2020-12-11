@@ -14,7 +14,7 @@
 #include "main.h"
 #include "scene2D.h"
 
-#define MAX_UI (8)
+#define MAX_SELECT_UI (8)
 
 //=============================================================================
 // クラス定義
@@ -33,8 +33,7 @@ public:
 	static void LoadAsset(void);						// アセットの読み込み処理
 
 private:
-	CScene2D *pBack[MAX_UI];					// UI
+	CScene2D *pBack[MAX_SELECT_UI];					// UI
 	int m_nCarType;								// 車の種類
-
 };
 #endif

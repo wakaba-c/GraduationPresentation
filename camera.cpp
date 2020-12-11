@@ -15,6 +15,7 @@
 #include "player.h"
 #include "inputController.h"
 #include "takaseiLibrary.h"
+#include "speed.h"
 
 //=============================================================================
 // 静的メンバ変数の初期化
@@ -57,18 +58,23 @@ HRESULT CCamera::Init(void)
 
 	pDevice = Renderer->GetDevice();							// デバイスの取得
 	m_worldPos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);					// マウスのワールド座標
-	m_bRotMove = false;											// 回転運動の更新
-	m_rot = D3DXVECTOR3(0.0f, D3DX_PI, 0.0f);						// 回転量
+	m_bStorker = true;											// プレイヤー追尾
+	m_bSmooth = false;											// スムーズ移動
+	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);						// 回転量
 	m_rotDest = D3DXVECTOR3(0.0f, 0.0f, 0.0f);					// 回転量の目的地
 	m_posV = D3DXVECTOR3(0.0f, 500.0f, -316.0f);				// 視点
 	m_posVDest = m_posV;										// 視点の目的地
 	m_posR = D3DXVECTOR3(0.0f, 100.0f, 0.0f);					// 注視点
 	m_posRDest = m_posR;										// 注視点の目的地
 	m_vecU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);						// 上方向ベクトル
+	m_target = D3DXVECTOR3(0.0f, 0.0f, 0.0f);					// 最終加算量
+	m_currentRot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// 現在の加算値
+	m_rotMove = D3DXVECTOR3(0.0f, 0.0f, 0.0f);					// 1フレーム当たりの回転量
 	m_originPos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// カメラの位置
 	originPos = m_posR - m_posV;								// カメラ位置 の代入
 	m_fDistance = sqrtf(originPos.y * originPos.y + originPos.z * originPos.z + 50);	// 距離 の算出
-	m_nCntRot = 0;												// カメラの回転開始カウンタ
+	m_nWatchingId = 0;											// 観戦するID
+	m_move = D3DXVECTOR3_ZERO;
 
 	// 描画領域 の設定
 	SetViewport(D3DXVECTOR2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2),
@@ -77,7 +83,7 @@ HRESULT CCamera::Init(void)
 #ifdef _DEBUG
 	m_nType = 0;	// モデルタイプ
 
-	// デバッグ表示用フォントを設定
+					// デバッグ表示用フォントを設定
 	D3DXCreateFont(pDevice, 18, 0, 0, 0, FALSE, SHIFTJIS_CHARSET,
 		OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "ＭＳ ゴシック", &m_pCameraFont);
 #endif
@@ -98,10 +104,108 @@ void CCamera::Uninit(void)
 //=============================================================================
 void CCamera::Update(void)
 {
+	D3DXVECTOR3 Calculation;					// 計算用
+	D3DXVECTOR3 fDiff;							// 計算用格納変数
+
+	D3DXVECTOR3 pos = D3DXVECTOR3_ZERO;
+	D3DXVECTOR3 rot = D3DXVECTOR3_ZERO;
+
+	Calculation.y = m_rotDest.y - m_rot.y;		// 現在の値と目的の値の差 の算出
+
+	if (Calculation.y > D3DX_PI)
+	{// 回転量 が既定値を超えたとき
+		m_rotDest.y -= D3DX_PI * 2;				// 回転の補正
+	}
+	else if (Calculation.y < -D3DX_PI)
+	{// 回転量 が既定値を超えたとき
+		m_rotDest.y += D3DX_PI * 2;				// 回転の補正
+	}
+
+	if (fabsf(Calculation.y) < 0.0f)
+	{// 計算の値 が既定値を超えたとき
+		Calculation.y = m_rotDest.y;			// 計算の値を補正
+	}
+
 	if (CManager::GetMode() == CManager::MODE_GAME)
-	{// モードがゲームだったとき
-		//カメラ操作
+	{
+		if (m_bStorker)
+		{// プレイヤー追尾が許可されているとき
+			// プレイヤー取得
+			CPlayer *pPlayer = CGame::GetPlayer();
+
+			if (pPlayer != NULL)
+			{// プレイヤーが存在していたとき
+				pos = pPlayer->GetPosition();
+				rot = pPlayer->GetCameraRot();
+				pos.y += 120.0f;								// プレイヤーの位置にオフセットを加算
+				m_originPos = pos;
+				//m_rot = rot;								// 回転目標値を設定
+			}
+		}
+		else
+		{
+			// 位置更新
+			m_originPos += m_move;
+
+			// 減速
+			m_move.x += (0 - m_move.x) * 0.12f;
+			m_move.y += (0 - m_move.y) * 0.12f;
+			m_move.z += (0 - m_move.z) * 0.12f;
+		}
+	}
+
+	// 回転の最終目的地
+	m_rotDest.y = rot.y;
+
+	// 回転情報の差を格納
+	fDiff.y = m_rot.y - m_rotDest.y;
+
+	// 回転の補正
+	CTakaseiLibrary::RotRevision(&fDiff);
+
+	//カメラの位置計算
+	m_posVDest.x = m_originPos.x + sinf(D3DX_PI + m_rot.y) * cosf(D3DX_PI + m_rot.x) * m_fDistance;
+	m_posVDest.y = m_originPos.y + sinf(D3DX_PI + m_rot.x) * m_fDistance;
+	m_posVDest.z = m_originPos.z + cosf(D3DX_PI + m_rot.y) * cosf(D3DX_PI + m_rot.x) * m_fDistance;
+
+	m_posRDest.x = m_originPos.x + cosf(D3DX_PI + m_rot.y) * cosf(D3DX_PI + m_rot.x);
+	m_posRDest.y = m_originPos.y + sinf(D3DX_PI + m_rot.x);
+	m_posRDest.z = m_originPos.z + sinf(D3DX_PI + m_rot.y) * cosf(D3DX_PI + m_rot.x);
+
+	if (m_bSmooth)
+	{
+		//カメラの位置適応
+		m_posV += (m_posVDest - m_posV) * SPLIT;
+		m_posR += (m_posRDest - m_posR) * SPLIT;
+
+		m_posVDest = m_originPos + m_rot;
+	}
+	else
+	{
+		//カメラの位置適応
+		m_posV = m_posVDest;
+		m_posR = m_posRDest;
+	}
+
+	if (m_bStorker)
+	{// フォーカスをあわせるとき
+		// 差を徐々に縮めていく
+		m_rot.y -= fDiff.y * ROT_SHRINK;
+	}
+	else
+	{
+		// カメラ単体操作
 		CameraMove();
+	}
+
+	//回転数のリセット
+	if (m_rot.y < -D3DX_PI)
+	{
+		m_rot.y += D3DX_PI * 2;
+	}
+	else if (m_rot.y > D3DX_PI)
+	{
+		m_rot.y -= D3DX_PI * 2;
 	}
 
 #ifdef _DEBUG
@@ -125,10 +229,10 @@ void CCamera::SetCamera(void)
 	// プロジェクションマトリックスを作成
 	D3DXMatrixPerspectiveFovLH(
 		&m_mtxProjection,
-		D3DXToRadian(45.0f),							// 視野角
+		D3DXToRadian(45.0f + (25 * CManager::easeIn((CSpeed::GetSpeed() * 0.5f) / 25, 0.0f, 1.0f, 1.0f))),							// 視野角
 		(float)SCREEN_WIDTH / (float)SCREEN_HEIGHT,		// アスペクト比
 		1.0f,											// NearZ値
-		150000.0f);										// FarZ値
+		1500000.0f);										// FarZ値
 
 	// プロジェクションマトリックスの設定
 	pDevice->SetTransform(D3DTS_PROJECTION, &m_mtxProjection);
@@ -181,7 +285,7 @@ bool CCamera::VFCulling(D3DXVECTOR3 pos, int nType, float fAngle, float fNearCli
 	float fRadius = 0.0f;
 	float fAspect = SCREEN_WIDTH / SCREEN_HEIGHT;				// アスペクト比
 
-	// タイプ別半径の設定
+																// タイプ別半径の設定
 	switch (nType)
 	{
 	case CScene::PRIORITY_ENEMY:
@@ -299,7 +403,7 @@ void CCamera::SetPosCamera(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	m_rotDest = rot;					// 回転目標値を設定
 	m_rot = rot;						// 回転値を設定
 
-	// カメラの位置計算
+										// カメラの位置計算
 	m_posVDest.x = m_originPos.x + sinf(D3DX_PI + m_rot.y) * cosf(D3DX_PI + m_rot.x) * m_fDistance;
 	m_posVDest.y = m_originPos.y + sinf(D3DX_PI + m_rot.x) * m_fDistance;
 	m_posVDest.z = m_originPos.z + cosf(D3DX_PI + m_rot.y) * cosf(D3DX_PI + m_rot.x) * m_fDistance;
@@ -339,6 +443,10 @@ HRESULT CCamera::SetViewport(D3DXVECTOR2 pos, D3DXVECTOR2 size)
 	return S_OK;
 }
 
+void CCamera::Test(int nTest = 0)
+{
+}
+
 //==============================================================================
 // XZ平面とスクリーン座標の交点算出関数
 //==============================================================================
@@ -355,7 +463,7 @@ D3DXVECTOR3 CCamera::CalcScreenToXZ(float fSx, float fSy, int nScreen_w, int nSc
 
 	if (ray.y <= 0)
 	{// 床との交差が起きている場合は交点を
-		// 床交点
+	 // 床交点
 		float Lray = D3DXVec3Dot(&ray, &D3DXVECTOR3(0, 1, 0));
 		float LP0 = D3DXVec3Dot(&(-nearpos), &D3DXVECTOR3(0, 1, 0));
 		Answer = nearpos + (LP0 / Lray)*ray;
@@ -394,57 +502,44 @@ D3DXVECTOR3* CCamera::CalcScreenToWorld(D3DXVECTOR3* pout, float fSx, float fSy,
 //=============================================================================
 void CCamera::CameraMove(void)
 {
-	// キーボードの取得
-	CInputKeyboard *pKeyboard = CManager::GetInputKeyboard();
+	if (CManager::GetMode() == CManager::MODE_GAME)
+	{// モードがゲームだったとき
+		CInputKeyboard *pKeyboard = CManager::GetInputKeyboard();		// キーボードの取得
+		CInputMouse *pMouse = CManager::GetInputMouse();				// マウスの取得
+		CInputController *pGamepad = CManager::GetInputController();	// ゲームパッドの取得
 
-	CPlayer *pPlayer = CGame::GetPlayer();					// プレイヤー情報取得
-	D3DXVECTOR3 fDiff;									// 計算用格納変数
-	D3DXVECTOR3 playerRot = D3DXVECTOR3_ZERO;
-	D3DXVECTOR3 playerPos = D3DXVECTOR3_ZERO;
-	if (pPlayer != NULL)
-	{
-		playerRot = pPlayer->GetCameraRot();	// プレイヤー用回転変数
-		playerPos = pPlayer->GetPosition();		// プレイヤー用位置変数
-	}
-
-	m_fDistance = DISTANCE;
-
-	// 回転の最終目的地
-	m_rotDest.y = playerRot.y;
-
-	// 回転情報の差を格納
-	fDiff.y = m_rot.y - m_rotDest.y;
-
-	// 回転の補正
-	CTakaseiLibrary::RotRevision(&fDiff);
-
-	//カメラの位置計算
-	m_posVDest.x = playerPos.x + sinf(D3DX_PI + m_rot.y) * cosf(D3DX_PI + m_rot.x) * m_fDistance;
-	m_posVDest.y = playerPos.y + sinf(D3DX_PI + m_rot.x) + posV_Height;
-	m_posVDest.z = playerPos.z + cosf(D3DX_PI + m_rot.y) * cosf(D3DX_PI + m_rot.x) * m_fDistance;
-
-	m_posRDest.x = playerPos.x + sinf(D3DX_PI + m_rot.y) * cosf(D3DX_PI + m_rot.x) * posR_Length;
-	m_posRDest.y = playerPos.y + sinf(D3DX_PI + m_rot.x) + posR_Height;
-	m_posRDest.z = playerPos.z + cosf(D3DX_PI + m_rot.y) * cosf(D3DX_PI + m_rot.x) * posR_Length;
-
-	// カメラの位置適応
-	m_posV.x += (m_posVDest.x - m_posV.x) * 1.0f;
-	m_posV.y += (m_posVDest.y - m_posV.y) * 1.0f;
-	m_posV.z += (m_posVDest.z - m_posV.z) * 1.0f;
-	m_posR += (m_posRDest - m_posR) * 1.0f;
-
-	// 差を徐々に縮めていく
-	m_rot.y -= fDiff.y * ROT_SHRINK;
-
-	// 回転の補正
-	CTakaseiLibrary::RotRevision(&m_rot);
-
-#ifdef _DEBUG
-	CInputMouse *pMouse = CManager::GetInputMouse();
-
-	if (pMouse != NULL)
-	{
 		D3DXVECTOR2 mousePos;									// マウス座標
+
+		float nValueH = 0;									//コントローラー
+		float nValueV = 0;									//コントローラー
+
+		if (pGamepad != NULL)
+		{// ゲームパッドが存在していたとき
+			if (pGamepad->GetJoypadUse(0))
+			{// 使用可能だったとき
+			 // 右スティックの角度を取得
+				pGamepad->GetJoypadStickRight(0, &nValueH, &nValueV);
+
+				// カメラが指定の範囲外だったとき
+				if (m_rot.x < -0.7f)
+				{
+					// 最大値まで戻す
+					m_rot.x = -0.7f;
+				}
+				else if (m_rot.x > 0.1f)
+				{
+					// 最小値まで戻す
+					m_rot.x = 0.1f;
+				}
+
+				// カメラの回転
+				// カメラの縦に旋回をする
+				m_rot.x += nValueV * 0.05f;
+
+				// カメラを横に旋回する
+				m_rot.y -= nValueH * 0.05f;
+			}
+		}
 
 		// スクリーン座標とXZ平面のワールド座標交点算出
 		m_worldPos = CalcScreenToXZ((float)pMouse->GetMouseX(), (float)pMouse->GetMouseY(), SCREEN_WIDTH, SCREEN_HEIGHT, &m_mtxView, &m_mtxProjection);
@@ -527,8 +622,42 @@ void CCamera::CameraMove(void)
 				m_mousePosOld = mousePos;
 			}
 		}
+
+		if (pKeyboard->GetPressKeyboard(DIK_LSHIFT))
+		{// 左シフトキーが押されたとき
+			m_move.y -= NORMAL_SPEED;
+		}
+
+		if (pKeyboard->GetPressKeyboard(DIK_SPACE))
+		{// スペースキーが押されたとき
+			m_move.y += NORMAL_SPEED;
+		}
+
+		//左右操作
+		if (pKeyboard->GetPressKeyboard(DIK_A))
+		{
+			m_move.x += sinf(D3DX_PI * 0.5f + m_rot.y) * NORMAL_SPEED;
+			m_move.z += cosf(D3DX_PI * 0.5f + m_rot.y) * NORMAL_SPEED;
+		}
+		if (pKeyboard->GetPressKeyboard(DIK_D))
+		{
+			m_move.x += sinf(-D3DX_PI * 0.5f + m_rot.y) * NORMAL_SPEED;
+			m_move.z += cosf(-D3DX_PI * 0.5f + m_rot.y) * NORMAL_SPEED;
+		}
+
+		//上下操作
+		if (pKeyboard->GetPressKeyboard(DIK_W))
+		{
+			m_move.x += sinf(D3DX_PI * 1.0f + m_rot.y) * NORMAL_SPEED;
+			m_move.z += cosf(D3DX_PI * 1.0f + m_rot.y) * NORMAL_SPEED;
+
+		}
+		if (pKeyboard->GetPressKeyboard(DIK_S))
+		{
+			m_move.x += sinf(D3DX_PI * 0.0f + m_rot.y) * NORMAL_SPEED;
+			m_move.z += cosf(D3DX_PI * 0.0f + m_rot.y) * NORMAL_SPEED;
+		}
 	}
-#endif
 }
 
 #ifdef _DEBUG
@@ -544,6 +673,7 @@ void CCamera::Debug(void)
 	ImGui::LabelText("", "CameraV Pos:(%.2f, %.2f, %.2f )", m_posV.x, m_posV.y, m_posV.z);
 	ImGui::LabelText("", "CameraR Pos:(%.2f, %.2f, %.2f )", m_posR.x, m_posR.y, m_posR.z);
 	ImGui::LabelText("", "Distance : %.2f", m_fDistance);
+	ImGui::LabelText("", "Rot : %.2f, %.2f, %.2f", m_rot.x, m_rot.y, m_rot.z);
 
 	if (ImGui::Button("Reset"))                            // ボタンはクリックするとtrueを返します（ほとんどのウィジェットは編集/アクティブ化するとtrueを返します）
 	{
@@ -569,6 +699,8 @@ void CCamera::Debug(void)
 		m_rot = D3DXVECTOR3(-0.67f, 3.14f, 0.0f);
 		m_fDistance = 327.31f;
 	}
+
+	ImGui::Checkbox(u8"フォーカス", &m_bStorker);
 
 	ImGui::End();											//最後につける
 }

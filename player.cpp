@@ -247,8 +247,12 @@ void CPlayer::Update(void)
 		// “ü—Íˆ—
 		if (!m_bHit)
 		{// “–‚½‚Á‚Ä‚¢‚È‚©‚Á‚½‚Æ‚«
-			// “ü—Íˆ—
-			Input();
+			CCamera *pCamera = CManager::GetCamera();
+			if (pCamera->GetStalker())
+			{
+				// “ü—Íˆ—
+				Input();
+			}
 		}
 	}
 
@@ -258,7 +262,7 @@ void CPlayer::Update(void)
 
 	VERTEX_PLANE plane = {};
 
-	CCollider::RayBlockCollision(pos, &pModel[0].GetMtxWorld(), 110, 1500.0f, plane);
+	CCollider::RayBlockCollision(pos, &pModel[0].GetMtxWorld(), 110, 500.0f, plane);
 
 	D3DXVECTOR3 AB = plane.a - plane.b;
 	D3DXVECTOR3 BC = plane.b - plane.c;

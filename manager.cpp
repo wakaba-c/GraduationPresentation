@@ -574,7 +574,7 @@ float CManager::easeOut(float fValue)
 //=============================================================================
 // イージング(In)
 //=============================================================================
-float CManager::easeIn(float fTime, float fStart, float fDifference, float fTotal)
+float CManager::easeIn(float fTime, float fStart = 0.0f, float fDifference = 1.0f, float fTotal = 1.0f)
 {
 	fTime /= fTotal;
 	return fDifference * fTime * fTime * fTime + fStart;
