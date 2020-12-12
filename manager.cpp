@@ -24,6 +24,7 @@
 #include "puzzle.h"
 #include "network.h"
 #include "effect.h"
+#include "write.h"
 
 //=============================================================================
 // マクロ定義
@@ -51,6 +52,10 @@ CRanking *CManager::m_pRanking = NULL;												// ランキング ポインタを初期化
 CCharacterSelect *CManager::m_pCharacterSelect = NULL;								// キャラクター選択 ポインタを初期化
 
 CSound *CManager::m_pSound = NULL;													// サウンド ポインタを初期化
+
+/* スクリプトデータ */
+float CManager::m_fSpeedDampingRate = 0.0f;				// スピードの減衰率
+float CManager::m_fTurningVelocity = 0.0f;				// 旋回速度
 
 std::map<std::string, LPDIRECT3DTEXTURE9> CManager::m_TexMap = {};					// テクスチャマップの初期化
 std::map<std::string, MODEL_INFO> CManager::m_ModelMap = {};						// モデル情報マップの初期化
@@ -107,7 +112,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 
 	if (m_pInputMouse != NULL)
 	{// マウスが存在していたとき
-	 	// マウスの初期化
+		// マウスの初期化
 		if (FAILED(m_pInputMouse->Init(hInstance, hWnd)))
 		{
 			MessageBox(hWnd, "マウスの初期化に失敗", "警告", MB_ICONWARNING);
@@ -119,7 +124,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 
 	if (m_pInputController != NULL)
 	{// コントローラーが存在していたとき
-	 	// コントローラーの初期化
+		// コントローラーの初期化
 		if (FAILED(m_pInputController->Init(hInstance, hWnd)))
 		{
 			MessageBox(hWnd, "コントローラーの初期化に失敗", "警告", MB_ICONWARNING);
@@ -373,6 +378,10 @@ void CManager::Update(void)
 	{
 		m_pSound->Update();
 	}
+
+#ifdef _DEBUG
+	Debug();
+#endif
 }
 
 //=============================================================================
@@ -531,7 +540,7 @@ float CManager::GetDistance(D3DXVECTOR3 FirstTarget, D3DXVECTOR3 SecondTarget)
 //=============================================================================
 int CManager::GetRand(int nValue)
 {
-	if(nValue <= 0) { return 0; }
+	if (nValue <= 0) { return 0; }
 
 	for (int nCount = 0; nCount < 5; nCount++)
 	{
@@ -889,10 +898,10 @@ D3DXVECTOR3 CManager::GetCursorPosWithCenter(void)
 	LPDIRECT3DDEVICE9 pDevice;
 
 	// レンダラーが存在していないとき
-	if(pRenderer == NULL) return pos;
+	if (pRenderer == NULL) return pos;
 
 	// マウスが存在していないとき
-	if(m_pInputMouse == NULL) return pos;
+	if (m_pInputMouse == NULL) return pos;
 
 	//デバイスを取得する
 	pDevice = pRenderer->GetDevice();
@@ -926,48 +935,91 @@ void CManager::LoadSystemFile(void)
 	FILE *pFile;																	// ファイル
 	char cReadText[128];															// 文字
 	char cHeadText[128];															// 比較
+	char cDie[128];
 
-	pFile = fopen("data/system.ini", "r");											// ファイルを開くまたは作る
+	pFile = fopen("system.ini", "r");											// ファイルを開くまたは作る
 
-	if (pFile != NULL)																// ファイルが読み込めた場合
+	if (pFile != NULL)
 	{
-		if (pFile != NULL)
+		//スクリプトが来るまでループ
+		while (strcmp(cHeadText, "SCRIPT") != 0)
 		{
-			//スクリプトが来るまでループ
-			while (strcmp(cHeadText, "SCRIPT") != 0)
+			fgets(cReadText, sizeof(cReadText), pFile);
+			sscanf(cReadText, "%s", &cHeadText);
+		}
+
+		// スクリプトだったら
+		if (strcmp(cHeadText, "SCRIPT") == 0)
+		{
+			// エンドスクリプトが来るまで
+			while (strcmp(cHeadText, "END_SCRIPT") != 0)
 			{
 				fgets(cReadText, sizeof(cReadText), pFile);
 				sscanf(cReadText, "%s", &cHeadText);
-			}
 
-			// スクリプトだったら
-			if (strcmp(cHeadText, "SCRIPT") == 0)
-			{
-				// エンドスクリプトが来るまで
-				while (strcmp(cHeadText, "END_SCRIPT") != 0)
+				//改行
+				if (strcmp(cReadText, "\n") != 0)
 				{
-					fgets(cReadText, sizeof(cReadText), pFile);
-					sscanf(cReadText, "%s", &cHeadText);
-
-					//改行
-					if (strcmp(cReadText, "\n") != 0)
-					{
-
+					if (strcmp(cHeadText, "SPEED_ROT") == 0)
+					{// 旋回速度
+						sscanf(cReadText, "%s %s %f", &cDie, &cDie,
+							&m_fTurningVelocity);
 					}
-					else if (strcmp(cHeadText, "CameraOffset") == 0)
-					{// 追跡するカメラのオフセット
-
+					else if (strcmp(cHeadText, "SPEED_DOWN") == 0)
+					{//パーツ総数のとき
+						sscanf(cReadText, "%s %s %f", &cDie, &cDie,
+							&m_fSpeedDampingRate);
 					}
 				}
 			}
-			fclose(pFile);				// ファイルを閉じる
+		}
+		fclose(pFile);				// ファイルを閉じる
 
-			MessageBox(NULL, "モデル情報の読込に成功！", "SUCCESS", MB_ICONASTERISK);		// メッセージボックスの生成
-		}
-		else
-		{
-			MessageBox(NULL, "モデル情報のアクセス失敗！", "WARNING", MB_ICONWARNING);	// メッセージボックスの生成
-		}
+		MessageBox(NULL, "システム情報の読込に成功！", "SUCCESS", MB_ICONASTERISK);		// メッセージボックスの生成
+	}
+	else
+	{
+		MessageBox(NULL, "システム情報のアクセス失敗！", "WARNING", MB_ICONWARNING);	// メッセージボックスの生成
+	}
+}
+
+//=============================================================================
+// システム設定ファイル書出
+//=============================================================================
+void CManager::SaveSystemFile(void)
+{
+	CWrite *pWrite = new CWrite;
+	if (pWrite == NULL) return;
+
+	//変数宣言
+	char text[64];				// テキスト
+	char cEqual[8] = { "=" };	//イコール用
+	CScene *pSceneNext = NULL;	//次回アップデート対象
+	CScene *pSceneNow = NULL;
+
+	//開けた
+	if (pWrite->Open("system.ini"))
+	{
+		strcpy(text, "# システムデータスクリプト\n");
+		strcat(text, "# Author : masayasu wakita\n");
+
+		pWrite->TitleWrite(text);			// タイトルの形式で書き込む
+		pWrite->Write("SCRIPT\n");			// スクリプトの終了宣言
+		pWrite->Write("\n");
+
+		// パラメータの情報 //
+		pWrite->IndexWrite("各種パラメータ");
+
+		pWrite->Write("# 旋回速度\n");
+		pWrite->Write("SPEED_ROT = %.2f\n", m_fTurningVelocity);
+
+		pWrite->Write("# スピードの減衰率\n");
+		pWrite->Write("SPEED_DOWN = %.2f\n", m_fSpeedDampingRate);
+
+		pWrite->Write("END_SCRIPT\n");			// スクリプトの終了宣言
+		pWrite->End();
+
+		MessageBox(NULL, "システム情報の書き込み終了しました！", "WARNING", MB_ICONINFORMATION);	// メッセージボックスの生成
 	}
 }
 
@@ -1119,3 +1171,38 @@ void CManager::LoadTexScript(void)
 		MessageBox(NULL, "テクスチャマネージャが開けませんでした！", "WARNING", MB_ICONWARNING);	// メッセージボックスの生成
 	}
 }
+
+#ifdef _DEBUG
+//=============================================================================
+// デバッグ処理
+//=============================================================================
+void CManager::Debug(void)
+{
+	ImGui::Begin("Manager", NULL, ImGuiWindowFlags_MenuBar);   // デバッグウィンドウ生成
+
+	if (ImGui::BeginMenuBar())
+	{// メニューバーの生成
+		if (ImGui::BeginMenu("File"))
+		{// ファイルタブの生成
+			if (ImGui::MenuItem(u8"保存"))
+			{// 保存処理
+				SaveSystemFile();
+			}
+			if (ImGui::MenuItem(u8"読込"))
+			{// 読み込み処理
+				LoadSystemFile();
+			}
+
+			ImGui::EndMenu();			// メニューの更新終了
+		}
+
+		ImGui::EndMenuBar();		// メニューバーの更新終了
+	}
+
+	ImGui::DragFloat(u8"旋回速度", &m_fTurningVelocity);
+	ImGui::DragFloat(u8"スピードの減衰率", &m_fSpeedDampingRate);
+
+	//デバッグ処理を終了
+	ImGui::End();
+}
+#endif

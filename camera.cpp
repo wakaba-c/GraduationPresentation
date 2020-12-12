@@ -232,7 +232,7 @@ void CCamera::SetCamera(void)
 		D3DXToRadian(45.0f + (25 * CManager::easeIn((CSpeed::GetSpeed() * 0.5f) / 25, 0.0f, 1.0f, 1.0f))),							// 視野角
 		(float)SCREEN_WIDTH / (float)SCREEN_HEIGHT,		// アスペクト比
 		1.0f,											// NearZ値
-		1500000.0f);										// FarZ値
+		1500000.0f);									// FarZ値
 
 	// プロジェクションマトリックスの設定
 	pDevice->SetTransform(D3DTS_PROJECTION, &m_mtxProjection);

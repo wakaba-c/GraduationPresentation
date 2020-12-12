@@ -36,8 +36,8 @@ typedef enum
 typedef struct
 {
 	LPD3DXMESH		pMesh;									// メッシュ情報へのポインタ
-	DWORD			nNumMat;									// マテリアル情報の数
-	LPD3DXBUFFER		pBuffMat;								// マテリアル情報へのポインタ
+	DWORD			nNumMat;								// マテリアル情報の数
+	LPD3DXBUFFER	pBuffMat;								// マテリアル情報へのポインタ
 } MODEL_INFO;
 
 //=============================================================================
@@ -132,7 +132,12 @@ public:
 	static std::map<std::string, LPDIRECT3DTEXTURE9> GetTextureMap(void) { return m_TexMap; }
 
 private:
+#ifdef _DEBUG
+	void Debug(void);									// デバッグ処理関数
+#endif
+
 	static void	LoadSystemFile(void);					// システムファイルのロード
+	static void SaveSystemFile(void);					// システムファイルの作成
 	static void TexRelease(void);						// テクスチャの開放
 	static void ModelRelease(void);						// モデルデータの開放
 	static void ShaderRelease(void);					// シェーダーデータの開放
@@ -155,6 +160,10 @@ private:
 	static CRanking *m_pRanking;						// ランキングのポインタ
 	static CCharacterSelect *m_pCharacterSelect;		// キャラ選択のポインタ
 	static CSound *m_pSound;							// サウンドのポインタ
+
+	/* スクリプトデータ */
+	static float m_fTurningVelocity;						// 旋回速度
+	static float m_fSpeedDampingRate;						// スピード減衰率
 
 	static std::map<std::string, LPDIRECT3DTEXTURE9> m_TexMap;			// テクスチャマップ
 	static std::map<std::string, MODEL_INFO> m_ModelMap;				// モデルマップ
