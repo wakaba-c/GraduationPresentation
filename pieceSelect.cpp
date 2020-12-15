@@ -408,6 +408,7 @@ void CPieceSelect::Update(void)
 			m_fDecay[nCnt] = m_pPiece[nCnt]->GetDecay();											// 減衰率
 			m_nPower[nCnt] = (int)m_pPiece[nCnt]->GetPower();										// パワー
 			m_bRoute[nCnt] = m_pPiece[nCnt]->GetRoute();
+			m_bRank[nCnt] = m_pPiece[nCnt]->GetRanking();
 		}
 		// ピース生成
 

@@ -40,6 +40,7 @@ public:
 	static int GetPower(int nPieceNum) { return m_nPower[nPieceNum]; }			// パワー取得
 	static int GetPieceNum(void) { return m_nPieceNum; }						// ピース数
 	static bool GetRoute(int nPieceNum) { return m_bRoute[nPieceNum]; }			// ルート
+	static bool GetRank(int nPieceNum) { return m_bRank[nPieceNum]; }			// ランキング
 
 private:
 	CPieceSelect *m_pPieceSelect;				// ボックスのポインタ
@@ -50,6 +51,7 @@ private:
 	static float m_fDecay[Piece_Num];			// 減衰率
 	static int m_nPower[Piece_Num];				// パワー
 	static bool m_bRoute[Piece_Num];			// ルートを表示するか
+	static bool m_bRank[Piece_Num];				// ランキング
 	static int m_nPieceNum;						// ピース数
 
 };
