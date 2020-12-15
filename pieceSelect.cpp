@@ -52,7 +52,6 @@ HRESULT CPieceSelect::Init(void)
 	m_bPiece = false;
 	m_bPlacement = false;
 
-
 	m_pPieceExplanation = CScene2D::Create(PRIORITY_UI);
 	m_pPieceExplanation->BindTexture("data/tex/piece.png");					// テクスチャのポインタを渡す
 	m_pPieceExplanation->SetSize(D3DXVECTOR3(500.0f, 200.0f, 0.0f));		// 大きさの設定
@@ -409,6 +408,7 @@ void CPieceSelect::Update(void)
 			m_fDecay[nCnt] = m_pPiece[nCnt]->GetDecay();											// 減衰率
 			m_nPower[nCnt] = (int)m_pPiece[nCnt]->GetPower();										// パワー
 			m_bRoute[nCnt] = m_pPiece[nCnt]->GetRoute();
+			m_bRank[nCnt] = m_pPiece[nCnt]->GetRanking();
 		}
 		// ピース生成
 

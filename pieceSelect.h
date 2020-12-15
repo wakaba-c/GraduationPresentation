@@ -77,6 +77,7 @@ public:
 	float GetDecay(int nPieceNum) { return m_fDecay[nPieceNum]; }					// 減衰率
 	int GetPower(int nPieceNum) { return m_nPower[nPieceNum]; }						// パワー
 	bool GetRoute(int nPieceNum) { return m_bRoute[nPieceNum]; }					// ルート
+	bool GetRank(int nPieceNum) { return m_bRank[nPieceNum]; }						// ランキング
 
 	void ShowInspector(void) {};
 	void SetPiece(PIECETYPE type,D3DXVECTOR3 pos,D3DXVECTOR3 size, std::string Add);
@@ -101,6 +102,7 @@ private:
 	float m_fDecay[Piece_Num];						// 減衰率
 	int m_nPower[Piece_Num];						// パワー
 	bool m_bRoute[Piece_Num];						// ルートを表示するか
+	bool m_bRank[Piece_Num];						// ランキングを表示するか
 	bool m_bPlacement;																// 配置しているかどうか
 
 	static bool m_bPuzzle[Box_Depth][Box_Width];	// 使用しているかどうか
