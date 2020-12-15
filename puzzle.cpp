@@ -24,6 +24,7 @@ float CPuzzle::m_fTurning[Piece_Num] = {};
 float CPuzzle::m_fDecay[Piece_Num] = {};
 int CPuzzle::m_nPower[Piece_Num] = {};
 bool CPuzzle::m_bRoute[Piece_Num] = {};
+bool CPuzzle::m_bRank[Piece_Num] = {};
 int CPuzzle::m_nPieceNum = 0;
 
 //=============================================================================
@@ -89,6 +90,7 @@ void CPuzzle::Update(void)
 			m_fDecay[nCnt] = m_pPieceSelect->GetDecay(nCnt);
 			m_nPower[nCnt] = m_pPieceSelect->GetPower(nCnt);
 			m_bRoute[nCnt] = m_pPieceSelect->GetRoute(nCnt);
+			m_bRank[nCnt] = m_pPieceSelect->GetRank(nCnt);
 		}
 	}
 

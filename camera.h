@@ -50,12 +50,16 @@ public:
 	D3DXMATRIX GetMtxView(void) { return m_mtxView; }								// ビューマトリックスの取得
 	D3DXVECTOR3 GetPosR(void) { return m_posR; }									// 注視点取得
 	D3DXVECTOR3 GetPosV(void) { return m_posV; }									// 注視点取得
+	bool GetStalker(void) { return m_bStorker; }									// ストーカーのフラグ取得
 
 private:
 #ifdef _DEBUG
 	LPD3DXFONT			m_pCameraFont = NULL;										// フォントへのポインタ
 	void Debug(void);				// デバッグ処理
 #endif
+
+	void Test(int nTest);
+
 	D3DXVECTOR3 CalcScreenToXZ(float fSx, float fSy, int nScreen_w, int nScreen_h, D3DXMATRIX* mView, D3DXMATRIX* mPrj);	// スクリーンの交点
 	D3DXVECTOR3* CalcScreenToWorld(D3DXVECTOR3* pout, float fSx, float fSy, float fZ, int nScreen_w, int nScreen_h, D3DXMATRIX* mView, D3DXMATRIX* mPrj);		// ワールド座標変換
 	void CameraMove(void);			// カメラ移動処理
@@ -68,10 +72,19 @@ private:
 	D3DXVECTOR3 m_rot;				// 回転
 	D3DXVECTOR3 m_rotDest;			// 回転 の目標
 
+	D3DXVECTOR3 m_move;				// 移動量
+
+	D3DXVECTOR3 m_target;			// 加算値の最大値
+	D3DXVECTOR3 m_currentRot;		// 現在の加算値
+	D3DXVECTOR3 m_rotMove;			// 1フレーム当たりの回転量
+
 	D3DXMATRIX	m_mtxProjection;	// プロジェクションマトリックス
 	D3DXMATRIX	m_mtxView;			// ビューマトリックス
 	float		m_fDistance;		// 距離
-	bool		m_bRotMove;			// 回転運動の更新
+	int			m_nCount;			// カウンタ
+	int			m_nWatchingId;		// 観戦者ID
+	bool		m_bStorker;			// プレイヤー追従するか
+	bool		m_bSmooth;			// なめらかにカメラ移動させるか
 
 	D3DXVECTOR3 m_worldPos;			// マウス のワールド座標
 
@@ -81,7 +94,5 @@ private:
 	D3DXVECTOR3	m_originPos;		// カメラ の位置
 
 	D3DXVECTOR2 m_mousePosOld;		// 前回の マウス座標
-
-	int m_nCntRot;		// カメラの回転開始カウンタ
 };
 #endif

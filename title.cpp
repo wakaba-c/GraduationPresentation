@@ -1,6 +1,6 @@
 //=============================================================================
 //
-// ã‚¿ã‚¤ãƒˆãƒ«å‡¦ç† [title.cpp]
+// ƒ^ƒCƒgƒ‹ˆ— [title.cpp]
 // Author : masayasu wakita
 //
 //=============================================================================
@@ -18,7 +18,7 @@
 #include "sky.h"
 
 //=============================================================================
-// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 //=============================================================================
 CTitle::CTitle()
 {
@@ -26,7 +26,7 @@ CTitle::CTitle()
 }
 
 //=============================================================================
-// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+// ƒfƒXƒgƒ‰ƒNƒ^
 //=============================================================================
 CTitle::~CTitle()
 {
@@ -34,18 +34,18 @@ CTitle::~CTitle()
 }
 
 //=============================================================================
-// åˆæœŸåŒ–å‡¦ç†
+// ‰Šú‰»ˆ—
 //=============================================================================
 HRESULT CTitle::Init(void)
 {
-	//CCamera *pCamera = CManager::GetCamera();		// ã‚«ãƒ¡ãƒ©ã®å–å¾—
+	//CCamera *pCamera = CManager::GetCamera();		// ƒJƒƒ‰‚Ìæ“¾
 
 	//if (pCamera != NULL)
-	//{// ã‚«ãƒ¡ãƒ©ãŒå­˜åœ¨ã—ã¦ã„ãŸã¨ã
-	//	pCamera->SetPosCamera(D3DXVECTOR3(7099.40f, 187.26f, 7523.8f), D3DXVECTOR3(0.1f, -2.33f, 0.0f));		// ä½ç½®ã®è¨­å®š
+	//{// ƒJƒƒ‰‚ª‘¶İ‚µ‚Ä‚¢‚½‚Æ‚«
+	//	pCamera->SetPosCamera(D3DXVECTOR3(7099.40f, 187.26f, 7523.8f), D3DXVECTOR3(0.1f, -2.33f, 0.0f));		// ˆÊ’u‚Ìİ’è
 	//}
 
-	//m_pTitleLogo = CTitlelogo::Create();		// ã‚¿ã‚¤ãƒˆãƒ«ãƒ­ã‚´ã®ç”Ÿæˆ
+	//m_pTitleLogo = CTitlelogo::Create();		// ƒ^ƒCƒgƒ‹ƒƒS‚Ì¶¬
 	for (int nCnt = 0; nCnt < MAX_UI; nCnt++)
 	{
 		pBack[nCnt] = CScene2D::Create(CScene::PRIORITY_UI);
@@ -79,26 +79,26 @@ HRESULT CTitle::Init(void)
 			pBack[3]->SetTransform();
 		}
 
-	//// ç©ºã®ä½œæˆ
+	//// ‹ó‚Ìì¬
 	CSky::Create();
 
-	//// å„ç¨®ã‚¢ã‚»ãƒƒãƒˆã®ç”Ÿæˆï¼†è¨­ç½®
-	//CMeshField::LoadRand("data/stage/rand.csv", false);				// åºŠæƒ…å ±ã®èª­è¾¼
-	//CObject::LoadModel("data/stage/object.csv");					// ãƒ¢ãƒ‡ãƒ«æƒ…å ±ã®èª­è¾¼
+	//// ŠeíƒAƒZƒbƒg‚Ì¶¬•İ’u
+	//CMeshField::LoadRand("data/stage/rand.csv", false);				// °î•ñ‚Ì“Ç
+	//CObject::LoadModel("data/stage/object.csv");					// ƒ‚ƒfƒ‹î•ñ‚Ì“Ç
 	return S_OK;
 }
 
 //=============================================================================
-// é–‹æ”¾å‡¦ç†
+// ŠJ•úˆ—
 //=============================================================================
 void CTitle::Uninit(void)
 {
-	//ãƒãƒªã‚´ãƒ³ã®é–‹æ”¾
+	//ƒ|ƒŠƒSƒ“‚ÌŠJ•ú
 	CScene::ReleaseAll();
 }
 
 //=============================================================================
-// æ›´æ–°å‡¦ç†
+// XVˆ—
 //=============================================================================
 void CTitle::Update(void)
 {
@@ -106,28 +106,28 @@ void CTitle::Update(void)
 	CInputController *pInputController = CManager::GetInputController();
 
 	if (CFade::GetFade() == CFade::FADE_NONE)
-	{//ãƒ•ã‚§ãƒ¼ãƒ‰ãŒå‡¦ç†ã‚’ã—ã¦ã„ãªã„ã¨ã
+	{//ƒtƒF[ƒh‚ªˆ—‚ğ‚µ‚Ä‚¢‚È‚¢‚Æ‚«
 		if (pInputKeyboard != NULL)
-		{// ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ãŒå­˜åœ¨ã—ã¦ã„ãŸã¨ã
+		{// ƒL[ƒ{[ƒh‚ª‘¶İ‚µ‚Ä‚¢‚½‚Æ‚«
 			if (pInputKeyboard->GetTriggerKeyboard(DIK_RETURN))
-			{// æŒ‡å®šã®ã‚­ãƒ¼ãŒæŠ¼ã•ã‚ŒãŸã¨ã
-				CFade::SetFade(CManager::MODE_CHARACTER_SELECT, CFade::FADETYPE_SLIDE);					//ãƒ•ã‚§ãƒ¼ãƒ‰ã‚’å…¥ã‚Œã‚‹
+			{// w’è‚ÌƒL[‚ª‰Ÿ‚³‚ê‚½‚Æ‚«
+				CFade::SetFade(CManager::MODE_CHARACTER_SELECT, CFade::FADETYPE_SLIDE);					//ƒtƒF[ƒh‚ğ“ü‚ê‚é
 			}
 		}
 		if (pInputController->GetJoypadUse(0))
-		{// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ãŒç”Ÿæˆã•ã‚Œã¦ã„ã‚‹ã¨ã
-			//ã‚²ãƒ¼ãƒ ã®é·ç§»
-			if (pInputController->GetControllerTrigger(0, JOYPADKEY_LEFT_SHOULDER) &&			// ã‚²ãƒ¼ãƒ ãƒ‘ãƒƒãƒ‰ã®Lãƒœãƒ€ãƒ³ãŒæŠ¼ã•ã‚ŒãŸã¨ã
-				pInputController->GetControllerTrigger(0, JOYPADKEY_RIGHT_SHOULDER))			// ã‚²ãƒ¼ãƒ ãƒ‘ãƒƒãƒ‰ã®Rãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚ŒãŸã¨ã
+		{// ƒRƒ“ƒgƒ[ƒ‰[‚ª¶¬‚³‚ê‚Ä‚¢‚é‚Æ‚«
+			//ƒQ[ƒ€‚Ì‘JˆÚ
+			if (pInputController->GetControllerTrigger(0, JOYPADKEY_LEFT_SHOULDER) &&			// ƒQ[ƒ€ƒpƒbƒh‚ÌLƒ{ƒ_ƒ“‚ª‰Ÿ‚³‚ê‚½‚Æ‚«
+				pInputController->GetControllerTrigger(0, JOYPADKEY_RIGHT_SHOULDER))			// ƒQ[ƒ€ƒpƒbƒh‚ÌRƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚Æ‚«
 			{
-				CFade::SetFade(CManager::MODE_CHARACTER_SELECT, CFade::FADETYPE_SLIDE);					//ãƒ•ã‚§ãƒ¼ãƒ‰ã‚’å…¥ã‚Œã‚‹
+				CFade::SetFade(CManager::MODE_CHARACTER_SELECT, CFade::FADETYPE_SLIDE);					//ƒtƒF[ƒh‚ğ“ü‚ê‚é
 			}
 		}
 	}
 }
 
 //=============================================================================
-// æç”»å‡¦ç†
+// •`‰æˆ—
 //=============================================================================
 void CTitle::Draw(void)
 {
@@ -135,7 +135,7 @@ void CTitle::Draw(void)
 }
 
 //=============================================================================
-// ã‚¢ã‚»ãƒƒãƒˆã®èª­ã¿è¾¼ã¿
+// ƒAƒZƒbƒg‚Ì“Ç‚İ‚İ
 //=============================================================================
 void CTitle::LoadAsset(void)
 {

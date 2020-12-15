@@ -43,12 +43,10 @@
 //=============================================================================
 #define	SCRIPT_CAR01 "data/animation/car01.txt"		// 車01のモデル情報アドレス
 #define ROT_AMOUNT 0.1f								// 回転の差を減らしていく量
-#define ROT_SPEED 0.2f								// 回転速度
 #define ROT_SPEED_DRIFT 0.5f						// ドリフト時回転速度
 #define MODEL_FRONT 2								// モデル前輪番号
 #define MODEL_REAR 1								// モデル後輪番号
 #define MODEL_TIRE 2								// タイヤモデルの数
-#define SPEED_DOWN 0.06f							// スピード減少
 #define CAMERA_ROT_SPEED 0.4f						// カメラの回転速度
 #define TIRE_ROT_SPEED 0.1f							// タイヤの回転速度
 #define ACCEKERATION 2.0f							// ドリフト加速度初期値
@@ -114,9 +112,9 @@ HRESULT CPlayer::Init(void)
 
 	//デバイスを取得する
 	pDevice = pRenderer->GetDevice();
-	m_fPuzzleMax = 0;
+	m_fPuzzleMaxSPeed = 0;
 	CCamera *pCamera = CManager::GetCamera();
-	D3DXVECTOR3 pos = GetPosition();				// プレイヤーの位置取得
+	D3DXVECTOR3 pos = GetPosition();							// プレイヤーの位置取得
 
 	pos = D3DXVECTOR3(27027.727f, 0.0f, 34473.258f);			// プレイヤーの位置設定
 
@@ -155,32 +153,52 @@ HRESULT CPlayer::Init(void)
 		float fSpeed = CPuzzle::GetSpeed(nCnt);
 
 		m_fPuzzleSpeed[nCnt] = CPuzzle::GetSpeed(nCnt);
-
 	}
 
 	for (int nCnt = 0; nCnt < nCntPiece; nCnt++)
 	{
 		if (m_fPuzzleSpeed[nCnt + 1] >= 0)
 		{
-			m_fPuzzleMax = m_fPuzzleSpeed[nCnt] + m_fPuzzleSpeed[nCnt + 1] + NORMAL_SPEED;
+			m_fPuzzleMaxSPeed = m_fPuzzleSpeed[nCnt] + m_fPuzzleSpeed[nCnt + 1] + NORMAL_SPEED;
 		}
 	}
 
 	if (nCntPiece == 0)
 	{
-		m_fPuzzleMax = NORMAL_SPEED;
+		m_fPuzzleMaxSPeed = NORMAL_SPEED;
 	}
 
-	m_pRank = CNumber::Create();
-
-	if (m_pRank != NULL)
+	for (int nCnt = 0; nCnt < nCntPiece; nCnt++)
 	{
-		m_pRank->BindTexture("data/tex/number_rank.png");
-		m_pRank->SetPosition(D3DXVECTOR3(1110.0f, 75.0f, 0.0f));
-		m_pRank->SetSize(D3DXVECTOR3(100.0f, 100.0f, 0.0f));
-		m_pRank->SetTransform();
+		m_bRankingSign[nCnt] = false;
 	}
+	for (int nCnt = 0; nCnt < nCntPiece; nCnt++)
+	{
+		m_bRankingSign[nCnt] = CPuzzle::GetRank(nCnt);
+		if (m_bRankingSign[nCnt] == true)
+		{
+			m_bRanking = true;
+		}
+	}
+	if (m_bRanking == true)
+	{
+		m_pRank = CNumber::Create();
 
+		if (m_pRank != NULL)
+		{
+			m_pRank->BindTexture("data/tex/number_rank.png");
+			m_pRank->SetPosition(D3DXVECTOR3(1110.0f, 75.0f, 0.0f));
+			m_pRank->SetSize(D3DXVECTOR3(100.0f, 100.0f, 0.0f));
+			m_pRank->SetTransform();
+		}
+		CUi *pRankUi = CUi::Create();
+
+		if (pRankUi != NULL)
+		{
+			pRankUi->LoadScript("data/text/ui/NowRank.txt");
+			pRankUi->SetPosition(D3DXVECTOR3(1150.0f, 100.0f, 0.0f));
+		}
+	}
 	m_pDistanceNext = CDistanceNext::Create();
 
 	if (m_pDistanceNext != NULL)
@@ -193,14 +211,6 @@ HRESULT CPlayer::Init(void)
 
 	// 影の生成
 	m_pShadow = CShadow::Create();
-
-	CUi *pRankUi = CUi::Create();
-
-	if (pRankUi != NULL)
-	{
-		pRankUi->LoadScript("data/text/ui/NowRank.txt");
-		pRankUi->SetPosition(D3DXVECTOR3(1150.0f, 100.0f, 0.0f));
-	}
 
 	return S_OK;
 }
@@ -247,8 +257,12 @@ void CPlayer::Update(void)
 		// 入力処理
 		if (!m_bHit)
 		{// 当たっていなかったとき
-			// 入力処理
-			Input();
+			CCamera *pCamera = CManager::GetCamera();
+			if (pCamera->GetStalker())
+			{
+				// 入力処理
+				Input();
+			}
 		}
 	}
 
@@ -258,7 +272,7 @@ void CPlayer::Update(void)
 
 	VERTEX_PLANE plane = {};
 
-	CCollider::RayBlockCollision(pos, &pModel[0].GetMtxWorld(), 110, 1500.0f, plane);
+	CCollider::RayBlockCollision(pos, &pModel[0].GetMtxWorld(), 110, 250.0f, plane);
 
 	D3DXVECTOR3 AB = plane.a - plane.b;
 	D3DXVECTOR3 BC = plane.b - plane.c;
@@ -311,8 +325,8 @@ void CPlayer::Update(void)
 	if (!m_bJump)
 	{
 		// 減速
-		m_move.x += (0 - m_move.x) * SPEED_DOWN;
-		m_move.z += (0 - m_move.z) * SPEED_DOWN;
+		m_move.x += (0 - m_move.x) * CManager::GetSpeedDampingRate();
+		m_move.z += (0 - m_move.z) * CManager::GetSpeedDampingRate();
 	}
 
 	////重力処理
@@ -680,7 +694,7 @@ void CPlayer::Input(void)
 				m_dest.y = 0.0f;
 
 				// 速度設定
-				m_fSpeed = -m_fPuzzleMax;
+				m_fSpeed = -m_fPuzzleMaxSPeed;
 
 				// タイヤ回転方向設定
 				fTireRotSpeed = TIRE_ROT_SPEED;
@@ -697,7 +711,7 @@ void CPlayer::Input(void)
 				m_dest.y = 0.0f;
 
 				// 速度設定
-				m_fSpeed = m_fPuzzleMax;
+				m_fSpeed = m_fPuzzleMaxSPeed;
 
 				// タイヤ回転方向設定
 				fTireRotSpeed = -TIRE_ROT_SPEED;
@@ -720,12 +734,12 @@ void CPlayer::Input(void)
 				if (nValueH <= JOY_MAX_RANGE && nValueH > 0)
 				{
 					// 前輪モデルの最終目的座標
-					m_dest.y = -ROT_SPEED;
+					m_dest.y = -CManager::GetTurnVelocity();
 				}
 				else if (nValueH >= -JOY_MAX_RANGE && nValueH < 0)
 				{// 右にスティックが倒れたとき
 				 // 前輪モデルの最終目的座標
-					m_dest.y = ROT_SPEED;
+					m_dest.y = CManager::GetTurnVelocity();
 				}
 
 				// ブレーキボタンが押されたとき
@@ -735,12 +749,12 @@ void CPlayer::Input(void)
 					if (nValueH <= JOY_MAX_RANGE && nValueH > 0)
 					{
 						// 前輪モデルの最終目的座標
-						m_dest.y = ROT_SPEED;
+						m_dest.y = CManager::GetTurnVelocity();
 					}
 					else if (nValueH >= -JOY_MAX_RANGE && nValueH < 0)
 					{// 右にスティックが倒れたとき
 					 // 前輪モデルの最終目的座標
-						m_dest.y = -ROT_SPEED;
+						m_dest.y = -CManager::GetTurnVelocity();
 					}
 				}
 			}
@@ -946,7 +960,7 @@ void CPlayer::Input(void)
 			m_dest.y = 0.0f;
 
 			// 速度設定
-			m_fSpeed = -m_fPuzzleMax;
+			m_fSpeed = -m_fPuzzleMaxSPeed;
 
 			// タイヤ回転方向設定
 			fTireRotSpeed = TIRE_ROT_SPEED;
@@ -963,7 +977,7 @@ void CPlayer::Input(void)
 			m_dest.y = 0.0f;
 
 			// 速度設定
-			m_fSpeed = m_fPuzzleMax;
+			m_fSpeed = m_fPuzzleMaxSPeed;
 
 			// タイヤ回転方向設定
 			fTireRotSpeed = -TIRE_ROT_SPEED;
@@ -986,12 +1000,12 @@ void CPlayer::Input(void)
 			if (pKeyboard->GetPressKeyboard(MOVE_LEFT))
 			{
 				// 前輪モデルの最終目的座標
-				m_dest.y = -ROT_SPEED;
+				m_dest.y = -CManager::GetTurnVelocity();
 			}
 			else if (pKeyboard->GetPressKeyboard(MOVE_RIGHT))
 			{
 				// 前輪モデルの最終目的座標
-				m_dest.y = ROT_SPEED;
+				m_dest.y = CManager::GetTurnVelocity();
 			}
 
 			// ブレーキボタンが押されたとき
@@ -1001,12 +1015,12 @@ void CPlayer::Input(void)
 				if (pKeyboard->GetPressKeyboard(MOVE_LEFT))
 				{
 					// 前輪モデルの最終目的座標
-					m_dest.y = ROT_SPEED;
+					m_dest.y = CManager::GetTurnVelocity();
 				}
 				else if (pKeyboard->GetPressKeyboard(MOVE_RIGHT))
 				{
 					// 前輪モデルの最終目的座標
-					m_dest.y = -ROT_SPEED;
+					m_dest.y = -CManager::GetTurnVelocity();
 				}
 			}
 		}
@@ -1231,7 +1245,7 @@ void CPlayer::InputKeyboard(float fTireRotSpeed, D3DXVECTOR3 aVec)
 		m_dest.y = 0.0f;
 
 		// 速度設定
-		m_fSpeed = -m_fPuzzleMax;
+		m_fSpeed = -m_fPuzzleMaxSPeed;
 
 		// タイヤ回転方向設定
 		fTireRotSpeed = TIRE_ROT_SPEED;
@@ -1248,7 +1262,7 @@ void CPlayer::InputKeyboard(float fTireRotSpeed, D3DXVECTOR3 aVec)
 		m_dest.y = 0.0f;
 
 		// 速度設定
-		m_fSpeed = m_fPuzzleMax;
+		m_fSpeed = m_fPuzzleMaxSPeed;
 
 		// タイヤ回転方向設定
 		fTireRotSpeed = -TIRE_ROT_SPEED;
@@ -1271,12 +1285,12 @@ void CPlayer::InputKeyboard(float fTireRotSpeed, D3DXVECTOR3 aVec)
 		if (pKeyboard->GetPressKeyboard(MOVE_LEFT))
 		{
 			// 前輪モデルの最終目的座標
-			m_dest.y = -ROT_SPEED;
+			m_dest.y = -CManager::GetTurnVelocity();
 		}
 		else if (pKeyboard->GetPressKeyboard(MOVE_RIGHT))
 		{
 			// 前輪モデルの最終目的座標
-			m_dest.y = ROT_SPEED;
+			m_dest.y = CManager::GetTurnVelocity();
 		}
 
 		// ブレーキボタンが押されたとき
@@ -1286,12 +1300,12 @@ void CPlayer::InputKeyboard(float fTireRotSpeed, D3DXVECTOR3 aVec)
 			if (pKeyboard->GetPressKeyboard(MOVE_LEFT))
 			{
 				// 前輪モデルの最終目的座標
-				m_dest.y = ROT_SPEED;
+				m_dest.y = CManager::GetTurnVelocity();
 			}
 			else if (pKeyboard->GetPressKeyboard(MOVE_RIGHT))
 			{
 				// 前輪モデルの最終目的座標
-				m_dest.y = -ROT_SPEED;
+				m_dest.y = -CManager::GetTurnVelocity();
 			}
 		}
 	}
@@ -1420,7 +1434,7 @@ void CPlayer::InputGemepad(float nValueH, float nValueV, float fTireRotSpeed, D3
 		m_dest.y = 0.0f;
 
 		// 速度設定
-		m_fSpeed = -m_fPuzzleMax;
+		m_fSpeed = -m_fPuzzleMaxSPeed;
 
 		// タイヤ回転方向設定
 		fTireRotSpeed = TIRE_ROT_SPEED;
@@ -1437,7 +1451,7 @@ void CPlayer::InputGemepad(float nValueH, float nValueV, float fTireRotSpeed, D3
 		m_dest.y = 0.0f;
 
 		// 速度設定
-		m_fSpeed = m_fPuzzleMax;
+		m_fSpeed = m_fPuzzleMaxSPeed;
 
 		// タイヤ回転方向設定
 		fTireRotSpeed = -TIRE_ROT_SPEED;
@@ -1460,12 +1474,12 @@ void CPlayer::InputGemepad(float nValueH, float nValueV, float fTireRotSpeed, D3
 		if (nValueH <= JOY_MAX_RANGE && nValueH > 0)
 		{
 			// 前輪モデルの最終目的座標
-			m_dest.y = -ROT_SPEED;
+			m_dest.y = -CManager::GetTurnVelocity();
 		}
 		else if (nValueH >= -JOY_MAX_RANGE && nValueH < 0)
 		{// 右にスティックが倒れたとき
 			// 前輪モデルの最終目的座標
-			m_dest.y = ROT_SPEED;
+			m_dest.y = CManager::GetTurnVelocity();
 		}
 
 		// ブレーキボタンが押されたとき
@@ -1475,12 +1489,12 @@ void CPlayer::InputGemepad(float nValueH, float nValueV, float fTireRotSpeed, D3
 			if (nValueH <= JOY_MAX_RANGE && nValueH > 0)
 			{
 				// 前輪モデルの最終目的座標
-				m_dest.y = ROT_SPEED;
+				m_dest.y = CManager::GetTurnVelocity();
 			}
 			else if (nValueH >= -JOY_MAX_RANGE && nValueH < 0)
 			{// 右にスティックが倒れたとき
 			 // 前輪モデルの最終目的座標
-				m_dest.y = -ROT_SPEED;
+				m_dest.y = -CManager::GetTurnVelocity();
 			}
 		}
 	}

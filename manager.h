@@ -36,8 +36,8 @@ typedef enum
 typedef struct
 {
 	LPD3DXMESH		pMesh;									// メッシュ情報へのポインタ
-	DWORD			nNumMat;									// マテリアル情報の数
-	LPD3DXBUFFER		pBuffMat;								// マテリアル情報へのポインタ
+	DWORD			nNumMat;								// マテリアル情報の数
+	LPD3DXBUFFER	pBuffMat;								// マテリアル情報へのポインタ
 } MODEL_INFO;
 
 //=============================================================================
@@ -127,12 +127,21 @@ public:
 	static D3DXVECTOR3 GetCursorPosWithCenter(void);			// カーソル
 
 	static D3DXVECTOR3 Slip(D3DXVECTOR3 L, D3DXVECTOR3 N);
+	static D3DXMATRIX CreateMtxWorld(D3DXVECTOR3 &pos, D3DXVECTOR3 &rot);
 
 	static std::map<std::string, MODEL_INFO> GetModelMap(void) { return m_ModelMap; }
 	static std::map<std::string, LPDIRECT3DTEXTURE9> GetTextureMap(void) { return m_TexMap; }
 
+	static float GetTurnVelocity(void) { return m_fTurningVelocity; }
+	static float GetSpeedDampingRate(void) { return m_fSpeedDampingRate; }
+
 private:
+#ifdef _DEBUG
+	void Debug(void);									// デバッグ処理関数
+#endif
+
 	static void	LoadSystemFile(void);					// システムファイルのロード
+	static void SaveSystemFile(void);					// システムファイルの作成
 	static void TexRelease(void);						// テクスチャの開放
 	static void ModelRelease(void);						// モデルデータの開放
 	static void ShaderRelease(void);					// シェーダーデータの開放
@@ -155,6 +164,10 @@ private:
 	static CRanking *m_pRanking;						// ランキングのポインタ
 	static CCharacterSelect *m_pCharacterSelect;		// キャラ選択のポインタ
 	static CSound *m_pSound;							// サウンドのポインタ
+
+	/* スクリプトデータ */
+	static float m_fTurningVelocity;						// 旋回速度
+	static float m_fSpeedDampingRate;						// スピード減衰率
 
 	static std::map<std::string, LPDIRECT3DTEXTURE9> m_TexMap;			// テクスチャマップ
 	static std::map<std::string, MODEL_INFO> m_ModelMap;				// モデルマップ

@@ -38,7 +38,7 @@ CCharacterSelect::~CCharacterSelect()
 HRESULT CCharacterSelect::Init(void)
 {
 	m_nCarType = 0;
-	for (int nCnt = 0; nCnt < MAX_UI; nCnt++)
+	for (int nCnt = 0; nCnt < MAX_SELECT_UI; nCnt++)
 	{
 		pBack[nCnt] = CScene2D::Create(CScene::PRIORITY_UI);
 	}
