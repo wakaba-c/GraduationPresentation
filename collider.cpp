@@ -1297,6 +1297,12 @@ bool CCollider::RayBlockCollision(D3DXVECTOR3 &pos, D3DXMATRIX *pMat, float fOff
 		pSceneNext = CScene::GetSceneNext(pSceneNow, (CScene::PRIORITY_MODEL));							//次回アップデート対象を控える
 		CObject *pObj = (CObject*)pSceneNow;
 
+		if (pObj->GetAdd() != "data/model/MouMouCountry.x")
+		{
+			pSceneNow = pSceneNext;													//次回アップデート対象を格納
+			continue;
+		}
+
 		//	逆行列の取得
 		D3DXMatrixInverse(&invmat, NULL, &pObj->GetMtxWorld());
 		//	逆行列を使用し、レイ始点情報を変換　位置と向きで変換する関数が異なるので要注意
