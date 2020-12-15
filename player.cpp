@@ -114,9 +114,9 @@ HRESULT CPlayer::Init(void)
 
 	//デバイスを取得する
 	pDevice = pRenderer->GetDevice();
-	m_fPuzzleMax = 0;
+	m_fPuzzleMaxSPeed = 0;
 	CCamera *pCamera = CManager::GetCamera();
-	D3DXVECTOR3 pos = GetPosition();				// プレイヤーの位置取得
+	D3DXVECTOR3 pos = GetPosition();							// プレイヤーの位置取得
 
 	pos = D3DXVECTOR3(27027.727f, 0.0f, 34473.258f);			// プレイヤーの位置設定
 
@@ -155,20 +155,19 @@ HRESULT CPlayer::Init(void)
 		float fSpeed = CPuzzle::GetSpeed(nCnt);
 
 		m_fPuzzleSpeed[nCnt] = CPuzzle::GetSpeed(nCnt);
-
 	}
 
 	for (int nCnt = 0; nCnt < nCntPiece; nCnt++)
 	{
 		if (m_fPuzzleSpeed[nCnt + 1] >= 0)
 		{
-			m_fPuzzleMax = m_fPuzzleSpeed[nCnt] + m_fPuzzleSpeed[nCnt + 1] + NORMAL_SPEED;
+			m_fPuzzleMaxSPeed = m_fPuzzleSpeed[nCnt] + m_fPuzzleSpeed[nCnt + 1] + NORMAL_SPEED;
 		}
 	}
 
 	if (nCntPiece == 0)
 	{
-		m_fPuzzleMax = NORMAL_SPEED;
+		m_fPuzzleMaxSPeed = NORMAL_SPEED;
 	}
 
 	m_pRank = CNumber::Create();
@@ -680,7 +679,7 @@ void CPlayer::Input(void)
 				m_dest.y = 0.0f;
 
 				// 速度設定
-				m_fSpeed = -m_fPuzzleMax;
+				m_fSpeed = -m_fPuzzleMaxSPeed;
 
 				// タイヤ回転方向設定
 				fTireRotSpeed = TIRE_ROT_SPEED;
@@ -697,7 +696,7 @@ void CPlayer::Input(void)
 				m_dest.y = 0.0f;
 
 				// 速度設定
-				m_fSpeed = m_fPuzzleMax;
+				m_fSpeed = m_fPuzzleMaxSPeed;
 
 				// タイヤ回転方向設定
 				fTireRotSpeed = -TIRE_ROT_SPEED;
@@ -946,7 +945,7 @@ void CPlayer::Input(void)
 			m_dest.y = 0.0f;
 
 			// 速度設定
-			m_fSpeed = -m_fPuzzleMax;
+			m_fSpeed = -m_fPuzzleMaxSPeed;
 
 			// タイヤ回転方向設定
 			fTireRotSpeed = TIRE_ROT_SPEED;
@@ -963,7 +962,7 @@ void CPlayer::Input(void)
 			m_dest.y = 0.0f;
 
 			// 速度設定
-			m_fSpeed = m_fPuzzleMax;
+			m_fSpeed = m_fPuzzleMaxSPeed;
 
 			// タイヤ回転方向設定
 			fTireRotSpeed = -TIRE_ROT_SPEED;
@@ -1231,7 +1230,7 @@ void CPlayer::InputKeyboard(float fTireRotSpeed, D3DXVECTOR3 aVec)
 		m_dest.y = 0.0f;
 
 		// 速度設定
-		m_fSpeed = -m_fPuzzleMax;
+		m_fSpeed = -m_fPuzzleMaxSPeed;
 
 		// タイヤ回転方向設定
 		fTireRotSpeed = TIRE_ROT_SPEED;
@@ -1248,7 +1247,7 @@ void CPlayer::InputKeyboard(float fTireRotSpeed, D3DXVECTOR3 aVec)
 		m_dest.y = 0.0f;
 
 		// 速度設定
-		m_fSpeed = m_fPuzzleMax;
+		m_fSpeed = m_fPuzzleMaxSPeed;
 
 		// タイヤ回転方向設定
 		fTireRotSpeed = -TIRE_ROT_SPEED;
@@ -1420,7 +1419,7 @@ void CPlayer::InputGemepad(float nValueH, float nValueV, float fTireRotSpeed, D3
 		m_dest.y = 0.0f;
 
 		// 速度設定
-		m_fSpeed = -m_fPuzzleMax;
+		m_fSpeed = -m_fPuzzleMaxSPeed;
 
 		// タイヤ回転方向設定
 		fTireRotSpeed = TIRE_ROT_SPEED;
@@ -1437,7 +1436,7 @@ void CPlayer::InputGemepad(float nValueH, float nValueV, float fTireRotSpeed, D3
 		m_dest.y = 0.0f;
 
 		// 速度設定
-		m_fSpeed = m_fPuzzleMax;
+		m_fSpeed = m_fPuzzleMaxSPeed;
 
 		// タイヤ回転方向設定
 		fTireRotSpeed = -TIRE_ROT_SPEED;

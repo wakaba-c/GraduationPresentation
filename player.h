@@ -115,7 +115,11 @@ private:
 	D3DXVECTOR3						m_vectorOld;									// 前回の方向ベクトル
 	float							m_fSpeed;										// スピード
 	float							m_fPuzzleSpeed[Piece_Num];						// パズルのスピード
-	float							m_fPuzzleMax;									// パズルのスピード
+	float							m_fPuzzleMaxSPeed;								// パズルのスピード
+	float							m_fPuzzleRate;									// スピード上昇率
+	float							m_fPuzzleTurning;								// 旋回速度
+	float							m_fPuzzleDecay;									// 減衰率取得
+	float							m_fPuzzlePower;									// パワー
 	float							m_fDeathblow;									// 必殺技ポイント
 	float							m_fAcceleration;								// 加速度
 	int								m_nLife;										// 体力

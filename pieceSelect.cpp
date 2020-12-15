@@ -52,7 +52,6 @@ HRESULT CPieceSelect::Init(void)
 	m_bPiece = false;
 	m_bPlacement = false;
 
-
 	m_pPieceExplanation = CScene2D::Create(PRIORITY_UI);
 	m_pPieceExplanation->BindTexture("data/tex/piece.png");					// テクスチャのポインタを渡す
 	m_pPieceExplanation->SetSize(D3DXVECTOR3(500.0f, 200.0f, 0.0f));		// 大きさの設定
