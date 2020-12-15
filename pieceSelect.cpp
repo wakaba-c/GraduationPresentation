@@ -143,6 +143,13 @@ void CPieceSelect::Update(void)
 					m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Square);
 					// 配置情報
 					m_pPiece[m_nPieceNum]->SetMove(false);
+
+					for (int nCnt = 0; nCnt < PIECETYPE_MAX; nCnt++)
+					{
+						m_bSelect[nCnt] = false;
+					}
+
+					m_bSelect[PIECETYPE_CORE_01] = true;
 				}
 
 
@@ -333,6 +340,14 @@ void CPieceSelect::Update(void)
 			m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Square);
 			// 配置情報
 			m_pPiece[m_nPieceNum]->SetMove(false);
+			m_nSelectCnt = 0;
+
+			for (int nCnt = 0; nCnt < PIECETYPE_MAX; nCnt++)
+			{
+				m_bSelect[nCnt] = false;
+			}
+
+			m_bSelect[PIECETYPE_CORE_01] = true;
 		}
 
 		// 上下操作
@@ -584,7 +599,6 @@ void CPieceSelect::Update(void)
 		else
 		{
 			m_pPieceSelect[nCnt]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-
 		}
 	}
 

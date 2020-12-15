@@ -182,8 +182,6 @@ HRESULT CPlayer::Init(void)
 	}
 	if (m_bRanking == true)
 	{
-
-
 		m_pRank = CNumber::Create();
 
 		if (m_pRank != NULL)
