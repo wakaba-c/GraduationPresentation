@@ -116,7 +116,7 @@ HRESULT CPlayer::Init(void)
 	CCamera *pCamera = CManager::GetCamera();
 	D3DXVECTOR3 pos = GetPosition();							// プレイヤーの位置取得
 
-	pos = D3DXVECTOR3(27027.727f, 0.0f, 34473.258f);			// プレイヤーの位置設定
+	pos = D3DXVECTOR3(1285.81f, -4199.52f, 15835.62f);			// プレイヤーの位置設定
 
 	if (pCamera != NULL)
 	{
@@ -182,8 +182,6 @@ HRESULT CPlayer::Init(void)
 	}
 	if (m_bRanking == true)
 	{
-
-
 		m_pRank = CNumber::Create();
 
 		if (m_pRank != NULL)
