@@ -405,7 +405,13 @@ void CDebugProc::Debug(void)
 	// デバッグウィンドウの生成
 	if (m_bDebug)
 	{
-		D3DXVECTOR3 worldPos = pCamera->GetWorldPos();			// マウスのワールド座標を取得
+		D3DXVECTOR3 worldPos = D3DXVECTOR3_ZERO;
+
+		if (pCamera != NULL)
+		{
+			worldPos = pCamera->GetWorldPos();			// マウスのワールド座標を取得
+		}
+
 		m_pCircle->SetPosition(worldPos);						// 生成範囲の位置を設定
 		m_pCircle->SetRadius(m_fPaintSize);						// 生成範囲の大きさを設定
 		m_pCircle->MakeVertex();								// 円の頂点生成
@@ -734,7 +740,7 @@ void CDebugProc::TabBar(D3DXVECTOR3 &worldPos)
 		}
 
 		// 現在のデバッグタイプを表示
-		ImGui::Text("individual Debug");
+		ImGui::Text(u8"UI作成モード");
 		ImGui::EndTabItem();
 	}
 	if (ImGui::BeginTabItem("delete"))
@@ -746,7 +752,7 @@ void CDebugProc::TabBar(D3DXVECTOR3 &worldPos)
 
 		DeleteObject(worldPos);					// 削除モードの実行
 		// 現在のデバッグタイプを表示
-		ImGui::Text("individual Debug");
+		ImGui::Text(u8"削除モード");
 		ImGui::EndTabItem();
 	}
 	if (ImGui::BeginTabItem("Randpaint"))
@@ -1278,10 +1284,10 @@ void CDebugProc::CreateIndividual(D3DXVECTOR3 &worldPos)
 
 	if (pScene != NULL)
 	{// 床が存在していたとき
-		CMeshField *pMeshField = (CMeshField*)pScene;								// 床の取得
+		CMeshField *pMeshField = (CMeshField*)pScene;			// 床の取得
 		if (pMeshField != NULL)
 		{
-			pos.y = pMeshField->GetHeight(worldPos);									// 床の高さを取得
+			pos.y = pMeshField->GetHeight(worldPos);			// 床の高さを取得
 		}
 	}
 
@@ -1289,9 +1295,9 @@ void CDebugProc::CreateIndividual(D3DXVECTOR3 &worldPos)
 	{
 		if (strcmp(m_pSample->GetAdd().c_str(), m_currentModel.c_str()) != 0)
 		{// 現在のモデルタイプが前回のモデルと違うとき
-			m_pSample->Uninit();															// 前のモデルを開放
-			m_pSample->Release();															// 前のモデルの開放フラグを立てる
-			m_pSample = NULL;																// 前のモデルのアドレスを捨てる
+			m_pSample->Uninit();										// 前のモデルを開放
+			m_pSample->Release();										// 前のモデルの開放フラグを立てる
+			m_pSample = NULL;											// 前のモデルのアドレスを捨てる
 
 			m_pSample = CObject::Create();								// 新しいモデルを生成
 
@@ -1304,8 +1310,8 @@ void CDebugProc::CreateIndividual(D3DXVECTOR3 &worldPos)
 
 	if (m_pSample != NULL)
 	{// 見本用オブジェクトが存在していたとき
-		m_pSample->SetPosition(pos);														// 見本用モデルの位置を現在のマウス座標に設定
-		m_pSample->SetRotation(rot);														// 回転値の取得
+		m_pSample->SetPosition(pos);									// 見本用モデルの位置を現在のマウス座標に設定
+		m_pSample->SetRotation(rot);									// 回転値の取得
 		m_pSample->SetSize(size);
 	}
 
@@ -1315,13 +1321,14 @@ void CDebugProc::CreateIndividual(D3DXVECTOR3 &worldPos)
 		{
 			if (pMouse->GetTriggerMouse(MOUSE_LEFT))
 			{// マウスの左ボタンが押されたとき
-				CObject *pObject = CObject::Create();							// 現在の見本を作成
+				CObject *pObject = CObject::Create();					// 現在の見本を作成
 
 				if (pObject != NULL)
 				{
 					pObject->BindModel(m_currentModel);
-					pObject->SetPosition(pos);												// 見本の場所に設置
-					pObject->SetRotation(rot);
+					pObject->SetPosition(pos);							// 見本の場所に設置
+					pObject->SetRotation(rot);							// 回転量の設定
+					pObject->SetSize(size);								// サイズの設定
 				}
 			}
 		}

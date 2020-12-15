@@ -186,6 +186,11 @@ HRESULT CSound::Init(HWND hWnd)
 
 		// ファイルをクローズ
 		CloseHandle(hFile);
+
+#ifdef _DEBUG
+		// ボリュームの調整
+		SetVolume((SOUND_LABEL)nCntSound, 0.0f);
+#endif
 	}
 
 	return S_OK;

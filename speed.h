@@ -45,6 +45,8 @@ public:
 	void OnCollisionEnter(CCollider *col) {};
 	void ShowInspector(void) {};
 
+	static float GetSpeed(void) { return m_fDigit; }
+
 private:
 	void SetTime(int nTime);	// ŠÔİ’è
 
