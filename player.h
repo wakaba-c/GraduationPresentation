@@ -116,10 +116,14 @@ private:
 	float							m_fSpeed;										// スピード
 	float							m_fPuzzleSpeed[Piece_Num];						// パズルのスピード
 	float							m_fPuzzleMaxSPeed;								// パズルのスピード
-	float							m_fPuzzleRate;									// スピード上昇率
-	float							m_fPuzzleTurning;								// 旋回速度
-	float							m_fPuzzleDecay;									// 減衰率取得
-	float							m_fPuzzlePower;									// パワー
+	float							m_fPuzzleRate[Piece_Num];						// スピード上昇率
+	float							m_fPuzzleMaxRate;								// スピード上昇率
+	float							m_fPuzzleTurning[Piece_Num];					// 旋回速度
+	float							m_fPuzzleMaxTurning;							// 旋回速度
+	float							m_fPuzzleDecay[Piece_Num];						// 減衰率取得
+	float							m_fPuzzleMaxDecay;								// 減衰率取得
+	float							m_fPuzzlePower[Piece_Num];						// パワー
+	float							m_fPuzzleMaxPower;								// パワー
 	float							m_fDeathblow;									// 必殺技ポイント
 	float							m_fAcceleration;								// 加速度
 	int								m_nLife;										// 体力
@@ -133,6 +137,8 @@ private:
 	bool							m_bDrift[DRIFT_MAX];							// プレイヤーのドリフトフラグ
 	bool							m_bMove;										// 現在動いているかのフラグ
 	bool							m_bAccel;										// アクセルを押しているかどうか
+	bool							m_bRankingSign[Piece_Num];
+	bool							m_bRanking;
 	CNumber							*m_pRank;										// ランキング用UI
 	CDistanceNext					*m_pDistanceNext;								// 次のプレイヤーとの距離のUI
 	CShadow							*m_pShadow;										// 影の情報ポインタ

@@ -63,5 +63,6 @@ private:
 
 	bool m_bGuideSign[Piece_Num];
 	bool m_bRate;
+	bool m_bRoute;
 };
 #endif

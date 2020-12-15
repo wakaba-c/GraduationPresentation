@@ -170,16 +170,32 @@ HRESULT CPlayer::Init(void)
 		m_fPuzzleMaxSPeed = NORMAL_SPEED;
 	}
 
-	m_pRank = CNumber::Create();
-
-	if (m_pRank != NULL)
+	for (int nCnt = 0; nCnt < nCntPiece; nCnt++)
 	{
-		m_pRank->BindTexture("data/tex/number_rank.png");
-		m_pRank->SetPosition(D3DXVECTOR3(1110.0f, 75.0f, 0.0f));
-		m_pRank->SetSize(D3DXVECTOR3(100.0f, 100.0f, 0.0f));
-		m_pRank->SetTransform();
+		m_bRankingSign[nCnt] = false;
 	}
+	for (int nCnt = 0; nCnt < nCntPiece; nCnt++)
+	{
+		m_bRankingSign[nCnt] = CPuzzle::GetRank(nCnt);
+		if (m_bRankingSign[nCnt] == true)
+		{
+			m_bRanking = true;
+		}
+	}
+	if (m_bRanking == true)
+	{
 
+
+		m_pRank = CNumber::Create();
+
+		if (m_pRank != NULL)
+		{
+			m_pRank->BindTexture("data/tex/number_rank.png");
+			m_pRank->SetPosition(D3DXVECTOR3(1110.0f, 75.0f, 0.0f));
+			m_pRank->SetSize(D3DXVECTOR3(100.0f, 100.0f, 0.0f));
+			m_pRank->SetTransform();
+		}
+	}
 	m_pDistanceNext = CDistanceNext::Create();
 
 	if (m_pDistanceNext != NULL)
