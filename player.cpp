@@ -43,12 +43,10 @@
 //=============================================================================
 #define	SCRIPT_CAR01 "data/animation/car01.txt"		// 車01のモデル情報アドレス
 #define ROT_AMOUNT 0.1f								// 回転の差を減らしていく量
-#define ROT_SPEED 0.2f								// 回転速度
 #define ROT_SPEED_DRIFT 0.5f						// ドリフト時回転速度
 #define MODEL_FRONT 2								// モデル前輪番号
 #define MODEL_REAR 1								// モデル後輪番号
 #define MODEL_TIRE 2								// タイヤモデルの数
-#define SPEED_DOWN 0.06f							// スピード減少
 #define CAMERA_ROT_SPEED 0.4f						// カメラの回転速度
 #define TIRE_ROT_SPEED 0.1f							// タイヤの回転速度
 #define ACCEKERATION 2.0f							// ドリフト加速度初期値
@@ -262,7 +260,7 @@ void CPlayer::Update(void)
 
 	VERTEX_PLANE plane = {};
 
-	CCollider::RayBlockCollision(pos, &pModel[0].GetMtxWorld(), 110, 500.0f, plane);
+	CCollider::RayBlockCollision(pos, &pModel[0].GetMtxWorld(), 110, 250.0f, plane);
 
 	D3DXVECTOR3 AB = plane.a - plane.b;
 	D3DXVECTOR3 BC = plane.b - plane.c;
@@ -315,8 +313,8 @@ void CPlayer::Update(void)
 	if (!m_bJump)
 	{
 		// 減速
-		m_move.x += (0 - m_move.x) * SPEED_DOWN;
-		m_move.z += (0 - m_move.z) * SPEED_DOWN;
+		m_move.x += (0 - m_move.x) * CManager::GetSpeedDampingRate();
+		m_move.z += (0 - m_move.z) * CManager::GetSpeedDampingRate();
 	}
 
 	////重力処理
@@ -724,12 +722,12 @@ void CPlayer::Input(void)
 				if (nValueH <= JOY_MAX_RANGE && nValueH > 0)
 				{
 					// 前輪モデルの最終目的座標
-					m_dest.y = -ROT_SPEED;
+					m_dest.y = -CManager::GetTurnVelocity();
 				}
 				else if (nValueH >= -JOY_MAX_RANGE && nValueH < 0)
 				{// 右にスティックが倒れたとき
 				 // 前輪モデルの最終目的座標
-					m_dest.y = ROT_SPEED;
+					m_dest.y = CManager::GetTurnVelocity();
 				}
 
 				// ブレーキボタンが押されたとき
@@ -739,12 +737,12 @@ void CPlayer::Input(void)
 					if (nValueH <= JOY_MAX_RANGE && nValueH > 0)
 					{
 						// 前輪モデルの最終目的座標
-						m_dest.y = ROT_SPEED;
+						m_dest.y = CManager::GetTurnVelocity();
 					}
 					else if (nValueH >= -JOY_MAX_RANGE && nValueH < 0)
 					{// 右にスティックが倒れたとき
 					 // 前輪モデルの最終目的座標
-						m_dest.y = -ROT_SPEED;
+						m_dest.y = -CManager::GetTurnVelocity();
 					}
 				}
 			}
@@ -990,12 +988,12 @@ void CPlayer::Input(void)
 			if (pKeyboard->GetPressKeyboard(MOVE_LEFT))
 			{
 				// 前輪モデルの最終目的座標
-				m_dest.y = -ROT_SPEED;
+				m_dest.y = -CManager::GetTurnVelocity();
 			}
 			else if (pKeyboard->GetPressKeyboard(MOVE_RIGHT))
 			{
 				// 前輪モデルの最終目的座標
-				m_dest.y = ROT_SPEED;
+				m_dest.y = CManager::GetTurnVelocity();
 			}
 
 			// ブレーキボタンが押されたとき
@@ -1005,12 +1003,12 @@ void CPlayer::Input(void)
 				if (pKeyboard->GetPressKeyboard(MOVE_LEFT))
 				{
 					// 前輪モデルの最終目的座標
-					m_dest.y = ROT_SPEED;
+					m_dest.y = CManager::GetTurnVelocity();
 				}
 				else if (pKeyboard->GetPressKeyboard(MOVE_RIGHT))
 				{
 					// 前輪モデルの最終目的座標
-					m_dest.y = -ROT_SPEED;
+					m_dest.y = -CManager::GetTurnVelocity();
 				}
 			}
 		}
@@ -1275,12 +1273,12 @@ void CPlayer::InputKeyboard(float fTireRotSpeed, D3DXVECTOR3 aVec)
 		if (pKeyboard->GetPressKeyboard(MOVE_LEFT))
 		{
 			// 前輪モデルの最終目的座標
-			m_dest.y = -ROT_SPEED;
+			m_dest.y = -CManager::GetTurnVelocity();
 		}
 		else if (pKeyboard->GetPressKeyboard(MOVE_RIGHT))
 		{
 			// 前輪モデルの最終目的座標
-			m_dest.y = ROT_SPEED;
+			m_dest.y = CManager::GetTurnVelocity();
 		}
 
 		// ブレーキボタンが押されたとき
@@ -1290,12 +1288,12 @@ void CPlayer::InputKeyboard(float fTireRotSpeed, D3DXVECTOR3 aVec)
 			if (pKeyboard->GetPressKeyboard(MOVE_LEFT))
 			{
 				// 前輪モデルの最終目的座標
-				m_dest.y = ROT_SPEED;
+				m_dest.y = CManager::GetTurnVelocity();
 			}
 			else if (pKeyboard->GetPressKeyboard(MOVE_RIGHT))
 			{
 				// 前輪モデルの最終目的座標
-				m_dest.y = -ROT_SPEED;
+				m_dest.y = -CManager::GetTurnVelocity();
 			}
 		}
 	}
@@ -1464,12 +1462,12 @@ void CPlayer::InputGemepad(float nValueH, float nValueV, float fTireRotSpeed, D3
 		if (nValueH <= JOY_MAX_RANGE && nValueH > 0)
 		{
 			// 前輪モデルの最終目的座標
-			m_dest.y = -ROT_SPEED;
+			m_dest.y = -CManager::GetTurnVelocity();
 		}
 		else if (nValueH >= -JOY_MAX_RANGE && nValueH < 0)
 		{// 右にスティックが倒れたとき
 			// 前輪モデルの最終目的座標
-			m_dest.y = ROT_SPEED;
+			m_dest.y = CManager::GetTurnVelocity();
 		}
 
 		// ブレーキボタンが押されたとき
@@ -1479,12 +1477,12 @@ void CPlayer::InputGemepad(float nValueH, float nValueV, float fTireRotSpeed, D3
 			if (nValueH <= JOY_MAX_RANGE && nValueH > 0)
 			{
 				// 前輪モデルの最終目的座標
-				m_dest.y = ROT_SPEED;
+				m_dest.y = CManager::GetTurnVelocity();
 			}
 			else if (nValueH >= -JOY_MAX_RANGE && nValueH < 0)
 			{// 右にスティックが倒れたとき
 			 // 前輪モデルの最終目的座標
-				m_dest.y = -ROT_SPEED;
+				m_dest.y = -CManager::GetTurnVelocity();
 			}
 		}
 	}

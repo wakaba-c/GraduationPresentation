@@ -208,6 +208,17 @@ void CCamera::Update(void)
 		m_rot.y -= D3DX_PI * 2;
 	}
 
+	// マウスの取得
+	CInputMouse *pMouse = CManager::GetInputMouse();
+
+	if (pMouse != NULL)
+	{// マウスが存在していたとき
+		D3DXVECTOR2 mousePos;									// マウス座標
+
+		// スクリーン座標とXZ平面のワールド座標交点算出
+		m_worldPos = CalcScreenToXZ((float)pMouse->GetMouseX(), (float)pMouse->GetMouseY(), SCREEN_WIDTH, SCREEN_HEIGHT, &m_mtxView, &m_mtxProjection);
+	}
+
 #ifdef _DEBUG
 	//デバッグ処理
 	Debug();

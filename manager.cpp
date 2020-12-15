@@ -148,6 +148,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 
 	CSceneX::Load();
 	LoadTexScript();
+	LoadSystemFile();
 
 	LPDIRECT3DDEVICE9 pDevice;
 	pDevice = m_pRenderer->GetDevice();
@@ -928,6 +929,28 @@ D3DXVECTOR3 CManager::Slip(D3DXVECTOR3 L, D3DXVECTOR3 N)
 }
 
 //=============================================================================
+// ワールドマトリックスの作成
+//=============================================================================
+D3DXMATRIX CManager::CreateMtxWorld(D3DXVECTOR3 &pos, D3DXVECTOR3 &rot)
+{
+	D3DXMATRIX	mtxRot, mtxTrans;			// 計算用マトリックス
+	D3DXMATRIX mtx;							// マトリックス
+
+	// ワールドマトリックスの初期化
+	D3DXMatrixIdentity(&mtx);
+
+	// 回転を反映
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, rot.y, rot.x, rot.z);
+	D3DXMatrixMultiply(&mtx, &mtx, &mtxRot);
+
+	// 位置を反映
+	D3DXMatrixTranslation(&mtxTrans, pos.x, pos.y, pos.z);
+	D3DXMatrixMultiply(&mtx, &mtx, &mtxTrans);
+
+	return  mtx;
+}
+
+//=============================================================================
 // システム設定ファイル読込
 //=============================================================================
 void CManager::LoadSystemFile(void)
@@ -975,7 +998,9 @@ void CManager::LoadSystemFile(void)
 		}
 		fclose(pFile);				// ファイルを閉じる
 
+#ifdef _DEBUG
 		MessageBox(NULL, "システム情報の読込に成功！", "SUCCESS", MB_ICONASTERISK);		// メッセージボックスの生成
+#endif
 	}
 	else
 	{
@@ -1171,6 +1196,8 @@ void CManager::LoadTexScript(void)
 		MessageBox(NULL, "テクスチャマネージャが開けませんでした！", "WARNING", MB_ICONWARNING);	// メッセージボックスの生成
 	}
 }
+
+
 
 #ifdef _DEBUG
 //=============================================================================

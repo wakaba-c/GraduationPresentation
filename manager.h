@@ -127,9 +127,13 @@ public:
 	static D3DXVECTOR3 GetCursorPosWithCenter(void);			// ÉJÅ[É\Éã
 
 	static D3DXVECTOR3 Slip(D3DXVECTOR3 L, D3DXVECTOR3 N);
+	static D3DXMATRIX CreateMtxWorld(D3DXVECTOR3 &pos, D3DXVECTOR3 &rot);
 
 	static std::map<std::string, MODEL_INFO> GetModelMap(void) { return m_ModelMap; }
 	static std::map<std::string, LPDIRECT3DTEXTURE9> GetTextureMap(void) { return m_TexMap; }
+
+	static float GetTurnVelocity(void) { return m_fTurningVelocity; }
+	static float GetSpeedDampingRate(void) { return m_fSpeedDampingRate; }
 
 private:
 #ifdef _DEBUG

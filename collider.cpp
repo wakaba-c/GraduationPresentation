@@ -1270,8 +1270,8 @@ void CCollider::Delete(void)
 bool CCollider::RayBlockCollision(D3DXVECTOR3 &pos, D3DXMATRIX *pMat, float fOffset, float fLength, VERTEX_PLANE &plane)
 {
 	// 地形判定 変数宣言
-	BOOL				bHitFlag = false;	// 判定が出たかのフラグ
-	bool				bLand = false;	// 判定が出たかのフラグ
+	BOOL				bHitFlag = false;		// 判定が出たかのフラグ
+	bool				bLand = false;			// 判定が出たかのフラグ
 	float				fLandDistance = 0;		// 距離
 	DWORD				dwHitIndex = -1;		// インデックス
 	float				fHitU = 0;		// U
@@ -1279,7 +1279,7 @@ bool CCollider::RayBlockCollision(D3DXVECTOR3 &pos, D3DXMATRIX *pMat, float fOff
 	D3DXMATRIX			invmat;							// 逆行列を格納する変数
 	D3DXVECTOR3			m_posAfter;						// 逆行列で出した終点情報を格納する
 	D3DXVECTOR3			m_posBefore;					// 終点情報を格納する
-	D3DXVECTOR3			direction;						// 変換後の位置、方向を格納する変数：
+	D3DXVECTOR3			direction;						// 変換後の位置、方向を格納する変数
 	std::vector<VERTEX_PLANE>	vPlane;
 	std::vector<float>	vDistance;						// 長さの配列保存
 	float				fData = 0.0f;		// データ
