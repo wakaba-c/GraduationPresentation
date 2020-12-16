@@ -1257,6 +1257,7 @@ void CDebugProc::CreateIndividual(D3DXVECTOR3 &worldPos)
 	CInputMouse *pMouse = CManager::GetInputMouse();								// マウスの取得
 	CInputKeyboard *pKeyboard = CManager::GetInputKeyboard();						// キーボードの取得
 	CScene *pScene = CScene::NowFloor(worldPos);									// 現在いる場所のフィールドを取得
+	CPlayer *pPlayer = CGame::GetPlayer();
 
 	D3DXVECTOR3 pos = D3DXVECTOR3_ZERO;
 	D3DXVECTOR3 rot = D3DXVECTOR3_ZERO;
@@ -1270,7 +1271,10 @@ void CDebugProc::CreateIndividual(D3DXVECTOR3 &worldPos)
 		}
 		else
 		{
-			pos = worldPos;
+			if (pPlayer != NULL)
+			{
+				pos = pPlayer->GetPosition();
+			}
 		}
 
 		rot = m_pSample->GetRotation();					// 回転値の取得
