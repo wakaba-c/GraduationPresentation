@@ -87,6 +87,7 @@ public:
 	D3DXVECTOR3 GetRotDest(void) { return m_dest; }					// 回転最終到達地点
 	D3DXVECTOR3 GetCameraRot(void) { return m_cameraRot; }			// カメラの回転情報
 	void SetCameraRot(D3DXVECTOR3 cameraRot) { m_cameraRot = cameraRot; }
+	void SetSpeed(int nCntSpeed);
 	int GetNumRound(void) { return m_nRound; }
 	bool GetEvent(void ) { return m_bEvent; }
 
