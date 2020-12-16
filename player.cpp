@@ -155,15 +155,9 @@ HRESULT CPlayer::Init(void)
 		m_fPuzzleSpeed[nCnt] = CPuzzle::GetSpeed(nCnt);
 	}
 
-	for (int nCnt = 0; nCnt < nCntPiece; nCnt++)
-	{
-		if (m_fPuzzleSpeed[nCnt + 1] >= 0)
-		{
-			m_fPuzzleMaxSPeed = m_fPuzzleSpeed[nCnt] + m_fPuzzleSpeed[nCnt + 1] + NORMAL_SPEED;
-		}
-	}
+	SetSpeed(nCntPiece);
 
-	if (nCntPiece == 0)
+	if (m_fPuzzleMaxSPeed <= 0)
 	{
 		m_fPuzzleMaxSPeed = NORMAL_SPEED;
 	}
@@ -1729,6 +1723,88 @@ void CPlayer::SlopeMove(void)
 
 }
 
+//=============================================================================
+// スピード設定
+//=============================================================================
+void CPlayer::SetSpeed(int nCntSpeed)
+{
+	switch (nCntSpeed)
+	{
+	case 0:
+		m_fPuzzleMaxSPeed = m_fPuzzleSpeed[0];
+		break;
+	case 1:
+		m_fPuzzleMaxSPeed = m_fPuzzleSpeed[0];
+		break;
+	case 2:
+		m_fPuzzleMaxSPeed = m_fPuzzleSpeed[0] + m_fPuzzleSpeed[1];
+		break;
+	case 3:
+		m_fPuzzleMaxSPeed = m_fPuzzleSpeed[0] + m_fPuzzleSpeed[1] + m_fPuzzleSpeed[2];
+		break;
+	case 4:
+		m_fPuzzleMaxSPeed = m_fPuzzleSpeed[0] + m_fPuzzleSpeed[1] + m_fPuzzleSpeed[2] + m_fPuzzleSpeed[3];
+		break;
+	case 5:
+		m_fPuzzleMaxSPeed = m_fPuzzleSpeed[0] + m_fPuzzleSpeed[1] + m_fPuzzleSpeed[2] + m_fPuzzleSpeed[3] + m_fPuzzleSpeed[4];
+		break;
+	case 6:
+		m_fPuzzleMaxSPeed = m_fPuzzleSpeed[0] + m_fPuzzleSpeed[1] + m_fPuzzleSpeed[2] + m_fPuzzleSpeed[3] + m_fPuzzleSpeed[4] +
+			m_fPuzzleSpeed[5];
+		break;
+	case 7:
+		m_fPuzzleMaxSPeed = m_fPuzzleSpeed[0] + m_fPuzzleSpeed[1] + m_fPuzzleSpeed[2] + m_fPuzzleSpeed[3] + m_fPuzzleSpeed[4] +
+			m_fPuzzleSpeed[5] + m_fPuzzleSpeed[6];
+		break;
+	case 8:
+		m_fPuzzleMaxSPeed = m_fPuzzleSpeed[0] + m_fPuzzleSpeed[1] + m_fPuzzleSpeed[2] + m_fPuzzleSpeed[3] + m_fPuzzleSpeed[4] +
+			m_fPuzzleSpeed[5] + m_fPuzzleSpeed[6] + m_fPuzzleSpeed[7];
+		break;
+	case 9:
+		m_fPuzzleMaxSPeed = m_fPuzzleSpeed[0] + m_fPuzzleSpeed[1] + m_fPuzzleSpeed[2] + m_fPuzzleSpeed[3] + m_fPuzzleSpeed[4] +
+			m_fPuzzleSpeed[5] + m_fPuzzleSpeed[6] + m_fPuzzleSpeed[7] + m_fPuzzleSpeed[8];
+		break;
+	case 10:
+		m_fPuzzleMaxSPeed = m_fPuzzleSpeed[0] + m_fPuzzleSpeed[1] + m_fPuzzleSpeed[2] + m_fPuzzleSpeed[3] + m_fPuzzleSpeed[4] +
+			m_fPuzzleSpeed[5] + m_fPuzzleSpeed[6] + m_fPuzzleSpeed[7] + m_fPuzzleSpeed[8] + m_fPuzzleSpeed[9];
+		break;
+	case 11:
+		m_fPuzzleMaxSPeed = m_fPuzzleSpeed[0] + m_fPuzzleSpeed[1] + m_fPuzzleSpeed[2] + m_fPuzzleSpeed[3] + m_fPuzzleSpeed[4] +
+			m_fPuzzleSpeed[5] + m_fPuzzleSpeed[6] + m_fPuzzleSpeed[7] + m_fPuzzleSpeed[8] + m_fPuzzleSpeed[9] + m_fPuzzleSpeed[10];
+		break;
+	case 12:
+		m_fPuzzleMaxSPeed = m_fPuzzleSpeed[0] + m_fPuzzleSpeed[1] + m_fPuzzleSpeed[2] + m_fPuzzleSpeed[3] + m_fPuzzleSpeed[4] +
+			m_fPuzzleSpeed[5] + m_fPuzzleSpeed[6] + m_fPuzzleSpeed[7] + m_fPuzzleSpeed[8] + m_fPuzzleSpeed[9] + m_fPuzzleSpeed[10] +
+			m_fPuzzleSpeed[11];
+		break;
+	case 13:
+		m_fPuzzleMaxSPeed = m_fPuzzleSpeed[0] + m_fPuzzleSpeed[1] + m_fPuzzleSpeed[2] + m_fPuzzleSpeed[3] + m_fPuzzleSpeed[4] +
+			m_fPuzzleSpeed[5] + m_fPuzzleSpeed[6] + m_fPuzzleSpeed[7] + m_fPuzzleSpeed[8] + m_fPuzzleSpeed[9] + m_fPuzzleSpeed[10] +
+			m_fPuzzleSpeed[11] + m_fPuzzleSpeed[12];
+		break;
+	case 14:
+		m_fPuzzleMaxSPeed = m_fPuzzleSpeed[0] + m_fPuzzleSpeed[1] + m_fPuzzleSpeed[2] + m_fPuzzleSpeed[3] + m_fPuzzleSpeed[4] +
+			m_fPuzzleSpeed[5] + m_fPuzzleSpeed[6] + m_fPuzzleSpeed[7] + m_fPuzzleSpeed[8] + m_fPuzzleSpeed[9] + m_fPuzzleSpeed[10] +
+			m_fPuzzleSpeed[11] + m_fPuzzleSpeed[12] + m_fPuzzleSpeed[13];
+		break;
+	case 15:
+		m_fPuzzleMaxSPeed = m_fPuzzleSpeed[0] + m_fPuzzleSpeed[1] + m_fPuzzleSpeed[2] + m_fPuzzleSpeed[3] + m_fPuzzleSpeed[4] +
+			m_fPuzzleSpeed[5] + m_fPuzzleSpeed[6] + m_fPuzzleSpeed[7] + m_fPuzzleSpeed[8] + m_fPuzzleSpeed[9] + m_fPuzzleSpeed[10] +
+			m_fPuzzleSpeed[11] + m_fPuzzleSpeed[12] + m_fPuzzleSpeed[13] + m_fPuzzleSpeed[14];
+		break;
+	case 16:
+		m_fPuzzleMaxSPeed = m_fPuzzleSpeed[0] + m_fPuzzleSpeed[1] + m_fPuzzleSpeed[2] + m_fPuzzleSpeed[3] + m_fPuzzleSpeed[4] +
+			m_fPuzzleSpeed[5] + m_fPuzzleSpeed[6] + m_fPuzzleSpeed[7] + m_fPuzzleSpeed[8] + m_fPuzzleSpeed[9] + m_fPuzzleSpeed[10] +
+			m_fPuzzleSpeed[11] + m_fPuzzleSpeed[12] + m_fPuzzleSpeed[13] + m_fPuzzleSpeed[14] + m_fPuzzleSpeed[15];
+		break;
+	case 17:
+		m_fPuzzleMaxSPeed = m_fPuzzleSpeed[0] + m_fPuzzleSpeed[1] + m_fPuzzleSpeed[2] + m_fPuzzleSpeed[3] + m_fPuzzleSpeed[4] +
+			m_fPuzzleSpeed[5] + m_fPuzzleSpeed[6] + m_fPuzzleSpeed[7] + m_fPuzzleSpeed[8] + m_fPuzzleSpeed[9] + m_fPuzzleSpeed[10] +
+			m_fPuzzleSpeed[11] + m_fPuzzleSpeed[12] + m_fPuzzleSpeed[13] + m_fPuzzleSpeed[14] + m_fPuzzleSpeed[15] + m_fPuzzleSpeed[16];
+		break;
+	}
+	m_fPuzzleMaxSPeed += NORMAL_SPEED;
+}
 #ifdef _DEBUG
 //=============================================================================
 // デバッグ処理
