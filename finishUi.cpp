@@ -45,6 +45,10 @@ HRESULT CFinishUi::Init(void)
 	// 位置の設定
 	SetPosition(pos);
 
+	SetSize(D3DXVECTOR3(700.0f, 500.0f, 0.0f));
+
+	SetTransform();
+
 	// テクスチャの設定
 	BindTexture("data/tex/Finish.png");
 
@@ -72,10 +76,12 @@ void CFinishUi::Update(void)
 	pos += m_move;
 
 	// 減速
-	m_move.y -= 0.098;
+	m_move.y -= 0.98;
 
 	// 位置設定
 	SetPosition(pos);
+
+	SetTransform();
 
 	// キャラクターの更新処理
 	CScene2D::Update();

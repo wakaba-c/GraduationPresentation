@@ -15,6 +15,7 @@
 #include "game.h"
 #include "player.h"
 #include "distanceNext.h"
+#include "finishUi.h"
 
 //=============================================================================
 // ƒ}ƒNƒ’è‹`
@@ -426,6 +427,7 @@ void CObject::OnTriggerEnter(CCollider *col)
 							CNetwork *pNetwork = CManager::GetNetwork();
 							pNetwork->SendTCP("GOAL", sizeof("GOAL"));
 							pPlayer->SetEvent(true);
+							CFinishUi::Create();
 						}
 					}
 				}
