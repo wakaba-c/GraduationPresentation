@@ -37,6 +37,7 @@
 #include "network.h"
 #include "startSignal.h"
 #include "shadow.h"
+#include "finishUi.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -110,8 +111,10 @@ HRESULT CGame::Init(void)
 	// モデル情報の読み込み
 	CObject::LoadModelTest("data/text/model.txt");
 
-	//// 壁情報の読み込み
-	//CMeshWall::LoadWall("data/text/stage/wall.txt", false);
+	// 内壁情報の読み込み
+	CMeshWall::LoadWall("data/text/stage/wall.txt", false);
+	// 外壁情報の読み込み
+	CMeshWall::LoadWall("data/text/stage/wall02.txt", false);
 
 	int nCntPiece = CPuzzle::GetPieceNum();
 
@@ -157,6 +160,10 @@ void CGame::Update(void)
 	if (pKeyboard->GetTriggerKeyboard(DIK_0))
 	{
 		CStartSignal::Create();
+	}
+	if (pKeyboard->GetTriggerKeyboard(DIK_7))
+	{
+		CFinishUi::Create();
 	}
 #endif
 

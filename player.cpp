@@ -109,6 +109,7 @@ HRESULT CPlayer::Init(void)
 {
 	LPDIRECT3DDEVICE9 pDevice;
 	CRenderer *pRenderer = CManager::GetRenderer();
+	CNetwork *pNetwork = CManager::GetNetwork();
 
 	//デバイスを取得する
 	pDevice = pRenderer->GetDevice();
@@ -116,7 +117,21 @@ HRESULT CPlayer::Init(void)
 	CCamera *pCamera = CManager::GetCamera();
 	D3DXVECTOR3 pos = GetPosition();							// プレイヤーの位置取得
 
-	pos = D3DXVECTOR3(1285.81f, -4199.52f, 15835.62f);			// プレイヤーの位置設定
+	switch (pNetwork->GetId())
+	{
+	case 0:
+		pos = D3DXVECTOR3(1285.81f, -4199.52f, 15835.62f);			// プレイヤーの位置設定
+		break;
+	case 1:
+		pos = D3DXVECTOR3(1058.49f, -4145.97f, 16702.12f);			// プレイヤーの位置設定
+		break;
+	case 2:
+		pos = D3DXVECTOR3(2705.98f, -4182.04f, 17121.40f);			// プレイヤーの位置設定
+		break;
+	case 3:
+		pos = D3DXVECTOR3(2329.16f, -4224.17f, 16066.82f);			// プレイヤーの位置設定
+		break;
+	}
 
 	if (pCamera != NULL)
 	{

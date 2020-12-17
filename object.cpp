@@ -12,6 +12,9 @@
 #include "house.h"
 #include "colliderBox.h"
 #include "colliderSphere.h"
+#include "game.h"
+#include "player.h"
+#include "distanceNext.h"
 
 //=============================================================================
 // マクロ定義
@@ -407,6 +410,25 @@ void CObject::OnTriggerEnter(CCollider *col)
 			{
 				// 初期値に戻す
 				m_pointNum = 0;
+				CPlayer *pPlayer = CGame::GetPlayer();
+
+				if (pPlayer != NULL)
+				{
+					CDistanceNext *pDistanceNext = pPlayer->GetDistanceNext();
+					if (pDistanceNext != NULL)
+					{
+						if (pDistanceNext->GetNowRound() < MAX_ROUND - 1)
+						{
+							pDistanceNext->SetNowRound();
+						}
+						else
+						{
+							CNetwork *pNetwork = CManager::GetNetwork();
+							pNetwork->SendTCP("GOAL", sizeof("GOAL"));
+							pPlayer->SetEvent(true);
+						}
+					}
+				}
 			}
 
 			m_pSphere->SetScene(m_vPointObj[m_pointNum]);			// 次のシーンを格納する
