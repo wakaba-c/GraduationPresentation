@@ -14,7 +14,7 @@ NUM_MODEL = 3
 #------------------------------------------------------------------------------
 # モデルファイル名
 #------------------------------------------------------------------------------
-MODEL_FILENAME = data/model/car/CarBody03_Y.x			# [0]
+MODEL_FILENAME = data/model/car/CarBody03_Y.x				# [0]
 MODEL_FILENAME = data/model/car/CarWheel_B03.x			# [1]
 MODEL_FILENAME = data/model/car/CarWheel_F03.x			# [2]
 
@@ -25,21 +25,21 @@ CHARACTERSET
 	PARTSSET						# [0]
 		INDEX = 0
 		PARENT = -1					# (親)NULL
-		POS = 0.0 28.39 0.0
+		POS = 0.0 44.95 0.0
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 
 	PARTSSET						# [1]
 		INDEX = 1
 		PARENT = 0					# (親)腰
-		POS = 0.36 -15.02 41.78
+		POS = 0.0 -30.06 36.45
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 
 	PARTSSET						# [2]頭
 		INDEX = 2
 		PARENT = 0					# (親)体
-		POS = 0.55 -16.24 -70.09
+		POS = 0.0 -33.09 -70.54
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 
