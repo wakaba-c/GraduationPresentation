@@ -37,6 +37,7 @@
 #include "network.h"
 #include "startSignal.h"
 #include "shadow.h"
+#include "finishUi.h"
 
 //=============================================================================
 // Ã“Iƒƒ“ƒo•Ï”
@@ -157,6 +158,10 @@ void CGame::Update(void)
 	if (pKeyboard->GetTriggerKeyboard(DIK_0))
 	{
 		CStartSignal::Create();
+	}
+	if (pKeyboard->GetTriggerKeyboard(DIK_7))
+	{
+		CFinishUi::Create();
 	}
 #endif
 

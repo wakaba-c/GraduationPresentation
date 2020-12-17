@@ -38,5 +38,6 @@ MODEL_FILENAME = data/model/Gate/Gate_Start.x				# [25]ゲート(スタート)
 MODEL_FILENAME = data/model/Gate/Gate_Goal.x				# [26]ゲート(ゴール)
 MODEL_FILENAME = data/model/MouMouCountry.x					# [27]モーモーカントリー
 MODEL_FILENAME = data/model/test.x
+MODEL_FILENAME = data/model/MouMouCountry/BokujouAka.x
 
 END_SCRIPT		# この行は絶対消さないこと！
