@@ -89,6 +89,7 @@ public:
 	CDistanceNext *GetDistanceNext(void) { return m_pDistanceNext; }// ŽŸ‚Ì–Ú•W‚Æ‚Ì‹——£‚ðŽæ“¾
 	void SetCameraRot(D3DXVECTOR3 cameraRot) { m_cameraRot = cameraRot; }
 	void SetSpeed(int nCntSpeed);
+	void SetTurning(int nCntTurning);
 	int GetNumRound(void) { return m_nRound; }
 	bool GetEvent(void ) { return m_bEvent; }
 

@@ -165,9 +165,11 @@ HRESULT CPlayer::Init(void)
 
 	for (int nCnt = 0; nCnt < nCntPiece; nCnt++)
 	{
-		float fSpeed = CPuzzle::GetSpeed(nCnt);
-
 		m_fPuzzleSpeed[nCnt] = CPuzzle::GetSpeed(nCnt);
+		m_fPuzzleDecay[nCnt] = CPuzzle::GetDecay(nCnt);
+		m_fPuzzlePower[nCnt] = CPuzzle::GetPower(nCnt);
+		m_fPuzzleRate[nCnt] = CPuzzle::GetRate(nCnt);
+		m_fPuzzleTurning[nCnt] = CPuzzle::GetTurning(nCnt);
 	}
 
 	SetSpeed(nCntPiece);
@@ -1820,6 +1822,90 @@ void CPlayer::SetSpeed(int nCntSpeed)
 	}
 	m_fPuzzleMaxSPeed += NORMAL_SPEED;
 }
+
+//=============================================================================
+// 旋回速度設定
+//=============================================================================
+void CPlayer::SetTurning(int nCntTurning)
+{
+	switch (nCntTurning)
+	{
+	case 0:
+		m_fPuzzleMaxTurning = m_fPuzzleTurning[0];
+		break;
+	case 1:
+		m_fPuzzleMaxTurning = m_fPuzzleTurning[0];
+		break;
+	case 2:
+		m_fPuzzleMaxTurning = m_fPuzzleTurning[0] + m_fPuzzleTurning[1];
+		break;
+	case 3:
+		m_fPuzzleMaxTurning = m_fPuzzleTurning[0] + m_fPuzzleTurning[1] + m_fPuzzleTurning[2];
+		break;
+	case 4:
+		m_fPuzzleMaxTurning = m_fPuzzleTurning[0] + m_fPuzzleTurning[1] + m_fPuzzleTurning[2] + m_fPuzzleTurning[3];
+		break;
+	case 5:
+		m_fPuzzleMaxTurning = m_fPuzzleTurning[0] + m_fPuzzleTurning[1] + m_fPuzzleTurning[2] + m_fPuzzleTurning[3] + m_fPuzzleTurning[4];
+		break;
+	case 6:
+		m_fPuzzleMaxTurning = m_fPuzzleTurning[0] + m_fPuzzleTurning[1] + m_fPuzzleTurning[2] + m_fPuzzleTurning[3] + m_fPuzzleTurning[4] +
+			m_fPuzzleTurning[5];
+		break;
+	case 7:
+		m_fPuzzleMaxTurning = m_fPuzzleTurning[0] + m_fPuzzleTurning[1] + m_fPuzzleTurning[2] + m_fPuzzleTurning[3] + m_fPuzzleTurning[4] +
+			m_fPuzzleTurning[5] + m_fPuzzleTurning[6];
+		break;
+	case 8:
+		m_fPuzzleMaxTurning = m_fPuzzleTurning[0] + m_fPuzzleTurning[1] + m_fPuzzleTurning[2] + m_fPuzzleTurning[3] + m_fPuzzleTurning[4] +
+			m_fPuzzleTurning[5] + m_fPuzzleTurning[6] + m_fPuzzleTurning[7];
+		break;
+	case 9:
+		m_fPuzzleMaxTurning = m_fPuzzleTurning[0] + m_fPuzzleTurning[1] + m_fPuzzleTurning[2] + m_fPuzzleTurning[3] + m_fPuzzleTurning[4] +
+			m_fPuzzleTurning[5] + m_fPuzzleTurning[6] + m_fPuzzleTurning[7] + m_fPuzzleTurning[8];
+		break;
+	case 10:
+		m_fPuzzleMaxTurning = m_fPuzzleTurning[0] + m_fPuzzleTurning[1] + m_fPuzzleTurning[2] + m_fPuzzleTurning[3] + m_fPuzzleTurning[4] +
+			m_fPuzzleTurning[5] + m_fPuzzleTurning[6] + m_fPuzzleTurning[7] + m_fPuzzleTurning[8] + m_fPuzzleTurning[9];
+		break;
+	case 11:
+		m_fPuzzleMaxTurning = m_fPuzzleTurning[0] + m_fPuzzleTurning[1] + m_fPuzzleTurning[2] + m_fPuzzleTurning[3] + m_fPuzzleTurning[4] +
+			m_fPuzzleTurning[5] + m_fPuzzleTurning[6] + m_fPuzzleTurning[7] + m_fPuzzleTurning[8] + m_fPuzzleTurning[9] + m_fPuzzleTurning[10];
+		break;
+	case 12:
+		m_fPuzzleMaxTurning = m_fPuzzleTurning[0] + m_fPuzzleTurning[1] + m_fPuzzleTurning[2] + m_fPuzzleTurning[3] + m_fPuzzleTurning[4] +
+			m_fPuzzleTurning[5] + m_fPuzzleTurning[6] + m_fPuzzleTurning[7] + m_fPuzzleTurning[8] + m_fPuzzleTurning[9] + m_fPuzzleTurning[10] +
+			m_fPuzzleTurning[11];
+		break;
+	case 13:
+		m_fPuzzleMaxTurning = m_fPuzzleTurning[0] + m_fPuzzleTurning[1] + m_fPuzzleTurning[2] + m_fPuzzleTurning[3] + m_fPuzzleTurning[4] +
+			m_fPuzzleTurning[5] + m_fPuzzleTurning[6] + m_fPuzzleTurning[7] + m_fPuzzleTurning[8] + m_fPuzzleTurning[9] + m_fPuzzleTurning[10] +
+			m_fPuzzleTurning[11] + m_fPuzzleTurning[12];
+		break;
+	case 14:
+		m_fPuzzleMaxTurning = m_fPuzzleTurning[0] + m_fPuzzleTurning[1] + m_fPuzzleTurning[2] + m_fPuzzleTurning[3] + m_fPuzzleTurning[4] +
+			m_fPuzzleTurning[5] + m_fPuzzleTurning[6] + m_fPuzzleTurning[7] + m_fPuzzleTurning[8] + m_fPuzzleTurning[9] + m_fPuzzleTurning[10] +
+			m_fPuzzleTurning[11] + m_fPuzzleTurning[12] + m_fPuzzleTurning[13];
+		break;
+	case 15:
+		m_fPuzzleMaxTurning = m_fPuzzleTurning[0] + m_fPuzzleTurning[1] + m_fPuzzleTurning[2] + m_fPuzzleTurning[3] + m_fPuzzleTurning[4] +
+			m_fPuzzleTurning[5] + m_fPuzzleTurning[6] + m_fPuzzleTurning[7] + m_fPuzzleTurning[8] + m_fPuzzleTurning[9] + m_fPuzzleTurning[10] +
+			m_fPuzzleTurning[11] + m_fPuzzleTurning[12] + m_fPuzzleTurning[13] + m_fPuzzleTurning[14];
+		break;
+	case 16:
+		m_fPuzzleMaxTurning = m_fPuzzleTurning[0] + m_fPuzzleTurning[1] + m_fPuzzleTurning[2] + m_fPuzzleTurning[3] + m_fPuzzleTurning[4] +
+			m_fPuzzleTurning[5] + m_fPuzzleTurning[6] + m_fPuzzleTurning[7] + m_fPuzzleTurning[8] + m_fPuzzleTurning[9] + m_fPuzzleTurning[10] +
+			m_fPuzzleTurning[11] + m_fPuzzleTurning[12] + m_fPuzzleTurning[13] + m_fPuzzleTurning[14] + m_fPuzzleTurning[15];
+		break;
+	case 17:
+		m_fPuzzleMaxTurning = m_fPuzzleTurning[0] + m_fPuzzleTurning[1] + m_fPuzzleTurning[2] + m_fPuzzleTurning[3] + m_fPuzzleTurning[4] +
+			m_fPuzzleTurning[5] + m_fPuzzleTurning[6] + m_fPuzzleTurning[7] + m_fPuzzleTurning[8] + m_fPuzzleTurning[9] + m_fPuzzleTurning[10] +
+			m_fPuzzleTurning[11] + m_fPuzzleTurning[12] + m_fPuzzleTurning[13] + m_fPuzzleTurning[14] + m_fPuzzleTurning[15] + m_fPuzzleTurning[16];
+		break;
+	}
+	m_fPuzzleMaxTurning += NORMAL_SPEED;
+}
+
 #ifdef _DEBUG
 //=============================================================================
 // デバッグ処理
