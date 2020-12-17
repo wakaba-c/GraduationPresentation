@@ -86,6 +86,7 @@ public:
 	D3DXMATRIX GetMtxWorld(void) { return m_mtxWorld; }				// ワールドマトリックスの取得
 	D3DXVECTOR3 GetRotDest(void) { return m_dest; }					// 回転最終到達地点
 	D3DXVECTOR3 GetCameraRot(void) { return m_cameraRot; }			// カメラの回転情報
+	CDistanceNext *GetDistanceNext(void) { return m_pDistanceNext; }// 次の目標との距離を取得
 	void SetCameraRot(D3DXVECTOR3 cameraRot) { m_cameraRot = cameraRot; }
 	int GetNumRound(void) { return m_nRound; }
 	bool GetEvent(void ) { return m_bEvent; }
