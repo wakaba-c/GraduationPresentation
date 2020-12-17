@@ -88,6 +88,7 @@ public:
 	D3DXVECTOR3 GetCameraRot(void) { return m_cameraRot; }			// ƒJƒƒ‰‚Ì‰ñ“]î•ñ
 	void SetCameraRot(D3DXVECTOR3 cameraRot) { m_cameraRot = cameraRot; }
 	void SetSpeed(int nCntSpeed);
+	void SetTurning(int nCntTurning);
 	int GetNumRound(void) { return m_nRound; }
 	bool GetEvent(void ) { return m_bEvent; }
 
