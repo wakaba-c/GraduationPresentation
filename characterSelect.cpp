@@ -42,57 +42,57 @@ HRESULT CCharacterSelect::Init(void)
 	{
 		pBack[nCnt] = CScene2D::Create(CScene::PRIORITY_UI);
 	}
-	if (pBack[0] != NULL)
+	if (pBack[0] != NULL)//Select‚ÌƒƒS
 	{
 		pBack[0]->BindTexture("data/tex/Select.png");
 		pBack[0]->SetPosition(D3DXVECTOR3(970, 640, 0.0f));
 		pBack[0]->SetSize(D3DXVECTOR3(130, 130, 0.0f));
 		pBack[0]->SetTransform();
 	}
-	if (pBack[1] != NULL)
+	if (pBack[1] != NULL)//Decide‚ÌƒƒS
 	{
 		pBack[1]->BindTexture("data/tex/Decide.png");
 		pBack[1]->SetPosition(D3DXVECTOR3(1150, 640, 0.0f));
 		pBack[1]->SetSize(D3DXVECTOR3(130, 130, 0.0f));
 		pBack[1]->SetTransform();
 	}
-	if (pBack[2] != NULL)
+	if (pBack[2] != NULL)//ŽÔ‚P
 	{
-		pBack[2]->BindTexture("data/tex/silhouette.png");
+		pBack[2]->BindTexture("data/tex/car01.jpg");
 		pBack[2]->SetPosition(D3DXVECTOR3(SCREEN_WIDTH/2 - 240, 520, 0.0f));
 		pBack[2]->SetSize(D3DXVECTOR3(150, 130, 0.0f));
 		pBack[2]->SetTransform();
 	}
-	if (pBack[3] != NULL)
+	if (pBack[3] != NULL)//ŽÔ‚Q
 	{
-		//pBack[3]->BindTexture("data/tex/Decide.png");
+		pBack[3]->BindTexture("data/tex/car02.jpg");
 		pBack[3]->SetPosition(D3DXVECTOR3(SCREEN_WIDTH / 2 - 80 , 520, 0.0f));
 		pBack[3]->SetSize(D3DXVECTOR3(150, 130, 0.0f));
 		pBack[3]->SetTransform();
 	}
-	if (pBack[4] != NULL)
+	if (pBack[4] != NULL)//ŽÔ‚R
 	{
-		//pBack[4]->BindTexture("data/tex/Decide.png");
+		pBack[4]->BindTexture("data/tex/car03.jpg");
 		pBack[4]->SetPosition(D3DXVECTOR3(SCREEN_WIDTH / 2 + 80 , 520, 0.0f));
 		pBack[4]->SetSize(D3DXVECTOR3(150, 130, 0.0f));
 		pBack[4]->SetTransform();
 	}
-	if (pBack[5] != NULL)
+	if (pBack[5] != NULL)//ŽÔ‚S
 	{
-		//pBack[5]->BindTexture("data/tex/Decide.png");
+		pBack[5]->BindTexture("data/tex/car04.jpg");
 		pBack[5]->SetPosition(D3DXVECTOR3(SCREEN_WIDTH / 2 + 240, 520, 0.0f));
 		pBack[5]->SetSize(D3DXVECTOR3(150, 130, 0.0f));
 		pBack[5]->SetTransform();
 	}
 
-	if (pBack[6] != NULL)
+	if (pBack[6] != NULL)//CarSelect‚ÌƒƒS
 	{
 		pBack[6]->BindTexture("data/tex/CarSelect.png");
 		pBack[6]->SetPosition(D3DXVECTOR3(SCREEN_WIDTH / 2, 70, 0.0f));
 		pBack[6]->SetSize(D3DXVECTOR3(470, 85, 0.0f));
 		pBack[6]->SetTransform();
 	}
-	if (pBack[7] != NULL)
+	if (pBack[7] != NULL)//ƒZƒŒƒNƒg‚·‚é‚Æ‚«‚Ì˜g@¦ˆê”ÔÅŒã‚É•`‰æ‚·‚éŽ–I
 	{
 		pBack[7]->BindTexture("data/tex/SelectFrame.png");
 		pBack[7]->SetPosition(D3DXVECTOR3(SCREEN_WIDTH / 2 - 240, 520, 0.0f));
@@ -130,6 +130,7 @@ void CCharacterSelect::Update(void)
 			{// Žw’è‚ÌƒL[‚ª‰Ÿ‚³‚ê‚½‚Æ‚«
 				CFade::SetFade(CManager::MODE_PUZZLE_CUSTOM, CFade::FADETYPE_SLIDE);					//ƒtƒF[ƒh‚ð“ü‚ê‚é
 			}
+			//ŽÔ‚Ì‘I‘ðˆ—
 			if (pInputKeyboard->GetTriggerKeyboard(DIK_RIGHT)&&m_nCarType< 3)
 			{
 				pos = pBack[7]->GetPosition();
