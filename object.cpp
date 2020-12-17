@@ -66,7 +66,7 @@ HRESULT CObject::Init(void)
 		if (m_pSphere == NULL)
 		{
 			// スフィアの生成処理
-			m_pSphere = CColliderSphere::Create(true, 1000.0f);
+			m_pSphere = CColliderSphere::Create(true, 3000.0f);
 
 			// スフィアがあるとき
 			if (m_pSphere != NULL)
@@ -433,30 +433,30 @@ void CObject::OnTriggerEnter(CCollider *col)
 
 			m_pSphere->SetScene(m_vPointObj[m_pointNum]);			// 次のシーンを格納する
 
-			// 半径の大きさを変える
-			if (m_pointNum == 19 || m_pointNum == 20 || m_pointNum == 22 || m_pointNum == 23 ||
-				m_pointNum == 25 || m_pointNum == 26 || m_pointNum == 28 || m_pointNum == 29)
-			{
-				m_pSphere->SetRadius(1250.0f);
-			}
-			else if (m_pointNum == 2 || m_pointNum == 18 || m_pointNum == 21 ||
-				m_pointNum == 24 || m_pointNum == 25)
-			{
-				m_pSphere->SetRadius(1500.0f);
-			}
-			else if (m_pointNum == 25)
-			{
-				m_pSphere->SetRadius(1700.0f);
+			//// 半径の大きさを変える
+			//if (m_pointNum == 19 || m_pointNum == 20 || m_pointNum == 22 || m_pointNum == 23 ||
+			//	m_pointNum == 25 || m_pointNum == 26 || m_pointNum == 28 || m_pointNum == 29)
+			//{
+			//	m_pSphere->SetRadius(1250.0f);
+			//}
+			//else if (m_pointNum == 2 || m_pointNum == 18 || m_pointNum == 21 ||
+			//	m_pointNum == 24 || m_pointNum == 25)
+			//{
+			//	m_pSphere->SetRadius(1500.0f);
+			//}
+			//else if (m_pointNum == 25)
+			//{
+			//	m_pSphere->SetRadius(1700.0f);
 
-			}
-			else if (m_pointNum == 27)
-			{
-				m_pSphere->SetRadius(1850.0f);
-			}
-			else
-			{
-				m_pSphere->SetRadius(1000.0f);
-			}
+			//}
+			//else if (m_pointNum == 27)
+			//{
+			//	m_pSphere->SetRadius(1850.0f);
+			//}
+			//else
+			//{
+			//	m_pSphere->SetRadius(1000.0f);
+			//}
 
 			// ポイント番号設定
 			SetPointNum(m_pointNum);
