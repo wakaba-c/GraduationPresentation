@@ -473,6 +473,13 @@ void CPlayer::Update(void)
 		}
 	}
 
+	CDebugProc::Log("‘¬“x : %.2f", CSpeed::GetSpeed());
+
+	if (CSpeed::GetSpeed() > 10)
+	{
+		CEffect::SandSmokeEffect(pos + D3DXVECTOR3(0.0f, 50.0f, 0.0f));
+	}
+
 #ifdef _DEBUG
 	Debug();
 #endif
