@@ -16,5 +16,6 @@ MODEL_FILENAME = data/tex/Explanation.png			# [3]ê‡ñæ
 MODEL_FILENAME = data/tex/Explanation_1.png			# [4]ê‡ñæ
 MODEL_FILENAME = data/tex/Explanation_2.png			# [5]ê‡ñæ
 MODEL_FILENAME = data/tex/RB.png					# [6]ê‡ñæ
+MODEL_FILENAME = data/tex/Finish.png				# [7]ÉSÅ[Éã
 
 END_SCRIPT		# Ç±ÇÃçsÇÕê‚ëŒè¡Ç≥Ç»Ç¢Ç±Ç∆ÅI

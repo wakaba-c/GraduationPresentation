@@ -71,6 +71,8 @@ HRESULT CDistanceNext::Init(void)
 	// 位置関係の設定
 	SetTransform();
 	SetNumber(0);
+
+	m_nNowRound = 0;
 	return S_OK;
 }
 
@@ -87,15 +89,15 @@ void CDistanceNext::Uninit(void)
 //=============================================================================
 void CDistanceNext::Update(void)
 {
-	CNetwork *pNetwork = CManager::GetNetwork();			// ネットワークの取得
-	std::vector<CObject*> pointObj = CObject::GetPointObj();// オブジェクト情報取得
-	unsigned int pointNum = CObject::GetPointNum();					// 現在のポイント番号取得
-	D3DXVECTOR3 distance;									// 二点間の差
-	CPlayer *pPlayer = CGame::GetPlayer();					// プレイヤー情報取得
-	D3DXVECTOR3 Target = D3DXVECTOR3_ZERO;					// 敵の位置
-	int nRound = 0;											// 敵の周回回数
-	int nFlag = 0;											// 敵のフラグ番号
-	float fDistance = 0.0f;									// 距離
+	CNetwork *pNetwork = CManager::GetNetwork();				// ネットワークの取得
+	std::vector<CObject*> pointObj = CObject::GetPointObj();	// オブジェクト情報取得
+	unsigned int pointNum = CObject::GetPointNum();				// 現在のポイント番号取得
+	D3DXVECTOR3 distance;										// 二点間の差
+	CPlayer *pPlayer = CGame::GetPlayer();						// プレイヤー情報取得
+	D3DXVECTOR3 Target = D3DXVECTOR3_ZERO;						// 敵の位置
+	int nRound = 0;												// 敵の周回回数
+	unsigned int nFlag = 0;												// 敵のフラグ番号
+	float fDistance = 0.0f;										// 距離
 
 	// 現在の順位取得
 	int nRank = pNetwork->GetRank(pNetwork->GetId());
@@ -128,31 +130,37 @@ void CDistanceNext::Update(void)
 		//	}
 		//}
 
-		if(nFlag < 0) { return; }
+		//if(nFlag < 0) { return; }
 
-		if (pNetwork->GetFlag(pNetwork->GetId()) != nFlag)
-		{
-			if (pointNum < pointObj.size() - 1)
-			{
-				// プレイヤーと次のチェックポイントの距離計算
-				fDistance = CTakaseiLibrary::OutputDistance(pointObj[pointNum + 1]->GetPosition(), pPlayer->GetPosition());
+		//if (pNetwork->GetFlag(pNetwork->GetId()) != nFlag)
+		//{
+		//	if (pointNum < pointObj.size() - 1)
+		//	{
+		//		// プレイヤーと次のチェックポイントの距離計算
+		//		fDistance = CTakaseiLibrary::OutputDistance(pointObj[pointNum + 1]->GetPosition(), pPlayer->GetPosition());
 
-				// 敵までのチェックポイントの数まで加算
-				for (int nCnt = pointNum; nCnt < nFlag; nCnt++)
-				{
-					// 距離計算
-					fDistance = fDistance + CTakaseiLibrary::OutputDistance(pointObj[nCnt]->GetPosition(), pointObj[nCnt + 1]->GetPosition());
-				}
+		//		// 敵までのチェックポイントの数まで加算
+		//		for (int nCnt = pointNum; nCnt < nFlag; nCnt++)
+		//		{
+		//			// 距離計算
+		//			fDistance = fDistance + CTakaseiLibrary::OutputDistance(pointObj[nCnt]->GetPosition(), pointObj[nCnt + 1]->GetPosition());
+		//		}
 
-				// 敵と前のチェックポイントの距離計算
-				fDistance = fDistance + CTakaseiLibrary::OutputDistance(pointObj[nFlag]->GetPosition(), Target);
-			}
-		}
-		else
-		{
-			// 敵と前のチェックポイントの距離計算
-			fDistance = fDistance + CTakaseiLibrary::OutputDistance(pPlayer->GetPosition(), Target);
-		}
+		//		// 敵と前のチェックポイントの距離計算
+		//		fDistance = fDistance + CTakaseiLibrary::OutputDistance(pointObj[nFlag]->GetPosition(), Target);
+		//	}
+		//}
+		//else
+		//{
+		//	// 敵と前のチェックポイントの距離計算
+		//	fDistance = fDistance + CTakaseiLibrary::OutputDistance(pPlayer->GetPosition(), Target);
+		//}
+
+		float fPlayerLength = CalculateCourseRange(3, pointNum, pPlayer->GetPosition());
+
+		float fTargetLength = CalculateCourseRange(3, nFlag, Target);
+
+		fDistance = fPlayerLength - fTargetLength;
 
 		fDistance *= DIVISION;
 
@@ -229,6 +237,14 @@ void CDistanceNext::SetIntervalNum(D3DXVECTOR3 & interval)
 }
 
 //=============================================================================
+// 現在の周回回数に加算する
+//=============================================================================
+void CDistanceNext::SetNowRound(void)
+{
+	m_nNowRound++;
+}
+
+//=============================================================================
 // 位置関係の更新
 //=============================================================================
 void CDistanceNext::SetTransform(void)
@@ -275,4 +291,35 @@ void CDistanceNext::SetNumber(int nValue)
 			}
 		}
 	}
+}
+
+//=============================================================================
+// コースの残り距離を求める処理
+//=============================================================================
+float CDistanceNext::CalculateCourseRange(int nRound, unsigned int &nPointNum, D3DXVECTOR3 &pos)
+{
+	std::vector<CObject*> pointObj = CObject::GetPointObj();	// オブジェクト情報取得
+	float fDistance = 0.0f;										// 距離
+
+	// 周回回数
+	for (int nCount = 0; nCount < MAX_ROUND - (nRound + 1); nCount++)
+	{
+		for (unsigned int nCntCource = 1; nCntCource < pointObj.size(); nCntCource++)
+		{
+			// プレイヤーと次のチェックポイントの距離計算
+			fDistance += CTakaseiLibrary::OutputDistance(pointObj[nCntCource]->GetPosition(), pointObj[nCntCource - 1]->GetPosition());
+		}
+	}
+
+	// 残りチェックポイント数分
+	for (unsigned int nCount = nPointNum; nCount < pointObj.size() - 1; nCount++)
+	{
+		// プレイヤーと次のチェックポイントの距離計算
+		fDistance += CTakaseiLibrary::OutputDistance(pointObj[nCount]->GetPosition(), pointObj[nCount + 1]->GetPosition());
+	}
+
+	// プレイヤーと次のチェックポイントの距離計算
+	fDistance += CTakaseiLibrary::OutputDistance(pointObj[nPointNum]->GetPosition(), pos);
+
+	return fDistance;
 }
