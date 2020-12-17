@@ -115,7 +115,13 @@ void CPuzzle::Update(void)
 			if (pInputController->GetControllerTrigger(0, JOYPADKEY_A) ||			// ゲームパッドのAボダンが押されたとき
 				pInputController->GetControllerTrigger(0, JOYPADKEY_START))			// ゲームパッドのSTARTボタンが押されたとき
 			{
-				CFade::SetFade(CManager::MODE_GAME, CFade::FADETYPE_SLIDE);			//フェードを入れる
+				if (pNetwork != NULL)
+				{
+					if (pNetwork->Connect() == S_OK)
+					{
+						CFade::SetFade(CManager::MODE_GAME, CFade::FADETYPE_SLIDE);			//フェードを入れる
+					}
+				}
 			}
 		}
 	}
