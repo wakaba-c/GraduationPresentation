@@ -29,11 +29,11 @@ public:
 	void Update(void);									// 更新処理
 	void Draw(void);									// 描画処理
 	void SetCarType(int type)	 { m_nCarType = type; };// セット
-	int GetCarType(void)		 {return m_nCarType; };	// 車の種類取得
+	static int GetCarType(void)		 { return m_nCarType; };	// 車の種類取得
 	static void LoadAsset(void);						// アセットの読み込み処理
 
 private:
 	CScene2D *pBack[MAX_SELECT_UI];					// UI
-	int m_nCarType;								// 車の種類
+	static int m_nCarType;								// 車の種類
 };
 #endif

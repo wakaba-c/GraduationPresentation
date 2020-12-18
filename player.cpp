@@ -37,11 +37,16 @@
 #include "distanceNext.h"
 #include "ui.h"
 #include "shadow.h"
+#include "characterSelect.h"
 
 //=============================================================================
 // マクロ定義
 //=============================================================================
-#define	SCRIPT_CAR01 "data/animation/car02.txt"		// 車01のモデル情報アドレス
+#define	SCRIPT_CAR01 "data/animation/car01.txt"		// 車01のモデル情報アドレス
+#define	SCRIPT_CAR02 "data/animation/car02.txt"		// 車01のモデル情報アドレス
+#define	SCRIPT_CAR03 "data/animation/car03.txt"		// 車01のモデル情報アドレス
+#define	SCRIPT_CAR04 "data/animation/car04.txt"		// 車01のモデル情報アドレス
+
 #define ROT_AMOUNT 0.1f								// 回転の差を減らしていく量
 #define ROT_SPEED_DRIFT 0.5f						// ドリフト時回転速度
 #define MODEL_FRONT 2								// モデル前輪番号
@@ -147,7 +152,21 @@ HRESULT CPlayer::Init(void)
 	AnimationSwitch(ANIMATIONTYPE_NONE);
 
 	// プレイヤーモデル情報の読み込み
-	LoadScript(SCRIPT_CAR01, ANIMATIONTYPE_MAX);
+	switch (CCharacterSelect::GetCarType())
+	{
+	case 0:
+		LoadScript(SCRIPT_CAR01, ANIMATIONTYPE_MAX);
+		break;
+	case 1:
+		LoadScript(SCRIPT_CAR02, ANIMATIONTYPE_MAX);
+		break;
+	case 2:
+		LoadScript(SCRIPT_CAR03, ANIMATIONTYPE_MAX);
+		break;
+	case 3:
+		LoadScript(SCRIPT_CAR04, ANIMATIONTYPE_MAX);
+		break;
+	}
 
 	// プレイヤーの当たり判定を生成
 	m_pColPlayerSphere = CColliderSphere::Create(false, 50.0f);
