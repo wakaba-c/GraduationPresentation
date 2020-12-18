@@ -125,7 +125,7 @@ private:
 	float							m_fPuzzleMaxTurning;							// 旋回速度
 	float							m_fPuzzleDecay[Piece_Num];						// 減衰率取得
 	float							m_fPuzzleMaxDecay;								// 減衰率取得
-	float							m_fPuzzlePower[Piece_Num];						// パワー
+	int								m_fPuzzlePower[Piece_Num];						// パワー
 	float							m_fPuzzleMaxPower;								// パワー
 	float							m_fDeathblow;									// 必殺技ポイント
 	float							m_fAcceleration;								// 加速度
