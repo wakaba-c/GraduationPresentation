@@ -15,6 +15,8 @@ CFinishUi::CFinishUi(CScene::PRIORITY obj = CScene::PRIORITY_UI) : CScene2D(obj)
 {
 	// 優先度の設定
 	SetObjType(CScene::PRIORITY_UI);				// オブジェクトタイプ
+	m_move = D3DXVECTOR3_ZERO;			// 移動量
+	m_bGravity = true;					// 重力
 }
 
 //=============================================================================
@@ -37,7 +39,7 @@ HRESULT CFinishUi::Init(void)
 	pDevice = pRenderer->GetDevice();
 	D3DXVECTOR3 pos = GetPosition();							// プレイヤーの位置取得
 
-	pos = D3DXVECTOR3(SCREEN_WIDTH / 2, -50.0f, 0.0f);			// プレイヤーの位置設定
+	pos = D3DXVECTOR3(SCREEN_WIDTH / 2, -150.0f, 0.0f);			// プレイヤーの位置設定
 
 	// キャラクターの初期化処理
 	CScene2D::Init();
@@ -68,21 +70,33 @@ void CFinishUi::Uninit(void)
 //=============================================================================
 void CFinishUi::Update(void)
 {
-	D3DXVECTOR3 pos;
+	if (m_bGravity)
+	{
+		D3DXVECTOR3 pos;
+		pos = GetPosition();				// 位置の取得
 
-	pos = GetPosition();				// 位置の取得
+		// 位置更新
+		pos += m_move;
 
-	// 位置更新
-	pos += m_move;
+		// 減速
+		m_move.y += 0.98f;
 
-	// 減速
-	m_move.y -= 0.98;
+		if (pos.y > SCREEN_HEIGHT / 2)
+		{// 位置が一定量以下だったとき
+			pos.y = SCREEN_HEIGHT / 2;
+			m_move *= -0.6f;			// 重力の値を減少させつつ移動量を反転させる
 
-	// 位置設定
-	SetPosition(pos);
+			if (fabs(m_move.y) < 5.0f)
+			{// 上下の移動量が一定値以下だったとき
+				m_bGravity = false;			// 重力を切る
+			}
+		}
 
-	SetTransform();
+		// 位置設定
+		SetPosition(pos);
+		SetTransform();
 
+	}
 	// キャラクターの更新処理
 	CScene2D::Update();
 

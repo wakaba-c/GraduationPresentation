@@ -40,5 +40,6 @@ private:
 
 	/*================= プレイヤー関連 =================*/
 	D3DXVECTOR3	m_move;							// 移動量
+	bool		m_bGravity;						// 重力の有無
 };
 #endif
