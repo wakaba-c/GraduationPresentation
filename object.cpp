@@ -427,6 +427,7 @@ void CObject::OnTriggerEnter(CCollider *col)
 							CNetwork *pNetwork = CManager::GetNetwork();
 							pNetwork->SendTCP("GOAL", sizeof("GOAL"));
 							pPlayer->SetEvent(true);
+							pPlayer->SetGoalState(true);
 							CFinishUi::Create();
 						}
 					}

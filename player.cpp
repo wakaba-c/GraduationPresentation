@@ -84,6 +84,7 @@ CPlayer::CPlayer(CScene::PRIORITY obj = CScene::PRIORITY_PLAYER) : CCharacter(ob
 	m_bMove = false;									// 現在動いているかのフラグ
 	m_bAccel = false;									// アクセルを押しているかのフラグ
 	m_bColliderWithWall = true;							// 壁の当たり判定
+	m_bGoal = false;									// ゴールフラグ
 
 	m_pRank = NULL;
 
@@ -524,6 +525,14 @@ void CPlayer::SetDeathblow(float nValue)
 void CPlayer::SetEvent(bool bValue)
 {
 	m_bEvent = bValue;
+}
+
+//=============================================================================
+// ゴールフラグの設定
+//=============================================================================
+void CPlayer::SetGoalState(bool bValue)
+{
+	m_bGoal = bValue;
 }
 
 //=============================================================================

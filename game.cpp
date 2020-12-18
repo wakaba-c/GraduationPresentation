@@ -163,6 +163,7 @@ void CGame::Update(void)
 	}
 	if (pKeyboard->GetTriggerKeyboard(DIK_7))
 	{
+		m_pPlayer->SetGoalState(true);
 		CFinishUi::Create();
 	}
 #endif

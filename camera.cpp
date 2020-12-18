@@ -136,7 +136,16 @@ void CCamera::Update(void)
 			if (pPlayer != NULL)
 			{// プレイヤーが存在していたとき
 				pos = pPlayer->GetPosition();
-				rot = pPlayer->GetCameraRot();
+
+				if (!pPlayer->GetGoalState())
+				{
+					rot = pPlayer->GetCameraRot();
+				}
+				else
+				{
+					rot.y = -1.20f;
+				}
+
 				pos.y += 120.0f;								// プレイヤーの位置にオフセットを加算
 				m_originPos = pos;
 				//m_rot = rot;								// 回転目標値を設定
@@ -296,7 +305,7 @@ bool CCamera::VFCulling(D3DXVECTOR3 pos, int nType, float fAngle, float fNearCli
 	float fRadius = 0.0f;
 	float fAspect = SCREEN_WIDTH / SCREEN_HEIGHT;				// アスペクト比
 
-																// タイプ別半径の設定
+	// タイプ別半径の設定
 	switch (nType)
 	{
 	case CScene::PRIORITY_ENEMY:

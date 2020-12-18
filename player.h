@@ -73,6 +73,7 @@ public:
 	static HRESULT Load(void);					// 素材データの取得
 	void SetDeathblow(float nValue);			// 必殺技ポイント数の設定
 	void SetEvent(bool bValue);					// イベントフラグの設定
+	void SetGoalState(bool bValue);				// ゴールフラグの設定
 
 	void OnTriggerEnter(CCollider *col);
 	void OnCollisionEnter(CCollider *col);
@@ -92,6 +93,7 @@ public:
 	void SetTurning(int nCntTurning);
 	int GetNumRound(void) { return m_nRound; }
 	bool GetEvent(void ) { return m_bEvent; }
+	bool GetGoalState(void) { return m_bGoal; }
 
 private:
 #ifdef _DEBUG
@@ -135,6 +137,7 @@ private:
 	int								m_nPointNum;									// ポイント番号
 	bool							m_bJump;										// ジャンプ
 	bool							m_bEvent;										// イベント発生フラグ
+	bool							m_bGoal;										// ゴールフラグ
 	bool							m_bColliderWithWall;							// 壁の当たり判定
 	bool							m_bHit;											// ヒット判定
 	bool							m_bDrift[DRIFT_MAX];							// プレイヤーのドリフトフラグ
