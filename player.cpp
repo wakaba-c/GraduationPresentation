@@ -495,7 +495,7 @@ void CPlayer::Update(void)
 
 	if (CSpeed::GetSpeed() > 10)
 	{
-		CEffect::SandSmokeEffect(pos + D3DXVECTOR3(0.0f, 50.0f, 0.0f));
+		CEffect::SandSmoke(pos + D3DXVECTOR3(0.0f, 50.0f, 0.0f));
 	}
 
 #ifdef _DEBUG

@@ -682,6 +682,62 @@ void CEffect::SandSmokeEffect(D3DXVECTOR3 pos)
 	}
 }
 
+void CEffect::SandSmoke(D3DXVECTOR3 pos)
+{
+	float fAngle = float(CManager::GetRand(314)) / 100.0f - float(CManager::GetRand(314)) / 100.0f;
+	float fRadius = float(CManager::GetRand(3 * 100)) / 100.0f - float(CManager::GetRand(3 * 100)) / 100.0f;
+
+	D3DXVECTOR3 particlePos;
+
+	// 位置の計算
+	particlePos.x = sinf(D3DX_PI * fAngle) * (3.0f);
+	particlePos.y = 1.0f;
+	particlePos.z = cosf(D3DX_PI * fAngle) * (3.0f);
+
+	D3DXMATRIX mtxMeshRot, mtxMeshTrans;					// 計算用マトリックス
+	D3DXMATRIX mtx;											// 武器のマトリックス
+
+	// ワールドマトリックスの初期化
+	D3DXMatrixIdentity(&mtx);
+
+	// 回転を反映
+	D3DXMatrixRotationYawPitchRoll(&mtxMeshRot, 0.0f, 0.0f, 0.0f);
+	D3DXMatrixMultiply(&mtx, &mtx, &mtxMeshRot);
+
+	// 位置を反映
+	D3DXMatrixTranslation(&mtxMeshTrans, particlePos.x, particlePos.y, particlePos.z);
+	D3DXMatrixMultiply(&mtx, &mtx, &mtxMeshTrans);
+
+	// サイズ
+	float size = CManager::GetRand(1000) / 10.0f;			// ランダムに取得
+
+	CEffect::SetEffect("data/tex/effect/explosion001.png",				// エフェクトタイプ
+		pos,												// 発生位置
+		D3DXVECTOR3(size, size, 0.0f),						// サイズ
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),						// 移動方向
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),						// サイズのフレーム当たりの加算値
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),						// 回転の変化量
+		D3DXCOLOR(0.0f, 0.0f, 0.0f, -0.02f),				// 色の変化量
+		EASINGTYPE_NONE,									// イージングタイプ
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),						// テクスチャの回転
+		D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f),					// カラー
+		100,												// ライフ
+		false,												// 重力
+		0.025f,												// 抵抗
+		true,												// ビルボードの使用
+		0,													// 表示する箇所(横)
+		0,													// 表示する箇所(縦)
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),						// 中心位置
+		0,													// 角度
+		0,													// 距離
+		0,													// 回転速度
+		D3DXVECTOR2(8.0f, 1.0f),							// 画像の分割数
+		false,												// 加算合成の有無
+		true,												// Zバッファの比較有無
+		false												// フェード
+	);
+}
+
 //=============================================================================
 // 砂煙爆発
 //=============================================================================

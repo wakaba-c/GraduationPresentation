@@ -120,6 +120,7 @@ public:
 	static void PetalsSoaring(D3DXVECTOR3 pos);										// 花びらが舞い上がるエフェクト
 	static void WingStay(D3DXVECTOR3 pos);											// 羽が舞うエフェクト
 	static void SandSmokeEffect(D3DXVECTOR3 pos);									// 砂煙のエフェクト
+	static void SandSmoke(D3DXVECTOR3 pos);
 	static void SandSmokeExplosion(D3DXVECTOR3 pos);								// 粉塵爆発エフェクト
 	static void Shockwave(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nLife);				// ショック・ウェーブ
 	static void	Halo(D3DXVECTOR3 pos, D3DXVECTOR3 size);							// ハロー現象
