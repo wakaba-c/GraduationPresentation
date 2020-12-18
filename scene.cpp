@@ -187,6 +187,8 @@ void CScene::DrawAll(void)
 {
 	CScene *pSceneNext = NULL;																	// Ÿ‰ñ•`‰æ‘ÎÛ
 	CScene *pSceneNow = NULL;
+	CObject *pObj;
+
 	for (int nCount = 0; nCount < PRIORITY_MAX; nCount++)
 	{
 		pSceneNow = m_apTop[nCount];
@@ -199,7 +201,23 @@ void CScene::DrawAll(void)
 
 			if (pSceneNow->GetActive())
 			{
-				pSceneNow->Draw();																	//•`‰æ
+				if (pSceneNow->GetObjType() != PRIORITY_MODEL)
+				{// ƒ‚ƒfƒ‹‚¶‚á‚È‚©‚Á‚½‚Æ‚«
+					pSceneNow->Draw();																	//•`‰æ
+				}
+				else
+				{
+					pObj = (CObject*)pSceneNow;
+
+					if (pObj->GetAdd() == "data/model/MouMouCountry.x")
+					{
+						pSceneNow->Draw();																	//•`‰æ
+					}
+					else if (pCamera->VFCulling(pSceneNow->GetPosition(), nCount, D3DXToRadian(45.0f), 1.0f, 2500.0f))
+					{
+						pSceneNow->Draw();																	//•`‰æ
+					}
+				}
 			}
 			pSceneNow = pSceneNext;																//Ÿ‰ñ•`‰æ‘ÎÛ‚ğŠi”[
 		}
