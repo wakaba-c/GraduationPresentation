@@ -143,6 +143,7 @@ void CPieceSelect::Update(void)
 					m_pPiece[m_nPieceNum]->SetPieceType(CPiece::PieceType_Square);
 					// 配置情報
 					m_pPiece[m_nPieceNum]->SetMove(false);
+					m_nSelectCnt = 0;
 
 					for (int nCnt = 0; nCnt < PIECETYPE_MAX; nCnt++)
 					{
@@ -164,6 +165,70 @@ void CPieceSelect::Update(void)
 				 // セレクトカウント加算
 					m_nSelect++;
 				}
+				// セレクトカウント制限
+				if (m_nSelect >= m_nPieceNum)
+				{
+					m_nSelect = m_nPieceNum;
+				}
+				else if (m_nSelect <= 0)
+				{
+					m_nSelect = 0;
+				}
+				for (int nCntDepth = 0; nCntDepth < Box_Depth; nCntDepth++)
+				{
+					for (int nCntWidth = 0; nCntWidth < Box_Width; nCntWidth++)
+					{
+						// 選択されているときの色
+						m_pPiece[m_nSelect]->SetCol(D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
+
+						if (m_nSelect != m_nPieceNum)
+						{
+							m_pPiece[m_nSelect + 1]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+						}
+						if (m_nSelect != 0)
+						{
+							m_pPiece[m_nSelect - 1]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+						}
+
+						// Qを押されたら
+						if (pGamepad->GetControllerTrigger(0, JOYPADKEY_RIGHT_TRIGGER))
+						{
+							if (m_pPiece[m_nSelect] != NULL)
+							{
+								// 選ばれてるピースの情報格納
+								m_bPuzzleStorage[nCntDepth][nCntWidth] = m_pPiece[m_nSelect]->GetPuzzle(nCntDepth, nCntWidth);
+								// 状態比較
+								if (m_bPuzzle[nCntDepth][nCntWidth] == true && m_bPuzzleStorage[nCntDepth][nCntWidth] == true)
+								{
+									// 状態初期化
+									m_bPuzzle[nCntDepth][nCntWidth] = false;
+								}
+								// ピース状態変更
+								m_pPiece[m_nSelect]->SetRelease(true);
+								// 状態変更
+								m_bRelease = true;
+							}
+						}
+					}
+				}
+				if (m_bRelease == true)
+				{
+					m_nSelect = 0;
+					m_bRelease = false;
+				}
+
+				for (int nCnt = 0; nCnt < m_nPieceNum; nCnt++)
+				{
+					m_fSpeed[nCnt] = m_pPiece[nCnt]->GetSpeed();
+					m_fRate[nCnt] = m_pPiece[nCnt]->GetRate();												// スピード上昇率
+					m_fTurning[nCnt] = m_pPiece[nCnt]->GetTurning();										// 旋回速度
+					m_fDecay[nCnt] = m_pPiece[nCnt]->GetDecay();											// 減衰率
+					m_nPower[nCnt] = (int)m_pPiece[nCnt]->GetPower();										// パワー
+					m_bRoute[nCnt] = m_pPiece[nCnt]->GetRoute();
+					m_bRank[nCnt] = m_pPiece[nCnt]->GetRanking();
+				}
+
+
 			}
 
 			if (m_bPiece == false)

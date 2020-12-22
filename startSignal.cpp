@@ -12,6 +12,7 @@
 #include "counter.h"
 #include "game.h"
 #include "player.h"
+#include "sound.h"
 
 //=============================================================================
 // コンストラクタ
@@ -99,6 +100,12 @@ void CStartSignal::Update(void)
 		if (m_pTime->GetSeconds() <= 0)
 		{
 			CGame::GetPlayer()->SetEvent(false);
+			CSound *pSound = CManager::GetSound();				// サウンドの取得
+
+			pSound->PlaySoundA(SOUND_LABEL_SE_RaceStart);			// ダメージ音の再生
+			pSound->PlaySoundA(SOUND_LABEL_SE_RaceStart_Overlapping);			// ダメージ音の再生
+
+
 			m_pUi->SetNextOperation();
 			Release();
 		}
