@@ -103,7 +103,7 @@ void CPuzzle::Update(void)
 			{// 指定のキーが押されたとき
 				if (pNetwork != NULL)
 				{
-					//if (pNetwork->Connect() == S_OK)
+					if (pNetwork->Connect() == S_OK)
 					{
 						CSound *pSound = CManager::GetSound();				// サウンドの取得
 
