@@ -15,6 +15,7 @@
 #include "object.h"
 #include "camera.h"
 #include "sky.h"
+#include "sound.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -133,6 +134,9 @@ void CCharacterSelect::Update(void)
 		{// キーボードが存在していたとき
 			if (pInputKeyboard->GetTriggerKeyboard(DIK_RETURN))
 			{// 指定のキーが押されたとき
+				CSound *pSound = CManager::GetSound();				// サウンドの取得
+
+				pSound->PlaySoundA(SOUND_LABEL_SE_Decision);			// ダメージ音の再生
 				CFade::SetFade(CManager::MODE_PUZZLE_CUSTOM, CFade::FADETYPE_SLIDE);					//フェードを入れる
 			}
 			//車の選択処理
@@ -157,6 +161,10 @@ void CCharacterSelect::Update(void)
 			if (pInputController->GetControllerTrigger(0, JOYPADKEY_A) ||			// ゲームパッドのAボダンが押されたとき
 				pInputController->GetControllerTrigger(0, JOYPADKEY_START))			// ゲームパッドのSTARTボタンが押されたとき
 			{
+				CSound *pSound = CManager::GetSound();				// サウンドの取得
+
+				pSound->PlaySoundA(SOUND_LABEL_SE_Decision);			// ダメージ音の再生
+
 				CFade::SetFade(CManager::MODE_PUZZLE_CUSTOM, CFade::FADETYPE_SLIDE);					//フェードを入れる
 			}
 		}

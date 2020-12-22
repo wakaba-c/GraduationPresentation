@@ -1267,6 +1267,26 @@ void CPlayer::Input(void)
 		// 回転の設定
 		SetRotation(m_rot);
 	}
+	
+	CSound *pSound = CManager::GetSound();				// サウンドの取得
+	if (pKeyboard->GetTriggerKeyboard(DIK_5))
+	{
+
+		pSound->PlaySoundA(SOUND_LABEL_SE_kyuin);			// ダメージ音の再生
+
+	}
+	if (pKeyboard->GetTriggerKeyboard(DIK_4))
+	{
+
+		pSound->PlaySoundA(SOUND_LABEL_SE_Cheers);			// ダメージ音の再生
+
+	}
+	if (pKeyboard->GetTriggerKeyboard(DIK_6))
+	{
+
+		pSound->PlaySoundA(SOUND_LABEL_SE_Horn);			// ダメージ音の再生
+
+	}
 
 #ifdef _DEBUG
 	if (pKeyboard->GetTriggerKeyboard(DIK_K))

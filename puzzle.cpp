@@ -14,6 +14,7 @@
 #include "network.h"
 #include "pieceSelect.h"
 #include "ui.h"
+#include "sound.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -102,8 +103,12 @@ void CPuzzle::Update(void)
 			{// 指定のキーが押されたとき
 				if (pNetwork != NULL)
 				{
-					if (pNetwork->Connect() == S_OK)
+					//if (pNetwork->Connect() == S_OK)
 					{
+						CSound *pSound = CManager::GetSound();				// サウンドの取得
+
+						pSound->PlaySoundA(SOUND_LABEL_SE_PuzzleComplete_1);			// ダメージ音の再生
+
 						CFade::SetFade(CManager::MODE_GAME, CFade::FADETYPE_SLIDE);					//フェードを入れる
 					}
 				}
@@ -119,7 +124,11 @@ void CPuzzle::Update(void)
 				{
 					if (pNetwork->Connect() == S_OK)
 					{
+						CSound *pSound = CManager::GetSound();				// サウンドの取得
+
+						pSound->PlaySoundA(SOUND_LABEL_SE_PuzzleComplete_1);			// ダメージ音の再生
 						CFade::SetFade(CManager::MODE_GAME, CFade::FADETYPE_SLIDE);			//フェードを入れる
+
 					}
 				}
 			}

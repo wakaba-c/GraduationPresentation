@@ -16,6 +16,7 @@
 #include "box.h"
 #include "pieceSelect.h"
 #include "inputController.h"
+#include "sound.h"
 
 //==================================================================================================================
 // マクロ定義
@@ -141,6 +142,11 @@ void CPiece::Update(void)
 			{
 				if (m_bPut == true)
 				{
+					CSound *pSound = CManager::GetSound();				// サウンドの取得
+
+					pSound->PlaySoundA(SOUND_LABEL_SE_WithParts);			// ダメージ音の再生
+					pSound->SetVolume(SOUND_LABEL_SE_WithParts, 5.0f);
+
 					m_bPlacement = true;
 					m_bMove = true;
 				}
@@ -192,6 +198,11 @@ void CPiece::Update(void)
 	{
 		if (m_bPut == true)
 		{
+			CSound *pSound = CManager::GetSound();				// サウンドの取得
+
+			pSound->PlaySoundA(SOUND_LABEL_SE_WithParts);			// ダメージ音の再生
+			pSound->SetVolume(SOUND_LABEL_SE_WithParts, 5.0f);
+
 			m_bPlacement = true;
 			m_bMove = true;
 		}

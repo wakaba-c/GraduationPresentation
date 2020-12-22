@@ -16,6 +16,7 @@
 #include "object.h"
 #include "camera.h"
 #include "sky.h"
+#include "sound.h"
 
 //=============================================================================
 // コンストラクタ
@@ -111,6 +112,10 @@ void CTitle::Update(void)
 		{// キーボードが存在していたとき
 			if (pInputKeyboard->GetTriggerKeyboard(DIK_RETURN))
 			{// 指定のキーが押されたとき
+				CSound *pSound = CManager::GetSound();				// サウンドの取得
+
+				pSound->PlaySoundA(SOUND_LABEL_SE_Decision);			// ダメージ音の再生
+
 				CFade::SetFade(CManager::MODE_CHARACTER_SELECT, CFade::FADETYPE_SLIDE);					//フェードを入れる
 			}
 		}
@@ -120,6 +125,10 @@ void CTitle::Update(void)
 			if (pInputController->GetControllerTrigger(0, JOYPADKEY_LEFT_SHOULDER) &&			// ゲームパッドのLボダンが押されたとき
 				pInputController->GetControllerTrigger(0, JOYPADKEY_RIGHT_SHOULDER))			// ゲームパッドのRボタンが押されたとき
 			{
+				CSound *pSound = CManager::GetSound();				// サウンドの取得
+
+				pSound->PlaySoundA(SOUND_LABEL_SE_Decision);			// ダメージ音の再生
+
 				CFade::SetFade(CManager::MODE_CHARACTER_SELECT, CFade::FADETYPE_SLIDE);					//フェードを入れる
 			}
 		}
