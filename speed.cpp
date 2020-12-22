@@ -107,7 +107,7 @@ void CSpeed::Update(void)
 	// Œ»İ‚Æ‘O‰ñ‚Æ‚Ì‹——£ŒvZ
 	fDistance = CTakaseiLibrary::OutputDistance(posOld, pos);
 
-	// ‹——£€ŠÔ	fDigit = fDistance / m_dTimeFrame;
+	// ‘¬‚³‹——£€ŠÔ	fDigit = fDistance / m_dTimeFrame;
 	m_fDigit = fDistance;
 
 	// ‘¬İ’è
