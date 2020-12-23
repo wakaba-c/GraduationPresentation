@@ -189,7 +189,7 @@ HRESULT CSound::Init(HWND hWnd)
 
 #ifdef _DEBUG
 		// ƒ{ƒŠƒ…[ƒ€‚Ì’²®
-		SetVolume((SOUND_LABEL)nCntSound, 0.0f);
+		SetVolume((SOUND_LABEL)nCntSound, 1.0f);
 #endif
 	}
 

@@ -471,6 +471,8 @@ void CManager::SetMode(MODE mode)
 		m_pTitle = new CTitle;
 		m_pTitle->Init();
 		m_pSound->PlaySoundA(SOUND_LABEL_BGM_TiTle);
+		m_pSound->SetVolume(SOUND_LABEL_BGM_TiTle, 0.1f);
+
 		break;
 
 	case MODE_DEMO_PLAY:
@@ -480,6 +482,8 @@ void CManager::SetMode(MODE mode)
 		m_pCharacterSelect = new CCharacterSelect;
 		m_pCharacterSelect->Init();
 		m_pSound->PlaySoundA(SOUND_LABEL_BGM_Character_Select);
+		m_pSound->SetVolume(SOUND_LABEL_BGM_Character_Select, 0.1f);
+
 		break;
 	case MODE_STAGE_SELECT:
 
@@ -488,17 +492,20 @@ void CManager::SetMode(MODE mode)
 		m_pPuzzle = new CPuzzle;
 		m_pPuzzle->Init();
 		m_pSound->PlaySoundA(SOUND_LABEL_BGM_Puzzle);
+		m_pSound->SetVolume(SOUND_LABEL_BGM_Puzzle, 0.1f);
+
 		break;
 	case MODE_GAME:
 		m_pGame = new CGame;
 		m_pGame->Init();
 		m_pSound->PlaySoundA(SOUND_LABEL_BGM_Race);
-
+		m_pSound->SetVolume(SOUND_LABEL_BGM_Race, 0.1f);
 		break;
 	case MODE_RESULT:
 		m_pResult = new CResult;
 		m_pResult->Init();
 		m_pSound->PlaySoundA(SOUND_LABEL_BGM_Result);
+		m_pSound->SetVolume(SOUND_LABEL_BGM_Result, 0.1f);
 
 		break;
 	case MODE_RANKING:

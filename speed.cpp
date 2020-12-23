@@ -12,6 +12,7 @@
 #include "player.h"
 #include "takaseiLibrary.h"
 #include "ui.h"
+#include "sound.h"
 
 //=============================================================================
 // マクロ定義
@@ -106,12 +107,26 @@ void CSpeed::Update(void)
 	// 現在と前回との距離計算
 	fDistance = CTakaseiLibrary::OutputDistance(posOld, pos);
 
-	// 距離÷時間	fDigit = fDistance / m_dTimeFrame;
+	// 速さ＝距離÷時間	fDigit = fDistance / m_dTimeFrame;
 	m_fDigit = fDistance;
 
 	// 時速設定
 	SetDigit(m_fDigit);
 
+	if (m_fDigit >= 50)
+	{
+		CSound *pSound = CManager::GetSound();				// サウンドの取得
+
+		pSound->PlaySoundA(SOUND_LABEL_SE_Speed50Km);		// ダメージ音の再生
+
+	}
+	else if (m_fDigit >= 100)
+	{
+		CSound *pSound = CManager::GetSound();				// サウンドの取得
+
+		pSound->PlaySoundA(SOUND_LABEL_SE_Speed100Km);		// ダメージ音の再生
+
+	}
 	// カウンタが0以上のとき
 	if (m_fDigit >= 0)
 	{

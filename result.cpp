@@ -13,6 +13,7 @@
 #include "bg.h"
 #include "number.h"
 #include "ranking.h"
+#include "sound.h"
 
 //=============================================================================
 // マクロ定義
@@ -82,6 +83,10 @@ void CResult::Update(void)
 		{// キーボードが存在していたとき
 			if (pInputKeyboard->GetTriggerKeyboard(DIK_RETURN))
 			{// 指定のキーが押されたとき
+				CSound *pSound = CManager::GetSound();				// サウンドの取得
+
+				pSound->PlaySoundA(SOUND_LABEL_SE_Decision);			// ダメージ音の再生
+
 				CFade::SetFade(CManager::MODE_TITLE, CFade::FADETYPE_SLIDE);					//フェードを入れる
 			}
 		}
@@ -91,6 +96,10 @@ void CResult::Update(void)
 			if (pInputController->GetControllerTrigger(0, JOYPADKEY_A) ||			// ゲームパッドのAボダンが押されたとき
 				pInputController->GetControllerTrigger(0, JOYPADKEY_START))			// ゲームパッドのSTARTボタンが押されたとき
 			{
+				CSound *pSound = CManager::GetSound();				// サウンドの取得
+
+				pSound->PlaySoundA(SOUND_LABEL_SE_Decision);			// ダメージ音の再生
+
 				CFade::SetFade(CManager::MODE_TITLE, CFade::FADETYPE_SLIDE);					//フェードを入れる
 			}
 		}
