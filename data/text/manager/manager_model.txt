@@ -9,12 +9,12 @@ SCRIPT			# この行は絶対消さないこと！
 #------------------------------------------------------------------------------
 # モデルファイル名
 #------------------------------------------------------------------------------
-MODEL_FILENAME = data/model/akazukin/body.x					# [0]体
-MODEL_FILENAME = data/model/akazukin/Head.x					# [1]頭
-MODEL_FILENAME = data/model/akazukin/Second_arm_Right.x		# [2]二の腕(右)
-MODEL_FILENAME = data/model/akazukin/forearm_Right.x		# [3]前膊(右)
+MODEL_FILENAME = data/model/akazukin/body.x				# [0]体
+MODEL_FILENAME = data/model/akazukin/Head.x				# [1]頭
+MODEL_FILENAME = data/model/akazukin/Second_arm_Right.x			# [2]二の腕(右)
+MODEL_FILENAME = data/model/akazukin/forearm_Right.x			# [3]前膊(右)
 MODEL_FILENAME = data/model/akazukin/Hand_Right.x			# [4]右手
-MODEL_FILENAME = data/model/akazukin/Second_arm_Left.x		# [5]二の腕(左)
+MODEL_FILENAME = data/model/akazukin/Second_arm_Left.x			# [5]二の腕(左)
 MODEL_FILENAME = data/model/akazukin/forearm_Left.x			# [6]前膊(左)
 MODEL_FILENAME = data/model/akazukin/Hand_Left.x			# [7]左手
 MODEL_FILENAME = data/model/akazukin/thigh_Right.x			# [8]太股(右)
@@ -23,21 +23,34 @@ MODEL_FILENAME = data/model/akazukin/foot_Right.x			# [10]足(右)
 MODEL_FILENAME = data/model/akazukin/thigh_Left.x			# [11]太股(左)
 MODEL_FILENAME = data/model/akazukin/leg_Left.x				# [12]左足
 MODEL_FILENAME = data/model/akazukin/foot_Left.x			# [13]足(左)
-MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x		# [14]カッターナイフ
-MODEL_FILENAME = data/model/house/house.x					# [15]家
+MODEL_FILENAME = data/model/akazukin/Crescent_Rose.x			# [14]カッターナイフ
+MODEL_FILENAME = data/model/house/house.x				# [15]家
 MODEL_FILENAME = data/model/DirectionalLight.x				# [16]ディレクショナルライト
-MODEL_FILENAME = data/model/Sphere.x						# [17]球体
-MODEL_FILENAME = data/model/CarBody03_R.x					# [18]車 red
+MODEL_FILENAME = data/model/Sphere.x					# [17]球体
+MODEL_FILENAME = data/model/CarBody03_R.x				# [18]車 red
 MODEL_FILENAME = data/model/load/stageLoad_1.x				# [19]ステージモデル1
-MODEL_FILENAME = data/model/point.x							# [20]ポイント
-MODEL_FILENAME = data/model/wall.x							# [21]壁
-MODEL_FILENAME = data/model/wallPanel.x						# [22]壁用パネル
-MODEL_FILENAME = data/model/GoalCircle35.x					# [23]ゴールポスト
-MODEL_FILENAME = data/model/stick.x							# [24]スティック
+MODEL_FILENAME = data/model/point.x					# [20]ポイント
+MODEL_FILENAME = data/model/wall.x					# [21]壁
+MODEL_FILENAME = data/model/wallPanel.x					# [22]壁用パネル
+MODEL_FILENAME = data/model/GoalCircle35.x				# [23]ゴールポスト
+MODEL_FILENAME = data/model/stick.x					# [24]スティック
 MODEL_FILENAME = data/model/Gate/Gate_Start.x				# [25]ゲート(スタート)
 MODEL_FILENAME = data/model/Gate/Gate_Goal.x				# [26]ゲート(ゴール)
-MODEL_FILENAME = data/model/MouMouCountry.x					# [27]モーモーカントリー
+MODEL_FILENAME = data/model/MouMouCountry.x				# [27]モーモーカントリー
 MODEL_FILENAME = data/model/test.x
-MODEL_FILENAME = data/model/MouMouCountry/BokujouAka.x
+MODEL_FILENAME = data/model/MouMouCountry/BokujouAka.x			# [29]家赤
+MODEL_FILENAME = data/model/MouMouCountry/BokujouAo.x			# [30]家青
+MODEL_FILENAME = data/model/MouMouCountry/Cow.x				# [31]牛
+MODEL_FILENAME = data/model/MouMouCountry/Gate.x			# [32]ゲート
+MODEL_FILENAME = data/model/MouMouCountry/husya2.x			# [33]風車
+MODEL_FILENAME = data/model/MouMouCountry/Jump.x			# [34]ジャンプ台
+MODEL_FILENAME = data/model/MouMouCountry/ki.x				# [35]木
+MODEL_FILENAME = data/model/MouMouCountry/Milctank.x			# [36]ミルクタンク
+MODEL_FILENAME = data/model/MouMouCountry/Jump.x			# [34]ジャンプ台
+MODEL_FILENAME = data/model/MouMouCountry/Niguruma.x			# [35]荷車
+MODEL_FILENAME = data/model/MouMouCountry/Pillar.x			# [36]看板
+MODEL_FILENAME = data/model/MouMouCountry/saku.x			# [37]柵
+MODEL_FILENAME = data/model/MouMouCountry/taru.x			# [38]樽
+MODEL_FILENAME = data/model/MouMouCountry/Tree.x			# [39]木
 
 END_SCRIPT		# この行は絶対消さないこと！
