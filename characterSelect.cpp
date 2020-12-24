@@ -106,7 +106,13 @@ HRESULT CCharacterSelect::Init(void)
 		pBack[7]->SetTransform();
 	}
 
-	//// 空の作成
+	// 左スティックの倒れた状況初期化
+	for (int nCnt = 0; nCnt < STICK_MAX; nCnt++)
+	{
+		m_bStick[nCnt] = false;
+	}
+
+	// 空の作成
 	CSky::Create();
 	return S_OK;
 }
@@ -157,7 +163,54 @@ void CCharacterSelect::Update(void)
 		}
 		if (pInputController->GetJoypadUse(0))
 		{// コントローラーが生成されているとき
-		 //ゲームの遷移
+			float nValueH = 0;				// コントローラー
+			float nValueV = 0;				// コントローラー
+
+			// 左スティックの情報取得
+			pInputController->GetJoypadStickLeft(0, &nValueH, &nValueV);
+
+			// 左スティックが倒れていないとき
+			if (!m_bStick[STICK_LEFT] && !m_bStick[STICK_RIGHT])
+			{
+				// 左にスティックが倒れたとき
+				if (nValueH > 0)
+				{
+					// 左スティックが倒れた
+					m_bStick[STICK_LEFT] = true;
+				}
+				else if (nValueH < 0)
+				{// 右にスティックが倒れたとき
+				 // 右スティックが倒れた
+					m_bStick[STICK_RIGHT] = true;
+				}
+
+				// 左スティックの倒れた状況がtrueのとき
+				if (m_bStick[STICK_LEFT] && m_nCarType > 0)
+				{
+					pos = pBack[7]->GetPosition();
+					pBack[7]->SetPosition(D3DXVECTOR3(pos.x - 160, pos.y, pos.z));
+					pBack[7]->SetTransform();
+					m_nCarType--;
+				}
+				else if (m_bStick[STICK_RIGHT] && m_nCarType< 3)
+				{// 右スティックの倒れた状況がtrueのとき
+					pos = pBack[7]->GetPosition();
+					pBack[7]->SetPosition(D3DXVECTOR3(pos.x + 160, pos.y, pos.z));
+					pBack[7]->SetTransform();
+					m_nCarType++;
+				}
+			}
+
+			// スティックが倒れていない
+			if (nValueH == 0)
+			{
+				// 左スティックが倒れていない
+				m_bStick[STICK_LEFT] = false;
+				// 右スティックが倒れていない
+				m_bStick[STICK_RIGHT] = false;
+			}
+
+			//ゲームの遷移
 			if (pInputController->GetControllerTrigger(0, JOYPADKEY_A) ||			// ゲームパッドのAボダンが押されたとき
 				pInputController->GetControllerTrigger(0, JOYPADKEY_START))			// ゲームパッドのSTARTボタンが押されたとき
 			{
