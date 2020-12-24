@@ -122,8 +122,8 @@ void CTitle::Update(void)
 		if (pInputController->GetJoypadUse(0))
 		{// コントローラーが生成されているとき
 			//ゲームの遷移
-			if (pInputController->GetControllerTrigger(0, JOYPADKEY_LEFT_SHOULDER) &&			// ゲームパッドのLボダンが押されたとき
-				pInputController->GetControllerTrigger(0, JOYPADKEY_RIGHT_SHOULDER))			// ゲームパッドのRボタンが押されたとき
+			if (pInputController->GetControllerPress(0, JOYPADKEY_LEFT_SHOULDER) &&			// ゲームパッドのLボダンが押されたとき
+				pInputController->GetControllerPress(0, JOYPADKEY_RIGHT_SHOULDER))			// ゲームパッドのRボタンが押されたとき
 			{
 				CSound *pSound = CManager::GetSound();				// サウンドの取得
 
