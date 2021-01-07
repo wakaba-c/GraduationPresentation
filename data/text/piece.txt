@@ -25,13 +25,6 @@ PIECESET
 	TEX = data/tex/core/core_02.png
 END_PIECESET
 
-PIECESET
-	POS = 1095.0 470.0 0.0
-	TYPE = 3
-	SIZE = 130.0 130.0 0.0
-	TEX = data/tex/core/core_01.png
-END_PIECESET
-
 // ----------------------------------------------------------------------------
 // 性能ピース配置
 // ----------------------------------------------------------------------------
@@ -65,17 +58,6 @@ PIECESET
 	TYPE = 5
 	SIZE = 100.0 100.0 0.0
 	TEX = data/tex/core/core_04.png
-END_PIECESET
-
-// ■
-// ■
-// ■
-// ■
-PIECESET
-	POS = 400.0 600.0 0.0
-	TYPE = 8
-	SIZE = 100.0 100.0 0.0
-	TEX = data/tex/core/core_07.png
 END_PIECESET
 
 // ■
@@ -125,13 +107,6 @@ PIECESET
 	TEX = data/tex/core/core_10.png
 END_PIECESET
 
-// ■
-PIECESET
-	POS = 100.0 680.0 0.0
-	TYPE = 12
-	SIZE = 100.0 100.0 0.0
-	TEX = data/tex/core/core_11.png
-END_PIECESET
 
 // ■
 // ■
@@ -160,17 +135,6 @@ PIECESET
 	TYPE = 6
 	SIZE = 100.0 100.0 0.0
 	TEX = data/tex/core/core_05.png
-END_PIECESET
-
-// 　　　■
-// 　　■
-// 　■
-// ■
-PIECESET
-	POS = 700.0 600.0 0.0
-	TYPE = 16
-	SIZE = 100.0 100.0 0.0
-	TEX = data/tex/core/core_15.png
 END_PIECESET
 
 END_SCRIPT
