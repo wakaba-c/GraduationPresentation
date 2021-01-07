@@ -40,7 +40,6 @@ public:
 	enum StatusType
 	{
 		StatusType_None = 0,						 // 初期
-		StatusType_MiniMap,							 // ミニマップ表示＆加速度上昇
 		StatusType_Route,							 // ルート案内表示＆旋回速度上昇
 		StatusType_Ranking,							 // 順位表示＆最高速度上昇
 		StatusType_All_MediumUp,					 // 最高速度＆スピード上昇率＆旋回速度＆パワーを中アップ
@@ -53,10 +52,7 @@ public:
 		StatusType_Turning_GreatUp,					 // 旋回速度大アップ
 		StatusType_Turning_MediumUp,				 // 旋回速度中アップ
 		StatusType_Turning_SmallUp,					 // 旋回速度小アップ
-		StatusType_Power_MediumUp,					 // パワー中アップ
-		StatusType_Power_SmallUp,					 // パワー小アップ
 		StatusType_Decay_Down,						 // スピード減衰率低下
-		StatusType_MaxSpeed_LimitBreak,				 // 最高速度の限界突破
 		StatusType_Max,								 // 最大数
 	};
 
@@ -74,7 +70,6 @@ public:
 		PieceType_Rectangle_2,
 		PieceType_Speed,
 		PieceType_Speed_1,
-		PieceType_Diagonal,
 		PieceType_Max,
 	};
 
