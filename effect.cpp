@@ -658,7 +658,7 @@ void CEffect::SandSmokeEffect(D3DXVECTOR3 pos)
 			pos,												// 発生位置
 			D3DXVECTOR3(size, size, 0.0f),						// サイズ
 			D3DXVECTOR3(mtx._41, mtx._42, mtx._43),				// 移動方向
-			D3DXVECTOR3(0.0f, 0.0f, 0.0f),					// サイズのフレーム当たりの加算値
+			D3DXVECTOR3(0.0f, 0.0f, 0.0f),						// サイズのフレーム当たりの加算値
 			D3DXVECTOR3(0.0f, 0.0f, 0.0f),						// 回転の変化量
 			D3DXCOLOR(0.0f, 0.0f, 0.0f, -0.02f),				// 色の変化量
 			EASINGTYPE_NONE,									// イージングタイプ

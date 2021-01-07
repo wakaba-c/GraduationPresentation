@@ -14,6 +14,7 @@
 #include "enemy.h"
 #include "object.h"
 #include "startSignal.h"
+#include "speed.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -479,7 +480,7 @@ bool CNetwork::KeyData(void)
 		}
 
 		// ID, Wキー, Aキー, Sキー, Dキー, SPACEキー, スティックH, スティックV, 回転情報, 位置X, 位置Y, 位置Z, スコア
-		sprintf(data, "SAVE_KEY %d %d %d %d %d %d %f %f %f %f %f %f %d %d",
+		sprintf(data, "SAVE_KEY %d %d %d %d %d %d %.2f %.2f %.2f %.2f %.2f %.2f %d %d %.2f",
 			m_nId,
 			pKeyboard->GetPressKeyboard(DIK_W), pKeyboard->GetPressKeyboard(DIK_A),
 			pKeyboard->GetPressKeyboard(DIK_S), pKeyboard->GetPressKeyboard(DIK_D), aKeyState[NUM_KEY_SPACE],		// キー入力情報
@@ -488,7 +489,8 @@ bool CNetwork::KeyData(void)
 			rot.y,						// 回転
 			pos.x, pos.y, pos.z,		// 位置
 			nNumFlag,					// 次のチェックポイント
-			nNumRound					// 現在の周回回数
+			nNumRound,					// 現在の周回回数
+			CSpeed::GetSpeed()
 		);
 		pNetwork->SendUDP(data, sizeof("SAVE_KEY") + 1024);
 	}

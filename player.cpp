@@ -54,8 +54,8 @@
 #define MODEL_TIRE 2								// タイヤモデルの数
 #define CAMERA_ROT_SPEED 0.4f						// カメラの回転速度
 #define TIRE_ROT_SPEED 0.1f							// タイヤの回転速度
-#define ACCEKERATION 2.0f							// ドリフト加速度初期値
-#define ACCEKERATION_ADDITION 0.01f					// ドリフト加速度加算量
+#define ACCEKERATION 3.0f							// ドリフト加速度初期値
+#define ACCEKERATION_ADDITION 0.02f					// ドリフト加速度加算量
 #define DRIFT_DECREACE 0.6f							// ドリフト時速度減少
 #define DRIFT_DEST 0.25f							// ドリフト時タイヤの向き
 #define	INIT_ROT 1.38f
@@ -716,7 +716,6 @@ void CPlayer::Input(void)
 	D3DXVECTOR3 moveVec = D3DXVECTOR3(0, 0, 0);					// プレイヤー運動ベクトル
 	D3DXVECTOR3 fModelRot = pModel[MODEL_FRONT].GetRotation();	// モデル前輪回転情報
 	D3DXVECTOR3 fModelRotRear = pModel[MODEL_REAR].GetRotation();// モデル後輪回転情報
-	float fDigit = CSpeed::GetDigit();							// 時速取得
 	float fTireRotSpeed = 0.0f;									// タイヤ回転速度
 	m_fSpeed = 0;
 
@@ -728,9 +727,6 @@ void CPlayer::Input(void)
 			if (pGamepad->GetJoypadUse(0))
 			{// 使用可能だったとき
 				pGamepad->GetJoypadStickLeft(0, &nValueH, &nValueV);
-
-				//// ゲームパッド処理
-				//InputGemepad(nValueH, nValueV, fTireRotSpeed, aVec);
 
 				//上下操作
 				if (pGamepad->GetControllerPress(0, JOYPADKEY_A))
@@ -911,10 +907,6 @@ void CPlayer::Input(void)
 						}
 					}
 				}
-
-				////移動
-				//m_move += D3DXVECTOR3(sinf(D3DX_PI * 1.0f + rot.y) * (m_fSpeed * nValueV), 0, cosf(D3DX_PI * 1.0f + rot.y) * (m_fSpeed * nValueV));
-				//m_move += D3DXVECTOR3(sinf(D3DX_PI * 0.5f + rot.y) * (m_fSpeed * nValueH), 0, cosf(D3DX_PI * 0.5f + rot.y) * (m_fSpeed * nValueH));
 
 #ifdef _DEBUG
 				CDebugProc::Log("移動量 : %.2f %.2f %.2f", m_move.x, m_move.y, m_move.z);
@@ -1196,7 +1188,6 @@ void CPlayer::Input(void)
 
 		{// カメラ設定
 			// タイヤの回転の半分を差と格納
-			//cameraVec.y = m_cameraRot.y - (m_rot.y + (m_dest.y / 2));
 			cameraVec.y = m_cameraRot.y - (m_rot.y + (m_dest.y * 0.85f));
 
 			// 回転の補正
@@ -1250,8 +1241,9 @@ void CPlayer::Input(void)
 			m_rot.y += m_dest.y * ROT_AMOUNT;
 		}
 
-		// プレイヤーが動いていないとき
-		//if (fabs(m_move.x) <= 0.01f && fabs(m_move.z) <= 0.01f)
+		// アクセルボタンとブレーキボタンを離したとき
+		if (!pGamepad->GetControllerPress(0, JOYPADKEY_A) && !pGamepad->GetControllerPress(0, JOYPADKEY_B) &&
+			!pKeyboard->GetPressKeyboard(MOVE_ACCEL) && !pKeyboard->GetPressKeyboard(MOVE_BRAKE))
 		{
 			// 移動不可
 			m_bMove = false;

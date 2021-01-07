@@ -137,7 +137,7 @@ void CMeshWall::Draw(void)
 	pDevice->SetTexture(0, NULL);
 
 	// ポリゴンの描画
-	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, m_nNumVertex, 0, m_nNumPolygon);
+	//pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, m_nNumVertex, 0, m_nNumPolygon);
 
 	//頂点フォーマットの設定
 	pDevice->SetTexture(0, NULL);
