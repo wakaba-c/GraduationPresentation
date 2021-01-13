@@ -65,7 +65,7 @@ END_PIECESET
 // Å°
 // Å°Å°
 PIECESET
-	POS = 500.0 600.0 0.0
+	POS = 400.0 600.0 0.0
 	TYPE = 14
 	SIZE = 100.0 100.0 0.0
 	TEX = data/tex/core/core_13.png
@@ -77,7 +77,7 @@ END_PIECESET
 // Å°Å°
 // Å°
 PIECESET
-	POS = 600.0 600.0 0.0
+	POS = 500.0 600.0 0.0
 	TYPE = 15
 	SIZE = 100.0 100.0 0.0
 	TEX = data/tex/core/core_14.png
@@ -85,7 +85,7 @@ END_PIECESET
 
 // Å°
 PIECESET
-	POS = 400.0 680.0 0.0
+	POS = 300.0 680.0 0.0
 	TYPE = 9
 	SIZE = 100.0 100.0 0.0
 	TEX = data/tex/core/core_08.png
@@ -93,7 +93,7 @@ END_PIECESET
 
 // Å°
 PIECESET
-	POS = 300.0 680.0 0.0
+	POS = 200.0 680.0 0.0
 	TYPE = 10
 	SIZE = 100.0 100.0 0.0
 	TEX = data/tex/core/core_09.png
@@ -101,7 +101,7 @@ END_PIECESET
 
 // Å°
 PIECESET
-	POS = 200.0 680.0 0.0
+	POS = 100.0 680.0 0.0
 	TYPE = 11
 	SIZE = 100.0 100.0 0.0
 	TEX = data/tex/core/core_10.png
@@ -113,7 +113,7 @@ END_PIECESET
 // Å°
 // Å°
 PIECESET
-	POS = 1000.0 600.0 0.0
+	POS = 800.0 600.0 0.0
 	TYPE = 13
 	SIZE = 100.0 100.0 0.0
 	TEX = data/tex/core/core_12.png
@@ -122,7 +122,7 @@ END_PIECESET
 // Å°
 // Å°
 PIECESET
-	POS = 900.0 600.0 0.0
+	POS = 700.0 600.0 0.0
 	TYPE = 7
 	SIZE = 100.0 100.0 0.0
 	TEX = data/tex/core/core_06.png
@@ -131,7 +131,7 @@ END_PIECESET
 // Å°
 // Å°
 PIECESET
-	POS = 800.0 600.0 0.0
+	POS = 600.0 600.0 0.0
 	TYPE = 6
 	SIZE = 100.0 100.0 0.0
 	TEX = data/tex/core/core_05.png

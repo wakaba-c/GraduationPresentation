@@ -811,7 +811,7 @@ void CPiece::SetPiece(void)
 				{
 					// テクスチャ変更
 					m_pBlock[nDepth][nWide]->BindTexture("data/tex/grass.jpg");
-					m_pBlock[nDepth][nWide]->SpriteAnimation(D3DXVECTOR2(3.0f, 5.0f), 1, 1);
+					//m_pBlock[nDepth][nWide]->SpriteAnimation(D3DXVECTOR2(3.0f, 5.0f), 1, 1);
 					// 配置しているかどうか
 					if (m_bPlacement == false)
 					{
