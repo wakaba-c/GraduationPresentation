@@ -38,6 +38,8 @@
 #include "startSignal.h"
 #include "shadow.h"
 #include "finishUi.h"
+#include "characterSelect.h"
+#include "camera.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -74,12 +76,39 @@ CGame::~CGame()
 //=============================================================================
 HRESULT CGame::Init(void)
 {
+	CCamera *pCamera = CManager::GetCamera();
+
+	if (pCamera != NULL)
+	{
+		pCamera->SetStoker(true);
+	}
+
 	// エフェクトの生成
 	CEffect::Create();
 	m_bRate = false;
 	// プレイヤーの生成
 	m_pPlayer = NULL;
 	m_pPlayer = CPlayer::Create();
+
+	if (m_pPlayer != NULL)
+	{
+		// プレイヤーモデル情報の読み込み
+		switch (CCharacterSelect::GetCarType())
+		{
+		case 0:
+			m_pPlayer->LoadScript(SCRIPT_CAR01, CPlayer::ANIMATIONTYPE_MAX);
+			break;
+		case 1:
+			m_pPlayer->LoadScript(SCRIPT_CAR02, CPlayer::ANIMATIONTYPE_MAX);
+			break;
+		case 2:
+			m_pPlayer->LoadScript(SCRIPT_CAR03, CPlayer::ANIMATIONTYPE_MAX);
+			break;
+		case 3:
+			m_pPlayer->LoadScript(SCRIPT_CAR04, CPlayer::ANIMATIONTYPE_MAX);
+			break;
+		}
+	}
 
 	// 空の作成
 	m_pSky = CSky::Create();

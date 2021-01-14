@@ -24,6 +24,8 @@ CSceneX::CSceneX(CScene::PRIORITY obj = CScene::PRIORITY_MODEL) : CScene(obj)
 	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	m_size = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
+
+	m_bDrawDebug = false;
 }
 
 //=============================================================================
@@ -167,6 +169,43 @@ void CSceneX::Draw(void)
 			pShader->Begin(NULL, 0);
 		}
 		break;
+	case SHADERTYPE_BUMP:
+		pShader = CManager::GetShaderResource(SHADERADD_BUMP);
+
+		// シェーダー処理
+		if (pShader != NULL)
+		{// シェーダーが存在していたとき
+			pShader->SetTechnique("tecBumpMap");
+
+			//ワールド・ビュー・プロジェクション行列を渡す
+			pShader->SetMatrix("mWVP", (D3DXMATRIX*)&(m_mtxWorld * mtxView * mtxProj));
+
+			//ライトベクトル
+			D3DXMATRIX m;
+			D3DXVECTOR4 vLight;
+			D3DXMatrixInverse(&m, NULL, &m_mtxWorld);
+
+			CLight *pLight = CManager::GetLight();
+			D3DXVECTOR3 lightPos = pLight->GetPos();
+
+			D3DXVec3Transform(&vLight, &lightPos, &m);
+			D3DXVec3Normalize((D3DXVECTOR3*)&vLight, (D3DXVECTOR3*)&vLight);
+			pShader->SetVector("vLightDir", &vLight);
+
+			CCamera *pCamera = CManager::GetCamera();
+
+			//視線ベクトル
+			D3DXVECTOR4 vEye;
+			m = m_mtxWorld * mtxView;
+			D3DXMatrixInverse(&m, NULL, &m);
+			D3DXVec3Transform(&vEye, &pCamera->GetPosV(), &m);
+			pShader->SetVector("vEyePos", &vEye);
+
+			pShader->SetTexture("NormalMap", CManager::GetResource("data/tex/snow_nor.png"));
+
+			pShader->Begin(NULL, 0);
+		}
+		break;
 	}
 
 	for (int nCntMat = 0; nCntMat < (int)m_nNumMat; nCntMat++)
@@ -216,6 +255,21 @@ void CSceneX::Draw(void)
 				}
 				pShader->BeginPass(0);
 				break;
+			case SHADERTYPE_BUMP:
+				pShader->SetFloatArray("Diffuse", (FLOAT*)&pMat[nCntMat].MatD3D.Diffuse, 4);
+
+				if (pMat[nCntMat].pTextureFilename != NULL)
+				{
+					// テクスチャの設定
+					pShader->SetTexture("Decal", CManager::GetResource(pMat[nCntMat].pTextureFilename));
+				}
+				else
+				{
+					// テクスチャの設定
+					pShader->SetTexture("Decal", CManager::GetResource(TEXTUREADD_DEFAULT));
+				}
+				pShader->BeginPass(0);
+				break;
 			}
 		}
 
@@ -225,7 +279,7 @@ void CSceneX::Draw(void)
 		// 描画
 		m_pMesh->DrawSubset(nCntMat);
 
-		if (m_ShaderType == SHADERTYPE_TOON)
+		if (m_ShaderType == SHADERTYPE_TOON || m_ShaderType == SHADERTYPE_BUMP)
 		{
 			if (pShader != NULL)
 			{
@@ -243,6 +297,11 @@ void CSceneX::Draw(void)
 			//pShader->End();
 			break;
 		case SHADERTYPE_TOON:
+			// テクスチャの設定
+			pShader->SetTexture("DecalTexture", CManager::GetResource("data/tex/default.jpg"));
+			pShader->End();
+			break;
+		case SHADERTYPE_BUMP:
 			// テクスチャの設定
 			pShader->SetTexture("DecalTexture", CManager::GetResource("data/tex/default.jpg"));
 			pShader->End();
@@ -289,6 +348,7 @@ void CSceneX::Load(void)
 	//シェーダーを読み込む
 	CManager::LoadShader((std::string)SHADERADD_LAMBERT);
 	CManager::LoadShader((std::string)SHADERADD_TOON);
+	CManager::LoadShader((std::string)SHADERADD_BUMP);
 }
 
 //=============================================================================

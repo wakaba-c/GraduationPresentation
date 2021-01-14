@@ -454,5 +454,8 @@
     <FxCompile Include="ToonShader.fx">
       <Filter>シェーダー ファイル</Filter>
     </FxCompile>
+    <FxCompile Include="data\shader\Bump.fx">
+      <Filter>シェーダー ファイル</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

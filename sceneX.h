@@ -20,6 +20,7 @@ typedef enum
 {
 	SHADERTYPE_LAMBERT = 0,
 	SHADERTYPE_TOON,
+	SHADERTYPE_BUMP,
 	SHADERTYPE_MAX
 } SHADERTYPE;
 
@@ -43,6 +44,7 @@ public:
 	void SetSize(D3DXVECTOR3 size) { m_size = size; }				// 大きさを設定する
 	void SetRotation(D3DXVECTOR3 rot) { m_rot = rot; }				// 回転値を設定
 	void SetShader(SHADERTYPE type) { m_ShaderType = type; }		// シェーダータイプを設定
+	void SetDrawDebugState(bool bValue) { m_bDrawDebug = bValue; }	// デバッグ用に描画するフラグの設定
 
 	static void Load(void);											// シェーダーの初期化処理
 
@@ -51,6 +53,7 @@ public:
 	D3DXVECTOR3 GetRotation(void) { return m_rot; }					// 回転値の取得
 	SHADERTYPE GetShaderType(void) { return m_ShaderType; }			// シェーダータイプの取得
 	D3DXMATRIX GetMtxWorld(void) { return m_mtxWorld; }				// ワールドマトリックス情報の取得
+	bool GetDrawDebugState(void) { return m_bDrawDebug; }			// デバッグ用に描画するフラグの取得
 
 	void OnTriggerEnter(CCollider *col) {};
 	void OnCollisionEnter(CCollider *col) {};
@@ -78,5 +81,6 @@ private:
 	int m_nLifeMax;
 	float m_fAngle;													//角度
 	float m_fLength;												//長さ
+	bool m_bDrawDebug;												// デバッグ用に描画するフラグ
 };
 #endif

@@ -17,6 +17,7 @@
 //=============================================================================
 #define D3DXVECTOR3_ZERO D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 #define	SHADERADD_LAMBERT ("data/shader/LambertShader.fx")
+#define	SHADERADD_BUMP ("data/shader/Bump.fx")
 #define	SHADERADD_TOON ("data/shader/ToonShader.fx")
 #define TEXTUREADD_DEFAULT ("data/tex/default.jpg")
 

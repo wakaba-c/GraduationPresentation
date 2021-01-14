@@ -139,6 +139,8 @@ CScene3D *CScene3D::Create(CScene::PRIORITY obj)
 {
 	CScene3D *pScene3D;
 	pScene3D = new CScene3D(obj);
+
+	if (pScene3D == NULL) return NULL;
 	pScene3D->Init();
 	return pScene3D;
 }

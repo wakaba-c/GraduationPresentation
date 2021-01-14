@@ -78,6 +78,7 @@ HRESULT CObject::Init(void)
 			}
 		}
 	}
+
 	SetPosition(pos);			// 位置の設定
 	return S_OK;
 }
@@ -114,6 +115,11 @@ void CObject::Update(void)
 		}
 
 		SetPosition(pos);		// 位置の設定
+	}
+	// ポイントオブジェクトのとき
+	else if (m_Add == "data/model/SnowBall.x")
+	{
+		SetShader(SHADERTYPE_BUMP);
 	}
 
 #ifdef _DEBUG
@@ -325,6 +331,7 @@ void CObject::LoadModelTest(char *add)
 									// ポイントモデルのとき
 									if (strcmp(aModelAdd, "data/model/point.x") == 0)
 									{
+										pObj->SetDrawDebugState(true);
 										m_vPointObj.push_back(pObj);
 									}
 								}

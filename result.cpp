@@ -14,6 +14,9 @@
 #include "number.h"
 #include "ranking.h"
 #include "sound.h"
+#include "camera.h"
+#include "sky.h"
+#include "object.h"
 
 //=============================================================================
 // マクロ定義
@@ -48,9 +51,32 @@ CResult::~CResult()
 //=============================================================================
 HRESULT CResult::Init(void)
 {
+	CCamera *pCamera = CManager::GetCamera();		// カメラの取得
+
 	int nTotal = 0;
 
-	CBg::Create();			// 背景の作成
+	// 空の作成
+	CSky::Create();
+
+	// モデル情報の読み込み
+	CObject::LoadModelTest("data/text/model.txt");
+
+	// 表彰台を生成
+	CObject *pObj = CObject::Create();
+
+	if (pObj != NULL)
+	{
+		pObj->BindModel("data/model/Podium.x");
+		pObj->SetPosition(D3DXVECTOR3(14013.69f, -3849.46f, -16564.68f));
+		pObj->SetRotation(D3DXVECTOR3(0.0f, 1.10f, 0.0f));
+		pObj->SetSize(D3DXVECTOR3(2.0f, 2.0f, 2.0f));
+	}
+
+	if (pCamera != NULL)
+	{
+		pCamera->SetStoker(false);
+		pCamera->SetPosCamera(D3DXVECTOR3(13951.36f, -3800.70f, -16626.40f), D3DXVECTOR3(-0.12f, -1.88f, 0.0f));
+	}
 
 	CRanking::SetResultIndex(m_nKill * ((MAX_MAGNIFICATION - m_nMinutes) * 100));	// ランキングに今回の得点を送る
 	return S_OK;

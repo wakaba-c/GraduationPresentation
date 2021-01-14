@@ -39,7 +39,7 @@ CTitle::~CTitle()
 //=============================================================================
 HRESULT CTitle::Init(void)
 {
-	//CCamera *pCamera = CManager::GetCamera();		// カメラの取得
+	CCamera *pCamera = CManager::GetCamera();		// カメラの取得
 
 	//if (pCamera != NULL)
 	//{// カメラが存在していたとき
@@ -80,12 +80,20 @@ HRESULT CTitle::Init(void)
 			pBack[3]->SetTransform();
 		}
 
-	//// 空の作成
+	// 空の作成
 	CSky::Create();
 
-	//// 各種アセットの生成＆設置
+	// 各種アセットの生成＆設置
 	//CMeshField::LoadRand("data/stage/rand.csv", false);				// 床情報の読込
-	//CObject::LoadModel("data/stage/object.csv");					// モデル情報の読込
+
+	// モデル情報の読み込み
+	CObject::LoadModelTest("data/text/model.txt");
+
+	if (pCamera != NULL)
+	{
+		pCamera->SetStoker(false);
+		pCamera->SetPosCamera(D3DXVECTOR3(-15899.27f, -2778.82f, 7679.39f), D3DXVECTOR3(-0.24f, 0.58f, 0.0f));
+	}
 	return S_OK;
 }
 

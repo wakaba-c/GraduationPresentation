@@ -42,11 +42,6 @@
 //=============================================================================
 // マクロ定義
 //=============================================================================
-#define	SCRIPT_CAR01 "data/animation/car01.txt"		// 車01のモデル情報アドレス
-#define	SCRIPT_CAR02 "data/animation/car02.txt"		// 車01のモデル情報アドレス
-#define	SCRIPT_CAR03 "data/animation/car03.txt"		// 車01のモデル情報アドレス
-#define	SCRIPT_CAR04 "data/animation/car04.txt"		// 車01のモデル情報アドレス
-
 #define ROT_AMOUNT 0.1f								// 回転の差を減らしていく量
 #define ROT_SPEED_DRIFT 0.5f						// ドリフト時回転速度
 #define MODEL_FRONT 2								// モデル前輪番号
@@ -151,32 +146,35 @@ HRESULT CPlayer::Init(void)
 	// アニメーションの設定
 	AnimationSwitch(ANIMATIONTYPE_NONE);
 
-	// プレイヤーモデル情報の読み込み
-	switch (CCharacterSelect::GetCarType())
+	//// プレイヤーモデル情報の読み込み
+	//switch (CCharacterSelect::GetCarType())
+	//{
+	//case 0:
+	//	LoadScript(SCRIPT_CAR01, ANIMATIONTYPE_MAX);
+	//	break;
+	//case 1:
+	//	LoadScript(SCRIPT_CAR02, ANIMATIONTYPE_MAX);
+	//	break;
+	//case 2:
+	//	LoadScript(SCRIPT_CAR03, ANIMATIONTYPE_MAX);
+	//	break;
+	//case 3:
+	//	LoadScript(SCRIPT_CAR04, ANIMATIONTYPE_MAX);
+	//	break;
+	//}
+
+	if (CManager::GetMode() == CManager::MODE_GAME)
 	{
-	case 0:
-		LoadScript(SCRIPT_CAR01, ANIMATIONTYPE_MAX);
-		break;
-	case 1:
-		LoadScript(SCRIPT_CAR02, ANIMATIONTYPE_MAX);
-		break;
-	case 2:
-		LoadScript(SCRIPT_CAR03, ANIMATIONTYPE_MAX);
-		break;
-	case 3:
-		LoadScript(SCRIPT_CAR04, ANIMATIONTYPE_MAX);
-		break;
-	}
+		// プレイヤーの当たり判定を生成
+		m_pColPlayerSphere = CColliderSphere::Create(false, 50.0f);
 
-	// プレイヤーの当たり判定を生成
-	m_pColPlayerSphere = CColliderSphere::Create(false, 50.0f);
-
-	if (m_pColPlayerSphere != NULL)
-	{ //球体のポインタがNULLではないとき
-		m_pColPlayerSphere->SetScene(this);
-		m_pColPlayerSphere->SetTag("player");										// タグ の設定
-		m_pColPlayerSphere->SetPosition(pos);										// 位置 の設定
-		m_pColPlayerSphere->SetOffset(D3DXVECTOR3(0.0f, 20.0f, 0.0f));
+		if (m_pColPlayerSphere != NULL)
+		{ //球体のポインタがNULLではないとき
+			m_pColPlayerSphere->SetScene(this);
+			m_pColPlayerSphere->SetTag("player");										// タグ の設定
+			m_pColPlayerSphere->SetPosition(pos);										// 位置 の設定
+			m_pColPlayerSphere->SetOffset(D3DXVECTOR3(0.0f, 20.0f, 0.0f));
+		}
 	}
 
 	// 位置の設定
@@ -231,14 +229,18 @@ HRESULT CPlayer::Init(void)
 			pRankUi->SetPosition(D3DXVECTOR3(1150.0f, 100.0f, 0.0f));
 		}
 	}
-	m_pDistanceNext = CDistanceNext::Create();
 
-	if (m_pDistanceNext != NULL)
+	if (CManager::GetMode() == CManager::MODE_GAME)
 	{
-		m_pDistanceNext->SetPosition(D3DXVECTOR3(200.0f, 80.0f, 0.0f));
-		m_pDistanceNext->SetDistance(D3DXVECTOR3(-10.0f, -8.0f, 0.0f));
-		m_pDistanceNext->SetIntervalNum(D3DXVECTOR3(45.0f, 0.0f, 0.0f));
-		m_pDistanceNext->SetNumber(256);
+		m_pDistanceNext = CDistanceNext::Create();
+
+		if (m_pDistanceNext != NULL)
+		{
+			m_pDistanceNext->SetPosition(D3DXVECTOR3(200.0f, 80.0f, 0.0f));
+			m_pDistanceNext->SetDistance(D3DXVECTOR3(-10.0f, -8.0f, 0.0f));
+			m_pDistanceNext->SetIntervalNum(D3DXVECTOR3(45.0f, 0.0f, 0.0f));
+			m_pDistanceNext->SetNumber(256);
+		}
 	}
 
 	// 影の生成
@@ -613,11 +615,16 @@ void CPlayer::OnCollisionEnter(CCollider *col)
 
 	if (sTag == "enemy")
 	{
-		// パーティクルの再現
-		for (int nCount = 0; nCount < 5; nCount++)
-		{
-			CEffect::CreateEffect("star", GetPosition(), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-		}
+		// //当たり状態なので、滑らせる
+		//D3DXVECTOR3 move;
+		//CManager::calcReflectVector(&move, m_move, normal);
+		//m_move = move * 20;
+
+		//// パーティクルの再現
+		//for (int nCount = 0; nCount < 5; nCount++)
+		//{
+		//	CEffect::CreateEffect("star", GetPosition(), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+		//}
 	}
 }
 
@@ -1259,7 +1266,7 @@ void CPlayer::Input(void)
 		// 回転の設定
 		SetRotation(m_rot);
 	}
-	
+
 	CSound *pSound = CManager::GetSound();				// サウンドの取得
 	if (pKeyboard->GetTriggerKeyboard(DIK_5))
 	{

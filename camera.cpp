@@ -126,7 +126,7 @@ void CCamera::Update(void)
 		Calculation.y = m_rotDest.y;			// 計算の値を補正
 	}
 
-	if (CManager::GetMode() == CManager::MODE_GAME)
+	//if (CManager::GetMode() == CManager::MODE_GAME)
 	{
 		if (m_bStorker)
 		{// プレイヤー追尾が許可されているとき
@@ -463,6 +463,14 @@ HRESULT CCamera::SetViewport(D3DXVECTOR2 pos, D3DXVECTOR2 size)
 	return S_OK;
 }
 
+//==============================================================================
+// プレイヤーの後を追尾するかの設定
+//==============================================================================
+void CCamera::SetStoker(bool bValue)
+{
+	m_bStorker = bValue;
+}
+
 void CCamera::Test(int nTest = 0)
 {
 }
@@ -522,7 +530,7 @@ D3DXVECTOR3* CCamera::CalcScreenToWorld(D3DXVECTOR3* pout, float fSx, float fSy,
 //=============================================================================
 void CCamera::CameraMove(void)
 {
-	if (CManager::GetMode() == CManager::MODE_GAME)
+	//if (CManager::GetMode() == CManager::MODE_GAME)
 	{// モードがゲームだったとき
 		CInputKeyboard *pKeyboard = CManager::GetInputKeyboard();		// キーボードの取得
 		CInputMouse *pMouse = CManager::GetInputMouse();				// マウスの取得
@@ -564,6 +572,7 @@ void CCamera::CameraMove(void)
 		// スクリーン座標とXZ平面のワールド座標交点算出
 		m_worldPos = CalcScreenToXZ((float)pMouse->GetMouseX(), (float)pMouse->GetMouseY(), SCREEN_WIDTH, SCREEN_HEIGHT, &m_mtxView, &m_mtxProjection);
 
+#ifdef _DEBUG
 		// 左Altキーが押さているとき
 		if (pKeyboard->GetPressKeyboard(DIK_LALT))
 		{
@@ -677,6 +686,7 @@ void CCamera::CameraMove(void)
 			m_move.x += sinf(D3DX_PI * 0.0f + m_rot.y) * NORMAL_SPEED;
 			m_move.z += cosf(D3DX_PI * 0.0f + m_rot.y) * NORMAL_SPEED;
 		}
+#endif
 	}
 }
 

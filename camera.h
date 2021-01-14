@@ -41,6 +41,7 @@ public:
 	bool VFCulling(D3DXVECTOR3 pos, int nType, float fAngle, float fNearClip, float fFarClip);	// 視錐台カリング処理
 	void SetPosCamera(D3DXVECTOR3 pos, D3DXVECTOR3 rot);							// カメラの位置設定
 	HRESULT SetViewport(D3DXVECTOR2 pos, D3DXVECTOR2 size);							// 描画領域を設定
+	void SetStoker(bool bValue);			// プレイヤーの後を追尾するかどうか
 
 	D3DXVECTOR3 GetPosition(void) { return m_originPos; }							// カメラの場所取得
 	float GetDistance(void) { return m_fDistance; }									// 視点と注視点との距離を取得

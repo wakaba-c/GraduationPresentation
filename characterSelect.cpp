@@ -16,6 +16,7 @@
 #include "camera.h"
 #include "sky.h"
 #include "sound.h"
+#include "player.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -27,7 +28,10 @@ int CCharacterSelect::m_nCarType = 0;			// 車のタイプ
 //=============================================================================
 CCharacterSelect::CCharacterSelect()
 {
-
+	for (int nCount = 0; nCount < MAX_CARTYPE; nCount++)
+	{
+		m_pPlayer[nCount] = NULL;
+	}
 }
 
 //=============================================================================
@@ -43,7 +47,9 @@ CCharacterSelect::~CCharacterSelect()
 //=============================================================================
 HRESULT CCharacterSelect::Init(void)
 {
+	CCamera *pCamera = CManager::GetCamera();
 	m_nCarType = 0;
+
 	for (int nCnt = 0; nCnt < MAX_SELECT_UI; nCnt++)
 	{
 		pBack[nCnt] = CScene2D::Create(CScene::PRIORITY_UI);
@@ -65,21 +71,21 @@ HRESULT CCharacterSelect::Init(void)
 	if (pBack[2] != NULL)//車１
 	{
 		pBack[2]->BindTexture("data/tex/car01.jpg");
-		pBack[2]->SetPosition(D3DXVECTOR3(SCREEN_WIDTH/2 - 240, 520, 0.0f));
+		pBack[2]->SetPosition(D3DXVECTOR3(SCREEN_WIDTH / 2 - 240, 520, 0.0f));
 		pBack[2]->SetSize(D3DXVECTOR3(150, 130, 0.0f));
 		pBack[2]->SetTransform();
 	}
 	if (pBack[3] != NULL)//車２
 	{
 		pBack[3]->BindTexture("data/tex/car02.jpg");
-		pBack[3]->SetPosition(D3DXVECTOR3(SCREEN_WIDTH / 2 - 80 , 520, 0.0f));
+		pBack[3]->SetPosition(D3DXVECTOR3(SCREEN_WIDTH / 2 - 80, 520, 0.0f));
 		pBack[3]->SetSize(D3DXVECTOR3(150, 130, 0.0f));
 		pBack[3]->SetTransform();
 	}
 	if (pBack[4] != NULL)//車３
 	{
 		pBack[4]->BindTexture("data/tex/car03.jpg");
-		pBack[4]->SetPosition(D3DXVECTOR3(SCREEN_WIDTH / 2 + 80 , 520, 0.0f));
+		pBack[4]->SetPosition(D3DXVECTOR3(SCREEN_WIDTH / 2 + 80, 520, 0.0f));
 		pBack[4]->SetSize(D3DXVECTOR3(150, 130, 0.0f));
 		pBack[4]->SetTransform();
 	}
@@ -106,8 +112,42 @@ HRESULT CCharacterSelect::Init(void)
 		pBack[7]->SetTransform();
 	}
 
-	//// 空の作成
+	for (int nCount = 0; nCount < MAX_CARTYPE; nCount++)
+	{
+		m_pPlayer[nCount] = CPlayer::Create();
+		if(m_pPlayer[nCount] == NULL) continue;
+
+		switch (nCount)
+		{
+		case 0:
+			m_pPlayer[nCount]->LoadScript(SCRIPT_CAR01, 6);
+			break;
+		case 1:
+			m_pPlayer[nCount]->LoadScript(SCRIPT_CAR02, 6);
+			break;
+		case 2:
+			m_pPlayer[nCount]->LoadScript(SCRIPT_CAR03, 6);
+			break;
+		case 3:
+			m_pPlayer[nCount]->LoadScript(SCRIPT_CAR04, 6);
+			break;
+		}
+
+		m_pPlayer[nCount]->SetPosition(D3DXVECTOR3(-3805.42f, -3199.76f, -16055.74f));
+	}
+
+	// 空の作成
 	CSky::Create();
+
+	// モデル情報の読み込み
+	CObject::LoadModelTest("data/text/model.txt");
+
+	// カメラの位置設定
+	if (pCamera != NULL)
+	{
+		pCamera->SetStoker(false);
+		pCamera->SetPosCamera(D3DXVECTOR3(-3924.55f, -3300.27f, -15951.08f), D3DXVECTOR3(-0.07f, -0.85f, 0.0f));
+	}
 	return S_OK;
 }
 
@@ -130,6 +170,9 @@ void CCharacterSelect::Update(void)
 	D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	if (CFade::GetFade() == CFade::FADE_NONE)
 	{//フェードが処理をしていないとき
+		// 車の種類を変える処理
+		ChangeCarPrev();
+
 		if (pInputKeyboard != NULL)
 		{// キーボードが存在していたとき
 			if (pInputKeyboard->GetTriggerKeyboard(DIK_RETURN))
@@ -140,11 +183,12 @@ void CCharacterSelect::Update(void)
 				CFade::SetFade(CManager::MODE_PUZZLE_CUSTOM, CFade::FADETYPE_SLIDE);					//フェードを入れる
 			}
 			//車の選択処理
-			if (pInputKeyboard->GetTriggerKeyboard(DIK_RIGHT)&&m_nCarType< 3)
+			if (pInputKeyboard->GetTriggerKeyboard(DIK_RIGHT) && m_nCarType < 3)
 			{
 				pos = pBack[7]->GetPosition();
 				pBack[7]->SetPosition(D3DXVECTOR3(pos.x + 160, pos.y, pos.z));
 				pBack[7]->SetTransform();
+
 				m_nCarType++;
 			}
 			else if (pInputKeyboard->GetTriggerKeyboard(DIK_LEFT) && m_nCarType > 0)
@@ -152,20 +196,42 @@ void CCharacterSelect::Update(void)
 				pos = pBack[7]->GetPosition();
 				pBack[7]->SetPosition(D3DXVECTOR3(pos.x - 160, pos.y, pos.z));
 				pBack[7]->SetTransform();
+
 				m_nCarType--;
 			}
 		}
-		if (pInputController->GetJoypadUse(0))
-		{// コントローラーが生成されているとき
-		 //ゲームの遷移
-			if (pInputController->GetControllerTrigger(0, JOYPADKEY_A) ||			// ゲームパッドのAボダンが押されたとき
-				pInputController->GetControllerTrigger(0, JOYPADKEY_START))			// ゲームパッドのSTARTボタンが押されたとき
-			{
-				CSound *pSound = CManager::GetSound();				// サウンドの取得
+		if (pInputController != NULL)
+		{
+			if (pInputController->GetJoypadUse(0))
+			{// コントローラーが生成されているとき
+			 //ゲームの遷移
+				if (pInputController->GetControllerTrigger(0, JOYPADKEY_A) ||			// ゲームパッドのAボダンが押されたとき
+					pInputController->GetControllerTrigger(0, JOYPADKEY_START))			// ゲームパッドのSTARTボタンが押されたとき
+				{
+					CSound *pSound = CManager::GetSound();				// サウンドの取得
 
-				pSound->PlaySoundA(SOUND_LABEL_SE_Decision);			// ダメージ音の再生
+					pSound->PlaySoundA(SOUND_LABEL_SE_Decision);			// ダメージ音の再生
 
-				CFade::SetFade(CManager::MODE_PUZZLE_CUSTOM, CFade::FADETYPE_SLIDE);					//フェードを入れる
+					CFade::SetFade(CManager::MODE_PUZZLE_CUSTOM, CFade::FADETYPE_SLIDE);					//フェードを入れる
+				}
+
+				//車の選択処理
+				if (pInputController->GetControllerTrigger(0, JOYPADKEY_RIGHT) && m_nCarType < 3)
+				{
+					pos = pBack[7]->GetPosition();
+					pBack[7]->SetPosition(D3DXVECTOR3(pos.x + 160, pos.y, pos.z));
+					pBack[7]->SetTransform();
+
+					m_nCarType++;
+				}
+				else if (pInputController->GetControllerTrigger(0, JOYPADKEY_LEFT) && m_nCarType > 0)
+				{
+					pos = pBack[7]->GetPosition();
+					pBack[7]->SetPosition(D3DXVECTOR3(pos.x - 160, pos.y, pos.z));
+					pBack[7]->SetTransform();
+
+					m_nCarType--;
+				}
 			}
 		}
 	}
@@ -184,4 +250,31 @@ void CCharacterSelect::Draw(void)
 //=============================================================================
 void CCharacterSelect::LoadAsset(void)
 {
+}
+
+//=============================================================================
+// サンプル用の車を変える
+//=============================================================================
+void CCharacterSelect::ChangeCarPrev(void)
+{
+	for (int nCount = 0; nCount < MAX_CARTYPE; nCount++)
+	{
+		// NULLチェック
+		if (m_pPlayer[nCount] == NULL) continue;
+
+		if (nCount != m_nCarType)
+		{
+			if (m_pPlayer[nCount]->GetActive())
+			{
+				m_pPlayer[nCount]->SetActive(false);
+			}
+		}
+		else
+		{
+			if (!m_pPlayer[nCount]->GetActive())
+			{
+				m_pPlayer[nCount]->SetActive(true);
+			}
+		}
+	}
 }

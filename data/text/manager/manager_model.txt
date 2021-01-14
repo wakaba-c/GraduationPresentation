@@ -45,12 +45,14 @@ MODEL_FILENAME = data/model/MouMouCountry/Gate.x			# [32]ゲート
 MODEL_FILENAME = data/model/MouMouCountry/husya2.x			# [33]風車
 MODEL_FILENAME = data/model/MouMouCountry/Jump.x			# [34]ジャンプ台
 MODEL_FILENAME = data/model/MouMouCountry/ki.x				# [35]木
-MODEL_FILENAME = data/model/MouMouCountry/Milctank.x			# [36]ミルクタンク
+MODEL_FILENAME = data/model/MouMouCountry/Milctank.x		# [36]ミルクタンク
 MODEL_FILENAME = data/model/MouMouCountry/Jump.x			# [34]ジャンプ台
-MODEL_FILENAME = data/model/MouMouCountry/Niguruma.x			# [35]荷車
+MODEL_FILENAME = data/model/MouMouCountry/Niguruma.x		# [35]荷車
 MODEL_FILENAME = data/model/MouMouCountry/Pillar.x			# [36]看板
 MODEL_FILENAME = data/model/MouMouCountry/saku.x			# [37]柵
 MODEL_FILENAME = data/model/MouMouCountry/taru.x			# [38]樽
 MODEL_FILENAME = data/model/MouMouCountry/Tree.x			# [39]木
+MODEL_FILENAME = data/model/SnowBall.x						# [40]雪玉
+MODEL_FILENAME = data/model/Podium.x						# [41]表彰台
 
 END_SCRIPT		# この行は絶対消さないこと！
