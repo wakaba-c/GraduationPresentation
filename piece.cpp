@@ -323,11 +323,6 @@ void CPiece::SetStatus(void)
 		case PieceType_Square:
 			switch (m_StatusType)
 			{
-			case StatusType_MiniMap:
-				m_fRate = MediumUp;
-				m_bMap = true;
-				break;
-
 			case StatusType_Route:
 				m_fTurning = MediumUp;
 				m_bRoute = true;
@@ -373,10 +368,6 @@ void CPiece::SetStatus(void)
 			case StatusType_Turning_SmallUp:
 				m_fTurning = SmallUp;
 				break;
-
-			case StatusType_Power_SmallUp:
-				m_nPower = SmallUp;
-				break;
 			}
 			break;
 
@@ -406,10 +397,6 @@ void CPiece::SetStatus(void)
 		case PieceType_Rectangle_2:
 			switch (m_StatusType)
 			{
-			case StatusType_Power_MediumUp:
-				m_nPower = MediumUp;
-				break;
-
 			case StatusType_Decay_Down:
 				m_fDecay = MediumUp;
 				break;
@@ -431,14 +418,6 @@ void CPiece::SetStatus(void)
 			// ■
 		case PieceType_Speed_1:
 			m_fRate = GreatUp;
-			break;
-
-			// 　　　■
-			// 　　■
-			// 　■
-			// ■
-		case PieceType_Diagonal:
-			m_fSpeed = GreatUp + 1;
 			break;
 		}
 
@@ -832,7 +811,7 @@ void CPiece::SetPiece(void)
 				{
 					// テクスチャ変更
 					m_pBlock[nDepth][nWide]->BindTexture("data/tex/grass.jpg");
-					m_pBlock[nDepth][nWide]->SpriteAnimation(D3DXVECTOR2(3.0f, 5.0f), 1, 1);
+					//m_pBlock[nDepth][nWide]->SpriteAnimation(D3DXVECTOR2(3.0f, 5.0f), 1, 1);
 					// 配置しているかどうか
 					if (m_bPlacement == false)
 					{
@@ -1164,93 +1143,6 @@ void CPiece::SetPiece(void)
 				else if (m_nCntMove_Y >= Range_Y - 3)
 				{
 					m_nCntMove_Y = Range_Y - 3;
-				}
-
-				break;
-
-				// 　　　■
-				// 　　■
-				// 　■
-				// ■
-			case PieceType_Diagonal:
-
-				// 配置
-				if (nDepth == m_nCntMove_Y && nWide == m_nCntMove_X + 3)
-				{
-					m_bPuzzle[nDepth][nWide] = true;
-				}
-				// 配置
-				else if (nDepth == m_nCntMove_Y + 1 && nWide == m_nCntMove_X + 2)
-				{
-					m_bPuzzle[nDepth][nWide] = true;
-				}
-				// 配置
-				else if (nDepth == m_nCntMove_Y + 2 && nWide == m_nCntMove_X + 1)
-				{
-					m_bPuzzle[nDepth][nWide] = true;
-				}
-				// 配置
-				else if (nDepth == m_nCntMove_Y + 3 && nWide == m_nCntMove_X)
-				{
-					m_bPuzzle[nDepth][nWide] = true;
-				}
-				else
-				{
-					m_bPuzzle[nDepth][nWide] = false;
-				}
-
-				// 状態確認
-				if (m_bPuzzle[nDepth][nWide] == true)
-				{
-					// テクスチャ変更
-					m_pBlock[nDepth][nWide]->BindTexture("data/tex/grass.jpg");
-					// 配置しているかどうか
-					if (m_bPlacement == false)
-					{
-						// 色の変更
-						if (m_bBox[m_nCntMove_Y][m_nCntMove_X + 3] == false && m_bBox[m_nCntMove_Y + 1][m_nCntMove_X + 2] == false &&
-							m_bBox[m_nCntMove_Y + 2][m_nCntMove_X + 1] == false && m_bBox[m_nCntMove_Y + 3][m_nCntMove_X] == false)
-						{
-							m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
-							m_bPut = true;
-						}
-						else
-						{
-							// 色の変更
-							m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
-							m_bPut = false;
-						}
-					}
-					else
-					{
-						// 色の変更
-						m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-					}
-
-				}
-				else
-				{
-					// 色設定
-					m_pBlock[nDepth][nWide]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
-				}
-
-				// 枠外に行かないようにする
-				if (m_nCntMove_X <= 0)
-				{
-					m_nCntMove_X = 0;
-				}
-				else if (m_nCntMove_X >= Range_X - 2)
-				{
-					m_nCntMove_X = Range_X - 2;
-				}
-
-				if (m_nCntMove_Y <= 0)
-				{
-					m_nCntMove_Y = 0;
-				}
-				else if (m_nCntMove_Y >= Range_Y - 2)
-				{
-					m_nCntMove_Y = Range_Y - 2;
 				}
 
 				break;

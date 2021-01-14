@@ -29,6 +29,13 @@ class CPlayer;
 //=============================================================================
 class CCharacterSelect
 {
+	typedef enum
+	{
+		STICK_RIGHT = 0,	// 右に倒れた
+		STICK_LEFT,			// 左に倒れた
+		STICK_MAX			// 最大
+	}STICK;
+
 public:
 	CCharacterSelect();									// コンストラクタ
 	~CCharacterSelect();								// デストラクタ
@@ -46,5 +53,6 @@ private:
 	CPlayer	*m_pPlayer[MAX_CARTYPE];	// 車のポインタ
 	CScene2D *pBack[MAX_SELECT_UI];		// UI
 	static int m_nCarType;				// 車の種類
+	bool m_bStick[STICK_MAX];						// スティックの倒れた状況
 };
 #endif
