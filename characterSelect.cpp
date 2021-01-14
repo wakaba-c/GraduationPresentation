@@ -210,88 +210,83 @@ void CCharacterSelect::Update(void)
 		{
 			if (pInputController->GetJoypadUse(0))
 			{// コントローラーが生成されているとき
-			 //ゲームの遷移
-				if (pInputController->GetControllerTrigger(0, JOYPADKEY_A) ||			// ゲームパッドのAボダンが押されたとき
-					pInputController->GetControllerTrigger(0, JOYPADKEY_START))			// ゲームパッドのSTARTボタンが押されたとき
-				{
-					CSound *pSound = CManager::GetSound();				// サウンドの取得
-					if (pInputController->GetJoypadUse(0))
-					{// コントローラーが生成されているとき
-						float nValueH = 0;				// コントローラー
-						float nValueV = 0;				// コントローラー
+				CSound *pSound = CManager::GetSound();				// サウンドの取得
+				if (pInputController->GetJoypadUse(0))
+				{// コントローラーが生成されているとき
+					float nValueH = 0;				// コントローラー
+					float nValueV = 0;				// コントローラー
 
-						// 左スティックの情報取得
-						pInputController->GetJoypadStickLeft(0, &nValueH, &nValueV);
+					// 左スティックの情報取得
+					pInputController->GetJoypadStickLeft(0, &nValueH, &nValueV);
 
-						// 左スティックが倒れていないとき
-						if (!m_bStick[STICK_LEFT] && !m_bStick[STICK_RIGHT])
+					// 左スティックが倒れていないとき
+					if (!m_bStick[STICK_LEFT] && !m_bStick[STICK_RIGHT])
+					{
+						// 左にスティックが倒れたとき
+						if (nValueH > 0)
 						{
-							// 左にスティックが倒れたとき
-							if (nValueH > 0)
-							{
-								// 左スティックが倒れた
-								m_bStick[STICK_LEFT] = true;
-							}
-							else if (nValueH < 0)
-							{// 右にスティックが倒れたとき
-							 // 右スティックが倒れた
-								m_bStick[STICK_RIGHT] = true;
-							}
-
-							// 左スティックの倒れた状況がtrueのとき
-							if (m_bStick[STICK_LEFT] && m_nCarType > 0)
-							{
-								pos = pBack[7]->GetPosition();
-								pBack[7]->SetPosition(D3DXVECTOR3(pos.x - 160, pos.y, pos.z));
-								pBack[7]->SetTransform();
-								m_nCarType--;
-							}
-							else if (m_bStick[STICK_RIGHT] && m_nCarType < 3)
-							{// 右スティックの倒れた状況がtrueのとき
-								pos = pBack[7]->GetPosition();
-								pBack[7]->SetPosition(D3DXVECTOR3(pos.x + 160, pos.y, pos.z));
-								pBack[7]->SetTransform();
-								m_nCarType++;
-							}
+							// 左スティックが倒れた
+							m_bStick[STICK_LEFT] = true;
+						}
+						else if (nValueH < 0)
+						{// 右にスティックが倒れたとき
+						 // 右スティックが倒れた
+							m_bStick[STICK_RIGHT] = true;
 						}
 
-						// スティックが倒れていない
-						if (nValueH == 0)
-						{
-							// 左スティックが倒れていない
-							m_bStick[STICK_LEFT] = false;
-							// 右スティックが倒れていない
-							m_bStick[STICK_RIGHT] = false;
-						}
-
-						//ゲームの遷移
-						if (pInputController->GetControllerTrigger(0, JOYPADKEY_A) ||			// ゲームパッドのAボダンが押されたとき
-							pInputController->GetControllerTrigger(0, JOYPADKEY_START))			// ゲームパッドのSTARTボタンが押されたとき
-						{
-							CSound *pSound = CManager::GetSound();				// サウンドの取得
-
-							pSound->PlaySoundA(SOUND_LABEL_SE_Decision);			// ダメージ音の再生
-
-							CFade::SetFade(CManager::MODE_PUZZLE_CUSTOM, CFade::FADETYPE_SLIDE);					//フェードを入れる
-						}
-
-						//車の選択処理
-						if (pInputController->GetControllerTrigger(0, JOYPADKEY_RIGHT) && m_nCarType < 3)
-						{
-							pos = pBack[7]->GetPosition();
-							pBack[7]->SetPosition(D3DXVECTOR3(pos.x + 160, pos.y, pos.z));
-							pBack[7]->SetTransform();
-
-							m_nCarType++;
-						}
-						else if (pInputController->GetControllerTrigger(0, JOYPADKEY_LEFT) && m_nCarType > 0)
+						// 左スティックの倒れた状況がtrueのとき
+						if (m_bStick[STICK_LEFT] && m_nCarType > 0)
 						{
 							pos = pBack[7]->GetPosition();
 							pBack[7]->SetPosition(D3DXVECTOR3(pos.x - 160, pos.y, pos.z));
 							pBack[7]->SetTransform();
-
 							m_nCarType--;
 						}
+						else if (m_bStick[STICK_RIGHT] && m_nCarType < 3)
+						{// 右スティックの倒れた状況がtrueのとき
+							pos = pBack[7]->GetPosition();
+							pBack[7]->SetPosition(D3DXVECTOR3(pos.x + 160, pos.y, pos.z));
+							pBack[7]->SetTransform();
+							m_nCarType++;
+						}
+					}
+
+					// スティックが倒れていない
+					if (nValueH == 0)
+					{
+						// 左スティックが倒れていない
+						m_bStick[STICK_LEFT] = false;
+						// 右スティックが倒れていない
+						m_bStick[STICK_RIGHT] = false;
+					}
+
+					//ゲームの遷移
+					if (pInputController->GetControllerTrigger(0, JOYPADKEY_A) ||			// ゲームパッドのAボダンが押されたとき
+						pInputController->GetControllerTrigger(0, JOYPADKEY_START))			// ゲームパッドのSTARTボタンが押されたとき
+					{
+						CSound *pSound = CManager::GetSound();				// サウンドの取得
+
+						pSound->PlaySoundA(SOUND_LABEL_SE_Decision);			// ダメージ音の再生
+
+						CFade::SetFade(CManager::MODE_PUZZLE_CUSTOM, CFade::FADETYPE_SLIDE);					//フェードを入れる
+					}
+
+					//車の選択処理
+					if (pInputController->GetControllerTrigger(0, JOYPADKEY_RIGHT) && m_nCarType < 3)
+					{
+						pos = pBack[7]->GetPosition();
+						pBack[7]->SetPosition(D3DXVECTOR3(pos.x + 160, pos.y, pos.z));
+						pBack[7]->SetTransform();
+
+						m_nCarType++;
+					}
+					else if (pInputController->GetControllerTrigger(0, JOYPADKEY_LEFT) && m_nCarType > 0)
+					{
+						pos = pBack[7]->GetPosition();
+						pBack[7]->SetPosition(D3DXVECTOR3(pos.x - 160, pos.y, pos.z));
+						pBack[7]->SetTransform();
+
+						m_nCarType--;
 					}
 				}
 			}
