@@ -1348,7 +1348,7 @@ bool CCollider::RayBlockCollision(D3DXVECTOR3 &pos, D3DXMATRIX *pMat, float fOff
 			D3DXVec3Cross(&norwork, &BC, &AB);
 			D3DXVec3Normalize(&norwork, &norwork);
 
-			CDebugProc::Log("–@ü : %.2f, %.2f, %.2f\n", norwork.x, norwork.y, norwork.z);
+			//CDebugProc::Log("–@ü : %.2f, %.2f, %.2f\n", norwork.x, norwork.y, norwork.z);
 
 			pMesh->UnlockVertexBuffer();
 			pMesh->UnlockIndexBuffer();

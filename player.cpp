@@ -313,9 +313,9 @@ void CPlayer::Update(void)
 	D3DXVec3Cross(&norwork, &BC, &AB);
 	D3DXVec3Normalize(&norwork, &norwork);
 
-	CDebugProc::Log("a地点 : %f, %f, %f\n", plane.a.x, plane.a.y, plane.a.z);
-	CDebugProc::Log("b地点 : %f, %f, %f\n", plane.b.x, plane.b.y, plane.b.z);
-	CDebugProc::Log("c地点 : %f, %f, %f\n", plane.c.x, plane.c.y, plane.c.z);
+	//CDebugProc::Log("a地点 : %f, %f, %f\n", plane.a.x, plane.a.y, plane.a.z);
+	//CDebugProc::Log("b地点 : %f, %f, %f\n", plane.b.x, plane.b.y, plane.b.z);
+	//CDebugProc::Log("c地点 : %f, %f, %f\n", plane.c.x, plane.c.y, plane.c.z);
 
 	//床の高さを取得する
 	CScene *pSceneNext = NULL;														// 初期化
@@ -493,14 +493,14 @@ void CPlayer::Update(void)
 		}
 	}
 
-	CDebugProc::Log("速度 : %.2f", CSpeed::GetSpeed());
-
 	if (CSpeed::GetSpeed() > 10)
 	{
 		CEffect::SandSmoke(pos + D3DXVECTOR3(0.0f, 50.0f, 0.0f));
 	}
 
 #ifdef _DEBUG
+	CDebugProc::Log("速度 : %.2f", CSpeed::GetSpeed());
+
 	Debug();
 #endif
 }
