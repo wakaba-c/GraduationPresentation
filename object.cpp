@@ -335,6 +335,7 @@ void CObject::LoadModelTest(char *add)
 									if (strcmp(aModelAdd, "data/model/point.x") == 0)
 									{
 										pObj->SetDrawDebugState(true);
+										pObj->SetActive(false);
 
 										if (CManager::GetMode() == CManager::MODE_GAME)
 										{// ƒ‚[ƒh‚ªƒQ[ƒ€‚¾‚Á‚½‚Æ‚«
