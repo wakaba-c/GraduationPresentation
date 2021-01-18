@@ -607,6 +607,22 @@ HRESULT CObject::FindVerticesOnPoly(LPD3DXMESH pMesh, DWORD dwPolyIndex, D3DXVEC
 	return S_OK;
 }
 
+//=============================================================================
+// チェックポイントの開放
+//=============================================================================
+void CObject::ReleaseCheckPoint(void)
+{
+	if (m_pSphere != NULL)
+	{
+		// 当たり判定の開放
+		m_pSphere->Release();
+		m_pSphere = NULL;
+	}
+
+	m_vPointObj.clear();
+	m_pointNum = 0;
+}
+
 #ifdef _DEBUG
 //=============================================================================
 // デバッグ処理

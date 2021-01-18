@@ -73,6 +73,7 @@ public:
 
 	static bool Collide(D3DXVECTOR3 vStart, D3DXVECTOR3 vDir, FLOAT* pfDistance, D3DXVECTOR3* pvNormal, D3DXMATRIX mtx);			// “–‚½‚è”»’è
 	static HRESULT FindVerticesOnPoly(LPD3DXMESH pMesh, DWORD dwPolyIndex, D3DXVECTOR3* pvVertices);
+	static void ReleaseCheckPoint(void);
 
 private:
 #ifdef _DEBUG
