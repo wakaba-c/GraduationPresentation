@@ -17,5 +17,8 @@ MODEL_FILENAME = data/tex/Explanation_1.png			# [4]説明
 MODEL_FILENAME = data/tex/Explanation_2.png			# [5]説明
 MODEL_FILENAME = data/tex/RB.png					# [6]説明
 MODEL_FILENAME = data/tex/Finish.png				# [7]ゴール
+MODEL_FILENAME = data/tex/gamefade.png				# [8]フェード用テクスチャ
+MODEL_FILENAME = data/tex/laceflag.png				# [9]UI用ゴールフラグ
+MODEL_FILENAME = data/tex/from.png					# [10]から
 
 END_SCRIPT		# この行は絶対消さないこと！

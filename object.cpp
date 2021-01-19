@@ -16,6 +16,8 @@
 #include "player.h"
 #include "distanceNext.h"
 #include "finishUi.h"
+#include "counter.h"
+#include "ui.h"
 
 //=============================================================================
 // ƒ}ƒNƒ’è‹`
@@ -440,7 +442,18 @@ void CObject::OnTriggerEnter(CCollider *col)
 						if (pDistanceNext->GetNowRound() < MAX_ROUND - 1)
 						{
 							pDistanceNext->SetNowRound();
-							OutputDebugString("Round");
+
+							CUi *pLapsUi = CGame::GetLaps();
+
+							if (pLapsUi != NULL)
+							{
+								CCounter *pCounter = pLapsUi->GetCounter("NowLaps");
+
+								if (pCounter != NULL)
+								{
+									pCounter->SetNumber(pDistanceNext->GetNowRound() + 1);
+								}
+							}
 						}
 						else
 						{

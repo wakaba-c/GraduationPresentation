@@ -48,6 +48,7 @@ public:
 	static CEnemy		*GetEnemy(void) { return m_pEnemy; }				// 敵の取得
 	static CSky			*GetSky(void) { return m_pSky; }					// 空の取得
 	static CHouse		*GetHouse(void) { return m_pHouse; }				// 家の取得
+	static CUi			*GetLaps(void) { return m_pLaps; }					// ラップ数のUI取得
 
 private:
 	static CMeshField	*m_pMeshField;										// メッシュフィールドのポインタ
@@ -60,6 +61,7 @@ private:
 
 	static CUi			*m_pUi;
 	static CTime		*m_pTime;
+	static CUi			*m_pLaps;			// ラップのUI
 
 	bool m_bGuideSign[Piece_Num];
 	bool m_bRate;
