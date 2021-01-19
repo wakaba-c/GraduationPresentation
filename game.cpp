@@ -40,6 +40,7 @@
 #include "finishUi.h"
 #include "characterSelect.h"
 #include "camera.h"
+#include "counter.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -54,6 +55,7 @@ CSpeed		*CGame::m_pSpeed = NULL;			// 時速のポインタ
 
 CUi			*CGame::m_pUi = NULL;				// UIのポインタ
 CTime		*CGame::m_pTime = NULL;				// カウンタのポインタ
+CUi			*CGame::m_pLaps = NULL;				// ラップ数のポインタ
 
 //=============================================================================
 // コンストラクタ
@@ -167,6 +169,30 @@ HRESULT CGame::Init(void)
 
 	// ネットワークでのゲーム時初期化処理
 	CManager::GetNetwork()->InitGame();
+
+	m_pLaps = CUi::Create();
+
+	if (m_pLaps != NULL)
+	{
+		m_pLaps->LoadScript("data/text/ui/UI_Laps.txt");
+
+		// 周回回数の最大値を設定
+		CCounter *pCounter = m_pLaps->GetCounter("MaxLaps");
+		if (pCounter != NULL)
+		{
+			pCounter->SetNumber(3);
+		}
+
+		// 周回回数の現在値を設定
+		pCounter = m_pLaps->GetCounter("NowLaps");
+		if (pCounter != NULL)
+		{
+			pCounter->SetNumber(1);
+		}
+
+		// UIの位置を設定
+		m_pLaps->SetPosition(D3DXVECTOR3(382.0f, 682.0f, 0.0f));
+	}
 
 	return S_OK;
 }
