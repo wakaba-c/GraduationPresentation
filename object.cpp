@@ -60,21 +60,24 @@ HRESULT CObject::Init(void)
 
 	D3DXVECTOR3 pos = D3DXVECTOR3(500.0f, 0.0f, 0.0f);
 
-	// ポイントオブジェクトのとき
-	if (m_Add == "data/model/point.x")
+	if (CManager::GetMode() == CManager::MODE_GAME)
 	{
-		// スフィアがNULLのとき
-		if (m_pSphere == NULL)
+		// ポイントオブジェクトのとき
+		if (m_Add == "data/model/point.x")
 		{
-			// スフィアの生成処理
-			m_pSphere = CColliderSphere::Create(true, 3000.0f);
-
-			// スフィアがあるとき
-			if (m_pSphere != NULL)
+			// スフィアがNULLのとき
+			if (m_pSphere == NULL)
 			{
-				m_pSphere->SetScene(this);
-				m_pSphere->SetTag("checkpoint");
-				m_pSphere->SetPosition(pos);
+				// スフィアの生成処理
+				m_pSphere = CColliderSphere::Create(true, 3000.0f);
+
+				// スフィアがあるとき
+				if (m_pSphere != NULL)
+				{
+					m_pSphere->SetScene(this);
+					m_pSphere->SetTag("checkpoint");
+					m_pSphere->SetPosition(pos);
+				}
 			}
 		}
 	}
@@ -332,7 +335,12 @@ void CObject::LoadModelTest(char *add)
 									if (strcmp(aModelAdd, "data/model/point.x") == 0)
 									{
 										pObj->SetDrawDebugState(true);
-										m_vPointObj.push_back(pObj);
+										pObj->SetActive(false);
+
+										if (CManager::GetMode() == CManager::MODE_GAME)
+										{// モードがゲームだったとき
+											m_vPointObj.push_back(pObj);		// 配列の最後尾に入れる
+										}
 									}
 								}
 								else if (strcmp(cHeadText, "POS") == 0)
@@ -413,6 +421,10 @@ void CObject::OnTriggerEnter(CCollider *col)
 
 			m_pointNum++;		// フラグの配列を次にする
 
+			char aData[64];
+			sprintf(aData, "%d / %d\n", m_pointNum, m_vPointObj.size());
+			OutputDebugString(aData);
+
 			// 配列が最大を超えたら
 			if (m_pointNum >= m_vPointObj.size())
 			{
@@ -421,13 +433,14 @@ void CObject::OnTriggerEnter(CCollider *col)
 				CPlayer *pPlayer = CGame::GetPlayer();
 
 				if (pPlayer != NULL)
-				{
-					CDistanceNext *pDistanceNext = pPlayer->GetDistanceNext();
+				{// プレイヤーが存在していたとき
+					CDistanceNext *pDistanceNext = pPlayer->GetDistanceNext();			// プレイヤーの次の目的地を取得
 					if (pDistanceNext != NULL)
-					{
+					{// 次の目的地が存在していたとき
 						if (pDistanceNext->GetNowRound() < MAX_ROUND - 1)
 						{
 							pDistanceNext->SetNowRound();
+							OutputDebugString("Round");
 						}
 						else
 						{
@@ -593,6 +606,22 @@ HRESULT CObject::FindVerticesOnPoly(LPD3DXMESH pMesh, DWORD dwPolyIndex, D3DXVEC
 		VB->Release();
 	}
 	return S_OK;
+}
+
+//=============================================================================
+// チェックポイントの開放
+//=============================================================================
+void CObject::ReleaseCheckPoint(void)
+{
+	if (m_pSphere != NULL)
+	{
+		// 当たり判定の開放
+		m_pSphere->Release();
+		m_pSphere = NULL;
+	}
+
+	m_vPointObj.clear();
+	m_pointNum = 0;
 }
 
 #ifdef _DEBUG

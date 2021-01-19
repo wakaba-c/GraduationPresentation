@@ -36,7 +36,7 @@ CCharacter::CCharacter(CScene::PRIORITY obj) : CScene(obj)
 	m_pAnimation = NULL;
 	m_apCurrentPos = NULL;								// Œ»İˆÊ’u ‚Ì‰Šú‰»
 	m_apCurrentRot = NULL;								// Œ»İ‰ñ“] ‚Ì‰Šú‰»
-	m_pModel = NULL;
+	m_pModel = NULL;									// ƒ‚ƒfƒ‹î•ñ‚Ì‰Šú‰»
 
 	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// ‰ñ“]‚Ì‰Šú‰»
 	m_move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// ˆÚ“®—Ê‚Ì‰Šú‰»

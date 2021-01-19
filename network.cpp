@@ -15,6 +15,7 @@
 #include "object.h"
 #include "startSignal.h"
 #include "speed.h"
+#include "characterSelect.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -608,7 +609,10 @@ void CNetwork::InitGame(void)
 
 	StartUpdate();
 
-	SendTCP("READY 1", sizeof("READY 1"));
+	char aData[64];
+	sprintf(aData, "READY 1 %d", CCharacterSelect::GetCarType());
+	SendTCP(aData, sizeof(aData));
+	OutputDebugString("キャラクタータイプ送信完了");
 }
 
 //=============================================================================

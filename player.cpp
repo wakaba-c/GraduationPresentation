@@ -616,16 +616,16 @@ void CPlayer::OnCollisionEnter(CCollider *col)
 
 	if (sTag == "enemy")
 	{
-		// //当たり状態なので、滑らせる
+		 //当たり状態なので、滑らせる
 		//D3DXVECTOR3 move;
 		//CManager::calcReflectVector(&move, m_move, normal);
 		//m_move = move * 20;
 
-		//// パーティクルの再現
-		//for (int nCount = 0; nCount < 5; nCount++)
-		//{
-		//	CEffect::CreateEffect("star", GetPosition(), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-		//}
+		// パーティクルの再現
+		for (int nCount = 0; nCount < 5; nCount++)
+		{
+			CEffect::CreateEffect("star", GetPosition(), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+		}
 	}
 }
 

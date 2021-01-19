@@ -246,10 +246,16 @@ void CCamera::SetCamera(void)
 	// プロジェクションマトリックスの初期化
 	D3DXMatrixIdentity(&m_mtxProjection);
 
+	float fSpeed = CSpeed::GetSpeed();
+	if (fSpeed > 50)
+	{
+		fSpeed = 50;
+	}
+
 	// プロジェクションマトリックスを作成
 	D3DXMatrixPerspectiveFovLH(
 		&m_mtxProjection,
-		D3DXToRadian(45.0f + (25 * CManager::easeIn((CSpeed::GetSpeed() * 0.5f) / 25, 0.0f, 1.0f, 1.0f))),							// 視野角
+		D3DXToRadian(45.0f + (25 * CManager::easeIn((fSpeed * 0.5f) / 25, 0.0f, 1.0f, 1.0f))),							// 視野角
 		(float)SCREEN_WIDTH / (float)SCREEN_HEIGHT,		// アスペクト比
 		1.0f,											// NearZ値
 		1500000.0f);									// FarZ値
@@ -423,7 +429,7 @@ void CCamera::SetPosCamera(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	m_rotDest = rot;					// 回転目標値を設定
 	m_rot = rot;						// 回転値を設定
 
-										// カメラの位置計算
+	// カメラの位置計算
 	m_posVDest.x = m_originPos.x + sinf(D3DX_PI + m_rot.y) * cosf(D3DX_PI + m_rot.x) * m_fDistance;
 	m_posVDest.y = m_originPos.y + sinf(D3DX_PI + m_rot.x) * m_fDistance;
 	m_posVDest.z = m_originPos.z + cosf(D3DX_PI + m_rot.y) * cosf(D3DX_PI + m_rot.x) * m_fDistance;
@@ -685,9 +691,9 @@ void CCamera::CameraMove(void)
 		{
 			m_move.x += sinf(D3DX_PI * 0.0f + m_rot.y) * NORMAL_SPEED;
 			m_move.z += cosf(D3DX_PI * 0.0f + m_rot.y) * NORMAL_SPEED;
-		}
-#endif
 	}
+#endif
+}
 }
 
 #ifdef _DEBUG

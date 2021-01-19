@@ -208,6 +208,8 @@ void CGame::Uninit(void)
 {
 	CNetwork *pNetwork = CManager::GetNetwork();
 
+	CObject::ReleaseCheckPoint();
+
 	if (pNetwork != NULL)
 	{// ネットワークが存在していたとき
 		pNetwork->StopUpdate();				// 更新停止予約
