@@ -112,10 +112,10 @@ void CEnemy::Uninit(void)
 //=============================================================================
 void CEnemy::Update(void)
 {
-#ifdef _DEBUG
 	// キャラクターの更新処理
 	CCharacter::Update();
 
+#ifdef _DEBUG
 	// デバッグ処理
 	Debug();
 #endif

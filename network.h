@@ -137,6 +137,7 @@ public:
 
 	D3DXVECTOR3 GetPosition(int nIndex) { return m_playerPos[nIndex]; }
 	int GetRank(int nIndex) { return m_nRank[nIndex]; }
+	int *GetLastRank(void) { return &m_nLastRank[0]; }
 	int GetRound(int nIndex) { return m_nNumRound[nIndex]; }
 	int GetFlag(int nIndex) { return m_nNumFlag[nIndex]; }
 	bool GetDie(int nIndex) { return m_bDie[nIndex]; }
@@ -181,6 +182,7 @@ private:
 	int m_nNumRound[MAX_PLAYER];			// 周回回数
 	CItem *m_apItem[MAX_COIN];				// コインのポインタ
 	CEnemy *m_pEnemy[MAX_PLAYER];			// 役者のポインタ
+	int m_nLastRank[MAX_PLAYER];			// 最終順位
 
 	// マルチスレッド関連
 	std::thread m_th;					// スレッド

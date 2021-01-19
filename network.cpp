@@ -809,6 +809,10 @@ bool CNetwork::UpdateTCP(void)
 	}
 	else if (strcmp(cHeadText, "GAME_END") == 0)
 	{
+		char aDie[64];
+		sscanf(aFunc, "%s %d %d %d %d", &aDie, &m_nLastRank[0], &m_nLastRank[1], &m_nLastRank[2], &m_nLastRank[3]);
+		OutputDebugString(aFunc);
+
 		int nRank[MAX_PLAYER] = {};
 
 		if (CFade::GetFade() == CFade::FADE_NONE)
@@ -833,13 +837,11 @@ bool CNetwork::UpdateTCP(void)
 	{
 
 	}
-	else if (strcmp(cHeadText, "SET_COIN") == 0)
+	else if (strcmp(cHeadText, "RANK") == 0)
 	{
-
-	}
-	else if (strcmp(cHeadText, "DELETE_COIN") == 0)
-	{
-
+		char aDie[64];
+		sscanf(aFunc, "%s %d %d %d %d", &aDie, &m_nLastRank[0], &m_nLastRank[1], &m_nLastRank[2], &m_nLastRank[3]);
+		OutputDebugString(aFunc);
 	}
 	return true;
 }

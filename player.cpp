@@ -309,7 +309,10 @@ void CPlayer::Update(void)
 
 	VERTEX_PLANE plane = {};
 
-	CCollider::RayBlockCollision(pos, &pModel[0].GetMtxWorld(), 110, 250.0f, plane);
+	if (CManager::GetMode() != CManager::MODE_RESULT)
+	{
+		CCollider::RayBlockCollision(pos, &pModel[0].GetMtxWorld(), 110, 250.0f, plane);
+	}
 
 	D3DXVECTOR3 AB = plane.a - plane.b;
 	D3DXVECTOR3 BC = plane.b - plane.c;
@@ -318,42 +321,6 @@ void CPlayer::Update(void)
 
 	D3DXVec3Cross(&norwork, &BC, &AB);
 	D3DXVec3Normalize(&norwork, &norwork);
-
-	//CDebugProc::Log("a地点 : %f, %f, %f\n", plane.a.x, plane.a.y, plane.a.z);
-	//CDebugProc::Log("b地点 : %f, %f, %f\n", plane.b.x, plane.b.y, plane.b.z);
-	//CDebugProc::Log("c地点 : %f, %f, %f\n", plane.c.x, plane.c.y, plane.c.z);
-
-	//床の高さを取得する
-	CScene *pSceneNext = NULL;														// 初期化
-	CScene *pSceneNow = GetScene(PRIORITY_FLOOR);									// シーンの先頭アドレスを取得
-
-	CScene *pScene = NowFloor(pos);													// 現在いるフィールドを取得
-
-	if (pScene != NULL)
-	{// 今立っている床が存在したとき
-		CMeshField *pFloor = (CMeshField*)pScene;									// キャスト
-		fHeight = pFloor->GetHeight(pos);
-
-		RANDTYPE Type = pFloor->GetRandType();
-
-		if (animType == ANIMATIONTYPE_RUN)
-		{
-			if (currentKey == 5 || currentKey == 0)
-			{
-				if (currentFrame == 0)
-				{
-					if (Type == RANDTYPE_GRASS)
-					{
-						//	pSound->PlaySoundA((SOUND_LABEL)(CManager::GetRand(3) + (int)SOUND_LABEL_SE_GRASS_1));
-					}
-					else if (Type == RANDTYPE_SAND)
-					{
-						//	pSound->PlaySoundA((SOUND_LABEL)(CManager::GetRand(3) + (int)SOUND_LABEL_SE_SAND_1));
-					}
-				}
-			}
-		}
-	}
 
 	// 位置更新
 	pos += m_move;

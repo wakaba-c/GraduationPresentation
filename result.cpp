@@ -17,6 +17,8 @@
 #include "camera.h"
 #include "sky.h"
 #include "object.h"
+#include "network.h"
+#include "player.h"
 
 //=============================================================================
 // マクロ定義
@@ -52,6 +54,7 @@ CResult::~CResult()
 HRESULT CResult::Init(void)
 {
 	CCamera *pCamera = CManager::GetCamera();		// カメラの取得
+	CNetwork *pNetwork = CManager::GetNetwork();	// ネットワークの取得
 
 	int nTotal = 0;
 
@@ -61,6 +64,44 @@ HRESULT CResult::Init(void)
 	// モデル情報の読み込み
 	CObject::LoadModelTest("data/text/model.txt");
 
+	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
+	{
+		CPlayer *pPlayer = CPlayer::Create();
+
+		// 車を種類ごとに読み込む処理
+		switch (nCount)
+		{
+		case 0:
+			pPlayer->LoadScript(SCRIPT_CAR01, CPlayer::ANIMATIONTYPE_MAX);
+			break;
+		case 1:
+			pPlayer->LoadScript(SCRIPT_CAR02, CPlayer::ANIMATIONTYPE_MAX);
+			break;
+		case 2:
+			pPlayer->LoadScript(SCRIPT_CAR03, CPlayer::ANIMATIONTYPE_MAX);
+			break;
+		case 3:
+			pPlayer->LoadScript(SCRIPT_CAR04, CPlayer::ANIMATIONTYPE_MAX);
+			break;
+		}
+
+		switch (nCount)
+		{
+		case 0:
+			pPlayer->SetPosition(D3DXVECTOR3(14013.69f, -3682.46f, -16564.68f));
+			break;
+		case 1:
+			pPlayer->SetPosition(D3DXVECTOR3(13919.69f, -3748.46f, -16394.68f));
+			break;
+		case 2:
+			pPlayer->SetPosition(D3DXVECTOR3(14086.69f, -3727.46f, -16737.68f));
+			break;
+		case 3:
+			pPlayer->SetPosition(D3DXVECTOR3(14228.69f, -3820.46f, -16959.68f));
+			break;
+		}
+	}
+
 	// 表彰台を生成
 	CObject *pObj = CObject::Create();
 
@@ -69,7 +110,7 @@ HRESULT CResult::Init(void)
 		pObj->BindModel("data/model/Podium.x");
 		pObj->SetPosition(D3DXVECTOR3(14013.69f, -3849.46f, -16564.68f));
 		pObj->SetRotation(D3DXVECTOR3(0.0f, 1.10f, 0.0f));
-		pObj->SetSize(D3DXVECTOR3(2.0f, 2.0f, 2.0f));
+		pObj->SetSize(D3DXVECTOR3(3.0f, 3.0f, 3.0f));
 	}
 
 	if (pCamera != NULL)

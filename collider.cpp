@@ -1323,41 +1323,6 @@ bool CCollider::RayBlockCollision(D3DXVECTOR3 &pos, D3DXMATRIX *pMat, float fOff
 
 			pos.y = pos.y - fData - fOffset + fLength;
 			DWORD num = pObj->GetMesh()->GetNumVertices();
-
-			LPD3DXMESH pMesh = pObj->GetMesh();
-
-			VERTEX_3D *pVtx;										//頂点情報へのポインタ
-			WORD *pIdx;									//インデックスデータへポインタ
-
-			pMesh->LockIndexBuffer(D3DLOCK_READONLY, (void**)&pIdx);
-			pMesh->LockVertexBuffer(D3DLOCK_READONLY, (void**)&pVtx);
-
-			D3DXVECTOR3 p0, p1, p2;
-			int IndexBuff = pIdx[dwHitIndex];
-			IndexBuff *= 3;
-
-			p0 = pVtx[IndexBuff].pos;
-			p1 = pVtx[IndexBuff + 1].pos;
-			p2 = pVtx[IndexBuff + 2].pos;
-
-			D3DXVECTOR3 AB = p0 - p1;
-			D3DXVECTOR3 BC = p1 - p2;
-
-			D3DXVECTOR3 norwork;
-
-			D3DXVec3Cross(&norwork, &BC, &AB);
-			D3DXVec3Normalize(&norwork, &norwork);
-
-			//CDebugProc::Log("法線 : %.2f, %.2f, %.2f\n", norwork.x, norwork.y, norwork.z);
-
-			pMesh->UnlockVertexBuffer();
-			pMesh->UnlockIndexBuffer();
-
-			VERTEX_PLANE planeWork;
-			planeWork.a = p0;
-			planeWork.b = p1;
-			planeWork.c = p2;
-			vPlane.emplace_back(planeWork);
 		}
 
 		pSceneNow = pSceneNext;													//次回アップデート対象を格納
@@ -1368,20 +1333,17 @@ bool CCollider::RayBlockCollision(D3DXVECTOR3 &pos, D3DXMATRIX *pMat, float fOff
 	{
 		//最初の比較対象
 		fData = vDistance[0];
-		VERTEX_PLANE planeAns = vPlane[0];
 		for (unsigned int nCnt = 0; vDistance.size() > nCnt; nCnt++)
 		{
 			if (vDistance[nCnt] < fData)
 			{
 				//比較対象が小さかったら代入
-				planeAns = vPlane[nCnt];
 				fData = vDistance[nCnt];
 			}
 		}
 		if (fData < 30000)//Rayの長さの指定条件
 		{
 			pos.y = pos.y - fData - fOffset+ fLength;
-			plane = planeAns;
 		}
 	}
 	//Rayに判定がなかったらジャンプできない
