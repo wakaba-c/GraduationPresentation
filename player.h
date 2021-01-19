@@ -103,11 +103,9 @@ private:
 	void MoveNearEnemy(void);														// 近くにいる敵に移動する処理
 	void Collision(void);															// 当たり判定処理
 	void Input(void);																// キー入力情報関数
-	void InputKeyboard(float fTireRotSpeed, D3DXVECTOR3 aVec);						// キーボード入力処理
-	void InputGemepad(float nValueH, float nValueV, float fTireRotSpeed, D3DXVECTOR3 aVec);// ゲームパッド入力処理
 	bool CollisionWall(void);														// 壁の当たり判定
 	bool CollisionWallWithRay(void);												// レイによる壁の当たり判定
-	void SlopeMove(void);															// 坂の処理
+	bool SlopeMove(void);															// 坂の処理
 
 	/*================= プレイヤー関連 =================*/
 	D3DXVECTOR3						m_dest;											// モデルの最終到達点
@@ -131,6 +129,7 @@ private:
 	float							m_fPuzzleMaxPower;								// パワー
 	float							m_fDeathblow;									// 必殺技ポイント
 	float							m_fAcceleration;								// 加速度
+	float							m_fSlopeSpeed;									// 坂の速度
 	int								m_nLife;										// 体力
 	int								m_nActionCount;									// 次のアクションまでのカウンタ
 	int								m_nParticleCount;								// パーティクル生成までのカウンタ
@@ -145,6 +144,7 @@ private:
 	bool							m_bAccel;										// アクセルを押しているかどうか
 	bool							m_bRankingSign[Piece_Num];
 	bool							m_bRanking;
+	bool							m_bSlope;										// 坂にいるかどうかフラグ
 	CNumber							*m_pRank;										// ランキング用UI
 	CDistanceNext					*m_pDistanceNext;								// 次のプレイヤーとの距離のUI
 	CShadow							*m_pShadow;										// 影の情報ポインタ
