@@ -54,7 +54,7 @@
 #define DRIFT_DECREACE 0.6f							// ドリフト時速度減少
 #define DRIFT_DEST 0.25f							// ドリフト時タイヤの向き
 #define	INIT_ROT 1.38f
-#define SLOPE_SPEED 0.3f							// 坂の速度
+#define SLOPE_SPEED 0.1f							// 坂の速度
 
 //=============================================================================
 // コンストラクタ
@@ -290,7 +290,7 @@ void CPlayer::Update(void)
 	bool bAnimPlayState = GetAnimPlayState();
 
 	// 坂でのプレイヤー処理
-	//m_bSlope = SlopeMove();
+	m_bSlope = SlopeMove();
 
 	// 入力処理
 	if (!m_bHit)
@@ -718,6 +718,9 @@ void CPlayer::Input(void)
 	float nValueH = 0;									//コントローラー
 	float nValueV = 0;									//コントローラー
 
+	D3DXVECTOR3 pos = GetPosition();	// 現在の位置
+	D3DXVECTOR3 posOld = GetPosOld();	// 過去の位置
+
 	D3DXVECTOR3 modelFrontDiff = D3DXVECTOR3(0, 0, 0);			// モデル前輪計算用マトリックス
 	D3DXVECTOR3 aVec = D3DXVECTOR3(0, 0, 0);					// プレイヤー加速度ベクトル
 	D3DXVECTOR3 cameraVec = D3DXVECTOR3(0, 0, 0);				// カメラの方向ベクトル
@@ -745,6 +748,16 @@ void CPlayer::Input(void)
 					// 速度設定
 					m_fSpeed = -m_fPuzzleMaxSPeed;
 
+					// 過去の位置のほうが高かったとき
+					if (posOld.y > pos.y)
+					{
+						m_fSpeed = -m_fPuzzleMaxSPeed * 1.1f;
+					}
+					else if (posOld.y < pos.y)
+					{// 過去位置のほうが低かったとき
+						m_fSpeed = -m_fPuzzleMaxSPeed * 0.9f;
+					}
+
 					// タイヤ回転方向設定
 					fTireRotSpeed = TIRE_ROT_SPEED;
 
@@ -761,6 +774,16 @@ void CPlayer::Input(void)
 
 					// 速度設定
 					m_fSpeed = m_fPuzzleMaxSPeed;
+
+					// 過去の位置のほうが高かったとき
+					if (posOld.y > pos.y)
+					{
+						m_fSpeed = m_fPuzzleMaxSPeed * 1.1f;
+					}
+					else if (posOld.y < pos.y)
+					{// 過去位置のほうが低かったとき
+						m_fSpeed = m_fPuzzleMaxSPeed * 0.9f;
+					}
 
 					// タイヤ回転方向設定
 					fTireRotSpeed = -TIRE_ROT_SPEED;
@@ -856,8 +879,8 @@ void CPlayer::Input(void)
 						}
 
 						// 加速度ベクトル設定
-						aVec.x = sinf(m_rot.y + m_dest.y + D3DX_PI / 2) * m_fAcceleration + m_fSlopeSpeed;
-						aVec.z = cosf(m_rot.y + m_dest.y + D3DX_PI / 2) * m_fAcceleration + m_fSlopeSpeed;
+						aVec.x = sinf(m_rot.y + m_dest.y + D3DX_PI / 2) * m_fAcceleration;
+						aVec.z = cosf(m_rot.y + m_dest.y + D3DX_PI / 2) * m_fAcceleration;
 
 						// ドリフトボタンを離したとき
 						if (!pGamepad->GetControllerPress(0, JOYPADKEY_RIGHT_TRIGGER))
@@ -897,8 +920,8 @@ void CPlayer::Input(void)
 						}
 
 						// 加速度ベクトル設定
-						aVec.x = sinf(m_rot.y + m_dest.y - D3DX_PI / 2) * m_fAcceleration + m_fSlopeSpeed;
-						aVec.z = cosf(m_rot.y + m_dest.y - D3DX_PI / 2) * m_fAcceleration + m_fSlopeSpeed;
+						aVec.x = sinf(m_rot.y + m_dest.y - D3DX_PI / 2) * m_fAcceleration;
+						aVec.z = cosf(m_rot.y + m_dest.y - D3DX_PI / 2) * m_fAcceleration;
 
 						// ドリフトボタンを離したとき
 						if (!pGamepad->GetControllerPress(0, JOYPADKEY_RIGHT_TRIGGER))
@@ -1008,6 +1031,16 @@ void CPlayer::Input(void)
 				// 速度設定
 				m_fSpeed = -m_fPuzzleMaxSPeed;
 
+				// 過去の位置のほうが高かったとき
+				if (posOld.y > pos.y)
+				{
+					m_fSpeed = -m_fPuzzleMaxSPeed * 1.1f;
+				}
+				else if (posOld.y < pos.y)
+				{// 過去位置のほうが低かったとき
+					m_fSpeed = -m_fPuzzleMaxSPeed * 0.9f;
+				}
+
 				// タイヤ回転方向設定
 				fTireRotSpeed = TIRE_ROT_SPEED;
 
@@ -1024,6 +1057,16 @@ void CPlayer::Input(void)
 
 				// 速度設定
 				m_fSpeed = m_fPuzzleMaxSPeed;
+
+				// 過去の位置のほうが高かったとき
+				if (posOld.y > pos.y)
+				{
+					m_fSpeed = m_fPuzzleMaxSPeed * 1.1f;
+				}
+				else if (posOld.y < pos.y)
+				{// 過去位置のほうが低かったとき
+					m_fSpeed = m_fPuzzleMaxSPeed * 0.9f;
+				}
 
 				// タイヤ回転方向設定
 				fTireRotSpeed = -TIRE_ROT_SPEED;
@@ -1120,8 +1163,8 @@ void CPlayer::Input(void)
 				}
 
 				// 加速度ベクトル設定
-				aVec.x = sinf(m_rot.y + m_dest.y + D3DX_PI / 2) * m_fAcceleration + m_fSlopeSpeed;
-				aVec.z = cosf(m_rot.y + m_dest.y + D3DX_PI / 2) * m_fAcceleration + m_fSlopeSpeed;
+				aVec.x = sinf(m_rot.y + m_dest.y + D3DX_PI / 2) * m_fAcceleration;
+				aVec.z = cosf(m_rot.y + m_dest.y + D3DX_PI / 2) * m_fAcceleration;
 
 				// ドリフトボタンを離したとき
 				if (!pKeyboard->GetPressKeyboard(MOVE_DRIFT))
@@ -1161,8 +1204,8 @@ void CPlayer::Input(void)
 				}
 
 				// 加速度ベクトル設定
-				aVec.x = sinf(m_rot.y + m_dest.y - D3DX_PI / 2) * m_fAcceleration + m_fSlopeSpeed;
-				aVec.z = cosf(m_rot.y + m_dest.y - D3DX_PI / 2) * m_fAcceleration + m_fSlopeSpeed;
+				aVec.x = sinf(m_rot.y + m_dest.y - D3DX_PI / 2) * m_fAcceleration;
+				aVec.z = cosf(m_rot.y + m_dest.y - D3DX_PI / 2) * m_fAcceleration;
 
 				// ドリフトボタンを離したとき
 				if (!pKeyboard->GetPressKeyboard(MOVE_DRIFT))
@@ -1389,11 +1432,11 @@ bool CPlayer::SlopeMove(void)
 	if (posOld.y > pos.y)
 	{
 		bSlope = true;
-		m_fSlopeSpeed -= SLOPE_SPEED;
+		m_fSlopeSpeed += SLOPE_SPEED;
 	}
 	else if (posOld.y < pos.y)
 	{// 過去位置のほうが低かったとき
-		m_fSlopeSpeed += SLOPE_SPEED;
+		m_fSlopeSpeed -= SLOPE_SPEED;
 	}
 
 	return bSlope;
