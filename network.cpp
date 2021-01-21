@@ -540,6 +540,31 @@ void CNetwork::Create(void)
 {
 	if (m_StartSignal.bCreate)
 	{
+		for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
+		{
+			if (nCount == m_nId) continue;
+
+			if (m_pEnemy[nCount] != NULL)
+			{
+				// プレイヤーモデル情報の読み込み
+				switch (m_nType[nCount])
+				{
+				case 0:
+					m_pEnemy[nCount]->LoadScript(SCRIPT_CAR01, CPlayer::ANIMATIONTYPE_MAX);
+					break;
+				case 1:
+					m_pEnemy[nCount]->LoadScript(SCRIPT_CAR02, CPlayer::ANIMATIONTYPE_MAX);
+					break;
+				case 2:
+					m_pEnemy[nCount]->LoadScript(SCRIPT_CAR03, CPlayer::ANIMATIONTYPE_MAX);
+					break;
+				case 3:
+					m_pEnemy[nCount]->LoadScript(SCRIPT_CAR04, CPlayer::ANIMATIONTYPE_MAX);
+					break;
+				}
+			}
+		}
+
 		CStartSignal::Create();
 		m_StartSignal.bCreate = false;
 	}
@@ -824,8 +849,9 @@ bool CNetwork::UpdateTCP(void)
 	else if (strcmp(cHeadText, "GAME_START") == 0)
 	{
 		char aDie[64];
-		m_StartSignal.bCreate = true;
 		sscanf(aFunc, "%s %d %d %d %d", &aDie, &m_nType[0], &m_nType[1], &m_nType[2], &m_nType[3]);
+
+		m_StartSignal.bCreate = true;
 
 		OutputDebugString(aFunc);
 	}
