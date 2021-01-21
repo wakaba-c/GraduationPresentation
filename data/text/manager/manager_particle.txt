@@ -11,5 +11,6 @@ SCRIPT			# この行は絶対消さないこと！
 #------------------------------------------------------------------------------
 MODEL_FILENAME = data/text/particle/star.txt					# [0]星
 MODEL_FILENAME = data/text/particle/spark.txt					# [1]火花
+MODEL_FILENAME = data/text/particle/confetti.txt				# [2]紙吹雪
 
 END_SCRIPT		# この行は絶対消さないこと！

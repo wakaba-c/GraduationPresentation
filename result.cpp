@@ -19,6 +19,7 @@
 #include "object.h"
 #include "network.h"
 #include "player.h"
+#include "effect.h"
 
 //=============================================================================
 // マクロ定義
@@ -61,15 +62,27 @@ HRESULT CResult::Init(void)
 	// 空の作成
 	CSky::Create();
 
+	// エフェクトの生成
+	CEffect::Create();
+
 	// モデル情報の読み込み
 	CObject::LoadModelTest("data/text/model.txt");
 
 	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
 	{
+		int nIndex = -1;
 		CPlayer *pPlayer = CPlayer::Create();
 
+		for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
+		{
+			if (nCount == pNetwork->GetLastRank(nCntPlayer))
+			{// 今探している順位だったとき
+				nIndex = nCntPlayer;		// IDを保存
+			}
+		}
+
 		// 車を種類ごとに読み込む処理
-		switch (nCount)
+		switch (pNetwork->GetPlayerType(nIndex))
 		{
 		case 0:
 			pPlayer->LoadScript(SCRIPT_CAR01, CPlayer::ANIMATIONTYPE_MAX);
@@ -88,16 +101,16 @@ HRESULT CResult::Init(void)
 		switch (nCount)
 		{
 		case 0:
-			pPlayer->SetPosition(D3DXVECTOR3(14013.69f, -3682.46f, -16564.68f));
+			pPlayer->SetPosition(D3DXVECTOR3(14013.69f, -3463.46f, -16564.68f));
 			break;
 		case 1:
-			pPlayer->SetPosition(D3DXVECTOR3(13919.69f, -3748.46f, -16394.68f));
+			pPlayer->SetPosition(D3DXVECTOR3(13857.69f, -3520.46f, -16362.68f));
 			break;
 		case 2:
-			pPlayer->SetPosition(D3DXVECTOR3(14086.69f, -3727.46f, -16737.68f));
+			pPlayer->SetPosition(D3DXVECTOR3(14141.69f, -3552.46f, -16816.68f));
 			break;
 		case 3:
-			pPlayer->SetPosition(D3DXVECTOR3(14228.69f, -3820.46f, -16959.68f));
+			pPlayer->SetPosition(D3DXVECTOR3(14261.69f, -3696.46f, -17100.68f));
 			break;
 		}
 	}
@@ -107,7 +120,7 @@ HRESULT CResult::Init(void)
 
 	if (pObj != NULL)
 	{
-		pObj->BindModel("data/model/Podium.x");
+		pObj->BindModel("data/model/Result.x");
 		pObj->SetPosition(D3DXVECTOR3(14013.69f, -3849.46f, -16564.68f));
 		pObj->SetRotation(D3DXVECTOR3(0.0f, 1.10f, 0.0f));
 		pObj->SetSize(D3DXVECTOR3(3.0f, 3.0f, 3.0f));
@@ -116,7 +129,7 @@ HRESULT CResult::Init(void)
 	if (pCamera != NULL)
 	{
 		pCamera->SetStoker(false);
-		pCamera->SetPosCamera(D3DXVECTOR3(13951.36f, -3800.70f, -16626.40f), D3DXVECTOR3(-0.12f, -1.88f, 0.0f));
+		pCamera->SetPosCamera(D3DXVECTOR3(12951.36f, -3300.70f, -16945.40f), D3DXVECTOR3(-0.12f, -1.88f, 0.0f));
 	}
 
 	CRanking::SetResultIndex(m_nKill * ((MAX_MAGNIFICATION - m_nMinutes) * 100));	// ランキングに今回の得点を送る
@@ -146,6 +159,8 @@ void CResult::Update(void)
 
 	if (CFade::GetFade() == CFade::FADE_NONE)
 	{//フェードが処理をしていないとき
+		CEffect::CreateEffect("confetti", D3DXVECTOR3(14013.69f, -1200.00f, -16564.68f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
 		if (pInputKeyboard != NULL)
 		{// キーボードが存在していたとき
 			if (pInputKeyboard->GetTriggerKeyboard(DIK_RETURN))

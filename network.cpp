@@ -823,7 +823,11 @@ bool CNetwork::UpdateTCP(void)
 	}
 	else if (strcmp(cHeadText, "GAME_START") == 0)
 	{
+		char aDie[64];
 		m_StartSignal.bCreate = true;
+		sscanf(aFunc, "%s %d %d %d %d", &aDie, &m_nType[0], &m_nType[1], &m_nType[2], &m_nType[3]);
+
+		OutputDebugString(aFunc);
 	}
 	else if (strcmp(cHeadText, "CHARACTER_SELECT") == 0)
 	{
