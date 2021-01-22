@@ -181,7 +181,7 @@ void CPieceSelect::Update(void)
 					for (int nCntWidth = 0; nCntWidth < Box_Width; nCntWidth++)
 					{
 						// ‘I‘ð‚³‚ê‚Ä‚¢‚é‚Æ‚«‚ÌF
-						m_pPiece[m_nSelect]->SetCol(D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
+						m_pPiece[m_nSelect]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 
 						if (m_nSelect != m_nPieceNum)
 						{
