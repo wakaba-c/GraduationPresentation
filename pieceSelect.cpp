@@ -181,7 +181,7 @@ void CPieceSelect::Update(void)
 					for (int nCntWidth = 0; nCntWidth < Box_Width; nCntWidth++)
 					{
 						// 選択されているときの色
-						m_pPiece[m_nSelect]->SetCol(D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
+						m_pPiece[m_nSelect]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 
 						if (m_nSelect != m_nPieceNum)
 						{
@@ -192,25 +192,25 @@ void CPieceSelect::Update(void)
 							m_pPiece[m_nSelect - 1]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 						}
 
-						// Qを押されたら
-						if (pGamepad->GetControllerTrigger(0, JOYPADKEY_RIGHT_TRIGGER))
-						{
-							if (m_pPiece[m_nSelect] != NULL)
-							{
-								// 選ばれてるピースの情報格納
-								m_bPuzzleStorage[nCntDepth][nCntWidth] = m_pPiece[m_nSelect]->GetPuzzle(nCntDepth, nCntWidth);
-								// 状態比較
-								if (m_bPuzzle[nCntDepth][nCntWidth] == true && m_bPuzzleStorage[nCntDepth][nCntWidth] == true)
-								{
-									// 状態初期化
-									m_bPuzzle[nCntDepth][nCntWidth] = false;
-								}
-								// ピース状態変更
-								m_pPiece[m_nSelect]->SetRelease(true);
-								// 状態変更
-								m_bRelease = true;
-							}
-						}
+						//// Qを押されたら
+						//if (pGamepad->GetControllerTrigger(0, JOYPADKEY_RIGHT_TRIGGER))
+						//{
+						//	if (m_pPiece[m_nSelect] != NULL)
+						//	{
+						//		// 選ばれてるピースの情報格納
+						//		m_bPuzzleStorage[nCntDepth][nCntWidth] = m_pPiece[m_nSelect]->GetPuzzle(nCntDepth, nCntWidth);
+						//		// 状態比較
+						//		if (m_bPuzzle[nCntDepth][nCntWidth] == true && m_bPuzzleStorage[nCntDepth][nCntWidth] == true)
+						//		{
+						//			// 状態初期化
+						//			m_bPuzzle[nCntDepth][nCntWidth] = false;
+						//		}
+						//		// ピース状態変更
+						//		m_pPiece[m_nSelect]->SetRelease(true);
+						//		// 状態変更
+						//		m_bRelease = true;
+						//	}
+						//}
 					}
 				}
 				if (m_bRelease == true)
@@ -530,7 +530,7 @@ void CPieceSelect::Update(void)
 			for (int nCntWidth = 0; nCntWidth < Box_Width; nCntWidth++)
 			{
 				// 選択されているときの色
-				m_pPiece[m_nSelect]->SetCol(D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
+				//m_pPiece[m_nSelect]->SetCol(D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
 
 				if (m_nSelect != m_nPieceNum)
 				{
