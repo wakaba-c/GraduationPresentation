@@ -120,25 +120,28 @@ void CShadow::Uninit(void)
 //==================================================================================================================
 void CShadow::Update(void)
 {
-	CPlayer *pPlayer = CGame::GetPlayer();
-	D3DXVECTOR3 PlayerPos = ZeroVector3;
-	D3DXVECTOR3 PlayerRot = ZeroVector3;
-
-	// プレイヤーがいるとき
-	if (pPlayer != NULL)
+	if (CManager::GetMode() == CManager::MODE_GAME)
 	{
-		PlayerPos = pPlayer->GetPosition();		// プレイヤー位置取得
-		PlayerRot = pPlayer->GetRotation();		// プレイヤー回転取得
+		CPlayer *pPlayer = CGame::GetPlayer();
+		D3DXVECTOR3 PlayerPos = ZeroVector3;
+		D3DXVECTOR3 PlayerRot = ZeroVector3;
+
+		// プレイヤーがいるとき
+		if (pPlayer != NULL)
+		{
+			PlayerPos = pPlayer->GetPosition();		// プレイヤー位置取得
+			PlayerRot = pPlayer->GetRotation();		// プレイヤー回転取得
+		}
+
+		// 位置設定
+		m_pos = D3DXVECTOR3(PlayerPos.x, PlayerPos.y + 4.0f, PlayerPos.z);
+
+		// 回転設定
+		m_rot = PlayerRot;
+
+		// 大きさ設定
+		m_size = D3DXVECTOR3(150.0f, 1.0f, 150.0f);
 	}
-
-	// 位置設定
-	m_pos = D3DXVECTOR3(PlayerPos.x, PlayerPos.y + 4.0f, PlayerPos.z);
-
-	// 回転設定
-	m_rot = PlayerRot;
-
-	// 大きさ設定
-	m_size = D3DXVECTOR3(150.0f, 1.0f, 150.0f);
 }
 
 //==================================================================================================================

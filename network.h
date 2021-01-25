@@ -185,6 +185,7 @@ private:
 	CEnemy *m_pEnemy[MAX_PLAYER];			// 役者のポインタ
 	int m_nLastRank[MAX_PLAYER];			// 最終順位
 	int m_nType[MAX_PLAYER];				// プレイヤーの種類
+	bool m_bEndGame;
 
 	// マルチスレッド関連
 	std::thread m_th;					// スレッド

@@ -48,7 +48,7 @@ CCharacter::CCharacter(CScene::PRIORITY obj) : CScene(obj)
 	m_bAnimSwitch = false;								// アニメーションスイッチの初期化
 	m_bAnimation = true;								// アニメーションフラグの初期化
 	m_nActionCount = 0;									// アクションカウンタの初期化
-
+	m_nAnimationType = -1;								// アニメーションタイプの初期化
 }
 
 //=============================================================================
@@ -520,28 +520,31 @@ void CCharacter::Animation(void)
 			}
 		}
 
-		if (m_pAnimation[m_nAnimationType].apKeyInfo != NULL)
-		{// キー情報がNULLではないとき
-			// フレームの最大数に満たない場合
-			if (m_nCurrentFrame < m_pAnimation[m_nAnimationType].apKeyInfo[m_nCurrentKey].nFrame)
-			{
-				m_nCurrentFrame++;
-			}
-			//フレーム数の最大値に達した場合
-			else if (m_nCurrentFrame >= m_pAnimation[m_nAnimationType].apKeyInfo[m_nCurrentKey].nFrame)
-			{
-				// 最大フレーム到達時の挙動
-				BehaviorForMaxFrame();
-
-				m_nCurrentKey++;			// キーの値に1プラス
-				m_nCurrentFrame = 0;		// フレームのリセット
-			}
-		}
-
-		// キー数の最大値に達した場合
-		if (m_nCurrentKey >= m_pAnimation[m_nAnimationType].nMaxKey)
+		if (m_pAnimation != NULL)
 		{
-			BehaviorForMaxKey();
+			if (m_pAnimation[m_nAnimationType].apKeyInfo != NULL)
+			{// キー情報がNULLではないとき
+			 // フレームの最大数に満たない場合
+				if (m_nCurrentFrame < m_pAnimation[m_nAnimationType].apKeyInfo[m_nCurrentKey].nFrame)
+				{
+					m_nCurrentFrame++;
+				}
+				//フレーム数の最大値に達した場合
+				else if (m_nCurrentFrame >= m_pAnimation[m_nAnimationType].apKeyInfo[m_nCurrentKey].nFrame)
+				{
+					// 最大フレーム到達時の挙動
+					BehaviorForMaxFrame();
+
+					m_nCurrentKey++;			// キーの値に1プラス
+					m_nCurrentFrame = 0;		// フレームのリセット
+				}
+			}
+
+			// キー数の最大値に達した場合
+			if (m_nCurrentKey >= m_pAnimation[m_nAnimationType].nMaxKey)
+			{
+				BehaviorForMaxKey();
+			}
 		}
 	}
 }

@@ -37,6 +37,7 @@ CNetwork::CNetwork()
 
 	// 生成フラグの初期化
 	m_StartSignal.bCreate = false;
+	m_bEndGame = false;
 
 	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
 	{
@@ -568,6 +569,17 @@ void CNetwork::Create(void)
 		CStartSignal::Create();
 		m_StartSignal.bCreate = false;
 	}
+
+	if (m_bEndGame)
+	{// ゲーム終了フラグが立っていたとき
+		if (CFade::GetFade() == CFade::FADE_NONE)
+		{// フェードしていないとき
+		 // チュートリアルへ
+			CFade::SetFade(CManager::MODE_RESULT, CFade::FADETYPE_NORMAL);
+		}
+
+		m_bEndGame = false;
+	}
 }
 
 //=============================================================================
@@ -838,13 +850,7 @@ bool CNetwork::UpdateTCP(void)
 		sscanf(aFunc, "%s %d %d %d %d", &aDie, &m_nLastRank[0], &m_nLastRank[1], &m_nLastRank[2], &m_nLastRank[3]);
 		OutputDebugString(aFunc);
 
-		int nRank[MAX_PLAYER] = {};
-
-		if (CFade::GetFade() == CFade::FADE_NONE)
-		{// フェードしていないとき
-			// チュートリアルへ
-			CFade::SetFade(CManager::MODE_RESULT, CFade::FADETYPE_NORMAL);
-		}
+		m_bEndGame = true;
 	}
 	else if (strcmp(cHeadText, "GAME_START") == 0)
 	{

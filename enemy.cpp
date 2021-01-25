@@ -76,10 +76,10 @@ HRESULT CEnemy::Init(void)
 	CCharacter::Init();
 
 	// アニメーションの設定
-	AnimationSwitch(ANIMATIONTYPE_NEUTRAL);
+	AnimationSwitch(ANIMATIONTYPE_NONE);
 
-	// 敵モデル情報の読み込み
-	LoadScript(SCRIPT_ENEMY, ANIMATIONTYPE_MAX);
+	//// 敵モデル情報の読み込み
+	//LoadScript(SCRIPT_ENEMY, ANIMATIONTYPE_MAX);
 
 	// 位置の設定
 	SetPosition(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
